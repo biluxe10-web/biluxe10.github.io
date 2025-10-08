@@ -1,12 +1,135 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Biluxe10 | Login or Signup</title>
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 </head>
-<body>
-  <h2>Biluxe10 Authentication Page</h2>
-  <p>Login or Signup system will be added here.</p>
+<body
+  style="
+    font-family: Poppins, sans-serif;
+    background: #0b0b0b;
+    color: white;
+    text-align: center;
+    padding: 40px;
+  "
+>
+  <h2>Biluxe10 Login / Signup</h2>
+  <p>Join the official Biluxe10 earning system 🚀</p>
+
+  <div style="margin-top: 40px">
+    <input
+      id="email"
+      type="email"
+      placeholder="Email"
+      style="
+        padding: 10px;
+        width: 80%;
+        max-width: 300px;
+        border-radius: 8px;
+        border: none;
+        margin-bottom: 10px;
+      "
+    /><br />
+    <input
+      id="password"
+      type="password"
+      placeholder="Password"
+      style="
+        padding: 10px;
+        width: 80%;
+        max-width: 300px;
+        border-radius: 8px;
+        border: none;
+        margin-bottom: 20px;
+      "
+    /><br />
+
+    <button
+      onclick="signUp()"
+      style="
+        padding: 10px 25px;
+        border: none;
+        background: #00ff99;
+        color: #000;
+        font-weight: bold;
+        border-radius: 8px;
+        margin-right: 10px;
+      "
+    >
+      Sign Up
+    </button>
+    <button
+      onclick="logIn()"
+      style="
+        padding: 10px 25px;
+        border: none;
+        background: #007bff;
+        color: white;
+        font-weight: bold;
+        border-radius: 8px;
+      "
+    >
+      Log In
+    </button>
+  </div>
+
+  <p id="message" style="margin-top: 25px; color: #00ff99"></p>
+
+  <script>
+    // ✅ Supabase credentials
+    const SUPABASE_URL = "https://cisbvzecomyueslqkmbd.supabase.co";
+    const SUPABASE_KEY =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNpc2J2emVjb215dWVzbHFrbWJkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk5MDMwNTIsImV4cCI6MjA3NTQ3OTA1Mn0.hUNwgoIt-hgh21a1WNqsGkC2QC6mpwAcio5ek86kAfc";
+
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    // 🟢 SIGNUP
+    async function signUp() {
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value.trim();
+
+      if (!email || !password) {
+        document.getElementById("message").innerText = "⚠️ Please fill all fields.";
+        return;
+      }
+
+      const { data, error } = await supabase.auth.signUp({ email, password });
+
+      if (error) {
+        document.getElementById("message").innerText = "⚠️ " + error.message;
+      } else {
+        document.getElementById("message").innerText =
+          "✅ Signup successful! Please check your email to verify.";
+      }
+    }
+
+    // 🔵 LOGIN
+    async function logIn() {
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value.trim();
+
+      if (!email || !password) {
+        document.getElementById("message").innerText = "⚠️ Please fill all fields.";
+        return;
+      }
+
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) {
+        document.getElementById("message").innerText = "⚠️ " + error.message;
+      } else {
+        document.getElementById("message").innerText =
+          "✅ Login successful! Redirecting...";
+        setTimeout(() => {
+          window.location.href = "package.html"; // next page
+        }, 1500);
+      }
+    }
+  </script>
 </body>
 </html>
