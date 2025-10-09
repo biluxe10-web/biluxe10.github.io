@@ -1,1 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Biluxe10 Dashboard</title>
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <style>
+    body {
+      font-family: Poppins, sans-serif;
+      background: #f4f4f9;
+      padding: 20px;
+      text-align: center;
+    }
+    h1 {
+      color: #333;
+    }
+    .card {
+      background: white;
+      padding: 20px;
+      margin: 20px auto;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      width: 90%;
+      max-width: 500px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: center;
+    }
+    th {
+      background: #222;
+      color: #fff;
+    }
+    button {
+      padding: 10px 20px;
+      background: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 15px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Biluxe10 Dashboard</h1>
+  <div class="card">
+    <h3 id="userEmail">Loading...</h3>
+    <p>Your joined packages:</p>
+    <table id="packageTable">
+      <tr><th>Package</th><th>Amount</th><th>Status</th></tr>
+    </table>
+    <button onclick="logout()">Logout</button>
+  </div>
 
+  <script>
+    const SUPABASE_URL = "https://cisbvzecomyueslqkmbd.supabase.co";
+    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNpc2J2emVjb215dWVzbHFrbWJkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk5MDMwNTIsImV4cCI6MjA3NTQ3OTA1Mn0.hUNwgoIt-hgh21a1WNqsGkC2QC6mpwAcio5ek86kAfc";
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    async function loadDashboard() {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        alert("Please login first");
+        window.location.href = "auth.html";
+        return;
+      }
+
+      document.getElementById("userEmail").textContent = user.email;
+
+      const { data, error } = await supabase
+        .from("packages")
+        .select("package_name, package_amount, status")
+        .eq("email", user.email);
+
+      if (error) {
+        console.error(error);
+        alert("Error loading packages");
+        return;
+      }
+
+      const table = document.getElementById("packageTable");
+      data.forEach(pkg => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${pkg.package_name}</td>
+          <td>${pkg.package_amount}</td>
+          <td>${pkg.status}</td>
+        `;
+        table.appendChild(row);
+      });
+    }
+
+    async function logout() {
+      await supabase.auth.signOut();
+      window.location.href = "auth.html";
+    }
+
+    loadDashboard();
+  </script>
+</body>
+</html>
