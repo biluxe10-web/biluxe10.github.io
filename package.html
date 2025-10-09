@@ -1,129 +1,124 @@
-<!DOCTYPE html>
+      <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Biluxe10 Packages</title>
+
   <style>
     body {
-      font-family: 'Poppins', sans-serif;
-      background-color: #0f0f0f;
-      color: white;
+      font-family: "Poppins", sans-serif;
+      background: #f5f5f5;
       margin: 0;
       padding: 0;
-      text-align: center;
     }
     h1 {
-      margin-top: 30px;
-      font-size: 28px;
-      color: #00ffff;
+      text-align: center;
+      margin: 20px 0;
+      color: #222;
     }
     .packages-container {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      margin-top: 20px;
-    }
-    .package {
-      background: #1b1b1b;
-      border: 2px solid #00ffff33;
-      border-radius: 16px;
-      width: 280px;
-      margin: 15px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
       padding: 20px;
-      box-shadow: 0px 0px 10px #00ffff55;
-      transition: 0.3s;
     }
-    .package:hover {
-      transform: scale(1.05);
-      box-shadow: 0px 0px 20px #00ffffaa;
+    .package-card {
+      background: #fff;
+      border-radius: 15px;
+      padding: 15px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      transition: transform 0.2s;
     }
-    .package img {
+    .package-card:hover {
+      transform: translateY(-5px);
+    }
+    .package-card img {
       width: 100%;
+      height: auto;
       border-radius: 12px;
+      object-fit: cover;
+      display: block;
     }
-    .package h3 {
-      color: #00ffff;
+    .package-card h3 {
+      margin: 10px 0 5px;
+      color: #333;
+    }
+    .package-card p {
+      color: #666;
+      font-size: 16px;
+    }
+    .package-card button {
       margin-top: 10px;
-    }
-    .package p {
-      font-size: 18px;
-      color: #ccc;
-    }
-    button {
-      background: #00ffff;
-      color: #000;
+      background: #007bff;
+      color: #fff;
       border: none;
       padding: 10px 20px;
       border-radius: 10px;
       cursor: pointer;
-      font-weight: bold;
-      margin-top: 10px;
-      transition: 0.3s;
+      font-size: 15px;
     }
-    button:hover {
-      background: #00cccc;
+    .package-card button:hover {
+      background: #005ce6;
     }
   </style>
 </head>
 <body>
 
-  <h1>Biluxe10 Official Packages</h1>
+  <h1>Biluxe10 Packages</h1>
 
   <div class="packages-container">
-
-    <div class="package">
-      <img src="file_00000000049461f7920d19bc75bf27d7.png" alt="Starter Success Pack">
+    <div class="package-card">
+      <img src="file_00000000049461f7920d19bc75bf27d7.png" alt="Starter Success Pack" />
       <h3>Starter Success Pack</h3>
       <p>₹999</p>
-      <button onclick="buyPackage('Starter Success Pack', 999)">Buy Now</button>
+      <button onclick="buyPackage('Starter Success Pack', '999')">Buy Now</button>
     </div>
 
-    <div class="package">
-      <img src="file_00000000ed7861f7940aaa12396a8cf7.png" alt="Advance Success Pack">
+    <div class="package-card">
+      <img src="file_00000000ed7861f7940aaa12396a8cf7.png" alt="Advance Success Pack" />
       <h3>Advance Success Pack</h3>
       <p>₹2499</p>
-      <button onclick="buyPackage('Advance Success Pack', 2499)">Buy Now</button>
+      <button onclick="buyPackage('Advance Success Pack', '2499')">Buy Now</button>
     </div>
 
-    <div class="package">
-      <img src="file_0000000086e4622fb63ce9f3956bbcb1.png" alt="Digital Empire System">
+    <div class="package-card">
+      <img src="file_0000000086e4622fb63ce9f3956bbcb1.png" alt="Digital Empire System" />
       <h3>Digital Empire System</h3>
       <p>₹3499</p>
-      <button onclick="buyPackage('Digital Empire System', 3499)">Buy Now</button>
+      <button onclick="buyPackage('Digital Empire System', '3499')">Buy Now</button>
     </div>
 
-    <div class="package">
-      <img src="file_00000000b8d861f4930644f5a6d8054d.png" alt="Editing Mastery">
+    <div class="package-card">
+      <img src="file_00000000b8d861f4930644f5a6d8054d.png" alt="Editing Mastery" />
       <h3>Editing Mastery</h3>
       <p>₹5999</p>
-      <button onclick="buyPackage('Editing Mastery', 5999)">Buy Now</button>
+      <button onclick="buyPackage('Editing Mastery', '5999')">Buy Now</button>
     </div>
 
-    <div class="package">
-      <img src="file_00000000832461faafd5a3755e5fae00.png" alt="Ultimate Dropshipping System">
+    <div class="package-card">
+      <img src="file_00000000832461faafd5a3755e5fae00.png" alt="Ultimate Dropshipping System" />
       <h3>Ultimate Dropshipping System</h3>
       <p>₹9999</p>
-      <button onclick="buyPackage('Ultimate Dropshipping System', 9999)">Buy Now</button>
+      <button onclick="buyPackage('Ultimate Dropshipping System', '9999')">Buy Now</button>
     </div>
 
-    <div class="package">
-      <img src="file_00000000bf04620a8d4a21838cb258f3.png" alt="Crypto Trading Mastery">
+    <div class="package-card">
+      <img src="file_00000000bf04620a8d4a21838cb258f3.png" alt="Crypto Trading Mastery" />
       <h3>Crypto Trading Mastery</h3>
       <p>₹15999</p>
-      <button onclick="buyPackage('Crypto Trading Mastery', 15999)">Buy Now</button>
+      <button onclick="buyPackage('Crypto Trading Mastery', '15999')">Buy Now</button>
     </div>
 
-    <div class="package">
-      <img src="file_000000008bbc61fabe3b760d241a3ce4.png" alt="Future AI System">
+    <div class="package-card">
+      <img src="file_000000008bbc61fabe3b760d241a3ce4.png" alt="Future AI System" />
       <h3>Future AI System</h3>
       <p>₹24999</p>
-      <button onclick="buyPackage('Future AI System', 24999)">Buy Now</button>
+      <button onclick="buyPackage('Future AI System', '24999')">Buy Now</button>
     </div>
-
   </div>
 
-  <!-- 👇 Supabase Script -->
   <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
   <script>
     const SUPABASE_URL = "https://cisbvzecomyueslqkmbd.supabase.co";
@@ -132,7 +127,7 @@
     const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
     async function buyPackage(name, amount) {
-      const user = (await supabase.auth.getUser()).data.user;
+      const { data: { user } } = await supabase.auth.getUser();
 
       if (!user) {
         alert("Please login or signup first!");
@@ -143,7 +138,7 @@
       const uniqueId = `biluxe10${Date.now().toString().slice(-5)}`;
 
       const { error } = await supabase
-        .from("packages")
+        .from("package") // ✅ table name
         .insert([
           {
             email: user.email,
@@ -166,4 +161,4 @@
     }
   </script>
 </body>
-</html>                
+</html>
