@@ -1,209 +1,169 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Biluxe10 | Choose Your Success Pack</title>
-  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Biluxe10 Packages</title>
   <style>
     body {
-      font-family: Poppins, sans-serif;
-      background: #0b0b0b;
+      font-family: 'Poppins', sans-serif;
+      background-color: #0f0f0f;
       color: white;
+      margin: 0;
+      padding: 0;
       text-align: center;
-      padding: 40px;
     }
-    .container {
+    h1 {
+      margin-top: 30px;
+      font-size: 28px;
+      color: #00ffff;
+    }
+    .packages-container {
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
-      gap: 20px;
-      margin-top: 40px;
+      margin-top: 20px;
     }
-    .card {
-      background: #151515;
-      border-radius: 15px;
-      width: 240px;
+    .package {
+      background: #1b1b1b;
+      border: 2px solid #00ffff33;
+      border-radius: 16px;
+      width: 280px;
+      margin: 15px;
       padding: 20px;
-      cursor: pointer;
+      box-shadow: 0px 0px 10px #00ffff55;
       transition: 0.3s;
     }
-    .card:hover {
-      background: #1e1e1e;
+    .package:hover {
       transform: scale(1.05);
+      box-shadow: 0px 0px 20px #00ffffaa;
     }
-    img {
+    .package img {
       width: 100%;
-      border-radius: 10px;
-      height: 130px;
-      object-fit: cover;
+      border-radius: 12px;
     }
-    #coupon {
-      margin-top: 20px;
-      padding: 10px;
-      border-radius: 8px;
+    .package h3 {
+      color: #00ffff;
+      margin-top: 10px;
+    }
+    .package p {
+      font-size: 18px;
+      color: #ccc;
+    }
+    button {
+      background: #00ffff;
+      color: #000;
       border: none;
-      width: 220px;
-      outline: none;
+      padding: 10px 20px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: bold;
+      margin-top: 10px;
+      transition: 0.3s;
+    }
+    button:hover {
+      background: #00cccc;
     }
   </style>
 </head>
 <body>
-  <h2>Biluxe10 Packages 💼</h2>
-  <p>Select your success pack and start your journey 🚀</p>
 
-  <input id="coupon" placeholder="Enter coupon code (if any)" />
-  <div class="container">
+  <h1>Biluxe10 Official Packages</h1>
 
-    <div class="card" onclick="selectPackage('Starter Success Pack', 999)">
-      <img src="file_00000000049461f7920d19bc75bf27d7.png" alt="Starter Pack" />
+  <div class="packages-container">
+
+    <div class="package">
+      <img src="file_00000000049461f7920d19bc75bf27d7.png" alt="Starter Success Pack">
       <h3>Starter Success Pack</h3>
       <p>₹999</p>
+      <button onclick="buyPackage('Starter Success Pack', 999)">Buy Now</button>
     </div>
-    <button onclick="buyPackage('Starter Success Pack', 999)">Buy Now</button>
 
- <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-  
-    <div class="card" onclick="selectPackage('Advance Success Pack', 2499)">
-      <img src="file_00000000ed7861f7940aaa12396a8cf7.png" alt="Advance Pack" />
+    <div class="package">
+      <img src="file_00000000ed7861f7940aaa12396a8cf7.png" alt="Advance Success Pack">
       <h3>Advance Success Pack</h3>
       <p>₹2499</p>
+      <button onclick="buyPackage('Advance Success Pack', 2499)">Buy Now</button>
     </div>
-      <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-  
 
-    <div class="card" onclick="selectPackage('Digital Empire System', 3499)">
-      <img src="file_0000000086e4622fb63ce9f3956bbcb1.png" alt="Digital Empire System" />
+    <div class="package">
+      <img src="file_0000000086e4622fb63ce9f3956bbcb1.png" alt="Digital Empire System">
       <h3>Digital Empire System</h3>
       <p>₹3499</p>
+      <button onclick="buyPackage('Digital Empire System', 3499)">Buy Now</button>
     </div>
-   <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-    
 
-    <div class="card" onclick="selectPackage('Editing Mastery', 5999)">
-      <img src="file_00000000b8d861f4930644f5a6d8054d.png" alt="Editing Mastery" />
+    <div class="package">
+      <img src="file_00000000b8d861f4930644f5a6d8054d.png" alt="Editing Mastery">
       <h3>Editing Mastery</h3>
-      <p>₹4999</p>
+      <p>₹5999</p>
+      <button onclick="buyPackage('Editing Mastery', 5999)">Buy Now</button>
     </div>
- <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-  
-    
-    <div class="card" onclick="selectPackage('Ultimate Dropshipping System', 9999)">
-      <img src="file_00000000832461faafd5a3755e5fae00.png" alt="Dropshipping System" />
+
+    <div class="package">
+      <img src="file_00000000832461faafd5a3755e5fae00.png" alt="Ultimate Dropshipping System">
       <h3>Ultimate Dropshipping System</h3>
       <p>₹9999</p>
+      <button onclick="buyPackage('Ultimate Dropshipping System', 9999)">Buy Now</button>
     </div>
-. <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-  
-    
-    <div class="card" onclick="selectPackage('Crypto Trading Mastery', 15999)">
-      <img src="file_00000000bf04620a8d4a21838cb258f3.png" alt="Crypto Trading Mastery" />
+
+    <div class="package">
+      <img src="file_00000000bf04620a8d4a21838cb258f3.png" alt="Crypto Trading Mastery">
       <h3>Crypto Trading Mastery</h3>
       <p>₹15999</p>
+      <button onclick="buyPackage('Crypto Trading Mastery', 15999)">Buy Now</button>
     </div>
-      <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 
-    <div class="card" onclick="selectPackage('Future AI System', 24999)">
-      <img src="file_000000008bbc61fabe3b760d241a3ce4.png" alt="Future AI System" />
+    <div class="package">
+      <img src="file_000000008bbc61fabe3b760d241a3ce4.png" alt="Future AI System">
       <h3>Future AI System</h3>
-      <p>₹23999</p>
+      <p>₹24999</p>
+      <button onclick="buyPackage('Future AI System', 24999)">Buy Now</button>
     </div>
-      
-<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 
   </div>
 
-  <p id="msg" style="margin-top:30px; color:#00ff99;"></p>
-
+  <!-- 👇 Supabase Script -->
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
   <script>
     const SUPABASE_URL = "https://cisbvzecomyueslqkmbd.supabase.co";
-    const SUPABASE_KEY =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNpc2J2emVjb215dWVzbHFrbWJkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk5MDMwNTIsImV4cCI6MjA3NTQ3OTA1Mn0.hUNwgoIt-hgh21a1WNqsGkC2QC6mpwAcio5ek86kAfc";
+    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNpc2J2emVjb215dWVzbHFrbWJkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk5MDMwNTIsImV4cCI6MjA3NTQ3OTA1Mn0.hUNwgoIt-hgh21a1WNqsGkC2QC6mpwAcio5ek86kAfc";
+
     const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    async function selectPackage(name, amount) {
-      document.getElementById("msg").innerText = "Processing your request...";
-      const coupon = document.getElementById("coupon").value.trim();
-      let finalAmount = amount;
-      let offerType = "paid";
+    async function buyPackage(name, amount) {
+      const user = (await supabase.auth.getUser()).data.user;
 
-      if (coupon === "BILUXE10FREE") {
-        finalAmount = 0;
-        offerType = "free";
-      }
-
-      const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
-        document.getElementById("msg").innerText = "⚠️ Please login again!";
-        return (window.location.href = "auth.html");
+        alert("Please login or signup first!");
+        window.location.href = "auth.html";
+        return;
       }
 
-      const userId = "BILUXE10" + Math.floor(1000 + Math.random() * 9000);
+      const uniqueId = `biluxe10${Date.now().toString().slice(-5)}`;
 
-      const { error } = await supabase.from("packages").insert([
-        {
-          email: user.email,
-          package_name: name,
-          package_amount: finalAmount,
-          offer_type: offerType,
-          coupon_code: coupon || null,
-          status: "pending",
-          unique_id: userId,
-        },
-      ]);
+      const { error } = await supabase
+        .from("packages")
+        .insert([
+          {
+            email: user.email,
+            package_name: name,
+            package_amount: amount,
+            offer_type: "none",
+            coupon_code: "",
+            status: "pending",
+            unique_id: uniqueId,
+          },
+        ]);
 
       if (error) {
-        document.getElementById("msg").innerText = "⚠️ " + error.message;
+        console.error(error);
+        alert("Something went wrong!");
       } else {
-        document.getElementById("msg").innerText =
-          offerType === "free"
-            ? "🎉 Free seat applied! Admin approval pending."
-            : "✅ Package selected! Wait for admin approval.";
+        alert(`Package request submitted! Your ID: ${uniqueId}`);
+        window.location.href = "dashboard.html";
       }
     }
-
-  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-<script>
-  const SUPABASE_URL = "https://cisbvzecomyueslqkmbd.supabase.co";
-  const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNpc2J2emVjb215dWVzbHFrbWJkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk5MDMwNTIsImV4cCI6MjA3NTQ3OTA1Mn0.hUNwgoIt-hgh21a1WNqsGkC2QC6mpwAcio5ek86kAfc";
-
-  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-  async function buyPackage(name, amount) {
-    const user = (await supabase.auth.getUser()).data.user;
-
-    if (!user) {
-      alert("Please login or signup first!");
-      window.location.href = "auth.html";
-      return;
-    }
-
-    // Generate Unique ID
-    const uniqueId = `biluxe10${Date.now().toString().slice(-5)}`;
-
-    const { error } = await supabase
-      .from("packages")
-      .insert([
-        {
-          email: user.email,
-          package_name: name,
-          package_amount: amount,
-          offer_type: "none",
-          coupon_code: "",
-          status: "pending",
-          unique_id: uniqueId,
-        },
-      ]);
-
-    if (error) {
-      console.error(error);
-      alert("Something went wrong!");
-    } else {
-      alert(`Package request submitted! Your ID: ${uniqueId}`);
-      window.location.href = "dashboard.html";
-    }
-  }
-</script>
+  </script>
 </body>
-</html>
-
+</html>                
