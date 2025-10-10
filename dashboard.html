@@ -1,109 +1,545 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Biluxe10 Dashboard</title>
-  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-  <style>
-    body {
-      font-family: Poppins, sans-serif;
-      background: #f4f4f9;
-      padding: 20px;
-      text-align: center;
-    }
-    h1 {
-      color: #333;
-    }
-    .card {
-      background: white;
-      padding: 20px;
-      margin: 20px auto;
-      border-radius: 10px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      width: 90%;
-      max-width: 500px;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-    }
-    th, td {
-      border: 1px solid #ddd;
-      padding: 10px;
-      text-align: center;
-    }
-    th {
-      background: #222;
-      color: #fff;
-    }
-    button {
-      padding: 10px 20px;
-      background: #007bff;
-      color: #fff;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      margin-top: 15px;
-    }
-  </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Biluxe10 — Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<style>
+  :root{
+    --bg:#0b0b0f; --card:#0f1720; --muted:#98a0ab; --accent:#00ff99; --accent-2:#00b894;
+    --panel:#0f1723; --glass: rgba(255,255,255,0.03);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:'Poppins',system-ui,Arial;background:linear-gradient(180deg,#050506 0%,#0b0b0f 100%);color:#e9eef6}
+  .wrap{display:flex;min-height:100vh}
+  /* SIDEBAR */
+  .sidebar{width:280px;background:linear-gradient(180deg,#071018,#0b1320);padding:22px;border-right:1px solid rgba(255,255,255,0.03)}
+  .brand{font-weight:700;color:var(--accent);font-size:20px;margin-bottom:12px}
+  .welcome{font-size:13px;color:var(--muted);margin-bottom:18px}
+  .menu{list-style:none;padding:0;margin:0}
+  .menu li{padding:10px 12px;border-radius:8px;color:#cfe7db;margin:6px 0;cursor:pointer;display:flex;justify-content:space-between;align-items:center}
+  .menu li.active{background:rgba(0,255,153,0.07);color:var(--accent)}
+  .menu li:hover{background:rgba(255,255,255,0.02)}
+  .menu .muted{font-size:12px;color:var(--muted)}
+  .small{font-size:12px;color:var(--muted)}
+
+  /* MAIN content */
+  .main{flex:1;padding:24px 28px}
+  header{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+  header .left h2{margin:0;font-size:20px}
+  header .right{display:flex;align-items:center;gap:12px}
+  .id-box{background:var(--panel);padding:10px 14px;border-radius:10px;font-weight:600}
+  .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:16px}
+  .col-4{grid-column:span 4}
+  .col-8{grid-column:span 8}
+  .col-6{grid-column:span 6}
+  .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:18px;border-radius:12px;border:1px solid rgba(255,255,255,0.03)}
+  .big-num{font-size:28px;font-weight:700;color:var(--accent)}
+  .muted-sm{color:var(--muted);font-size:13px}
+  .btn{background:var(--accent);color:#012;border:none;padding:10px 14px;border-radius:10px;font-weight:700;cursor:pointer}
+  .link-like{color:var(--accent);cursor:pointer;text-decoration:underline;font-size:13px}
+  table{width:100%;border-collapse:collapse}
+  th,td{padding:8px;border-bottom:1px dashed rgba(255,255,255,0.03);text-align:left}
+  th{color:var(--muted);font-size:13px}
+  .task-row{display:flex;justify-content:space-between;align-items:center}
+  .task-title{font-weight:600}
+  .green{color:#19d85b}
+  .red{color:#ff6b6b}
+  footer{margin-top:30px;color:var(--muted);font-size:13px}
+  /* responsive */
+  @media(max-width:900px){.sidebar{display:none}.wrap{flex-direction:column}.main{padding:16px}}
+  /* modal */
+  .modal-back{position:fixed;inset:0;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;z-index:40}
+  .modal{background:#071018;padding:18px;border-radius:12px;width:420px;color:#e6f0ff;border:1px solid rgba(255,255,255,0.03)}
+  .form-row{margin:8px 0}
+  input,textarea,select{width:100%;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:#fff}
+</style>
 </head>
 <body>
-  <h1>Biluxe10 Dashboard</h1>
-  <div class="card">
-    <h3 id="userEmail">Loading...</h3>
-    <p>Your joined package:</p>
-    <table id="packageTable">
-      <tr><th>Package</th><th>Amount</th><th>Status</th></tr>
-    </table>
-    <button onclick="logout()">Logout</button>
-  </div>
+<div class="wrap">
+  <aside class="sidebar">
+    <div class="brand">Biluxe10</div>
+    <div class="welcome small" id="sidebar-welcome">Welcome</div>
 
-  <script>
-    const SUPABASE_URL = "https://cisbvzecomyueslqkmbd.supabase.co";
-    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNpc2J2emVjb215dWVzbHFrbWJkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk5MDMwNTIsImV4cCI6MjA3NTQ3OTA1Mn0.hUNwgoIt-hgh21a1WNqsGkC2QC6mpwAcio5ek86kAfc";
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    <ul class="menu" id="menu">
+      <li data-view="dashboard" class="active">Dashboard</li>
+      <li data-view="tasks">Daily Tasks <span class="muted small">• upload/watch/review</span></li>
+      <li data-view="update">Update & Profile</li>
+      <li data-view="training">Training Material</li>
+      <li data-view="team">My Team</li>
+      <li data-view="income">Income</li>
+      <li data-view="withdraw">Withdrawal</li>
+      <li data-view="transactions">All Transactions</li>
+      <li data-view="about">About</li>
+      <li data-view="contact">Contact Us</li>
+      <li data-view="chat">Chat Support</li>
+      <li id="logoutBtn" style="color:#ff7b7b">Logout</li>
+    </ul>
 
-    async function loadDashboard() {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        alert("Please login first");
-        window.location.href = "auth.html";
-        return;
-      }
+    <div style="margin-top:18px" class="small">
+      <div>Contact: biluxe10@gmail.com</div>
+      <div>Instagram: @bilu_xe10</div>
+    </div>
+  </aside>
 
-      document.getElementById("userEmail").textContent = user.email;
+  <main class="main">
+    <header>
+      <div class="left">
+        <h2 id="welcomeTitle">Welcome back</h2>
+        <div class="small">Your dashboard overview</div>
+      </div>
+      <div class="right">
+        <div class="id-box" id="userIdBox">ID: —</div>
+      </div>
+    </header>
 
-      const { data, error } = await supabase
-        .from("packages")
-        .select("package_name, package_amount, status")
-        .eq("email", user.email);
+    <!-- MAIN PANELS -->
+    <section id="view-dashboard">
+      <div class="grid">
+        <!-- wallet -->
+        <div class="col-4"><div class="card">
+            <div class="muted-sm">Wallet Balance</div>
+            <div class="big-num" id="walletBalance">₹0</div>
+            <div class="muted-sm">Points: <span id="pointsBalance">0</span></div>
+            <div style="margin-top:12px">
+              <button class="btn" id="withdrawOpen">Withdraw</button>
+              <span style="margin-left:8px" class="link-like" id="refLinkCopy">Copy Referral Link</span>
+            </div>
+        </div></div>
 
-      if (error) {
-        console.error(error);
-        alert("Error loading packages");
-        return;
-      }
+        <!-- performance -->
+        <div class="col-8"><div class="card">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <div>
+                <div class="muted-sm">Performance Overview</div>
+                <div style="display:flex;gap:12px;margin-top:8px">
+                  <div style="text-align:left">
+                    <div class="muted-sm">Total earning</div><div class="big-num" id="totalEarning">₹0</div>
+                  </div>
+                  <div style="text-align:left">
+                    <div class="muted-sm">Total withdrawal</div><div id="totalWithdrawal" class="big-num">₹0</div>
+                  </div>
+                  <div style="text-align:left">
+                    <div class="muted-sm">Task points</div><div id="totalPoints" class="big-num">0</div>
+                  </div>
+                  <div style="text-align:left">
+                    <div class="muted-sm">Team members</div><div id="teamCount" class="big-num">0</div>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <div class="muted-sm">Quick</div>
+                <div style="display:flex;gap:8px;margin-top:8px">
+                  <button class="btn" onclick="openView('tasks')">Tasks</button>
+                  <button class="btn" onclick="openView('income')">Income</button>
+                </div>
+              </div>
+            </div>
+        </div></div>
 
-      const table = document.getElementById("packageTable");
-      data.forEach(pkg => {
-        const row = document.createElement("tr");
-        row.innerHTML = `
-          <td>${pkg.package_name}</td>
-          <td>${pkg.package_amount}</td>
-          <td>${pkg.status}</td>
-        `;
-        table.appendChild(row);
-      });
+        <!-- earning breakdown -->
+        <div class="col-4"><div class="card">
+          <div class="muted-sm">Earning Breakdown</div>
+          <table style="margin-top:10px">
+            <tr><th>Source</th><th class="small">Amount</th></tr>
+            <tr><td>Direct Commission</td><td id="directCommission">₹0</td></tr>
+            <tr><td>Passive Income</td><td id="passiveIncome">₹0</td></tr>
+            <tr><td>Ads Bonus</td><td id="adsBonus">₹0</td></tr>
+          </table>
+        </div></div>
+
+        <!-- tasks list -->
+        <div class="col-8"><div class="card">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div><div class="muted-sm">Daily Tasks</div><div style="font-weight:700">Complete tasks & earn points</div></div>
+            <div><span class="muted-sm">Points to ₹ rate:</span> <strong>100k pts = ₹500</strong></div>
+          </div>
+
+          <div id="tasksList" style="margin-top:14px"></div>
+        </div></div>
+
+        <!-- team -->
+        <div class="col-6"><div class="card">
+          <div class="muted-sm">My Team</div>
+          <div id="teamList" style="margin-top:10px"></div>
+        </div></div>
+
+        <!-- transactions -->
+        <div class="col-6"><div class="card">
+          <div class="muted-sm">Recent Transactions</div>
+          <div id="txnList" style="margin-top:10px"></div>
+        </div></div>
+
+        <!-- referral & materials -->
+        <div class="col-6"><div class="card">
+          <div class="muted-sm">Refer & Earn</div>
+          <div style="margin-top:8px">Your referral link:</div>
+          <div style="margin-top:8px"><input id="refLink" style="padding:8px;border-radius:8px;width:100%;border:1px solid rgba(255,255,255,0.05);background:transparent;color:#fff"></div>
+          <div style="margin-top:8px" class="muted-sm">When a referred user purchases same package: 50% direct commission + 10% passive + 5% ads bonus (auto)</div>
+        </div></div>
+
+        <div class="col-6"><div class="card">
+          <div class="muted-sm">Training Material</div>
+          <div style="margin-top:8px"><a id="trainingLink" class="link-like">Open training PDF</a></div>
+          <div style="margin-top:8px" class="muted-sm">(Click to open materials provided by Biluxe10)</div>
+        </div></div>
+
+      </div> <!-- grid end -->
+      <footer>Biluxe10 © 2025 — Manage your account responsibly</footer>
+    </section>
+
+    <!-- TASK VIEW -->
+    <section id="view-tasks" style="display:none">
+      <div class="card" style="max-width:900px;margin:12px auto">
+        <h3>Daily Tasks</h3>
+        <p class="muted-sm">Complete tasks and submit proof for review — points awarded after admin approval.</p>
+        <div id="taskArea"></div>
+      </div>
+    </section>
+
+    <!-- INCOME / detailed -->
+    <section id="view-income" style="display:none">
+      <div class="card" style="max-width:1100px;margin:12px auto">
+        <h3>Income Details</h3>
+        <div id="incomeBreakdown"></div>
+      </div>
+    </section>
+
+    <!-- WITHDRAWAL (modal) -->
+    <div id="withdrawModal" style="display:none" class="modal-back">
+      <div class="modal">
+        <h3>Request Withdrawal</h3>
+        <div class="form-row"><label>Method</label>
+          <select id="withdrawMethod"><option value="bank">Bank/UPI</option><option value="crypto">Crypto</option></select>
+        </div>
+        <div class="form-row"><label>Amount (₹)</label><input id="withdrawAmount" placeholder="Enter amount (₹)"></div>
+        <div id="bankFields" style="display:block">
+          <div class="form-row"><input id="bankAcc" placeholder="Account number / UPI"></div>
+          <div class="form-row"><input id="bankIFSC" placeholder="IFSC (if bank)"></div>
+          <div class="form-row"><input id="bankName" placeholder="Account holder name"></div>
+        </div>
+        <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px">
+          <button onclick="closeModal()">Cancel</button>
+          <button onclick="requestWithdraw()" class="btn">Request</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ABOUT -->
+    <section id="view-about" style="display:none">
+      <div class="card" style="max-width:900px;margin:12px auto;text-align:left">
+        <h3>About Biluxe10</h3>
+        <p>Biluxe10 is a creator-first growth platform that offers training, tasks, and referral rewards.
+           Our mission is to help creators earn by completing tasks, referring others and accessing premium training.
+           (Put full company overview and policies here.)</p>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section id="view-contact" style="display:none">
+      <div class="card" style="max-width:600px;margin:12px auto">
+        <h3>Contact Us</h3>
+        <p>Email: biluxe10@gmail.com</p>
+        <p>Instagram: @bilu_xe10</p>
+        <div style="margin-top:10px"><button onclick="openChat()">Open Chat Support</button></div>
+      </div>
+    </section>
+
+    <!-- Chat placeholder -->
+    <section id="view-chat" style="display:none">
+      <div class="card" style="max-width:900px;margin:12px auto">
+        <h3>Chat Support</h3>
+        <p class="muted-sm">This is a chat placeholder — integrate Telegram / Widget / Crisp or other chat later.</p>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+/* ------------------ Supabase init ------------------ */
+const SUPABASE_URL = "https://cisbvzecomyueslqkmbd.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNpc2J2emVjb215dWVzbHFrbWJkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk5MDMwNTIsImV4cCI6MjA3NTQ3OTA1Mn0.hUNwgoIt-hgh21a1WNqsGkC2QC6mpwAcio5ek86kAfc";
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+/* ------------------ UI helpers ------------------ */
+const menu = document.getElementById('menu');
+function openView(v){
+  document.querySelectorAll('section').forEach(s=>s.style.display='none');
+  const id = (v==='dashboard') ? 'view-dashboard' : 'view-'+v;
+  const el = document.getElementById(id);
+  if(el) el.style.display = 'block';
+  // mark active
+  document.querySelectorAll('#menu li').forEach(li=>li.classList.remove('active'));
+  const selected = document.querySelector(`#menu li[data-view="${v}"]`);
+  if(selected) selected.classList.add('active');
+}
+
+/* ------------------ Load initial user data + dashboard ------------------ */
+async function initializeDashboard(){
+  try {
+    const { data: userData } = await supabase.auth.getUser();
+    const user = userData && userData.user ? userData.user : null;
+    if(!user){
+      // no session - redirect to auth
+      window.location.href = 'auth.html';
+      return;
     }
 
-    async function logout() {
-      await supabase.auth.signOut();
-      window.location.href = "auth.html";
+    // Show header name + ID if available
+    // We'll try to fetch profile from `users` table (common)
+    const { data: profile } = await tryFetch('users').select('*').eq('auth_id', user.id).maybeSingle();
+    const displayName = profile?.name || user.email.split('@')[0];
+    const uniqueId = profile?.unique_id || (profile?.id ? 'BILUXE10'+String(profile.id).slice(-5) : 'BILUXE10'+Math.floor(10000+Math.random()*90000));
+    document.getElementById('welcomeTitle').textContent = `Welcome back, ${displayName}`;
+    document.getElementById('sidebar-welcome').textContent = `Hi ${displayName}`;
+    document.getElementById('userIdBox').textContent = `ID: ${uniqueId}`;
+
+    // Set referral link
+    const origin = window.location.origin + window.location.pathname.replace(/\/[^/]*$/, '/');
+    document.getElementById('refLink').value = `${origin}auth.html?ref=${uniqueId}`;
+
+    // Load wallet and stats
+    await loadWalletAndStats(user, profile, uniqueId);
+
+    // Load tasks, team, transactions
+    await loadTasks(user, profile);
+    await loadTeam(user, profile);
+    await loadTransactions(user, profile);
+    await loadIncomeBreakdown(user, profile);
+
+    // training link placeholder (if you have uploaded PDF to storage, put URL)
+    const trainingUrl = localStorage.getItem('training_url') || '#';
+    document.getElementById('trainingLink').onclick = ()=> {
+      if(trainingUrl === '#') return alert('Training material not uploaded yet.');
+      window.open(trainingUrl, '_blank');
+    };
+
+  } catch (e){
+    console.error('init error', e);
+    alert('Error initializing dashboard — check console.');
+  }
+}
+
+/* ------------------ Generic helper that tries either plural or singular table names ------------------ */
+async function tryFetch(tableName){
+  // returns supabase.from(table) wrapper with methods .select etc.
+  // We'll create an object with same API but which points to whichever table exists.
+  const plural = tableName.endsWith('s') ? tableName : tableName + 's';
+  // check singular first (user earlier used 'package'), then plural
+  const check1 = await supabase.from(tableName).select('id').limit(1).maybeSingle().catch(()=>({ error:true }));
+  if(!check1.error) return supabase.from(tableName);
+  const check2 = await supabase.from(plural).select('id').limit(1).maybeSingle().catch(()=>({ error:true }));
+  if(!check2.error) return supabase.from(plural);
+  // fallback to original object (may error later)
+  return supabase.from(tableName);
+}
+
+/* ------------------ Wallet & Stats ------------------ */
+async function loadWalletAndStats(user, profile, uniqueId){
+  // Points & commission stored in users table (if available)
+  try {
+    const usersTable = await tryFetch('users');
+    const { data: u } = await usersTable.select('points_balance,commission_balance').eq('auth_id', user.id).maybeSingle();
+    const points = (u && u.points_balance) ? Number(u.points_balance) : 0;
+    const commissionBalance = (u && u.commission_balance) ? Number(u.commission_balance) : 0;
+    // walletBalance convert: suppose commissionBalance + points->money conversion (we'll only show commission)
+    document.getElementById('pointsBalance').textContent = points.toLocaleString();
+    document.getElementById('walletBalance').textContent = `₹${commissionBalance.toLocaleString()}`;
+
+    // Performance quick aggregates from transactions/commissions
+    const commissionsTable = await tryFetch('commissions');
+    const { data: comms } = await commissionsTable.select('amount,status').eq('referrer_id', profile?.id || null).catch(()=>({ data:[] }));
+    const direct = (comms || []).filter(c=>c.status==='credited').reduce((s,c)=>s+Number(c.amount||0),0);
+    document.getElementById('directCommission').textContent = `₹${direct.toLocaleString()}`;
+
+    // total earning & withdrawal from transactions table if exists
+    const txTable = await tryFetch('transactions');
+    const { data: txs } = await txTable.select('amount,type,status').eq('user_id', profile?.id || null).catch(()=>({ data:[] }));
+    let totalEarn = 0, totalWithdraw=0, pointsTotal = points;
+    (txs||[]).forEach(t=>{
+      if(t.type === 'credit') totalEarn += Number(t.amount||0);
+      if(t.type === 'withdraw') totalWithdraw += Number(t.amount||0);
+    });
+    document.getElementById('totalEarning').textContent = `₹${(totalEarn+direct).toLocaleString()}`;
+    document.getElementById('totalWithdrawal').textContent = `₹${totalWithdraw.toLocaleString()}`;
+    document.getElementById('totalPoints').textContent = pointsTotal.toLocaleString();
+  } catch(e){ console.warn('wallet load fail', e) }
+}
+
+/* ------------------ Tasks ------------------ */
+async function loadTasks(user, profile){
+  try {
+    const tasksTable = await tryFetch('tasks');
+    const { data: tasks } = await tasksTable.select('*').order('id',{ascending:true}).catch(()=>({ data:[] }));
+    const container = document.getElementById('tasksList');
+    container.innerHTML = '';
+    // If tasks table empty, create default tasks locally
+    const defaultTasks = tasks && tasks.length ? tasks : [
+      { id: 't1', title: 'Upload a video', description: 'Upload a short Biluxe10 promo video', points:20 },
+      { id: 't2', title: 'Give a review', description: 'Post a review on Instagram', points:10 },
+      { id: 't3', title: 'Watch promo videos', description: 'Watch 5 Biluxe10 videos', points:5 },
+      { id: 't4', title: 'Share link', description: 'Share your referral link on Social', points:8 }
+    ];
+    defaultTasks.forEach(t=>{
+      const row = document.createElement('div');
+      row.className = 'task-row';
+      row.innerHTML = `
+        <div>
+          <div class="task-title">${t.title}</div>
+          <div class="muted-sm">${t.description}</div>
+        </div>
+        <div style="text-align:right">
+          <div class="muted-sm">+${t.points} pts</div>
+          <div style="margin-top:8px">
+            <input id="proof-${t.id}" placeholder="Proof URL or note" style="padding:6px;border-radius:8px;background:transparent;border:1px solid rgba(255,255,255,0.04);color:#fff;width:220px">
+            <button class="btn" style="margin-left:6px" onclick="submitTask('${t.id}', ${t.points})">Submit</button>
+          </div>
+        </div>
+      `;
+      container.appendChild(row);
+    });
+  } catch(e){ console.error('loadTasks', e) }
+}
+ /* ------------------ Submit task (user_tasks table) ------------------ */
+async function submitTask(taskId, points){
+  try {
+    const { data: { user } } = await supabase.auth.getUser();
+    if(!user) return window.location.href='auth.html';
+    const usersTable = await tryFetch('users');
+    const { data: profile } = await usersTable.select('id').eq('auth_id', user.id).maybeSingle();
+    if(!profile){ alert('Profile not found'); return; }
+    const proof = document.getElementById(`proof-${taskId}`).value || null;
+
+    const userTasksTable = await tryFetch('user_tasks');
+    const { error } = await userTasksTable.insert([{ user_id: profile.id, task_id: taskId, proof_url: proof, status:'submitted', points_awarded:0 }]);
+    if(error) return alert('Failed to submit task: ' + error.message);
+    alert('Task submitted for review. Admin will award points after approval.');
+  } catch(e){ console.error(e); alert('Error submitting task') }
+}
+
+/* ------------------ Team list ------------------ */
+async function loadTeam(user, profile){
+  try {
+    if(!profile) return document.getElementById('teamList').innerHTML='No team data';
+    const referralsTable = await tryFetch('referrals');
+    const { data: refs } = await referralsTable.select('referee_id').eq('referrer_id', profile.id).catch(()=>({ data:[] }));
+    const teamBox = document.getElementById('teamList');
+    teamBox.innerHTML = '';
+    if(!refs || refs.length===0) { teamBox.innerHTML = '<div class="muted-sm">No team members yet</div>'; return; }
+    for(const r of refs){
+      // find user by id
+      const usersTable = await tryFetch('users');
+      const { data: member } = await usersTable.select('name,unique_id,commission_balance,points_balance').eq('id', r.referee_id).maybeSingle();
+      const div = document.createElement('div');
+      div.style.padding='8px 0';
+      div.innerHTML = `<div style="display:flex;justify-content:space-between"><div>${member?.name || member?.unique_id}</div><div>Earned: ₹${Number(member?.commission_balance||0).toLocaleString()}</div></div>`;
+      teamBox.appendChild(div);
+    }
+    document.getElementById('teamCount').textContent = refs.length;
+  } catch(e){ console.warn('loadTeam fail', e); document.getElementById('teamList').innerText='Error loading team' }
+}
+
+/* ------------------ Transactions list ------------------ */
+async function loadTransactions(user, profile){
+  try {
+    const txTable = await tryFetch('transactions');
+    const { data: txs } = await txTable.select('*').eq('user_id', profile?.id || null).order('created_at',{ascending:false}).limit(8).catch(()=>({ data:[] }));
+    const box = document.getElementById('txnList');
+    box.innerHTML = '';
+    if(!txs || txs.length===0) { box.innerHTML = '<div class="muted-sm">No transactions yet</div>'; return; }
+    txs.forEach(t=>{
+      const d = document.createElement('div');
+      const cls = t.type==='withdraw' ? 'red' : 'green';
+      d.innerHTML = `<div style="display:flex;justify-content:space-between;padding:6px 0"><div>${t.note || t.type}</div><div class="${cls}">${t.type==='withdraw' ? '-₹' : '+₹'}${t.amount}</div></div>`;
+      box.appendChild(d);
+    });
+  } catch(e){ console.warn('tx load', e); document.getElementById('txnList').innerText='Error loading tx' }
+}
+
+/* ------------------ Income breakdown ------------------ */
+async function loadIncomeBreakdown(user, profile){
+  try {
+    // commissions table & points ledger
+    const commissionsTable = await tryFetch('commissions');
+    const { data: comms } = await commissionsTable.select('amount,status').eq('referrer_id', profile?.id || null).catch(()=>({ data:[] }));
+    const direct = (comms||[]).filter(c=>c.status==='credited').reduce((s,c)=>s+Number(c.amount||0),0);
+    document.getElementById('directCommission').textContent = `₹${direct.toLocaleString()}`;
+    // passive & ads from commissions table fields (or custom logic) - placeholder demo:
+    const passive = Math.round(direct * 0.1);
+    const ads = Math.round(direct * 0.05);
+    document.getElementById('passiveIncome').textContent = `₹${passive.toLocaleString()}`;
+    document.getElementById('adsBonus').textContent = `₹${ads.toLocaleString()}`;
+
+    // detailed income view
+    const box = document.getElementById('incomeBreakdown');
+    box.innerHTML = `<p class="muted-sm">Direct: ₹${direct.toLocaleString()} · Passive: ₹${passive.toLocaleString()} · Ads: ₹${ads.toLocaleString()}</p>`;
+  } catch(e){ console.warn('incomeBreak', e) }
+}
+
+/* ------------------ Withdraw modal logic ------------------ */
+document.getElementById('withdrawOpen').onclick = ()=> {
+  document.getElementById('withdrawModal').style.display = 'flex';
+}
+function closeModal(){ document.getElementById('withdrawModal').style.display='none' }
+
+async function requestWithdraw(){
+  try {
+    const amt = Number(document.getElementById('withdrawAmount').value || 0);
+    if(!amt || amt<=0){ return alert('Enter amount'); }
+
+    const method = document.getElementById('withdrawMethod').value;
+    const acc = document.getElementById('bankAcc').value.trim();
+    if(!acc) return alert('Enter account/UPI');
+
+    // get user profile id
+    const { data: { user } } = await supabase.auth.getUser();
+    const usersTable = await tryFetch('users');
+    const { data: profile } = await usersTable.select('id,commission_balance').eq('auth_id', user.id).maybeSingle();
+
+    // minimal checks (example): commission must cover withdrawal
+    if(profile && Number(profile.commission_balance||0) < amt){
+      return alert('Insufficient balance in commission wallet');
     }
 
-    loadDashboard();
-  </script>
+    // insert into transactions (if table exists) or withdrawals (try both)
+    const txTable = await tryFetch('transactions');
+    const { error } = await txTable.insert([{ user_id: profile.id, amount: amt, type:'withdraw', status:'pending', note:`${method} -> ${acc}` }]).catch(e=>({ error:e }));
+    if(error) {
+      console.error('withdraw error', error);
+      alert('Failed to request withdrawal — contact admin');
+      return;
+    }
+    alert('Withdrawal requested — admin will process soon.');
+    closeModal();
+  } catch(e){ console.error('req withdraw', e); alert('Error requesting') }
+}
+
+/* ------------------ Copy referral link ------------------ */
+document.getElementById('refLinkCopy').onclick = ()=>{
+  const v = document.getElementById('refLink').value;
+  navigator.clipboard.writeText(v).then(()=>alert('Referral link copied'));
+}
+
+/* ------------------ Logout */
+document.getElementById('logoutBtn').onclick = async ()=>{
+  await supabase.auth.signOut();
+  window.location.href = 'auth.html';
+}
+
+/* ------------------ menu nav */
+document.querySelectorAll('#menu li[data-view]').forEach(li=>{
+  li.addEventListener('click', ()=> openView(li.getAttribute('data-view')));
+});
+
+/* ------------------ Open chat placeholder */
+function openChat(){ alert('Chat support not integrated. Contact: biluxe10@gmail.com') }
+
+/* ------------------ start */
+initializeDashboard();
+</script>
 </body>
 </html>
