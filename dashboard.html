@@ -1,462 +1,251 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Biluxe10 • Dashboard</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BILUXE10 Dashboard</title>
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+
   <style>
-    :root{
-      --bg1:#0f1027; --bg2:#0b2540; --glass: rgba(255,255,255,0.04);
-      --accent:#00ffc2; --soft:#9fb8c6; --muted:#9aa6b2;
-      --card:#0e1620;
-    }
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      font-family:'Poppins',system-ui,Arial;
-      color:#e6f0f2;
-      -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
-      background:
-        radial-gradient(1000px 400px at 10% 10%, rgba(0,255,194,0.06), transparent 12%),
-        radial-gradient(800px 300px at 90% 90%, rgba(0,120,255,0.05), transparent 12%),
-        linear-gradient(180deg, var(--bg1) 0%, var(--bg2) 100%);
-      min-height:100vh;
-      display:flex;
-      justify-content:center;
-      align-items:flex-start;
-      padding:30px;
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Poppins", sans-serif;
     }
 
-    /* outer container */
-    .dash-wrap{
-      width:1200px;
-      max-width:98%;
-      display:grid;
-      grid-template-columns: 280px 1fr;
-      gap:20px;
-      align-items:start;
+    body {
+      background: linear-gradient(135deg, #020024, #090979, #00d4ff);
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
     }
 
-    /* SIDEBAR / 3-dot area */
-    .sidebar{
-      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-      border-radius:14px;
-      padding:18px;
-      height:calc(100vh - 70px);
-      overflow:auto;
-      border:1px solid rgba(255,255,255,0.03);
-      box-shadow: 0 10px 40px rgba(2,6,23,0.6);
-      position:relative;
-    }
-    .top-controls{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:14px}
-    .logo{font-weight:700;color:var(--accent);font-size:20px}
-    .three-dots{
-      width:42px;height:42px;border-radius:10px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-      display:flex;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,0.03);cursor:pointer;
-    }
-    .profile{
-      margin:12px 0;padding:12px;border-radius:10px;background:linear-gradient(90deg, rgba(255,255,255,0.02), transparent);
-      display:flex;gap:12px;align-items:center;
-    }
-    .avatar{width:56px;height:56px;border-radius:12px;background:linear-gradient(180deg,#17324a,#0b1a2b);display:flex;align-items:center;justify-content:center;font-weight:700}
-    .pinfo{flex:1}
-    .pname{font-weight:700}
-    .psmall{font-size:12px;color:var(--muted)}
-
-    .menu{margin-top:12px;list-style:none;padding:0}
-    .menu li{padding:10px;border-radius:8px;display:flex;justify-content:space-between;align-items:center;color:#dbeff0;margin:6px 0;cursor:pointer}
-    .menu li:hover{background:rgba(255,255,255,0.02)}
-    .menu li.active{background:linear-gradient(90deg, rgba(0,255,194,0.06), rgba(0,200,255,0.03));color:var(--accent)}
-    .muted{color:var(--muted);font-size:13px;margin-top:8px}
-
-    /* MAIN content area */
-    .main{
-      min-height:80vh;
-      border-radius:14px;
-      padding:18px;
-      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-      border:1px solid rgba(255,255,255,0.03);
-      box-shadow: 0 10px 60px rgba(2,6,23,0.6);
+    /* Sidebar */
+    .sidebar {
+      width: 250px;
+      background: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(10px);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      border-right: 2px solid #00d4ff;
     }
 
-    header.main-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
-    .welcome{font-weight:700;font-size:18px}
-    .id-box{background:var(--card);padding:8px 12px;border-radius:10px;font-weight:600;border:1px solid rgba(255,255,255,0.03)}
-    .controls{display:flex;gap:10px;align-items:center}
+    .sidebar h2 {
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 1.5rem;
+      color: #00d4ff;
+    }
 
-    .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:14px}
+    .menu-item {
+      padding: 12px 15px;
+      margin: 8px 0;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
 
-    .card{grid-column:span 4;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00));padding:14px;border-radius:12px;border:1px solid rgba(255,255,255,0.02)}
-    .card-lg{grid-column:span 8;padding:16px}
-    .card h4{margin:0 0 8px 0;font-size:14px;color:var(--muted)}
-    .big{font-size:22px;font-weight:700;color:var(--accent);margin-top:6px}
-    .muted-sm{color:var(--muted);font-size:13px}
+    .menu-item:hover, .menu-item.active {
+      background: linear-gradient(90deg, #00d4ff, #0077ff);
+      color: #fff;
+    }
 
-    .task-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-top:1px dashed rgba(255,255,255,0.02)}
-    .task-row:first-of-type{border-top:none}
-    .task-title{font-weight:600}
-    .small-btn{padding:6px 10px;border-radius:8px;border:1px solid rgba(255,255,255,0.03);background:transparent;color:var(--accent);cursor:pointer}
+    /* Main content */
+    .main {
+      flex: 1;
+      padding: 30px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      overflow-y: auto;
+    }
 
-    /* earning breakdown tabs */
-    .tabs{display:flex;gap:8px;margin-top:8px}
-    .tab{padding:8px 12px;background:rgba(255,255,255,0.01);border-radius:8px;cursor:pointer;border:1px solid rgba(255,255,255,0.02)}
-    .tab.active{background:linear-gradient(90deg,#002b2b22,#003b5b22);border:1px solid rgba(0,255,194,0.12);color:var(--accent)}
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
 
-    /* referral box */
-    .ref-box{display:flex;gap:8px}
-    .ref-box input{flex:1;padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.03);background:transparent;color:#fff}
+    .header h1 {
+      font-size: 1.8rem;
+    }
 
-    footer{margin-top:18px;color:var(--muted);font-size:13px;text-align:center}
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+    }
 
-    @media(max-width:920px){
-      .dash-wrap{grid-template-columns:1fr; padding:12px}
-      .sidebar{display:flex;flex-direction:row;gap:10px;height:auto;overflow:visible}
-      .sidebar .menu{display:flex;flex-wrap:wrap}
-      .menu li{flex:1 1 45%}
-      .main{margin-top:12px}
-      .grid{grid-template-columns:repeat(2,1fr)}
-      .card{grid-column:span 2}
-      .card-lg{grid-column:span 2}
+    .card {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 25px;
+      border-radius: 20px;
+      box-shadow: 0 0 10px rgba(0, 212, 255, 0.4);
+      transition: transform 0.3s;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+    }
+
+    .card h3 {
+      font-size: 1.2rem;
+      margin-bottom: 10px;
+    }
+
+    .value {
+      font-size: 1.8rem;
+      color: #00d4ff;
+      font-weight: bold;
+    }
+
+    .logout-btn {
+      background: linear-gradient(90deg, #ff4d4d, #ff0000);
+      border: none;
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: 0.3s;
+      margin-top: auto;
+    }
+
+    .logout-btn:hover {
+      opacity: 0.8;
     }
   </style>
 </head>
+
 <body>
-
-  <div class="dash-wrap">
-
-    <!-- SIDEBAR -->
-    <aside class="sidebar">
-      <div class="top-controls">
-        <div class="logo">Biluxe10</div>
-        <div class="three-dots" id="menuToggle" title="Open menu">
-          <!-- simple 3-dot icon -->
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="5" cy="12" r="1.8" fill="#cfeff0"/><circle cx="12" cy="12" r="1.8" fill="#cfeff0"/><circle cx="19" cy="12" r="1.8" fill="#cfeff0"/></svg>
-        </div>
-      </div>
-
-      <div class="profile">
-        <div class="avatar" id="avatar">A</div>
-        <div class="pinfo">
-          <div class="pname" id="userName">User Name</div>
-          <div class="psmall" id="userPhone">+91 9XXXXXXXXX</div>
-          <div class="psmall" id="userReferral">Ref: BILUXE102501</div>
-        </div>
-      </div>
-
-      <ul class="menu" id="menuList">
-        <li data-view="dashboard" class="active">Dashboard</li>
-        <li data-view="tasks">Daily Tasks <span class="muted">upload / watch / review</span></li>
-        <li data-view="withdraw">Withdrawal</li>
-        <li data-view="wallet">Wallet</li>
-        <li data-view="performance">Performance Overview</li>
-        <li data-view="earnings">Earning Breakdown</li>
-        <li data-view="direct">Direct Commission</li>
-        <li data-view="passive">Passive Income</li>
-        <li data-view="ads">Ads Bonus</li>
-        <li data-view="referral">Referral & Earn</li>
-        <li data-view="training">Training Material</li>
-        <li data-view="about">About</li>
-        <li data-view="contact">Contact Us</li>
-        <li data-view="chat">Chat Support</li>
-        <li id="logoutSide" style="color:#ff8a8a">Logout</li>
-      </ul>
-
-      <div class="muted">Contact: biluxe10@gmail.com · @bilu_xe10</div>
-    </aside>
-
-    <!-- MAIN -->
-    <main class="main">
-      <header class="main-head">
-        <div>
-          <div class="welcome" id="welcomeHeader">Welcome back, <span id="displayName">Guest</span></div>
-          <div class="muted-sm" id="welcomeSub">Your Biluxe10 dashboard</div>
-        </div>
-        <div class="controls">
-          <div class="id-box" id="displayId">ID: —</div>
-        </div>
-      </header>
-
-      <!-- VIEW: Dashboard -->
-      <section id="view-dashboard" style="display:block">
-        <div class="grid">
-          <div class="card">
-            <h4>Wallet Balance</h4>
-            <div class="big" id="walletAmount">₹0</div>
-            <div class="muted-sm">Points: <span id="walletPoints">0</span></div>
-            <div style="margin-top:10px">
-              <button class="small-btn" id="openWithdrawBtn">Withdraw</button>
-            </div>
-          </div>
-
-          <div class="card card-lg">
-            <h4>Performance Overview</h4>
-            <div style="display:flex;gap:18px;margin-top:8px;flex-wrap:wrap">
-              <div style="min-width:120px">
-                <div class="muted-sm">Total Earning</div>
-                <div class="big" id="statTotalEarn">₹0</div>
-              </div>
-              <div style="min-width:120px">
-                <div class="muted-sm">Total Withdrawal</div>
-                <div class="big" id="statWithdrawal">₹0</div>
-              </div>
-              <div style="min-width:120px">
-                <div class="muted-sm">Task Points</div>
-                <div class="big" id="statPoints">0</div>
-              </div>
-              <div style="min-width:120px">
-                <div class="muted-sm">Team Members</div>
-                <div class="big" id="statTeam">0</div>
-              </div>
-            </div>
-          </div>
-
-          <div class="card">
-            <h4>Earning Breakdown</h4>
-            <div class="tabs" id="earnTabs">
-              <div class="tab active" data-tab="ads">Ads Bonus</div>
-              <div class="tab" data-tab="reels">Reels Upload</div>
-              <div class="tab" data-tab="review">Review Bonus</div>
-            </div>
-            <div style="margin-top:12px">
-              <div class="muted-sm">Direct Commission</div>
-              <div class="big" id="directAmt">₹0</div>
-              <div class="muted-sm" style="margin-top:8px">Passive Income</div>
-              <div class="big" id="passiveAmt">₹0</div>
-            </div>
-          </div>
-
-          <div class="card card-lg">
-            <h4>Daily Tasks</h4>
-            <div id="taskListPreview">
-              <!-- tasks injected here -->
-              <div class="task-row">
-                <div>
-                  <div class="task-title">Upload a short promo video</div>
-                  <div class="muted-sm">Earn 20 pts — Upload proof URL</div>
-                </div>
-                <div>
-                  <button class="small-btn">Submit</button>
-                </div>
-              </div>
-              <div class="task-row">
-                <div>
-                  <div class="task-title">Write a review</div>
-                  <div class="muted-sm">Earn 10 pts — Post review link</div>
-                </div>
-                <div>
-                  <button class="small-btn">Submit</button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="card">
-            <h4>Referral & Earn</h4>
-            <div class="muted-sm">Your referral link:</div>
-            <div class="ref-box" style="margin-top:8px">
-              <input id="refInput" readonly value="https://example.com/auth.html?ref=BILUXE102501">
-              <button class="small-btn" id="copyRef">Copy</button>
-            </div>
-            <div class="muted-sm" style="margin-top:8px">50% direct · 10% passive · 5% ads bonus</div>
-          </div>
-
-          <div class="card">
-            <h4>Training Material</h4>
-            <div class="muted-sm">Click to open PDF</div>
-            <div style="margin-top:8px"><button class="small-btn" id="openTraining">Open</button></div>
-          </div>
-
-        </div>
-      </section>
-
-      <!-- VIEW: Tasks -->
-      <section id="view-tasks" style="display:none">
-        <div class="card card-lg">
-          <h3>Task View</h3>
-          <p class="muted-sm">Submit proof for approval. Points awarded after admin review.</p>
-          <div id="taskAreaDetailed" style="margin-top:12px">
-            <!-- dynamic task rows -->
-          </div>
-        </div>
-      </section>
-
-      <!-- VIEW: Withdrawal -->
-      <section id="view-withdraw" style="display:none">
-        <div class="card card-lg">
-          <h3>Withdrawal</h3>
-          <p class="muted-sm">Add bank/UPI once and reuse later.</p>
-          <div style="margin-top:12px;display:flex;gap:12px;flex-wrap:wrap">
-            <input id="wdAmount" placeholder="Amount (₹)" style="padding:10px;border-radius:8px;background:transparent;border:1px solid rgba(255,255,255,0.03);color:#fff">
-            <input id="wdAcc" placeholder="Account / UPI" style="padding:10px;border-radius:8px;background:transparent;border:1px solid rgba(255,255,255,0.03);color:#fff">
-            <input id="wdIFSC" placeholder="IFSC (if bank)" style="padding:10px;border-radius:8px;background:transparent;border:1px solid rgba(255,255,255,0.03);color:#fff">
-            <button class="small-btn" id="reqWithdraw">Request</button>
-          </div>
-        </div>
-      </section>
-
-      <!-- VIEW: Wallet -->
-      <section id="view-wallet" style="display:none">
-        <div class="card">
-          <h3>Wallet</h3>
-          <p class="muted-sm">Points & ₹ balances</p>
-          <div style="margin-top:12px">
-            <div class="muted-sm">Available Balance</div>
-            <div class="big" id="walletOnly">₹0</div>
-            <div class="muted-sm">Points</div>
-            <div id="walletOnlyPoints" class="big">0</div>
-          </div>
-        </div>
-      </section>
-
-      <!-- VIEW: Performance -->
-      <section id="view-performance" style="display:none">
-        <div class="card card-lg">
-          <h3>Performance Overview</h3>
-          <p class="muted-sm">Charts & monthly summary will be shown here.</p>
-        </div>
-      </section>
-
-      <!-- VIEW: Earnings (breakdown main) -->
-      <section id="view-earnings" style="display:none">
-        <div class="card card-lg">
-          <h3>Earning Breakdown</h3>
-          <div style="margin-top:10px">
-            <div class="tabs" id="earnBigTabs">
-              <div class="tab active" data-tab="adsBig">Ads Bonus</div>
-              <div class="tab" data-tab="reelsBig">Reels Upload</div>
-              <div class="tab" data-tab="reviewBig">Review Bonus</div>
-            </div>
-            <div id="earnDetail" style="margin-top:12px">
-              <div data-panel="adsBig">Ads Bonus details — list of credits from ads & campaigns.</div>
-              <div data-panel="reelsBig" style="display:none">Reels Upload details — points earned per upload.</div>
-              <div data-panel="reviewBig" style="display:none">Review Bonus details — credits for reviews.</div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- VIEW: Direct, Passive, Ads, Referral, Training, About, Contact, Chat -->
-      <section id="view-direct" style="display:none"><div class="card card-lg"><h3>Direct Commission</h3><p id="directList" class="muted-sm">Direct commissions listed here.</p></div></section>
-      <section id="view-passive" style="display:none"><div class="card card-lg"><h3>Passive Income</h3><p id="passiveList" class="muted-sm">Passive income details here.</p></div></section>
-      <section id="view-ads" style="display:none"><div class="card card-lg"><h3>Ads Bonus</h3><p id="adsList" class="muted-sm">Ads bonus details here.</p></div></section>
-      <section id="view-referral" style="display:none"><div class="card card-lg"><h3>Referral & Earn</h3><p class="muted-sm">Referral detailed stats will appear here.</p></div></section>
-
-      <section id="view-training" style="display:none"><div class="card card-lg"><h3>Training Material</h3><p class="muted-sm">PDF & Materials links for users.</p></div></section>
-      <section id="view-about" style="display:none"><div class="card card-lg"><h3>About Biluxe10</h3><p class="muted-sm">Write company description here.</p></div></section>
-      <section id="view-contact" style="display:none"><div class="card card-lg"><h3>Contact</h3><p class="muted-sm">Email: biluxe10@gmail.com · Instagram: @bilu_xe10</p></div></section>
-      <section id="view-chat" style="display:none"><div class="card card-lg"><h3>Chat Support</h3><p class="muted-sm">Chat placeholder — integrate real chat later.</p></div></section>
-
-      <footer>© Biluxe10 • Built with ❤️</footer>
-    </main>
-
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <h2>BILUXE10</h2>
+    <div class="menu-item active" onclick="showSection('dashboard')">🏠 Dashboard</div>
+    <div class="menu-item" onclick="showSection('tasks')">📋 Tasks</div>
+    <div class="menu-item" onclick="showSection('earnings')">💰 Earnings</div>
+    <div class="menu-item" onclick="showSection('withdrawal')">🏦 Withdrawal</div>
+    <div class="menu-item" onclick="showSection('team')">👥 My Team</div>
+    <div class="menu-item" onclick="showSection('profile')">⚙️ Profile</div>
+    <button class="logout-btn" onclick="logout()">Logout</button>
   </div>
 
-<script>
-  // simple view router
-  const menuItems = document.querySelectorAll('#menuList li[data-view]');
-  menuItems.forEach(li=>{
-    li.addEventListener('click', ()=> {
-      document.querySelectorAll('#menuList li').forEach(x=>x.classList.remove('active'));
-      li.classList.add('active');
-      const v = li.getAttribute('data-view');
-      // hide all view sections
-      document.querySelectorAll('main section').forEach(s=>s.style.display='none');
-      const target = document.getElementById('view-' + v);
-      if(target) target.style.display = 'block';
-      else document.getElementById('view-dashboard').style.display = 'block';
-      window.scrollTo({top:0,behavior:'smooth'});
-    });
-  });
+  <!-- Main content -->
+  <div class="main">
+    <div id="dashboard" class="section">
+      <div class="header">
+        <h1>Welcome Back, <span id="username">User</span> 👋</h1>
+      </div>
 
-  // the 3-dot toggle can be used to focus menu or for mobile effect
-  document.getElementById('menuToggle').addEventListener('click', ()=>{
-    const sb = document.querySelector('.sidebar');
-    sb.style.display = sb.style.display === 'none' ? 'block' : 'block';
-    // quick flash to indicate open
-    sb.animate([{opacity:.6},{opacity:1}],{duration:220});
-  });
+      <div class="cards">
+        <div class="card">
+          <h3>Wallet Balance</h3>
+          <div class="value" id="walletBalance">₹0</div>
+        </div>
 
-  // Earning breakdown quick tabs on dashboard small card
-  document.querySelectorAll('#earnTabs .tab').forEach(t=>{
-    t.addEventListener('click', ()=> {
-      document.querySelectorAll('#earnTabs .tab').forEach(x=>x.classList.remove('active'));
-      t.classList.add('active');
-      // we could swap small preview values here
-    });
-  });
+        <div class="card">
+          <h3>Total Earnings</h3>
+          <div class="value" id="totalEarnings">₹0</div>
+        </div>
 
-  // big earning tabs in earnings page
-  document.querySelectorAll('#earnBigTabs .tab').forEach(t=>{
-    t.addEventListener('click', ()=>{
-      document.querySelectorAll('#earnBigTabs .tab').forEach(x=>x.classList.remove('active'));
-      t.classList.add('active');
-      const key = t.getAttribute('data-tab');
-      document.querySelectorAll('#earnDetail [data-panel]').forEach(p=>p.style.display='none');
-      const pane = document.querySelector(`#earnDetail [data-panel="${key}"]`);
-      if(pane) pane.style.display='block';
-    });
-  });
+        <div class="card">
+          <h3>Task Points</h3>
+          <div class="value" id="taskPoints">0 pts</div>
+        </div>
 
-  // basic controls (copy ref)
-  document.getElementById('copyRef').addEventListener('click', ()=>{
-    const v = document.getElementById('refInput').value;
-    navigator.clipboard.writeText(v).then(()=> alert('Referral link copied'));
-  });
+        <div class="card">
+          <h3>Team Members</h3>
+          <div class="value" id="teamCount">0</div>
+        </div>
+      </div>
+    </div>
 
-  document.getElementById('openTraining').addEventListener('click', ()=> {
-    alert('Training PDF not linked yet — upload to storage and save URL.');
-  });
+    <!-- Tasks Section -->
+    <div id="tasks" class="section" style="display:none">
+      <h1>Daily Tasks</h1>
+      <div class="cards">
+        <div class="card"><h3>🎥 Upload Reels</h3><p>Earn 20 points per video</p></div>
+        <div class="card"><h3>⭐ Give Reviews</h3><p>Earn 10 points per review</p></div>
+        <div class="card"><h3>👁️ Watch Videos</h3><p>Earn 15 points per watch</p></div>
+      </div>
+    </div>
 
-  // open withdraw panel via top button
-  document.getElementById('openWithdrawBtn').addEventListener('click', ()=> {
-    // mark menu active
-    document.querySelectorAll('#menuList li').forEach(x=>x.classList.remove('active'));
-    const li = document.querySelector('#menuList li[data-view="withdraw"]');
-    if(li) li.classList.add('active');
-    document.querySelectorAll('main section').forEach(s=>s.style.display='none');
-    document.getElementById('view-withdraw').style.display = 'block';
-  });
+    <!-- Earnings Section -->
+    <div id="earnings" class="section" style="display:none">
+      <h1>Earning Breakdown</h1>
+      <div class="cards">
+        <div class="card"><h3>Direct Commission</h3><div class="value" id="directIncome">₹0</div></div>
+        <div class="card"><h3>Passive Income</h3><div class="value" id="passiveIncome">₹0</div></div>
+        <div class="card"><h3>Ads Bonus</h3><div class="value" id="adsBonus">₹0</div></div>
+      </div>
+    </div>
 
-  // mock population: (replace with real Supabase data later)
-  const mockUser = { name:'Aman Kumar', phone:'+91 98xxxxxx', id:'BILUXE102734' };
-  document.getElementById('displayName').innerText = mockUser.name;
-  document.getElementById('displayId').innerText = 'ID: ' + mockUser.id;
-  document.getElementById('userName').innerText = mockUser.name;
-  document.getElementById('userPhone').innerText = mockUser.phone;
-  document.getElementById('userReferral').innerText = 'Ref: ' + mockUser.id;
-  document.getElementById('avatar').innerText = mockUser.name.split(' ').map(n=>n[0]).join('').slice(0,2).toUpperCase();
-  // sample values
-  document.getElementById('walletAmount').innerText = '₹20,000';
-  document.getElementById('walletPoints').innerText = '45,200';
-  document.getElementById('statTotalEarn').innerText = '₹75,000';
-  document.getElementById('statWithdrawal').innerText = '₹15,000';
-  document.getElementById('statPoints').innerText = '45,200';
-  document.getElementById('statTeam').innerText = '24';     
-  document.getElementById('directAmt').innerText = '₹4,990';
-  document.getElementById('passiveAmt').innerText = '₹990';
+    <!-- Withdrawal Section -->
+    <div id="withdrawal" class="section" style="display:none">
+      <h1>Withdraw Funds</h1>
+      <div class="card">
+        <p>Wallet Balance: <span id="withdrawBalance">₹0</span></p>
+        <button onclick="withdraw()">Withdraw to Bank</button>
+      </div>
+    </div>
 
-  // populate detailed task area
-  const tasks = [
-    { id:'t1', title:'Upload a promo reel', descr:'Upload on Instagram & paste link', pts:20 },
-    { id:'t2', title:'Give a review', descr:'Post review on profile', pts:10 },
-    { id:'t3', title:'Watch 5 promo videos', descr:'Watch & mark complete', pts:5 }
-  ];
-  const ta = document.getElementById('taskAreaDetailed');
-  tasks.forEach(t=>{
-    const el = document.createElement('div');
-    el.className = 'task-row';
-    el.innerHTML = `<div><div class="task-title">${t.title}</div><div class="muted-sm">${t.descr}</div></div>
-      <div><div class="muted-sm">+${t.pts} pts</div><div style="margin-top:6px"><input id="pf-${t.id}" placeholder="Proof URL" style="padding:8px;border-radius:8px;background:transparent;border:1px solid rgba(255,255,255,0.03);color:#fff"><button class="small-btn" style="margin-left:6px" onclick="alert('Submit proof — will connect to DB later')">Submit</button></div></div>`;
-    ta.appendChild(el);
-  });
+    <!-- Team Section -->
+    <div id="team" class="section" style="display:none">
+      <h1>My Team</h1>
+      <p>Members joined by your referral will show here.</p>
+      <div id="teamList"></div>
+    </div>
 
-  // menu logout
-  document.getElementById('logoutSide').addEventListener('click', ()=> {
-    if(confirm('Logout?')) window.location.href = 'auth.html';
-  });
-</script>
+    <!-- Profile Section -->
+    <div id="profile" class="section" style="display:none">
+      <h1>Profile Settings</h1>
+      <p>Email: <span id="userEmail"></span></p>
+      <p>User ID: <span id="userId"></span></p>
+    </div>
+  </div>
 
+  <script>
+    const SUPABASE_URL = "https://cisbvzecomyueslqkmbd.supabase.co";
+    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNpc2J2emVjb215dWVzbHFrbWJkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk5MDMwNTIsImV4cCI6MjA3NTQ3OTA1Mn0.hUNwgoIt-hgh21a1WNqsGkC2QC6mpwAcio5ek86kAfc";
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    async function loadUser() {
+      const { data, error } = await supabase.auth.getUser();
+      if (error || !data.user) {
+        window.location.href = "auth.html";
+        return;
+      }
+
+      document.getElementById("username").textContent = data.user.email.split('@')[0];
+      document.getElementById("userEmail").textContent = data.user.email;
+      document.getElementById("userId").textContent = data.user.id;
+
+      // Fetch package / wallet info
+      const { data: pkg } = await supabase.from("package").select("*").eq("email", data.user.email);
+      if (pkg && pkg.length > 0) {
+        document.getElementById("walletBalance").textContent = "₹" + pkg[0].package_amount;
+        document.getElementById("withdrawBalance").textContent = "₹" + pkg[0].package_amount;
+      }
+    }
+
+    function showSection(sectionId) {
+      document.querySelectorAll(".section").forEach(s => s.style.display = "none");
+      document.getElementById(sectionId).style.display = "block";
+      document.querySelectorAll(".menu-item").forEach(m => m.classList.remove("active"));
+      event.target.classList.add("active");
+    }
+
+    async function logout() {
+      await supabase.auth.signOut();
+      window.location.href = "auth.html";
+    }
+
+    function withdraw() {
+      alert("Withdrawal request submitted! It will reflect soon.");
+    }
+
+    loadUser();
+  </script>
 </body>
 </html>
