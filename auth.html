@@ -104,59 +104,57 @@
       Don’t have an account? <span id="toggle">Signup</span> 
    <button id="signup-btn" class="btn">Create Account</button> </p>
   </div>
-
-  <script src="https://unpkg.com/@supabase/supabase-js"></script>
-  <script>
-const SUPABASE_URL = sb_secret_WcuquZhMJuXmEDr2vLWlkw_mUFjPWu_ 
+<script src="https://unpkg.com/@supabase/supabase-js"></script>
+<script>
+  // ✅ Supabase setup
+  const SUPABASE_URL = "https://cisbvzecomyueslqkmbd.supabase.co";
   const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNpc2J2emVjb215dWVzbHFrbWJkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk5MDMwNTIsImV4cCI6MjA3NTQ3OTA1Mn0.hUNwgoIt-hgh21a1WNqsGkC2QC6mpwAcio5ek86kAfc";
 
-    const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    const form = document.getElementById("auth-form");
-    const formTitle = document.getElementById("form-title");
-    const signupFields = document.getElementById("signup-fields");
-    const toggle = document.getElementById("toggle");
-    const submitBtn = document.getElementById("submit-btn");
-    let isSignup = false;
+  const form = document.getElementById("auth-form");
+  const formTitle = document.getElementById("form-title");
+  const signupFields = document.getElementById("signup-fields");
+  const toggle = document.getElementById("toggle");
+  const submitBtn = document.getElementById("submit-btn");
+  let isSignup = false;
 
-    toggle.addEventListener("click", () => {
-      isSignup = !isSignup;
-      formTitle.textContent = isSignup ? "Signup" : "Login";
-      signupFields.style.display = isSignup ? "block" : "none";
-      submitBtn.textContent = isSignup ? "Signup" : "Login";
-      toggle.textContent = isSignup ? "Login" : "Signup";
-    });
+  toggle.addEventListener("click", () => {
+    isSignup = !isSignup;
+    formTitle.textContent = isSignup ? "Signup" : "Login";
+    signupFields.style.display = isSignup ? "block" : "none";
+    submitBtn.textContent = isSignup ? "Signup" : "Login";
+    toggle.textContent = isSignup ? "Login" : "Signup";
+  });
 
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
 
-      if (isSignup) {
-        const name = document.getElementById("name").value;
-        const referral = document.getElementById("referral").value;
-        const { data, error } = await client.auth.signUp({
-          email,
-          password,
-          options: { data: { name, referral } },
-        });
-        if (error) return alert(error.message);
-        alert("Signup successful! Check your email for verification.");
-      } else {
-        const { data, error } = await client.auth.signInWithPassword({
-          email,
-          password,
-        });
-        if (error) return alert(error.message);
-        alert("Login successful! Redirecting...");
-        window.location.href = "index.html";
-      }
-    });
+    if (isSignup) {
+      const name = document.getElementById("name").value;
+      const referral = document.getElementById("referral").value;
+      const { data, error } = await client.auth.signUp({
+        email,
+        password,
+        options: { data: { name, referral } },
+      });
+      if (error) return alert("❌ " + error.message);
+      alert("✅ Signup successful! Check your email for verification.");
+    } else {
+      const { data, error } = await client.auth.signInWithPassword({
+        email,
+        password,
+      });
+      if (error) return alert("❌ " + error.message);
+      alert("✅ Login successful! Redirecting...");
+      window.location.href = "index.html";
+    }
+  });
 
-    // 🟢 Example OTP trigger (for your backend integration later)
-    document.getElementById("verify-otp").addEventListener("click", () => {
-      alert("OTP verified (demo) — connect this button to your backend later.");
-    });
-  </script>
-</body>
-</html>    
+  // Optional: OTP placeholder
+  document.getElementById("verify-otp").addEventListener("click", () => {
+    alert("OTP verified (demo) — connect this button to your backend later.");
+  });
+</script>
