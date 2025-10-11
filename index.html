@@ -1,18 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head/>
+<head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Biluxe10 - Official Website</title>
-    <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-7404G2V978"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
 
-  gtag('config', 'G-7404G2V978');
-</script>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-7404G2V978"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-7404G2V978');
+  </script>
 
   <!-- SEO Meta Tags -->
   <meta name="title" content="Biluxe10 - Affiliate Marketing & Business Growth">
@@ -22,81 +22,103 @@
   <meta name="author" content="Biluxe10">
 
   <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-    <head/>
-  <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Poppins', sans-serif;
-    }
 
+  <!-- CSS -->
+  <style>
+    html { scroll-behavior: smooth; }
     body {
-      background: linear-gradient(135deg, #000000, #1a1a1a);
+      background: radial-gradient(circle at top left, #000 0%, #111 40%, #1a1a1a 100%);
       color: #fff;
+      font-family: 'Poppins', sans-serif;
+      line-height: 1.7;
+      margin: 0;
     }
 
     header {
-      background: gold;
-      color: black;
-      padding: 20px;
+      background: linear-gradient(90deg, #b58c00, #ffd700);
+      color: #000;
       text-align: center;
-      font-size: 28px;
+      padding: 25px 10px;
+      font-size: 30px;
       font-weight: 800;
       letter-spacing: 1px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, .3);
+    }
+
+    .navbar {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      background: #0d0d0d;
+      padding: 1rem 0;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 3px 8px rgba(0, 0, 0, .3);
+    }
+
+    .navbar a {
+      color: gold;
+      font-weight: 600;
+      text-decoration: none;
+      transition: .3s;
+    }
+
+    .navbar a:hover {
+      color: white;
+      transform: scale(1.05);
     }
 
     section {
+      background: rgba(255, 255, 255, .02);
+      border: 1px solid rgba(255, 255, 255, .05);
+      border-radius: 20px;
+      margin: 60px auto;
       padding: 60px 20px;
+      max-width: 900px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, .3);
       text-align: center;
-      animation: fadeIn 2s ease;
     }
 
     h1, h2 {
       color: gold;
-      margin-bottom: 20px;
+      animation: glow 3s ease-in-out infinite alternate;
+    }
+
+    @keyframes glow {
+      from { text-shadow: 0 0 10px rgba(255, 215, 0, .3); }
+      to { text-shadow: 0 0 25px rgba(255, 215, 0, .6); }
     }
 
     p {
       font-size: 18px;
-      line-height: 1.7;
+      color: #ddd;
       max-width: 800px;
       margin: auto;
-      color: #ddd;
     }
 
     .btn {
       display: inline-block;
       margin-top: 30px;
       padding: 12px 25px;
-      background: gold;
-      color: black;
+      background: linear-gradient(145deg, #ffd700, #e6b800);
+      color: #000;
       font-weight: 600;
       border-radius: 30px;
       text-decoration: none;
-      transition: 0.3s;
+      transition: .3s;
+      box-shadow: 0 4px 10px rgba(255, 215, 0, .3);
     }
 
     .btn:hover {
-      background: #ffcc00;
+      background: #ffdb4d;
       transform: scale(1.05);
-    }
-
-    footer {
-      padding: 20px;
-      background: #111;
-      color: #aaa;
-      text-align: center;
-      font-size: 14px;
     }
 
     form {
       max-width: 500px;
-      margin: 20px auto;
+      margin: 30px auto;
       text-align: left;
     }
 
@@ -118,14 +140,14 @@
     form button {
       width: 100%;
       padding: 14px;
-      background: gold;
+      background: linear-gradient(145deg, #ffd700, #e6b800);
       border: none;
       border-radius: 30px;
       font-size: 16px;
       font-weight: bold;
       color: black;
       cursor: pointer;
-      transition: 0.3s;
+      transition: .3s;
     }
 
     form button:hover {
@@ -133,44 +155,62 @@
       transform: scale(1.03);
     }
 
-    @keyframes fadeIn {
-      from {opacity: 0; transform: translateY(20px);}
-      to {opacity: 1; transform: translateY(0);}
+    footer {
+      background: #0a0a0a;
+      color: #bbb;
+      text-align: center;
+      padding: 2rem 1rem;
+      font-size: 14px;
+      margin-top: 60px;
+    }
+
+    @media (max-width: 600px) {
+      .navbar { flex-wrap: wrap; gap: 1rem; }
+      header { font-size: 24px; }
+      section { padding: 40px 15px; }
     }
   </style>
 </head>
 <body>
 
-  <header>🚀 Biluxe10 – Official </header>
+  <header>🚀 Biluxe10 – Official</header>
+
+  <nav class="navbar">
+    <a href="index.html">Home</a>
+    <a href="knowmore.html">Know&nbsp;More</a>
+    <a href="features.html">Features</a>
+    <a href="products.html">Products</a>
+    <a href="auth.html">Login&nbsp;/&nbsp;Signup</a>
+  </nav>
 
   <section>
     <h1>Welcome to Biluxe10</h1>
     <p>
       Biluxe10 is a global digital platform empowering entrepreneurs with smart business opportunities,
-      affiliate growth, and financial freedom.  
+      affiliate growth, and financial freedom.
     </p>
-    <a href="knowmore.html" class="btn">Know more </a>
+    <a href="knowmore.html" class="btn">Know More</a>
   </section>
-  <h1> Features of biluxe10 </h1>
-  <a href="features.html" class="btn"> know this </a>
-  
+
+  <section>
+    <h2>🌟 Features of Biluxe10</h2>
+    <a href="features.html" class="btn">Explore Features</a>
+  </section>
 
   <section id="plans">
-    <h2>💼 Build your future</h2>
+    <h2>💼 Build Your Future</h2>
     <p>
       We provide flexible business plans designed for modern entrepreneurs to achieve success.  
-      Transparent, reliable, and growth-driven.  
+      Transparent, reliable, and growth-driven.
     </p>
-    <a href="products.html" class="btn">Explore packages</a>
+    <a href="products.html" class="btn">Explore Packages</a>
   </section>
-<a href="auth.html" class="btn" style="background:#00ff99; padding:10px 20px; border-radius:8px; color:black; font-weight:bold;">
-  Login / Signup
-</a>
+
   <section>
     <h2>🌍 Our Mission</h2>
     <p>
       Helping people achieve financial growth and independence through affiliate and digital marketing.  
-      Together, we build a better future.  
+      Together, we build a better future.
     </p>
   </section>
 
@@ -201,4 +241,4 @@
   <footer>© 2025 Biluxe10. All rights reserved.</footer>
 
 </body>
-                    </html>
+</html>
