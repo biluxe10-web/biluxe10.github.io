@@ -1,205 +1,414 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Biluxe10 | Login & Signup</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Biluxe10 — Auth</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: "Poppins", sans-serif;
+    :root{
+      --bg1:#2f3542; --bg2:#22262d; --accent-start:#7bd3c9; --accent-end:#4b8cf5;
+      --glass: rgba(255,255,255,0.06);
+      --input-bg: rgba(255,255,255,0.08);
+    }
+    *{box-sizing:border-box;font-family:"Poppins",sans-serif}
+    html,body{height:100%;margin:0}
+    body{
+      background: linear-gradient(120deg,var(--bg1),var(--bg2));
+      background-size: 300% 300%;
+      animation: wave 12s ease infinite;
+      display:flex;align-items:center;justify-content:center;
+      -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+    }
+    @keyframes wave{
+      0%{background-position:0% 50%}
+      50%{background-position:100% 50%}
+      100%{background-position:0% 50%}
     }
 
-    body {
-      height: 100vh;
-      background: linear-gradient(-45deg, #434343, #2c3e50, #1b2735, #2a2a2a);
-      background-size: 400% 400%;
-      animation: gradientBG 10s ease infinite;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+    /* subtle moving stripes overlay for activity */
+    .bg-activity{
+      position:fixed; inset:0; pointer-events:none;
+      background-image:
+        linear-gradient(120deg, rgba(255,255,255,0.02) 0 10%, transparent 10% 100%),
+        radial-gradient(circle at 10% 10%, rgba(255,255,255,0.02), transparent 30%),
+        radial-gradient(circle at 90% 90%, rgba(255,255,255,0.02), transparent 30%);
+      mix-blend-mode: overlay;
+      animation: drift 18s linear infinite;
+    }
+    @keyframes drift{ 0%{transform:translateY(0)} 50%{transform:translateY(-8px)} 100%{transform:translateY(0)} }
+
+    /* Auth card */
+    .card {
+      width: 420px;
+      border-radius: 18px;
+      padding: 28px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
+      box-shadow: 0 10px 40px rgba(2,6,23,0.6);
+      backdrop-filter: blur(12px) saturate(120%);
+      color: #e8f0f6;
+      position: relative;
+      overflow: hidden;
+      transform-style: preserve-3d;
     }
 
-    @keyframes gradientBG {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
+    .brand {
+      text-align:center;
+      margin-bottom:12px;
+    }
+    .brand h1{
+      margin:0;
+      font-size:20px;
+      letter-spacing:1.5px;
+      color: #dff6f0;
+      text-shadow: 0 6px 18px rgba(75,140,245,0.08);
+    }
+    .tabs {
+      display:flex;
+      gap:8px;
+      justify-content:center;
+      margin-bottom:18px;
+    }
+    .tab {
+      padding:8px 16px;
+      border-radius:999px;
+      background:transparent;
+      color:#cfeff0;
+      cursor:pointer;
+      font-weight:600;
+      border: 1px solid rgba(255,255,255,0.03);
+      transition: all .25s;
+    }
+    .tab.active {
+      background: linear-gradient(90deg,var(--accent-start),var(--accent-end));
+      color:#072033;
+      box-shadow: 0 6px 18px rgba(75,140,245,0.12);
+      transform: translateY(-2px);
     }
 
-    .auth-container {
-      width: 400px;
-      background: rgba(255, 255, 255, 0.08);
-      border-radius: 20px;
-      padding: 40px;
-      text-align: center;
-      backdrop-filter: blur(12px);
-      box-shadow: 0 0 20px rgba(0,0,0,0.5);
-      color: #fff;
+    .form-wrap { perspective:1000px; }
+    .flipper {
+      transition: transform .8s cubic-bezier(.2,.9,.2,1);
+      transform-style: preserve-3d;
+    }
+    .flipped { transform: rotateY(180deg); }
+
+    .side {
+      width:100%;
+      backface-visibility: hidden;
+      transform-style: preserve-3d;
     }
 
-    h1 {
-      margin-bottom: 20px;
-      font-size: 28px;
-      color: #00e6b8;
-      letter-spacing: 1px;
+    .front, .back {
+      position:relative;
+      display:block;
     }
 
-    form {
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
+    .back { transform: rotateY(180deg); position:absolute; left:0; top:0; }
+
+    form { display:flex; flex-direction:column; gap:12px; }
+
+    .field {
+      position:relative;
+    }
+    input{
+      width:100%;
+      padding:12px 14px;
+      border-radius:10px;
+      border:1px solid rgba(255,255,255,0.04);
+      background:var(--input-bg);
+      color:#eaf6f9;
+      outline:none;
+      font-size:15px;
+    }
+    input::placeholder { color: rgba(255,255,255,0.6); }
+
+    .row { display:flex; gap:10px; }
+    .small { flex:1 }
+
+    .eye {
+      position:absolute; right:12px; top:50%; transform:translateY(-50%);
+      cursor:pointer; color:rgba(255,255,255,0.7); user-select:none;
     }
 
-    input {
-      padding: 12px;
-      border-radius: 10px;
-      border: none;
-      outline: none;
-      background: rgba(255, 255, 255, 0.1);
-      color: #fff;
-      font-size: 15px;
+    .btn {
+      margin-top:6px;
+      padding:12px;
+      border-radius:12px;
+      border:none;
+      cursor:pointer;
+      font-weight:700;
+      color:#072033;
+      background: linear-gradient(90deg,var(--accent-start),var(--accent-end));
+      box-shadow: 0 8px 24px rgba(75,140,245,0.12);
+      transition: transform .18s ease, box-shadow .18s ease;
+    }
+    .btn:active{ transform: translateY(1px); }
+
+    .muted {
+      font-size:13px;color:rgba(255,255,255,0.65); text-align:center; margin-top:10px;
     }
 
-    input::placeholder {
-      color: #bbb;
+    .error {
+      color:#ff7b7b; font-size:13px; text-align:center; min-height:18px;
     }
 
-    button {
-      padding: 12px;
-      border: none;
-      border-radius: 10px;
-      background: linear-gradient(90deg, #00e6b8, #0077ff);
-      color: #fff;
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-
-    button:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 15px rgba(0, 230, 184, 0.6);
-    }
-
-    .switch {
-      margin-top: 15px;
-      font-size: 14px;
-      color: #ccc;
-    }
-
-    .switch span {
-      color: #00e6b8;
-      font-weight: 600;
-      cursor: pointer;
-    }
-
-    .error-msg {
-      color: #ff5c5c;
-      font-size: 14px;
-      margin-top: 10px;
+    @media (max-width:460px){
+      .card{ width:92%; padding:20px; }
+      .tabs{ gap:6px }
     }
   </style>
 </head>
 <body>
+  <div class="bg-activity" aria-hidden="true"></div>
 
-  <div class="auth-container">
-    <h1 id="form-title">Login</h1>
-    <form id="auth-form">
-      <div id="signup-fields" style="display: none;">
-        <input type="text" id="name" placeholder="Full Name" />
-        <input type="tel" id="phone" placeholder="Phone Number" />
+  <div class="card" role="main" aria-labelledby="brand">
+    <div class="brand" id="brand">
+      <h1>Biluxe10</h1>
+      <div style="font-size:12px; color:rgba(255,255,255,0.6)">Premium Access</div>
+    </div>
+
+    <div class="tabs" role="tablist">
+      <div class="tab active" id="tab-login">Login</div>
+      <div class="tab" id="tab-signup">Signup</div>
+    </div>
+
+    <div class="form-wrap">
+      <div class="flipper" id="flipper">
+
+        <!-- FRONT = Login -->
+        <div class="side front">
+          <form id="login-form" autocomplete="on">
+            <div class="field">
+              <input id="login-email" type="email" placeholder="Email" required />
+            </div>
+            <div class="field">
+              <input id="login-password" type="password" placeholder="Password" required />
+              <span class="eye" id="login-eye">👁️</span>
+            </div>
+
+            <button type="submit" class="btn" id="login-btn">Login</button>
+            <div class="error" id="login-error"></div>
+            <div class="muted">No account? <span style="color:#dff6f0; font-weight:700; cursor:pointer" id="to-signup">Create one</span></div>
+          </form>
+        </div>
+
+        <!-- BACK = Signup -->
+        <div class="side back">
+          <form id="signup-form" autocomplete="on">
+            <div class="field">
+              <input id="signup-name" type="text" placeholder="Full Name" required />
+            </div>
+            <div class="row">
+              <div class="field small">
+                <input id="signup-phone" type="tel" placeholder="Phone (optional)" />
+              </div>
+              <div class="field small">
+                <input id="signup-referral" type="text" placeholder="Referral (optional)" />
+              </div>
+            </div>
+            <div class="field">
+              <input id="signup-email" type="email" placeholder="Email" required />
+            </div>
+            <div class="field">
+              <input id="signup-password" type="password" placeholder="Password" required />
+              <span class="eye" id="signup-eye">👁️</span>
+            </div>
+
+            <button type="submit" class="btn" id="signup-btn">Create Account</button>
+            <div class="error" id="signup-error"></div>
+            <div class="muted">Already have an account? <span style="color:#dff6f0; font-weight:700; cursor:pointer" id="to-login">Login</span></div>
+          </form>
+        </div>
+
       </div>
-
-      <input type="email" id="email" placeholder="Email" required />
-      <input type="password" id="password" placeholder="Password" required />
-      <div id="referral-field" style="display: none;">
-        <input type="text" id="referral" placeholder="Referral Code (optional)" />
-      </div>
-
-      <button type="submit" id="submit-btn">Login</button>
-      <p id="error-msg" class="error-msg"></p>
-    </form>
-
-    <p class="switch">
-      Don’t have an account? <span id="toggle">Signup</span>
-    </p>
+    </div>
   </div>
 
-  <script src="https://unpkg.com/@supabase/supabase-js"></script>
+  <!-- Supabase SDK -->
+  <script src="https://unpkg.com/@supabase/supabase-js/dist/umd/supabase.min.js"></script>
   <script>
-    // 🔹 Add your Supabase credentials here
+    // ----------------- 🔑 YOUR SUPABASE DETAILS (PASTE LOCALLY) -----------------
     const SUPABASE_URL = "https://cisbvzecomyueslqkmbd.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNpc2J2emVjb215dWVzbHFrbWJkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk5MDMwNTIsImV4cCI6MjA3NTQ3OTA1Mn0.hUNwgoIt-hgh21a1WNqsGkC2QC6mpwAcio5ek86kAfc";
+    // --------------------------------------------------------------------------
 
-    const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    // Initialize
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    const form = document.getElementById("auth-form");
-    const formTitle = document.getElementById("form-title");
-    const signupFields = document.getElementById("signup-fields");
-    const referralField = document.getElementById("referral-field");
-    const toggle = document.getElementById("toggle");
-    const submitBtn = document.getElementById("submit-btn");
-    const errorMsg = document.getElementById("error-msg");
-    let isSignup = false;
+    // UI refs
+    const tabLogin = document.getElementById('tab-login');
+    const tabSignup = document.getElementById('tab-signup');
+    const flipper = document.getElementById('flipper');
+    const toSignup = document.getElementById('to-signup');
+    const toLogin = document.getElementById('to-login');
 
-    toggle.addEventListener("click", () => {
-      isSignup = !isSignup;
-      formTitle.textContent = isSignup ? "Signup" : "Login";
-      signupFields.style.display = isSignup ? "block" : "none";
-      referralField.style.display = isSignup ? "block" : "none";
-      submitBtn.textContent = isSignup ? "Signup" : "Login";
-      toggle.textContent = isSignup ? "Login" : "Signup";
-      errorMsg.textContent = "";
+    // Login refs
+    const loginForm = document.getElementById('login-form');
+    const loginEmail = document.getElementById('login-email');
+    const loginPassword = document.getElementById('login-password');
+    const loginError = document.getElementById('login-error');
+    const loginEye = document.getElementById('login-eye');
+
+    // Signup refs
+    const signupForm = document.getElementById('signup-form');
+    const signupName = document.getElementById('signup-name');
+    const signupPhone = document.getElementById('signup-phone');
+    const signupReferral = document.getElementById('signup-referral');
+    const signupEmail = document.getElementById('signup-email');
+    const signupPassword = document.getElementById('signup-password');
+    const signupError = document.getElementById('signup-error');
+    const signupEye = document.getElementById('signup-eye');
+
+    // Toggle helpers
+    function showLoginView(){
+      flipper.classList.remove('flipped');
+      tabLogin.classList.add('active');
+      tabSignup.classList.remove('active');
+      loginError.textContent = '';
+      signupError.textContent = '';
+    }
+    function showSignupView(){
+      flipper.classList.add('flipped');
+      tabSignup.classList.add('active');
+      tabLogin.classList.remove('active');
+      loginError.textContent = '';
+      signupError.textContent = '';
+    }
+
+    tabLogin.addEventListener('click', showLoginView);
+    tabSignup.addEventListener('click', showSignupView);
+    toSignup.addEventListener('click', showSignupView);
+    toLogin.addEventListener('click', showLoginView);
+
+    // Eye toggles
+    loginEye.addEventListener('click', ()=> {
+      loginPassword.type = loginPassword.type === 'password' ? 'text' : 'password';
+      loginEye.textContent = loginPassword.type === 'password' ? '👁️' : '🙈';
+    });
+    signupEye.addEventListener('click', ()=> {
+      signupPassword.type = signupPassword.type === 'password' ? 'text' : 'password';
+      signupEye.textContent = signupPassword.type === 'password' ? '👁️' : '🙈';
     });
 
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
+    // Helper to show inline error
+    function showInlineError(el, msg){
+      el.textContent = msg;
+      // small vibration (visual)
+      el.style.opacity = '1';
+    }
 
-      if (isSignup) {
-        const { data: existingUser } = await client
-          .from("profiles")
-          .select("*")
-          .eq("email", email)
-          .single();
+    // SIGNUP flow (checks profiles table, then create user, then insert profile)
+    signupForm.addEventListener('submit', async (ev) => {
+      ev.preventDefault();
+      signupError.textContent = '';
+      signupError.style.opacity = '0.9';
+      const name = signupName.value.trim();
+      const phone = signupPhone.value.trim();
+      const referral = signupReferral.value.trim();
+      const email = signupEmail.value.trim().toLowerCase();
+      const password = signupPassword.value;
 
-        if (existingUser) {
-          errorMsg.textContent = "⚠️ This email is already registered!";
+      if (!email || !password) return showInlineError(signupError, "Enter email & password.");
+
+      // disable button UX
+      const btn = document.getElementById('signup-btn');
+      btn.disabled = true;
+      btn.textContent = 'Processing...';
+
+      try {
+        // 1) check profiles for existing email
+        const { data: rows, error: selErr } = await supabase
+          .from('profiles')
+          .select('email')
+          .eq('email', email)
+          .limit(1);
+
+        if (selErr){
+          console.error("Select error:", selErr);
+          showInlineError(signupError, "Server error. Try again.");
+          return;
+        }
+        if (rows && rows.length > 0){
+          showInlineError(signupError, "⚠️ This email is already registered!");
           return;
         }
 
-        const name = document.getElementById("name").value;
-        const phone = document.getElementById("phone").value;
-        const referral = document.getElementById("referral").value;
-
-        const { data, error } = await client.auth.signUp({
+        // 2) create auth user
+        const { data: signData, error: signErr } = await supabase.auth.signUp({
           email,
           password,
           options: { data: { name, phone, referral } },
         });
 
-        if (error) {
-          errorMsg.textContent = error.message;
-        } else {
-          alert("Signup successful! Redirecting to dashboard...");
-          window.location.href = "dashboard.html";
+        if (signErr){
+          console.error("SignUp error:", signErr);
+          showInlineError(signupError, signErr.message || "Signup failed.");
+          return;
         }
-      } else {
-        const { data, error } = await client.auth.signInWithPassword({
-          email,
-          password,
-        });
-        if (error) {
-          errorMsg.textContent = "Invalid credentials!";
-        } else {
-          alert("Login successful! Redirecting...");
-          window.location.href = "dashboard.html";
+
+        // 3) insert into profiles (link with auth uid if available)
+        const userId = signData?.user?.id || null;
+        const profileRow = { email, name, phone, referral };
+        if (userId) profileRow.id = userId;
+
+        const { error: insertErr } = await supabase.from('profiles').insert([profileRow]);
+        if (insertErr){
+          console.error("Insert profile error:", insertErr);
+          // still let signup succeed but notify
+          showInlineError(signupError, "Signup created but saving profile failed.");
+          return;
         }
+
+        alert("✅ Signup successful! Please verify your email (if required). Redirecting...");
+        window.location.href = "dashboard.html";
+
+      } catch (err){
+        console.error("Unexpected signup error:", err);
+        showInlineError(signupError, "Unexpected error. Check console.");
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Create Account';
       }
     });
+
+    // LOGIN flow
+    loginForm.addEventListener('submit', async (ev) => {
+      ev.preventDefault();
+      loginError.textContent = '';
+      const email = loginEmail.value.trim().toLowerCase();
+      const password = loginPassword.value;
+
+      if (!email || !password) return showInlineError(loginError, "Enter email & password.");
+
+      const btn = document.getElementById('login-btn');
+      btn.disabled = true;
+      btn.textContent = 'Logging in...';
+
+      try {
+        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+        if (error){
+          console.error("Login error:", error);
+          showInlineError(loginError, "Invalid credentials or server error.");
+          return;
+        }
+        // success
+        alert("✅ Login successful! Redirecting...");
+        window.location.href = "dashboard.html";
+      } catch (err){
+        console.error("Unexpected login error:", err);
+        showInlineError(loginError, "Unexpected error. Check console.");
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Login';
+      }
+    });
+
+    // small safety: if keys are placeholders, warn
+    if (SUPABASE_URL.includes("YOUR-PROJECT") || SUPABASE_KEY.includes("YOUR-ANON")){
+      console.warn("Replace SUPABASE_URL and SUPABASE_KEY with your project's values.");
+    }
   </script>
 </body>
 </html>
+          
