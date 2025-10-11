@@ -1,250 +1,152 @@
-       <!DOCTYPE html>
+    <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Biluxe10 | Auth System</title>
+  <title>Biluxe10 | Login & Signup</title>
 
   <style>
-    * {
-      margin: 0; padding: 0; box-sizing: border-box;
-      font-family: 'Poppins', sans-serif;
-    }
+    * {margin: 0; padding: 0; box-sizing: border-box; font-family: "Poppins", sans-serif;}
     body {
-      min-height: 100vh;
-      background: radial-gradient(circle at top, #111, #000);
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      background: linear-gradient(135deg, #000, #111);
       color: #fff;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
-    .auth-box {
+    .auth-container {
       width: 420px;
-      background: rgba(255, 215, 0, 0.06);
+      background: rgba(255, 215, 0, 0.05);
       border: 1px solid gold;
-      border-radius: 16px;
-      backdrop-filter: blur(15px);
+      border-radius: 20px;
       padding: 35px;
-      box-shadow: 0 0 25px rgba(255, 215, 0, 0.25);
-      transition: all 0.4s ease;
+      text-align: center;
+      box-shadow: 0 0 30px rgba(255, 215, 0, 0.25);
+      backdrop-filter: blur(8px);
     }
     h1 {
-      text-align: center;
       color: gold;
       margin-bottom: 20px;
-      letter-spacing: 2px;
+      letter-spacing: 1px;
     }
-    .tab-switch {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 25px;
-      background: rgba(255,255,255,0.08);
-      border-radius: 10px;
-      overflow: hidden;
-    }
-    .tab-switch button {
-      flex: 1;
-      background: transparent;
-      border: none;
-      padding: 10px;
-      font-weight: 600;
-      color: #ccc;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-    .tab-switch button.active {
-      background: gold;
-      color: #000;
-    }
-    form {
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-    }
+    form {display: flex; flex-direction: column; gap: 15px;}
     input {
       padding: 12px;
-      border-radius: 10px;
       border: none;
-      background: rgba(255,255,255,0.1);
-      color: #fff;
-      font-size: 15px;
+      border-radius: 10px;
+      font-size: 16px;
     }
-    input::placeholder {
-      color: #bbb;
-    }
-    .password-box {
-      position: relative;
-    }
-    .eye {
+    .password-box {position: relative;}
+    .toggle-eye {
       position: absolute;
-      right: 10px;
+      right: 15px;
       top: 50%;
       transform: translateY(-50%);
       cursor: pointer;
-      color: gold;
-      font-size: 18px;
+      color: #999;
     }
-    button.submit {
+    button {
       background: gold;
-      color: #000;
+      color: black;
       border: none;
+      border-radius: 30px;
       padding: 12px;
-      border-radius: 25px;
       font-weight: 600;
       cursor: pointer;
       transition: 0.3s;
     }
-    button.submit:hover {
+    button:hover {
       background: #ffcc00;
       transform: scale(1.05);
     }
-    .switch {
-      margin-top: 20px;
-      text-align: center;
-      color: #aaa;
-    }
-    .switch span {
-      color: gold;
-      cursor: pointer;
-      font-weight: 600;
-    }
-    .otp-box {
-      display: flex;
-      gap: 10px;
-    }
-    .otp-box button {
-      background: #00ff99;
-      border: none;
-      color: #000;
-      font-weight: 600;
-      border-radius: 10px;
-      padding: 10px;
-      cursor: pointer;
-    }
+    .switch {margin-top: 15px; color: #aaa; font-size: 14px;}
+    .switch span {color: gold; cursor: pointer; font-weight: 600;}
   </style>
 </head>
 <body>
-  <div class="auth-box">
-    <h1 id="auth-title">Login</h1>
-
-    <div class="tab-switch">
-      <button id="email-tab" class="active">Email</button>
-      <button id="phone-tab">Phone</button>
-    </div>
+  <div class="auth-container">
+    <h1 id="form-title">Login</h1>
 
     <form id="auth-form">
-      <div id="signup-fields" style="display:none;">
-        <input type="text" id="name" placeholder="Full Name" />
+      <div id="signup-fields" style="display: none;">
+        <input type="text" id="name" placeholder="Full Name" required />
+        <input type="text" id="referral" placeholder="Referral Code (optional)" />
       </div>
 
-      <div id="email-fields">
-        <input type="email" id="email" placeholder="Email" />
-      </div>
-
-      <div id="phone-fields" style="display:none;">
-        <input type="tel" id="phone" placeholder="Phone Number" />
-        <div class="otp-box">
-          <input type="text" id="otp" placeholder="Enter OTP" />
-          <button type="button" id="send-otp">Send OTP</button>
-        </div>
-      </div>
+      <input type="email" id="email" placeholder="Email" required />
 
       <div class="password-box">
-        <input type="password" id="password" placeholder="Password" />
-        <span class="eye" id="toggle-pass">👁️</span>
+        <input type="password" id="password" placeholder="Password" required />
+        <span class="toggle-eye" id="toggle-eye">👁️</span>
       </div>
 
-      <input type="text" id="referral" placeholder="Referral Code (optional)" />
-
-      <button type="submit" class="submit" id="submit-btn">Login</button>
+      <button type="submit" id="submit-btn">Login</button>
     </form>
 
-    <p class="switch">Don’t have an account? <span id="toggle-form">Signup</span></p>
+    <p class="switch">
+      Don’t have an account? <span id="toggle">Signup</span>
+    </p>
   </div>
 
   <script src="https://unpkg.com/@supabase/supabase-js"></script>
   <script>
-    // 🔑 Replace these with your Supabase credentials
-   
-    const SUPABASE_URL = "https://cisbvzecomyueslqkmbd.supabase.co";
+   const SUPABASE_URL = "https://cisbvzecomyueslqkmbd.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNpc2J2emVjb215dWVzbHFrbWJkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk5MDMwNTIsImV4cCI6MjA3NTQ3OTA1Mn0.hUNwgoIt-hgh21a1WNqsGkC2QC6mpwAcio5ek86kAfc";
-
-    // Create client
     const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    const toggleForm = document.getElementById("toggle-form");
-    const formTitle = document.getElementById("auth-title");
-    const submitBtn = document.getElementById("submit-btn");
+    const form = document.getElementById("auth-form");
+    const formTitle = document.getElementById("form-title");
     const signupFields = document.getElementById("signup-fields");
-    const emailTab = document.getElementById("email-tab");
-    const phoneTab = document.getElementById("phone-tab");
-    const emailFields = document.getElementById("email-fields");
-    const phoneFields = document.getElementById("phone-fields");
-    const togglePass = document.getElementById("toggle-pass");
-    const password = document.getElementById("password");
+    const toggle = document.getElementById("toggle");
+    const submitBtn = document.getElementById("submit-btn");
+    const toggleEye = document.getElementById("toggle-eye");
+    const passwordInput = document.getElementById("password");
 
     let isSignup = false;
-    let usingPhone = false;
 
-    // 👁️ Toggle password visibility
-    togglePass.addEventListener("click", () => {
-      password.type = password.type === "password" ? "text" : "password";
+    // 👁️ Password show/hide toggle
+    toggleEye.addEventListener("click", () => {
+      const type = passwordInput.getAttribute("type") === "password" ? "text" : "password";
+      passwordInput.setAttribute("type", type);
+      toggleEye.textContent = type === "password" ? "👁️" : "🙈";
     });
 
-    // 🔄 Switch between email and phone signup
-    emailTab.addEventListener("click", () => {
-      usingPhone = false;
-      emailTab.classList.add("active");
-      phoneTab.classList.remove("active");
-      emailFields.style.display = "block";
-      phoneFields.style.display = "none";
-    });
-
-    phoneTab.addEventListener("click", () => {
-      usingPhone = true;
-      phoneTab.classList.add("active");
-      emailTab.classList.remove("active");
-      emailFields.style.display = "none";
-      phoneFields.style.display = "block";
-    });
-
-    // 🔁 Switch between login/signup
-    toggleForm.addEventListener("click", () => {
+    // 🔄 Switch between login and signup
+    toggle.addEventListener("click", () => {
       isSignup = !isSignup;
       formTitle.textContent = isSignup ? "Signup" : "Login";
-      submitBtn.textContent = isSignup ? "Signup" : "Login";
-      toggleForm.textContent = isSignup ? "Login" : "Signup";
       signupFields.style.display = isSignup ? "block" : "none";
-   
+      submitBtn.textContent = isSignup ? "Signup" : "Login";
+      toggle.textContent = isSignup ? "Login" : "Signup";
     });
 
-    // ✅ Form submit
-    document.getElementById("auth-form").addEventListener("submit", async (e) => {
+    // 🚀 Form submit (login/signup)
+    form.addEventListener("submit", async (e) => {
       e.preventDefault();
-
       const email = document.getElementById("email").value;
-      const passwordVal = password.value;
+      const password = document.getElementById("password").value;
 
       if (isSignup) {
         const name = document.getElementById("name").value;
         const referral = document.getElementById("referral").value;
+
         const { data, error } = await client.auth.signUp({
           email,
-          password: passwordVal,
+          password,
           options: { data: { name, referral } },
-        
-        
-        const { data, error } = await client.auth.signInWithPassword({
-          email,
-          password: passwordVal,
         });
-        if (error) alert(error.message);
-        else {
-          alert("Login successful! Redirecting...");
-          window.location.href = "dashboard.html";
-        }
+        if (error) return alert(error.message);
+        alert("Signup successful!");
+        window.location.href = "dashboard.html"; // Redirect after signup
+      } else {
+        const { data, error } = await client.auth.signInWithPassword({ email, password });
+        if (error) return alert(error.message);
+        alert("Login successful!");
+        window.location.href = "dashboard.html"; // Redirect after login
       }
     });
   </script>
 </body>
-</html>         
+</html>
+    
