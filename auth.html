@@ -5,8 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Biluxe10 | Login & Signup</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
-
     * {
       margin: 0;
       padding: 0;
@@ -15,112 +13,113 @@
     }
 
     body {
-      background: linear-gradient(135deg, #6a11cb, #2575fc);
       height: 100vh;
+      background: linear-gradient(-45deg, #434343, #2c3e50, #1b2735, #2a2a2a);
+      background-size: 400% 400%;
+      animation: gradientBG 10s ease infinite;
       display: flex;
-      align-items: center;
       justify-content: center;
+      align-items: center;
     }
 
-    .auth-box {
-      backdrop-filter: blur(20px);
-      background: rgba(255, 255, 255, 0.15);
-      border: 1px solid rgba(255, 255, 255, 0.3);
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .auth-container {
+      width: 400px;
+      background: rgba(255, 255, 255, 0.08);
       border-radius: 20px;
       padding: 40px;
-      width: 380px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
-      color: white;
       text-align: center;
-      transition: all 0.4s ease;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 0 20px rgba(0,0,0,0.5);
+      color: #fff;
     }
 
-    h2 {
-      font-weight: 600;
-      margin-bottom: 25px;
+    h1 {
+      margin-bottom: 20px;
+      font-size: 28px;
+      color: #00e6b8;
       letter-spacing: 1px;
     }
 
     form {
       display: flex;
       flex-direction: column;
-      gap: 15px;
+      gap: 14px;
     }
 
     input {
-      padding: 12px 15px;
-      border: none;
+      padding: 12px;
       border-radius: 10px;
-      font-size: 15px;
+      border: none;
       outline: none;
-      background: rgba(255, 255, 255, 0.2);
-      color: white;
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+      font-size: 15px;
     }
 
     input::placeholder {
-      color: rgba(255, 255, 255, 0.7);
+      color: #bbb;
     }
 
     button {
       padding: 12px;
       border: none;
-      border-radius: 30px;
-      background: #ffffff;
-      color: #2575fc;
-      font-weight: 600;
+      border-radius: 10px;
+      background: linear-gradient(90deg, #00e6b8, #0077ff);
+      color: #fff;
       font-size: 16px;
+      font-weight: 600;
       cursor: pointer;
       transition: 0.3s;
     }
 
     button:hover {
       transform: scale(1.05);
-      background: #e0e0ff;
+      box-shadow: 0 0 15px rgba(0, 230, 184, 0.6);
     }
 
     .switch {
-      margin-top: 20px;
+      margin-top: 15px;
       font-size: 14px;
+      color: #ccc;
     }
 
     .switch span {
-      color: #fff;
+      color: #00e6b8;
       font-weight: 600;
       cursor: pointer;
-      text-decoration: underline;
     }
 
-    .hidden {
-      display: none;
-    }
-
-    .error {
-      color: #ff7b7b;
+    .error-msg {
+      color: #ff5c5c;
       font-size: 14px;
-      margin-top: -8px;
+      margin-top: 10px;
     }
   </style>
 </head>
 <body>
-  <div class="auth-box">
-    <h2 id="form-title">Login</h2>
+
+  <div class="auth-container">
+    <h1 id="form-title">Login</h1>
     <form id="auth-form">
-      <div id="signup-fields" class="hidden">
-        <input type="text" id="name" placeholder="Full Name" required />
-        <input type="tel" id="phone" placeholder="Phone Number" required />
-        <input type="email" id="email" placeholder="Email" required />
-        <input type="password" id="password" placeholder="Password" required />
+      <div id="signup-fields" style="display: none;">
+        <input type="text" id="name" placeholder="Full Name" />
+        <input type="tel" id="phone" placeholder="Phone Number" />
+      </div>
+
+      <input type="email" id="email" placeholder="Email" required />
+      <input type="password" id="password" placeholder="Password" required />
+      <div id="referral-field" style="display: none;">
         <input type="text" id="referral" placeholder="Referral Code (optional)" />
       </div>
 
-      <div id="login-fields">
-        <input type="email" id="login-email" placeholder="Email" required />
-        <input type="password" id="login-password" placeholder="Password" required />
-      </div>
-
-      <p id="error-msg" class="error hidden"></p>
-
       <button type="submit" id="submit-btn">Login</button>
+      <p id="error-msg" class="error-msg"></p>
     </form>
 
     <p class="switch">
@@ -130,53 +129,51 @@
 
   <script src="https://unpkg.com/@supabase/supabase-js"></script>
   <script>
-    // 🧩 Replace these with your own Supabase project info
-   const SUPABASE_URL = "https://cisbvzecomyueslqkmbd.supabase.co";
+    // 🔹 Add your Supabase credentials here
+    const SUPABASE_URL = "https://cisbvzecomyueslqkmbd.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNpc2J2emVjb215dWVzbHFrbWJkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk5MDMwNTIsImV4cCI6MjA3NTQ3OTA1Mn0.hUNwgoIt-hgh21a1WNqsGkC2QC6mpwAcio5ek86kAfc";
+
     const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    const toggle = document.getElementById("toggle");
+    const form = document.getElementById("auth-form");
     const formTitle = document.getElementById("form-title");
     const signupFields = document.getElementById("signup-fields");
-    const loginFields = document.getElementById("login-fields");
+    const referralField = document.getElementById("referral-field");
+    const toggle = document.getElementById("toggle");
     const submitBtn = document.getElementById("submit-btn");
-    const form = document.getElementById("auth-form");
     const errorMsg = document.getElementById("error-msg");
-
     let isSignup = false;
 
     toggle.addEventListener("click", () => {
       isSignup = !isSignup;
       formTitle.textContent = isSignup ? "Signup" : "Login";
-      signupFields.classList.toggle("hidden", !isSignup);
-      loginFields.classList.toggle("hidden", isSignup);
+      signupFields.style.display = isSignup ? "block" : "none";
+      referralField.style.display = isSignup ? "block" : "none";
       submitBtn.textContent = isSignup ? "Signup" : "Login";
       toggle.textContent = isSignup ? "Login" : "Signup";
-      errorMsg.classList.add("hidden");
+      errorMsg.textContent = "";
     });
 
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
-      errorMsg.classList.add("hidden");
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
 
       if (isSignup) {
-        const name = document.getElementById("name").value;
-        const phone = document.getElementById("phone").value;
-        const email = document.getElementById("email").value;
-        const password = document.getElementById("password").value;
-        const referral = document.getElementById("referral").value;
-
-        // Check if email already exists
-        const { data: existingUsers, error: fetchError } = await client
+        const { data: existingUser } = await client
           .from("profiles")
-          .select("email")
-          .eq("email", email);
+          .select("*")
+          .eq("email", email)
+          .single();
 
-        if (existingUsers && existingUsers.length > 0) {
-          errorMsg.textContent = "This email is already registered!";
-          errorMsg.classList.remove("hidden");
+        if (existingUser) {
+          errorMsg.textContent = "⚠️ This email is already registered!";
           return;
         }
+
+        const name = document.getElementById("name").value;
+        const phone = document.getElementById("phone").value;
+        const referral = document.getElementById("referral").value;
 
         const { data, error } = await client.auth.signUp({
           email,
@@ -186,27 +183,21 @@ const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 
         if (error) {
           errorMsg.textContent = error.message;
-          errorMsg.classList.remove("hidden");
-          return;
+        } else {
+          alert("Signup successful! Redirecting to dashboard...");
+          window.location.href = "dashboard.html";
         }
-
-        await client.from("profiles").insert([{ name, phone, email, referral }]);
-        alert("Signup successful! Check your email for verification.");
-      } 
-      else {
-        const email = document.getElementById("login-email").value;
-        const password = document.getElementById("login-password").value;
-
-        const { data, error } = await client.auth.signInWithPassword({ email, password });
-
+      } else {
+        const { data, error } = await client.auth.signInWithPassword({
+          email,
+          password,
+        });
         if (error) {
           errorMsg.textContent = "Invalid credentials!";
-          errorMsg.classList.remove("hidden");
-          return;
+        } else {
+          alert("Login successful! Redirecting...");
+          window.location.href = "dashboard.html";
         }
-
-        alert("Login successful! Redirecting...");
-        window.location.href = "dashboard.html";
       }
     });
   </script>
