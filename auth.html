@@ -1,135 +1,162 @@
-<!DOCTYPE html>
+    <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Biluxe10 | Login or Signup</title>
-  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Biluxe10 | Login & Signup</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Poppins", sans-serif;
+    }
+    body {
+      background: linear-gradient(135deg, #000, #1a1a1a);
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .auth-container {
+      width: 400px;
+      background: rgba(255, 215, 0, 0.05);
+      border: 1px solid gold;
+      border-radius: 16px;
+      padding: 30px;
+      text-align: center;
+      box-shadow: 0 0 25px rgba(255, 215, 0, 0.2);
+    }
+    h1 {
+      color: gold;
+      margin-bottom: 20px;
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    input {
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+    button {
+      background: gold;
+      color: black;
+      border: none;
+      border-radius: 30px;
+      padding: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    button:hover {
+      background: #ffcc00;
+      transform: scale(1.05);
+    }
+    .switch {
+      margin-top: 20px;
+      color: #aaa;
+      font-size: 14px;
+    }
+    .switch span {
+      color: gold;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .otp-section {
+      display: flex;
+      gap: 10px;
+    }
+    .otp-section button {
+      flex: 1;
+      background: #00ff99;
+    }
+  </style>
 </head>
-<body
-  style="
-    font-family: Poppins, sans-serif;
-    background: #0b0b0b;
-    color: white;
-    text-align: center;
-    padding: 40px;
-  "
->
-  <h2>Biluxe10 Login / Signup</h2>
-  <p>Join the official Biluxe10 earning system 🚀</p>
+<body>
+  <div class="auth-container">
+    <h1 id="form-title">Login</h1>
 
-  <div style="margin-top: 40px">
-    <input
-      id="email"
-      type="email"
-      placeholder="Email"
-      style="
-        padding: 10px;
-        width: 80%;
-        max-width: 300px;
-        border-radius: 8px;
-        border: none;
-        margin-bottom: 10px;
-      "
-    /><br />
-    <input
-      id="password"
-      type="password"
-      placeholder="Password"
-      style="
-        padding: 10px;
-        width: 80%;
-        max-width: 300px;
-        border-radius: 8px;
-        border: none;
-        margin-bottom: 20px;
-      "
-    /><br />
+    <form id="auth-form">
+      <div id="signup-fields" style="display: none;">
+        <input type="text" id="name" placeholder="Full Name" required />
+        <input type="text" id="referral" placeholder="Referral Code (optional)" />
+      </div>
 
-    <button
-      onclick="signUp()"
-      style="
-        padding: 10px 25px;
-        border: none;
-        background: #00ff99;
-        color: #000;
-        font-weight: bold;
-        border-radius: 8px;
-        margin-right: 10px;
-      "
-    >
-      Sign Up
-    </button>
-    <button
-      onclick="logIn()"
-      style="
-        padding: 10px 25px;
-        border: none;
-        background: #007bff;
-        color: white;
-        font-weight: bold;
-        border-radius: 8px;
-      "
-    >
-      Log In
-    </button>
+      <input type="email" id="email" placeholder="Email" required />
+      <input type="tel" id="number" placeholder="Phone Number (optional)" />
+      <input type="password" id="password" placeholder="Password" required />
+
+      <div class="otp-section" style="display: none;" id="otp-box">
+        <input type="text" id="otp" placeholder="Enter OTP" />
+        <button type="button" id="verify-otp">Verify OTP</button>
+      </div>
+
+      <button type="submit" id="submit-btn">Login</button>
+    </form>
+
+    <p class="switch">
+      Don’t have an account? <span id="toggle">Signup</span>
+    </p>
   </div>
 
-  <p id="message" style="margin-top: 25px; color: #00ff99"></p>
-
+  <script src="https://unpkg.com/@supabase/supabase-js"></script>
   <script>
-    // ✅ Supabase credentials
-    const SUPABASE_URL = "https://cisbvzecomyueslqkmbd.supabase.co";
-    const SUPABASE_KEY =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNpc2J2emVjb215dWVzbHFrbWJkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk5MDMwNTIsImV4cCI6MjA3NTQ3OTA1Mn0.hUNwgoIt-hgh21a1WNqsGkC2QC6mpwAcio5ek86kAfc";
+const SUPABASE_URL = sb_secret_WcuquZhMJuXmEDr2vLWlkw_mUFjPWu_ 
+  const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNpc2J2emVjb215dWVzbHFrbWJkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk5MDMwNTIsImV4cCI6MjA3NTQ3OTA1Mn0.hUNwgoIt-hgh21a1WNqsGkC2QC6mpwAcio5ek86kAfc";
 
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    // 🟢 SIGNUP
-    async function signUp() {
-      const email = document.getElementById("email").value.trim();
-      const password = document.getElementById("password").value.trim();
+    const form = document.getElementById("auth-form");
+    const formTitle = document.getElementById("form-title");
+    const signupFields = document.getElementById("signup-fields");
+    const toggle = document.getElementById("toggle");
+    const submitBtn = document.getElementById("submit-btn");
+    let isSignup = false;
 
-      if (!email || !password) {
-        document.getElementById("message").innerText = "⚠️ Please fill all fields.";
-        return;
-      }
+    toggle.addEventListener("click", () => {
+      isSignup = !isSignup;
+      formTitle.textContent = isSignup ? "Signup" : "Login";
+      signupFields.style.display = isSignup ? "block" : "none";
+      submitBtn.textContent = isSignup ? "Signup" : "Login";
+      toggle.textContent = isSignup ? "Login" : "Signup";
+    });
 
-      const { data, error } = await supabase.auth.signUp({ email, password });
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
 
-      if (error) {
-        document.getElementById("message").innerText = "⚠️ " + error.message;
+      if (isSignup) {
+        const name = document.getElementById("name").value;
+        const referral = document.getElementById("referral").value;
+        const { data, error } = await client.auth.signUp({
+          email,
+          password,
+          options: { data: { name, referral } },
+        });
+        if (error) return alert(error.message);
+        alert("Signup successful! Check your email for verification.");
       } else {
-        document.getElementById("message").innerText =
-          "✅ Signup successful! Please check your email to verify.";
+        const { data, error } = await client.auth.signInWithPassword({
+          email,
+          password,
+        });
+        if (error) return alert(error.message);
+        alert("Login successful! Redirecting...");
+        window.location.href = "index.html";
       }
-    }
+    });
 
-    // 🔵 LOGIN
-    async function logIn() {
-      const email = document.getElementById("email").value.trim();
-      const password = document.getElementById("password").value.trim();
-
-      if (!email || !password) {
-        document.getElementById("message").innerText = "⚠️ Please fill all fields.";
-        return;
-      }
-
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
-
-      if (error) {
-        document.getElementById("message").innerText = "⚠️ " + error.message;
-      } else {
-        document.getElementById("message").innerText =
-          "✅ Login successful! Redirecting...";
-        setTimeout(() => {
-          window.location.href = "package.html"; // next page
-        }, 1500);
-      }
-    }
+    // 🟢 Example OTP trigger (for your backend integration later)
+    document.getElementById("verify-otp").addEventListener("click", () => {
+      alert("OTP verified (demo) — connect this button to your backend later.");
+    });
   </script>
 </body>
-</html>
+</html>    
