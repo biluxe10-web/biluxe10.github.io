@@ -67,16 +67,13 @@
       </div>
       <button type="submit" id="submit-btn">Login</button>
     </form>
-    <p class="switch">Don’t have an account? <span id="toggle">Signup</span><!-- Signup Button -->
-<button id="submit-btn" type="submit">Signup</button>
-</p>
+    <p class="switch">Don’t have an account? <span id="toggle">Signup</span></p>
   </div>
 
   <script src="https://unpkg.com/@supabase/supabase-js"></script>
   <script>
-    .. 
-  const SUPABASE_URL = "https://cisbvzecomyueslqkmbd.supabase.co";
-const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNpc2J2emVjb215dWVzbHFrbWJkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk5MDMwNTIsImV4cCI6MjA3NTQ3OTA1Mn0.hUNwgoIt-hgh21a1WNqsGkC2QC6mpwAcio5ek86kAfc";
+    const SUPABASE_URL = "https://cisbvzecomyueslqkmbd.supabase.co";
+    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNpc2J2emVjb215dWVzbHFrbWJkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk5MDMwNTIsImV4cCI6MjA3NTQ3OTA1Mn0.hUNwgoIt-hgh21a1WNqsGkC2QC6mpwAcio5ek86kAfc";
     const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
     const form = document.getElementById("auth-form");
@@ -102,50 +99,51 @@ const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
       toggle.textContent = isSignup ? "Login" : "Signup";
     });
 
-    // 🚀 Form submission handler
+    // 🚀 Handle form submit
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
+
       const email = document.getElementById("email").value.trim();
       const password = document.getElementById("password").value.trim();
 
       if (isSignup) {
+        // Signup flow
         const name = document.getElementById("name").value.trim();
-        const phone = document.getElementById("phone").value.trim();
-        const referral = document.getElementById("referral").value.trim();
-
-        // check if already exists
-        const { data: existing } = await client
-          .from("profiles")
-          .select("email")
-          .eq("email", email)
-          .single();
-
-        if (existing) {
-          alert("❌ This email is already registered.");
-          return;
-        }
-
         const { data, error } = await client.auth.signUp({
           email,
           password,
-          options: { data: { name, phone, referral } },
+          options: {
+            data: { name },
+          },
         });
 
-        if (error) return alert(error.message);
+        if (error) {
+          if (error.message.includes("already registered")) {
+            alert("❌ User already exists! Please login instead.");
+          } else {
+            alert("Signup error: " + error.message);
+          }
+          return;
+        }
 
-        // insert into profiles
-        await client.from("profiles").insert([{ id: data.user.id, name, email, phone, referral }]);
-
-        alert("✅ Signup successful!");
+        alert("✅ Signup successful! Redirecting to dashboard...");
         window.location.href = "dashboard.html";
       } else {
-        const { data, error } = await client.auth.signInWithPassword({ email, password });
-        if (error) return alert("❌ " + error.message);
-        alert("✅ Login successful!");
+        // Login flow
+        const { data, error } = await client.auth.signInWithPassword({
+          email,
+          password,
+        });
+
+        if (error) {
+          alert("❌ Login failed: " + error.message);
+          return;
+        }
+
+        alert("✅ Login successful! Redirecting...");
         window.location.href = "dashboard.html";
       }
     });
   </script>
 </body>
 </html>
-    
