@@ -1,127 +1,136 @@
-     <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Biluxe10 | Login & Signup</title>
+
   <style>
-    * { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins',sans-serif; }
+    * {
+      margin: 0; padding: 0; box-sizing: border-box;
+      font-family: "Poppins", sans-serif;
+    }
     body {
-      background: linear-gradient(135deg,#000,#1a1a1a);
-      color:#fff; min-height:100vh;
-      display:flex; justify-content:center; align-items:center;
+      background: linear-gradient(135deg, #000, #111);
+      color: white; min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
     }
     .auth-box {
-      background:rgba(255,215,0,0.05);
-      border:1px solid gold;
-      border-radius:16px;
-      padding:40px 30px;
-      width:380px; text-align:center;
-      box-shadow:0 0 25px rgba(255,215,0,0.2);
+      width: 400px; background: rgba(255,215,0,0.08);
+      border: 1px solid gold; border-radius: 14px;
+      padding: 30px; box-shadow: 0 0 20px rgba(255,215,0,0.2);
     }
-    h1 { color:gold; margin-bottom:20px; }
+    h1 { color: gold; text-align: center; margin-bottom: 20px; }
+    form { display: flex; flex-direction: column; gap: 15px; }
     input {
-      width:100%; padding:12px; margin-bottom:15px;
-      border:none; border-radius:8px; font-size:15px;
+      padding: 12px; border: none; border-radius: 8px;
+      font-size: 15px;
     }
     button {
-      width:100%; background:gold; color:black; font-weight:600;
-      border:none; border-radius:30px; padding:12px;
-      cursor:pointer; transition:0.3s;
+      background: gold; color: #000; font-weight: 600;
+      border: none; border-radius: 30px; padding: 12px;
+      cursor: pointer; transition: 0.3s;
     }
-    button:hover { background:#ffcc00; transform:scale(1.05); }
-    .switch { margin-top:20px; color:#aaa; font-size:14px; }
-    .switch span { color:gold; cursor:pointer; font-weight:600; }
+    button:hover { background: #ffcc00; transform: scale(1.05); }
+    .switch {
+      margin-top: 15px; text-align: center;
+      color: #bbb; font-size: 14px;
+    }
+    .switch span { color: gold; cursor: pointer; font-weight: 600; }
   </style>
 </head>
 <body>
   <div class="auth-box">
-    <h1 id="title">Login</h1>
-    <form id="authForm">
-      <div id="signupFields" style="display:none;">
+    <h1 id="form-title">Login</h1>
+
+    <form id="auth-form">
+      <div id="signup-fields" style="display:none;">
         <input type="text" id="name" placeholder="Full Name" required />
-        <input type="tel" id="phone" placeholder="Phone Number" required />
+        <input type="email" id="email-signup" placeholder="Email" required />
+        <input type="password" id="password-signup" placeholder="Password" required />
       </div>
-      <input type="email" id="email" placeholder="Email" required />
-      <input type="password" id="password" placeholder="Password" required />
-      <button type="submit" id="submitBtn">Login</button>
+
+      <div id="login-fields">
+        <input type="email" id="email-login" placeholder="Email" required />
+        <input type="password" id="password-login" placeholder="Password" required />
+      </div>
+
+      <button type="submit" id="submit-btn">Login</button>
     </form>
+
     <p class="switch">
-      Don't have an account? <span id="toggle">Signup</span>
+      Don’t have an account? <span id="toggle">Signup</span>
     </p>
   </div>
 
   <script src="https://unpkg.com/@supabase/supabase-js"></script>
   <script>
-    // 🟡 Replace with your Supabase credentials
+    // 🔑 Add your Supabase credentials here
     const SUPABASE_URL = "https://YOUR_PROJECT_URL.supabase.co";
-    const SUPABASE_KEY = "YOUR_PUBLIC_ANON_KEY";
-    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    const SUPABASE_KEY = "YOUR_ANON_KEY";
+    const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    const form = document.getElementById("authForm");
-    const title = document.getElementById("title");
     const toggle = document.getElementById("toggle");
-    const signupFields = document.getElementById("signupFields");
-    const submitBtn = document.getElementById("submitBtn");
+    const form = document.getElementById("auth-form");
+    const formTitle = document.getElementById("form-title");
+    const signupFields = document.getElementById("signup-fields");
+    const loginFields = document.getElementById("login-fields");
+    const submitBtn = document.getElementById("submit-btn");
     let isSignup = false;
 
     toggle.addEventListener("click", () => {
       isSignup = !isSignup;
-      title.textContent = isSignup ? "Signup" : "Login";
+      formTitle.textContent = isSignup ? "Signup" : "Login";
       signupFields.style.display = isSignup ? "block" : "none";
+      loginFields.style.display = isSignup ? "none" : "block";
       submitBtn.textContent = isSignup ? "Signup" : "Login";
       toggle.textContent = isSignup ? "Login" : "Signup";
     });
 
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
-      const email = document.getElementById("email").value.trim();
-      const password = document.getElementById("password").value.trim();
 
       if (isSignup) {
         const name = document.getElementById("name").value.trim();
-        const phone = document.getElementById("phone").value.trim();
+        const email = document.getElementById("email-signup").value.trim();
+        const password = document.getElementById("password-signup").value.trim();
 
-        // 🔹 Check if already exists
-        const { data: existing, error: existErr } = await supabase
+        // 🔍 Check if email already exists before signup
+        const { data: existingUser, error: selectError } = await client
           .from("profiles")
-          .select("*")
-          .or(`email.eq.${email},phone.eq.${phone}`)
+          .select("email")
+          .eq("email", email)
           .maybeSingle();
 
-        if (existing) {
-          alert("⚠️ This email or phone number is already registered!");
+        if (existingUser) {
+          alert("⚠️ Email already registered!");
           return;
         }
 
-        // 🔹 Create auth user
-        const { data, error } = await supabase.auth.signUp({
+        const { data, error } = await client.auth.signUp({
+          email,
+          password,
+          options: { data: { name } },
+        });
+
+        if (error) return alert("Signup failed: " + error.message);
+        alert("✅ Signup successful! Check your email for verification.");
+        await client.from("profiles").insert([{ email, name }]);
+      } 
+      else {
+        const email = document.getElementById("email-login").value.trim();
+        const password = document.getElementById("password-login").value.trim();
+
+        const { data, error } = await client.auth.signInWithPassword({
           email,
           password,
         });
 
-        if (error) return alert(error.message);
-
-        // 🔹 Save to profiles table
-        await supabase.from("profiles").insert([
-          { id: data.user.id, name, phone, email },
-        ]);
-
-        alert("✅ Signup successful! Please check your email to verify.");
-      } else {
-        // 🔹 Login user
-        const { data, error } = await supabase.auth.signInWithPassword({
-          email,
-          password,
-        });
-        if (error) {
-          alert("❌ Invalid credentials!");
-        } else {
-          alert("✅ Login successful!");
-          window.location.href = "dashboard.html";
-        }
+        if (error) return alert("❌ Login failed: " + error.message);
+        alert("✅ Login successful!");
+        window.location.href = "dashboard.html";
       }
     });
   </script>
 </body>
-</html>         
+</html>
