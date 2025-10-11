@@ -1,1 +1,306 @@
-                        <
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Biluxe10 Packages</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    body { font-family: 'Poppins', sans-serif; margin:0; padding:0; background:#f9f9f9; color:#222 }
+    nav { background:#111; padding:15px; text-align:center }
+    nav a { color:#fff; text-decoration:none; margin:0 15px; font-weight:500 }
+    nav a:hover { color:#f39c12 }
+    .container { max-width:1200px; margin:40px auto; padding:20px }
+    h1 { text-align:center; margin-bottom:30px }
+    .products { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px,1fr)); gap:20px }
+    .card { background:#fff; border-radius:12px; padding:20px; box-shadow:0 4px 8px rgba(0,0,0,0.1); transition:0.3s }
+    .card:hover { transform: translateY(-5px); box-shadow:0 6px 12px rgba(0,0,0,0.15) }
+    .card img { width:100%; height:auto; border-radius:8px; display:block }
+    .price { font-weight:bold; color:#f39c12; margin:10px 0 15px; display:block }
+    .btn { display:inline-block; margin-top:10px; padding:10px 20px; background:#f39c12; color:#fff; border:none; border-radius:8px; cursor:pointer; font-weight:600 }
+    .btn:hover { background:#e67e22 }
+    /* Modal */
+    #paymentModal { display:none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.6); align-items:center; justify-content:center; z-index:1000 }
+    .modal-content { background:#fff; border-radius:12px; padding:20px; width:90%; max-width:450px; text-align:left }
+    .upi-box { background:#f5f5f5; padding:12px; border-radius:8px; margin-bottom:15px; font-weight:600 }
+    .qr { width:220px; display:block; margin:10px auto; border-radius:8px }
+    input[type="text"], input[type="file"], textarea { width:100%; padding:10px; margin:8px 0; border:1px solid #ccc; border-radius:8px; box-sizing:border-box }
+    .small { font-size:13px; color:#555 }
+    .success { color:green; font-weight:700 }
+    .note { margin-top:10px; font-size:14px; color:#666 }
+    .row { display:flex; justify-content:space-between; align-items:center }
+    .copy-btn { padding:8px 10px; border:none; border-radius:8px; background:#222; color:#fff; cursor:pointer }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="products.html">Packages</a>
+  </nav>
+
+  <div class="container">
+    <h1>Our Exclusive Packages</h1>
+    <div class="products" id="productList">
+      <!-- JS will inject product cards here -->
+    </div>
+  </div>
+
+  <!-- Payment Modal -->
+  <div id="paymentModal">
+    <div class="modal-content">
+      <h2 id="modalPackTitle">Pack Name</h2>
+
+      <div class="upi-box">
+        <div class="small">Pay to this UPI ID or scan QR below:</div>
+        <div class="row" style="margin-top:8px;">
+          <div>
+            <div class="small">UPI ID</div>
+            <div style="font-weight:800; margin-top:4px;" id="upiIdText">9019254743@axl</div>
+          </div>
+          <div>
+            <button class="copy-btn" id="copyUpiBtn">Copy</button>
+          </div>
+        </div>
+      </div>
+
+      <img id="qrImage" src="https://raw.githubusercontent.com/biluxe10-web/biluxe10.github.io/refs/heads/main/AccountQRCodeKotak%20Mahindra%20Bank%20%20-%205869_DARK_THEME.png" alt="UPI QR" class="qr" />
+
+      <p class="note">After you send payment using your UPI app, fill in the transaction / reference ID below and optionally upload a screenshot as proof.</p>
+
+      <label class="small">Transaction / UPI Reference ID</label>
+      <input id="txnInput" type="text" placeholder="e.g. TXN123456789" />
+
+      <label class="small">Upload payment screenshot (optional)</label>
+      <input id="screenshotInput" type="file" accept="image/*" />
+
+      <div style="margin-top:15px; display:flex; gap:8px;">
+        <button class="btn" id="submitPaymentBtn">I Have Paid</button>
+        <button class="btn" style="background:#555" id="cancelBtn">Cancel</button>
+      </div>
+
+      <p id="modalStatus" class="note"></p>
+    </div>
+  </div>
+
+  <script>
+    // ========== Supabase Setup ==========
+    const SUPABASE_URL = "YOUR_SUPABASE_URL";
+    const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY";
+    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // ========== Pack Data (with full descriptions) ==========
+    const products = [
+      {
+        name: "Starter Success Pack",
+        price: 999,
+        img: "file_00000000049461f7920d19bc75bf27d7.png",
+        description: `The Starter Success Pack is designed for beginners who want to take their first step in the digital world. 
+This package helps you grow from zero to earning up to ₹1 Lakh without any prior investment. 
+It provides simplified learning modules and practical steps anyone can follow. 
+With easy-to-understand strategies, even someone with no background in business can start applying the knowledge. 
+You will learn how to set up the basics of online income streams with minimal effort. 
+Our training ensures step-by-step clarity with examples for faster results. 
+This is your entry ticket into the Biluxe10 ecosystem and your chance to build a solid foundation. 
+Affordable, effective, and designed to give you your very first taste of financial success. 
+Perfect for students, beginners, and anyone curious about earning online. 
+Start your journey with confidence today!`
+      },
+      {
+        name: "Advance Success Pack",
+        price: 2499,
+        img: "file_00000000ed7861f7940aaa12396a8cf7.png",
+        description: `The Advance Success Pack is your pathway from zero to earning up to ₹10 Lakhs without investment. 
+It’s crafted for individuals who want to scale faster after learning the basics. 
+This package gives you access to advanced tools, digital strategies, and proven growth hacks. 
+You will master high-income skills and understand how to implement them in real-world opportunities. 
+The content is structured to help you replicate success models used by top online earners. 
+Each module is designed with clarity, making learning practical and highly impactful. 
+You also get advanced case studies and detailed breakdowns of online earning systems.`
+      },
+      {
+        name: "Digital Empire System",
+        price: 3499,
+        img: "file_0000000086e4622fb63ce9f3956bbcb1.png",
+        description: `The Digital Empire System is designed to help you build wealth at scale and aim for earning up to ₹1 Crore. 
+This is not just a package—it’s a complete business roadmap for building an empire online. 
+You will learn multiple digital business models that can generate passive income streams. 
+Our system introduces high-demand markets and profitable niches you can dominate. 
+The system helps you scale and build beyond yourself.`
+      },
+      {
+        name: "Editing Mastery",
+        price: 4999,
+        img: "file_00000000b8d861f4930644f5a6d8054d.png",
+        description: `Editing Mastery is the ultimate program to learn powerful video and content editing skills. 
+This package is fully specialized, and even a 7th class student can understand it easily. 
+You will gain complete knowledge of editing tools, techniques, and professional workflows. 
+From beginner-level basics to advanced editing tricks, everything is included step by step. 
+You will learn how to edit for social media, YouTube, and professional business content. 
+With this mastery, you can also start freelancing and build a side hustle.`
+      },
+      {
+        name: "Ultimate Dropshipping System",
+        price: 9999,
+        img: "file_00000000832461faafd5a3755e5fae00.png",
+        description: `The Ultimate Dropshipping System teaches you how to set up and run your e-commerce business from scratch. 
+You will learn step-by-step how to create an online store without handling inventory. 
+This package covers product research, finding suppliers, and setting up automated systems. 
+You will also learn marketing strategies to generate consistent sales.`
+      },
+      {
+        name: "Crypto Trading Mastery",
+        price: 15999,
+        img: "file_00000000bf04620a8d4a21838cb258f3.png",
+        description: `Crypto Trading Mastery is a complete guide to making money from cryptocurrency trading. 
+This package takes you from basics to becoming a pro trader in one journey. 
+You will learn market analysis, chart reading, and trading strategies step by step. 
+With this program, you can learn how to minimize risks and maximize profits.`
+      },
+      {
+        name: "Future AI System",
+        price: 23999,
+        img: "file_000000008bbc61fabe3b760d241a3ce4.png",
+        description: `The Future AI System is a specialized package for mastering artificial intelligence tools. 
+You will learn how to access, use, and monetize AI technologies effectively. 
+This pack covers automation, AI-powered content creation, and business growth hacks.`
+      }
+    ];
+
+    // ========== Render product cards ==========
+    const productContainer = document.getElementById('productList');
+    products.forEach(p => {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML = `
+        <img src="${p.img}" alt="${p.name}" />
+        <h2>${p.name}</h2>
+        <span class="price">₹${p.price}</span>
+        <p style="white-space: pre-line; color: #555; margin-top: 10px;">${p.description}</p>
+        <button class="btn" onclick="openPaymentModal('${escapeHtml(p.name)}', ${p.price})">Get It Now</button>
+      `;
+      productContainer.appendChild(card);
+    });
+
+    // ========== Modal logic ==========
+    const modal = document.getElementById('paymentModal');
+    const modalPackTitle = document.getElementById('modalPackTitle');
+    const qrImage = document.getElementById('qrImage');
+    const upiIdText = document.getElementById('upiIdText');
+    const copyUpiBtn = document.getElementById('copyUpiBtn');
+    const txnInput = document.getElementById('txnInput');
+    const screenshotInput = document.getElementById('screenshotInput');
+    const submitPaymentBtn = document.getElementById('submitPaymentBtn');
+    const cancelBtn = document.getElementById('cancelBtn');
+    const modalStatus = document.getElementById('modalStatus');
+
+    // Copy UPI ID
+    copyUpiBtn.addEventListener('click', () => {
+      navigator.clipboard.writeText(upiIdText.innerText).then(() => {
+        copyUpiBtn.innerText = 'Copied';
+        setTimeout(() => copyUpiBtn.innerText = 'Copy', 1200);
+      }).catch(() => {
+        alert('Copy failed');
+      });
+    });
+
+    let currentPack = null;
+    let currentAmount = 0;
+
+    function openPaymentModal(packName, price) {
+      currentPack = packName;
+      currentAmount = price;
+      modalPackTitle.innerText = `${packName} — ₹${price}`;
+      modal.style.display = 'flex';
+      txnInput.value = '';
+      screenshotInput.value = '';
+      modalStatus.innerText = '';
+      window.scrollTo(0, 0);
+    }
+
+    cancelBtn.addEventListener('click', () => {
+      modal.style.display = 'none';
+    });
+
+    function escapeHtml(str) {
+      return String(str).replace(/[&<>"']/g, (m) => {
+        return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m];
+      });
+    }
+
+    // ========== Payment submission ==========
+    submitPaymentBtn.addEventListener('click', async () => {
+      modalStatus.innerText = '';
+      submitPaymentBtn.disabled = true;
+      submitPaymentBtn.innerText = 'Submitting...';
+
+      const txn = txnInput.value.trim();
+      if (!txn) {
+        modalStatus.innerText = 'Please enter the transaction / reference ID.';
+        submitPaymentBtn.disabled = false;
+        submitPaymentBtn.innerText = 'I Have Paid';
+        return;
+      }
+
+      const { data: userResponse, error: userErr } = await supabase.auth.getUser();
+      if (userErr || !userResponse || !userResponse.user) {
+        modalStatus.innerText = 'You must be logged in to submit payment.';
+        submitPaymentBtn.disabled = false;
+        submitPaymentBtn.innerText = 'I Have Paid';
+        return;
+      }
+      const user = userResponse.user;
+
+      // Upload screenshot if exists
+      let screenshotUrl = null;
+      if (screenshotInput.files && screenshotInput.files.length > 0) {
+        const file = screenshotInput.files[0];
+        const path = `payment-proofs/${user.id}/${Date.now()}_${file.name.replace(/\s+/g, '_')}`;
+        const { data: uploadData, error: uploadError } = await supabase.storage
+          .from('payment-proofs')
+          .upload(path, file, { upsert: false });
+
+        if (uploadError) {
+          modalStatus.innerText = 'Screenshot upload failed: ' + uploadError.message;
+          submitPaymentBtn.disabled = false;
+          submitPaymentBtn.innerText = 'I Have Paid';
+          return;
+        }
+
+        const { data: publicUrlData } = supabase.storage.from('payment-proofs').getPublicUrl(path);
+        screenshotUrl = publicUrlData.publicUrl || null;
+      }
+
+      const paymentObj = {
+        user_id: user.id,
+        pack_name: currentPack,
+        amount: currentAmount,
+        status: 'pending',
+        transaction_id: txn,
+        payment_screenshot_url: screenshotUrl
+      };
+
+      const { data: insertData, error: insertError } = await supabase.from('payments').insert([paymentObj]);
+      if (insertError) {
+        modalStatus.innerText = 'Failed: ' + insertError.message;
+        submitPaymentBtn.disabled = false;
+        submitPaymentBtn.innerText = 'I Have Paid';
+        return;
+      }
+
+      modalStatus.innerHTML = '<span class="success">✅ Payment details submitted. Awaiting verification.</span>';
+      submitPaymentBtn.disabled = false;
+      submitPaymentBtn.innerText = 'I Have Paid';
+
+      setTimeout(() => {
+        modal.style.display = 'none';
+      }, 1800);
+    });
+
+    // Click outside modal to close
+    window.addEventListener('click', (e) => {
+      if (e.target === modal) modal.style.display = 'none';
+    });
+  </script>
+</body>
+</html>
