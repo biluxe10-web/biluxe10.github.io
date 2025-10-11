@@ -215,11 +215,7 @@ const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
       submitBtn.textContent = isSignup ? "Signup" : "Login";
       toggleForm.textContent = isSignup ? "Login" : "Signup";
       signupFields.style.display = isSignup ? "block" : "none";
-    });
-
-    // 📩 Placeholder OTP system
-    document.getElementById("send-otp").addEventListener("click", () => {
-      alert("OTP sent successfully . Connect backend later 🔐");
+   
     });
 
     // ✅ Form submit
@@ -236,10 +232,8 @@ const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
           email,
           password: passwordVal,
           options: { data: { name, referral } },
-        });
-        if (error) alert(error.message);
-        else alert("Signup successful! Check your email for verification.");
-      } else {
+        
+        
         const { data, error } = await client.auth.signInWithPassword({
           email,
           password: passwordVal,
@@ -247,7 +241,7 @@ const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
         if (error) alert(error.message);
         else {
           alert("Login successful! Redirecting...");
-          window.location.href = "index.html";
+          window.location.href = "dashboard.html";
         }
       }
     });
