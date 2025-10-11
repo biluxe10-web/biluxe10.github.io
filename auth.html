@@ -62,75 +62,94 @@
       Don’t have an account? <span id="toggle">Signup</span>
     </p>
   </div>
-
-  <script src="https://unpkg.com/@supabase/supabase-js"></script>
-  <script>
-    // 🔑 Add your Supabase credentials here
-    const SUPABASE_URL = "https://cisbvzecomyueslqkmbd.supabase.co";
+<script src="https://unpkg.com/@supabase/supabase-js"></script>
+<script>
+  ....const SUPABASE_URL = "https://cisbvzecomyueslqkmbd.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNpc2J2emVjb215dWVzbHFrbWJkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk5MDMwNTIsImV4cCI6MjA3NTQ3OTA1Mn0.hUNwgoIt-hgh21a1WNqsGkC2QC6mpwAcio5ek86kAfc";
-    const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    const toggle = document.getElementById("toggle");
-    const form = document.getElementById("auth-form");
-    const formTitle = document.getElementById("form-title");
-    const signupFields = document.getElementById("signup-fields");
-    const loginFields = document.getElementById("login-fields");
-    const submitBtn = document.getElementById("submit-btn");
-    let isSignup = false;
+  const toggle = document.getElementById("toggle");
+  const form = document.getElementById("auth-form");
+  const formTitle = document.getElementById("form-title");
+  const signupFields = document.getElementById("signup-fields");
+  const loginFields = document.getElementById("login-fields");
+  const submitBtn = document.getElementById("submit-btn");
+  let isSignup = false;
 
-    toggle.addEventListener("click", () => {
-      isSignup = !isSignup;
-      formTitle.textContent = isSignup ? "Signup" : "Login";
-      signupFields.style.display = isSignup ? "block" : "none";
-      loginFields.style.display = isSignup ? "none" : "block";
-      submitBtn.textContent = isSignup ? "Signup" : "Login";
-      toggle.textContent = isSignup ? "Login" : "Signup";
-    });
+  toggle.addEventListener("click", () => {
+    isSignup = !isSignup;
+    formTitle.textContent = isSignup ? "Signup" : "Login";
+    signupFields.style.display = isSignup ? "block" : "none";
+    loginFields.style.display = isSignup ? "none" : "block";
+    submitBtn.textContent = isSignup ? "Signup" : "Login";
+    toggle.textContent = isSignup ? "Login" : "Signup";
+  });
 
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
 
-      if (isSignup) {
-        const name = document.getElementById("name").value.trim();
-        const email = document.getElementById("email-signup").value.trim();
-        const password = document.getElementById("password-signup").value.trim();
+    if (isSignup) {
+      const name = document.getElementById("name").value.trim();
+      const email = document.getElementById("email-signup").value.trim();
+      const password = document.getElementById("password-signup").value.trim();
 
-        // 🔍 Check if email already exists before signup
-        const { data: existingUser, error: selectError } = await client
-          .from("profiles")
-          .select("email")
-          .eq("email", email)
-          .maybeSingle();
+      // 🟢 Check if email already exists
+      const { data: existingUsers, error: selectError } = await client
+        .from("profiles")
+        .select("email")
+        .eq("email", email);
 
-        if (existingUser) {
-          alert("⚠️ Email already registered!");
-          return;
-        }
-
-        const { data, error } = await client.auth.signUp({
-          email,
-          password,
-          options: { data: { name } },
-        });
-
-        if (error) return alert("Signup failed: " + error.message);
-        alert("✅ Signup successful! Check your email for verification.");
-        await client.from("profiles").insert([{ email, name }]);
-      } 
-      else {
-        const email = document.getElementById("email-login").value.trim();
-        const password = document.getElementById("password-login").value.trim();
-
-        const { data, error } = await client.auth.signInWithPassword({
-          email,
-          password,
-        });
-
-        if (error) return alert("❌ Login failed: " + error.message);
-        alert("✅ Login successful!");
-        window.location.href = "dashboard.html";
+      if (selectError) {
+        console.error(selectError);
+        alert("⚠️ Something went wrong while checking. Try again.");
+        return;
       }
-    });
-  </script>
-</body>
-</html>
+
+      if (existingUsers && existingUsers.length > 0) {
+        alert("⚠️ Email already registered!");
+        return;
+      }
+
+      // 🟢 Proceed with signup
+      const { data, error } = await client.auth.signUp({
+        email,
+        password,
+        options: { data: { name } },
+      });
+
+      if (error) {
+        alert("Signup failed: " + error.message);
+        return;
+      }
+
+      // Insert into 'profiles'
+      const { error: insertError } = await client
+        .from("profiles")
+        .insert([{ email, name }]);
+
+      if (insertError) {
+        console.error(insertError);
+        alert("Signup successful, but couldn’t save profile.");
+      } else {
+        alert("✅ Signup successful! Please verify your email.");
+      }
+    } else {
+      const email = document.getElementById("email-login").value.trim();
+      const password = document.getElementById("password-login").value.trim();
+
+      const { data, error } = await client.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) {
+        alert("❌ Login failed: " + error.message);
+        return;
+      }
+
+      alert("✅ Login successful!");
+      window.location.href = "dashboard.html";
+    }
+  });
+</script>
+  
