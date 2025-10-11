@@ -1,160 +1,163 @@
-    <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Biluxe10 | Login & Signup</title>
-
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: "Poppins", sans-serif;
-    }
-    body {
-      background: linear-gradient(135deg, #000, #1a1a1a);
-      color: #fff;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .auth-container {
-      width: 400px;
-      background: rgba(255, 215, 0, 0.05);
-      border: 1px solid gold;
-      border-radius: 16px;
-      padding: 30px;
-      text-align: center;
-      box-shadow: 0 0 25px rgba(255, 215, 0, 0.2);
-    }
-    h1 {
-      color: gold;
-      margin-bottom: 20px;
-    }
-    form {
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-    }
-    input {
-      padding: 12px;
-      border: none;
-      border-radius: 8px;
-      font-size: 16px;
-    }
-    button {
-      background: gold;
-      color: black;
-      border: none;
-      border-radius: 30px;
-      padding: 12px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-    button:hover {
-      background: #ffcc00;
-      transform: scale(1.05);
-    }
-    .switch {
-      margin-top: 20px;
-      color: #aaa;
-      font-size: 14px;
-    }
-    .switch span {
-      color: gold;
-      cursor: pointer;
-      font-weight: 600;
-    }
-    .otp-section {
-      display: flex;
-      gap: 10px;
-    }
-    .otp-section button {
-      flex: 1;
-      background: #00ff99;
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Biluxe10 | Login & Signup</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg,#000,#1a1a1a);
+    color: #fff;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    perspective: 1000px;
+  }
+  .flip-container {
+    width: 400px;
+    height: 520px;
+    position: relative;
+  }
+  .card {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    transition: transform 0.8s;
+    transform-style: preserve-3d;
+  }
+  .flip-container.flipped .card {
+    transform: rotateY(180deg);
+  }
+  .side {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    background: rgba(255,215,0,0.05);
+    border: 1px solid gold;
+    border-radius: 16px;
+    box-shadow: 0 0 25px rgba(255,215,0,0.2);
+    padding: 30px;
+    box-sizing: border-box;
+  }
+  .side h2 {
+    text-align: center;
+    color: gold;
+    margin-bottom: 20px;
+  }
+  .side input {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    margin-bottom: 12px;
+    font-size: 16px;
+  }
+  .side button {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 30px;
+    background: gold;
+    color: #000;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  .side button:hover {
+    background: #ffcc00;
+    transform: scale(1.05);
+  }
+  .toggle {
+    margin-top: 10px;
+    text-align: center;
+    font-size: 14px;
+    color: #aaa;
+  }
+  .toggle span {
+    color: gold;
+    cursor: pointer;
+  }
+  .back {
+    transform: rotateY(180deg);
+  }
+  .otp-row {
+    display: flex;
+    gap: 10px;
+  }
+</style>
 </head>
 <body>
-  <div class="auth-container">
-    <h1 id="form-title">Login</h1>
-
-    <form id="auth-form">
-      <div id="signup-fields" style="display: none;">
-        <input type="text" id="name" placeholder="Full Name" required />
-        <input type="text" id="referral" placeholder="Referral Code (optional)" />
+<div class="flip-container" id="flip">
+  <div class="card">
+    <!-- Login -->
+    <div class="side front">
+      <h2>Login</h2>
+      <input type="email" placeholder="Email" id="loginEmail" required>
+      <input type="password" placeholder="Password" id="loginPassword" required>
+      <button id="loginBtn">Login</button>
+      <div class="toggle">Don’t have an account? <span id="toSignup">Signup</span></div>
+    </div>
+    <!-- Signup -->
+    <div class="side back">
+      <h2>Signup</h2>
+      <input type="text" id="name" placeholder="Full Name" required>
+      <input type="tel" id="phone" placeholder="Phone Number">
+      <div class="otp-row">
+        <input type="text" id="otp" placeholder="Enter OTP" style="flex:2;">
+        <button type="button" id="sendOtpBtn" style="flex:1;background:#00ff99;">Send OTP</button>
       </div>
-
-      <input type="email" id="email" placeholder="Email" required />
-      <input type="tel" id="number" placeholder="Phone Number (optional)" />
-      <input type="password" id="password" placeholder="Password" required />
-
-      <div class="otp-section" style="display: none;" id="otp-box">
-        <input type="text" id="otp" placeholder="Enter OTP" />
-        <button type="button" id="verify-otp">Verify OTP</button>
-      </div>
-
-      <button type="submit" id="submit-btn">Login</button>
-    </form>
-
-    <p class="switch">
-      Don’t have an account? <span id="toggle">Signup</span> 
-   <button id="signup-btn" class="btn">Create Account</button> </p>
+      <input type="text" id="referral" placeholder="Referral Code (optional)">
+      <input type="email" id="email" placeholder="Email" required>
+      <input type="password" id="password" placeholder="Password" required>
+      <button id="signupBtn">Create Account</button>
+      <div class="toggle">Already have an account? <span id="toLogin">Login</span></div>
+    </div>
   </div>
+</div>
+
 <script src="https://unpkg.com/@supabase/supabase-js"></script>
 <script>
-  // ✅ Supabase setup
-  const SUPABASE_URL = "https://cisbvzecomyueslqkmbd.supabase.co";
+  // replace with your own values
+const SUPABASE_URL = "https://cisbvzecomyueslqkmbd.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNpc2J2emVjb215dWVzbHFrbWJkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk5MDMwNTIsImV4cCI6MjA3NTQ3OTA1Mn0.hUNwgoIt-hgh21a1WNqsGkC2QC6mpwAcio5ek86kAfc";
-
   const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-  const form = document.getElementById("auth-form");
-  const formTitle = document.getElementById("form-title");
-  const signupFields = document.getElementById("signup-fields");
-  const toggle = document.getElementById("toggle");
-  const submitBtn = document.getElementById("submit-btn");
-  let isSignup = false;
+  const flip = document.getElementById("flip");
+  document.getElementById("toSignup").addEventListener("click", () => flip.classList.add("flipped"));
+  document.getElementById("toLogin").addEventListener("click", () => flip.classList.remove("flipped"));
 
-  toggle.addEventListener("click", () => {
-    isSignup = !isSignup;
-    formTitle.textContent = isSignup ? "Signup" : "Login";
-    signupFields.style.display = isSignup ? "block" : "none";
-    submitBtn.textContent = isSignup ? "Signup" : "Login";
-    toggle.textContent = isSignup ? "Login" : "Signup";
+  // demo handlers
+  document.getElementById("sendOtpBtn").addEventListener("click", () => {
+    alert("OTP sent! (demo — connect your backend or Supabase OTP later)");
   });
 
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
+  document.getElementById("signupBtn").addEventListener("click", async () => {
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
+    const name = document.getElementById("name").value;
+    const referral = document.getElementById("referral").value;
+    const { error } = await client.auth.signUp({
+      email, password, options: { data: { name, referral } }
+    });
+    if (error) alert(error.message);
+    else alert("Signup successful! Check your email for OTP verification.");
+  });
 
-    if (isSignup) {
-      const name = document.getElementById("name").value;
-      const referral = document.getElementById("referral").value;
-      const { data, error } = await client.auth.signUp({
-        email,
-        password,
-        options: { data: { name, referral } },
-      });
-      if (error) return alert("❌ " + error.message);
-      alert("✅ Signup successful! Check your email for verification.");
-    } else {
-      const { data, error } = await client.auth.signInWithPassword({
-        email,
-        password,
-      });
-      if (error) return alert("❌ " + error.message);
-      alert("✅ Login successful! Redirecting...");
+  document.getElementById("loginBtn").addEventListener("click", async () => {
+    const email = document.getElementById("loginEmail").value;
+    const password = document.getElementById("loginPassword").value;
+    const { error } = await client.auth.signInWithPassword({ email, password });
+    if (error) alert(error.message);
+    else {
+      alert("Login successful!");
       window.location.href = "index.html";
     }
   });
-
-  // Optional: OTP placeholder
-  document.getElementById("verify-otp").addEventListener("click", () => {
-    alert("OTP verified (demo) — connect this button to your backend later.");
-  });
 </script>
+</body>
+</html>                
