@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -49,6 +49,16 @@
     .password-box i{
       position:absolute;right:10px;top:12px;cursor:pointer;color:#666;
     }
+    #paid-btn {
+      margin-top:15px;
+      background:#ffb800;
+      color:#000;
+      font-weight:600;
+      display:none;
+    }
+    #paid-btn:hover {
+      background:#e0a600;
+    }
   </style>
 </head>
 <body>
@@ -67,6 +77,9 @@
       </div>
       <button type="submit" id="submit-btn">Login</button>
     </form>
+
+    <button id="paid-btn">I Have Paid</button>
+
     <p class="switch">Don’t have an account? <span id="toggle">Signup</span></p>
   </div>
 
@@ -82,7 +95,9 @@
     const signupFields = document.getElementById("signup-fields");
     const submitBtn = document.getElementById("submit-btn");
     const eye = document.getElementById("toggle-eye");
+    const paidBtn = document.getElementById("paid-btn");
     let isSignup = false;
+    let currentUser = null;
 
     // 👁️ Toggle password visibility
     eye.addEventListener("click", () => {
@@ -97,6 +112,7 @@
       signupFields.style.display = isSignup ? "block" : "none";
       submitBtn.textContent = isSignup ? "Signup" : "Login";
       toggle.textContent = isSignup ? "Login" : "Signup";
+      paidBtn.style.display = "none";
     });
 
     // 🚀 Form submission
@@ -113,8 +129,8 @@
       } else {
         const { data, error } = await client.auth.signInWithPassword({ email, password });
         if (error) return alert("❌ Login Error: " + error.message);
-        const user = data.user;
-        checkPaymentAndRedirect(user);
+        currentUser = data.user;
+        checkPaymentAndRedirect(currentUser);
       }
     });
 
@@ -126,19 +142,35 @@
         .eq("user_id", user.id)
         .single();
 
-      if (error) {
-        alert("Please make sure your payment is processed.");
-        window.location.href = "products.html";
+      if (error || !data) {
+        alert("No payment record found. Please click 'I Have Paid' after your payment.");
+        paidBtn.style.display = "block";
         return;
       }
 
-      if (data && data.status === "approved") {
+      if (data.status === "approved") {
         window.location.href = "dashboard.html";
+      } else if (data.status === "pending") {
+        alert("Your payment is pending admin approval. Please wait.");
       } else {
-        alert("Please complete your payment to access your dashboard.");
-        window.location.href = "products.html";
+        alert("Payment not completed. Please click 'I Have Paid' if you've paid.");
+        paidBtn.style.display = "block";
       }
     }
+
+    // 💳 “I Have Paid” button click
+    paidBtn.addEventListener("click", async () => {
+      if (!currentUser) return alert("Please login first.");
+
+      const { data, error } = await client
+        .from("payments")
+        .insert([{ user_id: currentUser.id, status: "pending", created_at: new Date() }]);
+
+      if (error) return alert("❌ Error sending payment request: " + error.message);
+
+      alert("✅ Payment request sent! Admin will review and approve shortly.");
+      paidBtn.style.display = "none";
+    });
   </script>
 </body>
-</html>
+</html>      
