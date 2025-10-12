@@ -1,91 +1,81 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Your Dashboard | Biluxe10</title>
-  <style>
-    body {
-      font-family: "Poppins", sans-serif;
-      background: linear-gradient(135deg,#1c1c1c,#2a2a2a);
-      color: #fff;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-    }
-    .card {
-      background: rgba(255,255,255,0.08);
-      padding: 30px;
-      border-radius: 16px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.4);
-      width: 350px;
-    }
-    button {
-      margin-top: 20px;
-      background: #00ffd0;
-      color: #000;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: bold;
-    }
-    button:hover { background: #00cfa4; }
-  </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Biluxe10 | Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://unpkg.com/@supabase/supabase-js"></script>
 </head>
 <body>
-  <div class="card">
-    <h2>Welcome, <span id="user-email">User</span> 👋</h2>
-    <p id="user-status">Checking your payment status...</p>
-    <button id="logout">Logout</button>
+  <!-- 🔹 Sidebar -->
+  <div class="sidebar" id="sidebar">
+    <div class="logo">
+      <img src="logo.png" alt="Biluxe10" />
+      <h2>Biluxe10</h2>
+    </div>
+    <ul>
+      <li><a href="dashboard.html" class="active">🏠 Dashboard</a></li>
+      <li><a href="daily-task.html">✅ Daily Task</a></li>
+      <li><a href="update-profile.html">👤 Update Profile</a></li>
+      <li><a href="my-team.html">👥 My Team</a></li>
+      <li><a href="income.html">💰 Income</a></li>
+      <li><a href="withdrawal.html">🏦 Withdrawal</a></li>
+      <li><a href="transactions.html">📜 All Transaction</a></li>
+      <li><a href="about.html">ℹ️ About Us</a></li>
+      <li><a href="contact.html">📞 Contact Us</a></li>
+      <li><a href="#" id="logout">🚪 Logout</a></li>
+    </ul>
   </div>
 
-  <script src="https://unpkg.com/@supabase/supabase-js"></script>
-  <script>
-    const SUPABASE_URL = "https://cisbvzecomyueslqkmbd.supabase.co";
-    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNpc2J2emVjb215dWVzbHFrbWJkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk5MDMwNTIsImV4cCI6MjA3NTQ3OTA1Mn0.hUNwgoIt-hgh21a1WNqsGkC2QC6mpwAcio5ek86kAfc";
-    const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  <!-- 🔸 Main Content -->
+  <div class="main">
+    <header>
+      <div class="menu-btn" id="menu-btn">☰</div>
+      <div class="user-info">
+        <h3>Welcome, <span id="userName">User</span></h3>
+        <p>ID: <span id="userId">---</span></p>
+      </div>
+    </header>
 
-    const emailEl = document.getElementById("user-email");
-    const statusEl = document.getElementById("user-status");
-    const logoutBtn = document.getElementById("logout");
+    <section class="cards">
+      <div class="card">
+        <h4>Total Earnings</h4>
+        <p id="earnings">₹0</p>
+      </div>
+      <div class="card">
+        <h4>Total Withdrawals</h4>
+        <p id="withdrawals">₹0</p>
+      </div>
+      <div class="card">
+        <h4>Referral Bonus</h4>
+        <p id="refBonus">₹0</p>
+      </div>
+      <div class="card">
+        <h4>Team Members</h4>
+        <p id="teamCount">0</p>
+      </div>
+    </section>
 
-    // 🧠 Get user session
-    window.addEventListener("load", async () => {
-      const { data } = await client.auth.getSession();
-      const user = data?.session?.user;
-      if (!user) {
-        alert("Session expired. Please login again.");
-        window.location.href = "auth.html";
-        return;
-      }
+    <section class="section">
+      <h3>Earnings Breakdown</h3>
+      <div class="sub-cards">
+        <div class="sub-card">
+          <h5>Active Income</h5>
+          <p>₹1200</p>
+        </div>
+        <div class="sub-card">
+          <h5>Passive Income</h5>
+          <p>₹800</p>
+        </div>
+        <div class="sub-card">
+          <h5>Ad Commission</h5>
+          <p>₹150</p>
+        </div>
+      </div>
+    </section>
+  </div>
 
-      emailEl.textContent = user.email;
-
-      // Fetch payment status
-      const { data: payments } = await client
-        .from("payments")
-        .select("status")
-        .eq("user_id", user.id)
-        .order("created_at", { ascending: false })
-        .limit(1);
-
-      if (payments && payments.length > 0) {
-        statusEl.textContent = "Payment Status: " + payments[0].status.toUpperCase();
-      } else {
-        statusEl.textContent = "No payment record found.";
-      }
-    });
-
-    // 🚪 Logout
-    logoutBtn.addEventListener("click", async () => {
-      await client.auth.signOut();
-      alert("Logged out successfully!");
-      window.location.href = "auth.html";
-    });
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>
