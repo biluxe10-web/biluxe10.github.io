@@ -132,15 +132,42 @@
         currentUser = data.user;
         checkPaymentAndRedirect(currentUser);
       }
-    });
+    })
+    
+        // ✅ FIXED version
+async function checkPaymentAndRedirect(user) {
+  const { data, error } = await client
+    .from("payments")
+    .select("status, created_at")
+    .eq("user_id", user.id)
+    .order("created_at", { ascending: false })
+    .limit(1);
 
-    // 🔍 Check payment and redirect
-    async function checkPaymentAndRedirect(user) {
-      const { data, error } = await client
-        .from("payments")
-        .select("status")
-        .eq("user_id", user.id)
-        .single();
+  if (error) {
+    console.error("Error checking payment:", error);
+    alert("Error checking payment. Please try again later.");
+    return;
+  }
+
+  if (!data || data.length === 0) {
+    alert("No payment record found. Please click 'I Have Paid' after your payment.");
+    paidBtn.style.display = "block";
+    return;
+  }
+
+  const payment = data[0];
+  console.log("Payment status:", payment.status);
+
+  if (payment.status === "approved") {
+    alert("✅ Payment approved! Redirecting to dashboard...");
+    window.location.href = "dashboard.html";
+  } else if (payment.status === "pending") {
+    alert("⏳ Your payment is pending admin approval. Please wait.");
+  } else {
+    alert("❌ Payment not completed. Please click 'I Have Paid' if you've already paid.");
+    paidBtn.style.display = "block";
+  }
+}
 
       if (error || !data) {
         alert("No payment record found. Please click 'I Have Paid' after your payment.");
@@ -160,11 +187,15 @@
 
     // 💳 “I Have Paid” button click
     paidBtn.addEventListener("click", async () => {
-      if (!currentUser) return alert("Please login first.");
+      if (!currentUser) return alert("Please login first."); 
 
-      const { data, error } = await client
-        .from("payments")
-        .insert([{ user_id: currentUser.id, status: "pending", created_at: new Date() }]);
+ const { data, error } = await client
+  .from("payments")
+  .insert([{ 
+     user_id: currentUser.id, 
+     status: "pending", 
+     created_at: new Date().toISOString() 
+  }]);
 
       if (error) return alert("❌ Error sending payment request: " + error.message);
 
