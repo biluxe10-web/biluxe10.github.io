@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Biluxe10 | Signup & Payment</title>
+  <title>Biluxe10 | Auth</title>
   <style>
     *{margin:0;padding:0;box-sizing:border-box;font-family:"Poppins",sans-serif}
     body{
@@ -19,9 +19,9 @@
     @keyframes bgMove{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
     .box{
       background:rgba(255,255,255,0.1);
-      padding:30px;
+      padding:40px;
       border-radius:16px;
-      width:370px;
+      width:350px;
       text-align:center;
       box-shadow:0 0 20px rgba(0,0,0,0.4);
       backdrop-filter:blur(10px);
@@ -32,38 +32,42 @@
       border:none;border-radius:8px;outline:none;
     }
     button{
-      width:100%;padding:12px;
-      border:none;border-radius:8px;
-      background:#00ffd0;color:#000;font-weight:600;
-      cursor:pointer;transition:.3s;
+      width:100%;
+      padding:12px;
+      border:none;
+      background:#00ffd0;
+      color:#000;
+      font-weight:600;
+      border-radius:8px;
+      cursor:pointer;
+      transition:.3s;
     }
     button:hover{background:#00cfa4}
-    #payment-section{
-      display:none;margin-top:20px;text-align:center;
+    .switch{margin-top:15px;color:#bbb}
+    .switch span{color:#00ffd0;cursor:pointer}
+    .password-box{position:relative;}
+    .password-box i{
+      position:absolute;right:10px;top:12px;cursor:pointer;color:#666;
     }
-    #payment-section img{width:200px;height:200px;border-radius:10px;margin:10px 0;}
-    #payment-section h3{color:#00ffd0;margin:10px 0;}
-    #paid-btn{background:#ffcc00;color:#000;}
-    #paid-btn:hover{background:#ffaa00;}
   </style>
 </head>
 <body>
   <div class="box">
-    <h2>Signup</h2>
-    <form id="signup-form">
-      <input type="text" id="name" placeholder="Full Name" required />
+    <h2 id="form-title">Login</h2>
+    <form id="auth-form">
+      <div id="signup-fields" style="display:none;">
+        <input type="text" id="name" placeholder="Full Name" required />
+        <input type="tel" id="phone" placeholder="Phone Number" />
+        <input type="text" id="referral" placeholder="Referral Code (optional)" />
+      </div>
       <input type="email" id="email" placeholder="Email" required />
-      <input type="password" id="password" placeholder="Password" required />
-      <button type="submit" id="signup-btn">Signup</button>
+      <div class="password-box">
+        <input type="password" id="password" placeholder="Password" required />
+        <i id="toggle-eye">👁️</i>
+      </div>
+      <button type="submit" id="submit-btn">Login</button>
     </form>
-
-    <div id="payment-section">
-      <h3>📱 Scan & Pay Using PhonePe</h3>
-      <p>UPI ID: <b>9019254743@axl</b></p>
-      <img src="https://i.postimg.cc/mg3hMHtV/phonepe-qr.png" alt="QR Code" />
-      <p>After payment, click the button below 👇</p>
-      <button id="paid-btn">💰 I Have Paid</button>
-    </div>
+    <p class="switch">Don’t have an account? <span id="toggle">Signup</span></p>
   </div>
 
   <script src="https://unpkg.com/@supabase/supabase-js"></script>
@@ -72,41 +76,69 @@
     const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNpc2J2emVjb215dWVzbHFrbWJkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk5MDMwNTIsImV4cCI6MjA3NTQ3OTA1Mn0.hUNwgoIt-hgh21a1WNqsGkC2QC6mpwAcio5ek86kAfc";
     const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    const signupForm = document.getElementById("signup-form");
-    const paymentSection = document.getElementById("payment-section");
-    const paidBtn = document.getElementById("paid-btn");
-    let currentUser = null;
+    const form = document.getElementById("auth-form");
+    const toggle = document.getElementById("toggle");
+    const title = document.getElementById("form-title");
+    const signupFields = document.getElementById("signup-fields");
+    const submitBtn = document.getElementById("submit-btn");
+    const eye = document.getElementById("toggle-eye");
+    let isSignup = false;
 
-    // 🔹 Signup Process
-    signupForm.addEventListener("submit", async (e) => {
+    // 👁️ Toggle password visibility
+    eye.addEventListener("click", () => {
+      const pass = document.getElementById("password");
+      pass.type = pass.type === "password" ? "text" : "password";
+    });
+
+    // 🔄 Toggle Login / Signup
+    toggle.addEventListener("click", () => {
+      isSignup = !isSignup;
+      title.textContent = isSignup ? "Signup" : "Login";
+      signupFields.style.display = isSignup ? "block" : "none";
+      submitBtn.textContent = isSignup ? "Signup" : "Login";
+      toggle.textContent = isSignup ? "Login" : "Signup";
+    });
+
+    // 🚀 Form submission
+    form.addEventListener("submit", async (e) => {
       e.preventDefault();
       const email = document.getElementById("email").value.trim();
       const password = document.getElementById("password").value.trim();
 
-      const { data, error } = await client.auth.signUp({ email, password });
-      if (error) return alert("❌ Signup failed: " + error.message);
-      currentUser = data.user;
-      alert("✅ Signup successful! Now complete your payment below.");
-      signupForm.style.display = "none";
-      paymentSection.style.display = "block";
+      if (isSignup) {
+        const { data, error } = await client.auth.signUp({ email, password });
+        if (error) return alert("❌ Signup Error: " + error.message);
+        alert("Signup successful! Please choose your package to continue.");
+        window.location.href = "products.html";
+      } else {
+        const { data, error } = await client.auth.signInWithPassword({ email, password });
+        if (error) return alert("❌ Login Error: " + error.message);
+        const user = data.user;
+        checkPaymentAndRedirect(user);
+      }
     });
 
-    // 💰 I Have Paid Button
-    paidBtn.addEventListener("click", async () => {
-      if (!currentUser) return alert("Please sign up first!");
-      const { error } = await client.from("payments").insert([
-        {
-          user_id: currentUser.id,
-          amount: 499,
-          package_name: "Starter Plan",
-          status: "pending",
-          created_at: new Date().toISOString()
-        }
-      ]);
-      if (error) return alert("❌ Payment record error: " + error.message);
-      alert("✅ Payment submitted! Admin will verify and approve soon.");
-      paymentSection.style.display = "none";
-    });
+    // 🔍 Check payment and redirect
+    async function checkPaymentAndRedirect(user) {
+      const { data, error } = await client
+        .from("payments")
+        .select("status")
+        .eq("user_id", user.id)
+        .single();
+
+      if (error) {
+        alert("Please make sure your payment is processed.");
+        window.location.href = "products.html";
+        return;
+      }
+
+      if (data && data.status === "approved") {
+        window.location.href = "dashboard.html";
+      } else {
+        alert("Please complete your payment to access your dashboard.");
+        window.location.href = "products.html";
+      }
+    }
   </script>
 </body>
 </html>
