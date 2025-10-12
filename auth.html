@@ -98,13 +98,13 @@
   let isSignup = false;
   let currentUser = null;
 
-  // 👁️ Toggle password visibility
+  // 👁️ Password toggle
   eye.addEventListener("click", () => {
     const pass = document.getElementById("password");
     pass.type = pass.type === "password" ? "text" : "password";
   });
 
-  // 🔄 Toggle Login / Signup
+  // 🔄 Toggle login/signup
   toggle.addEventListener("click", () => {
     isSignup = !isSignup;
     title.textContent = isSignup ? "Signup" : "Login";
@@ -113,39 +113,41 @@
     toggle.textContent = isSignup ? "Login" : "Signup";
     paidBtn.style.display = "none";
   });
-// 🚀 Form submission
-form.addEventListener("submit", async (e) => {
-  e.preventDefault();
-  const email = document.getElementById("email").value.trim();
-  const password = document.getElementById("password").value.trim();
 
-  if (isSignup) {
-    // 🟢 Signup
-    const { data, error } = await client.auth.signUp({ email, password });
-    if (error) return alert("❌ Signup Error: " + error.message);
-    alert("✅ Signup successful! Please choose your package to continue.");
-    window.location.href = "products.html";
-  } else {
-    // 🔵 Login
-    const { data, error } = await client.auth.signInWithPassword({ email, password });
-    if (error) return alert("❌ Login Error: " + error.message);
-
-    // 🟢 Save session for dashboard
-    const { data: sessionData, error: sessionError } = await client.auth.getSession();
-    if (sessionError) console.error("Session Error:", sessionError);
-
-    currentUser = sessionData?.session?.user || data.user;
-    if (!currentUser) {
-      alert("Login failed — no user found.");
-      return;
+  // ✅ Auto login check
+  window.addEventListener("load", async () => {
+    const { data } = await client.auth.getSession();
+    const sessionUser = data?.session?.user;
+    if (sessionUser) {
+      console.log("Auto-login:", sessionUser.email);
+      checkPaymentAndRedirect(sessionUser);
     }
+  });
 
-    // ✅ Now check payment
-    checkPaymentAndRedirect(currentUser);
-  }
-});
+  // 🚀 Form submission
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value.trim();
 
-  // ✅ Payment check logic
+    if (isSignup) {
+      const { error } = await client.auth.signUp({ email, password });
+      if (error) return alert("❌ Signup Error: " + error.message);
+      alert("✅ Signup successful! Choose your package.");
+      window.location.href = "products.html";
+    } else {
+      const { data, error } = await client.auth.signInWithPassword({ email, password });
+      if (error) return alert("❌ Login Error: " + error.message);
+
+      const { data: sessionData } = await client.auth.getSession();
+      currentUser = sessionData?.session?.user || data.user;
+      if (!currentUser) return alert("Login failed. Try again.");
+
+      checkPaymentAndRedirect(currentUser);
+    }
+  });
+
+  // 💳 Payment check + redirect
   async function checkPaymentAndRedirect(user) {
     const { data, error } = await client
       .from("payments")
@@ -154,47 +156,38 @@ form.addEventListener("submit", async (e) => {
       .order("created_at", { ascending: false })
       .limit(1);
 
-    if (error) {
-      console.error("Error checking payment:", error);
-      alert("Error checking payment. Please try again later.");
-      return;
-    }
+    if (error) return alert("Error checking payment: " + error.message);
 
     if (!data || data.length === 0) {
-      alert("No payment record found. Please click 'I Have Paid' after your payment.");
+      alert("No payment found. Click 'I Have Paid' after payment.");
       paidBtn.style.display = "block";
+      currentUser = user;
       return;
     }
 
     const payment = data[0];
-    console.log("Payment status:", payment.status);
-
     if (payment.status === "approved") {
-      alert("✅ Payment approved! Redirecting to dashboard...");
       window.location.href = "dashboard.html";
     } else if (payment.status === "pending") {
-      alert("⏳ Your payment is pending admin approval. Please wait.");
+      alert("⏳ Payment pending admin approval.");
     } else {
-      alert("❌ Payment not completed. Please click 'I Have Paid' if you've already paid.");
+      alert("❌ Payment not completed. Click 'I Have Paid' if you paid.");
       paidBtn.style.display = "block";
+      currentUser = user;
     }
   }
 
-  // 💳 “I Have Paid” button click
+  // 🟠 “I Have Paid” button
   paidBtn.addEventListener("click", async () => {
     if (!currentUser) return alert("Please login first.");
 
-    const { data, error } = await client
+    const { error } = await client
       .from("payments")
-      .insert([{ 
-        user_id: currentUser.id, 
-        status: "pending", 
-        created_at: new Date().toISOString() 
-      }]);
+      .insert([{ user_id: currentUser.id, status: "pending" }]);
 
-    if (error) return alert("❌ Error sending payment request: " + error.message);
+    if (error) return alert("❌ Error sending request: " + error.message);
 
-    alert("✅ Payment request sent! Admin will review and approve shortly.");
+    alert("✅ Payment request sent! Admin will approve soon.");
     paidBtn.style.display = "none";
   });
 </script>
