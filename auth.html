@@ -1,176 +1,166 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Biluxe10 | Auth</title>
+  <title>Biluxe10 | Login / Signup</title>
   <style>
-    *{margin:0;padding:0;box-sizing:border-box;font-family:"Poppins",sans-serif}
-    body{
-      height:100vh;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      background:linear-gradient(135deg,#2b2b2b,#3d3d3d,#222);
-      background-size:400% 400%;
-      animation:bgMove 10s ease infinite;
-      color:#fff;
+    * {
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
     }
-    @keyframes bgMove{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
-    .box{
-      background:rgba(255,255,255,0.1);
-      padding:40px;
-      border-radius:16px;
-      width:350px;
-      text-align:center;
-      box-shadow:0 0 20px rgba(0,0,0,0.4);
-      backdrop-filter:blur(10px);
+
+    body {
+      margin: 0;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #121212, #1c1c1c);
+      color: white;
     }
-    h2{margin-bottom:20px;color:#00ffd0}
-    input{
-      width:100%;padding:12px;margin:8px 0;
-      border:none;border-radius:8px;outline:none;
+
+    .auth-container {
+      background: rgba(255,255,255,0.05);
+      border-radius: 20px;
+      padding: 40px;
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
+      box-shadow: 0 0 25px rgba(255,255,255,0.1);
     }
-    button{
-      width:100%;
-      padding:12px;
-      border:none;
-      background:#00ffd0;
-      color:#000;
-      font-weight:600;
-      border-radius:8px;
-      cursor:pointer;
-      transition:.3s;
+
+    h2 {
+      margin-bottom: 10px;
+      font-size: 24px;
+      color: #00ff9d;
     }
-    button:hover{background:#00cfa4}
-    .switch{margin-top:15px;color:#bbb}
-    .switch span{color:#00ffd0;cursor:pointer}
-    .password-box{position:relative;}
-    .password-box i{
-      position:absolute;right:10px;top:12px;cursor:pointer;color:#666;
+
+    p {
+      color: #aaa;
+      font-size: 14px;
+      margin-bottom: 30px;
     }
-    #paid-btn {
-      margin-top:15px;
-      background:#ffb800;
-      color:#000;
-      font-weight:600;
-      display:none;
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 15px;
+      border: none;
+      border-radius: 10px;
+      background: #222;
+      color: white;
     }
-    #paid-btn:hover {
-      background:#e0a600;
+
+    button {
+      background: #00d084;
+      color: black;
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      font-weight: bold;
+      width: 100%;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background: #00ff9d;
+    }
+
+    .toggle {
+      color: #00d084;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .status {
+      margin-top: 15px;
+      font-size: 14px;
+      color: #00ff9d;
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
-  <div class="box">
-    <h2 id="form-title">Login</h2>
-    <form id="auth-form">
-      <div id="signup-fields" style="display:none;">
-        <input type="text" id="name" placeholder="Full Name" required />
-        <input type="tel" id="phone" placeholder="Phone Number" />
-        <input type="text" id="referral" placeholder="Referral Code (optional)" />
-      </div>
-      <input type="email" id="email" placeholder="Email" required />
-      <div class="password-box">
-        <input type="password" id="password" placeholder="Password" required />
-        <i id="toggle-eye">👁️</i>
-      </div>
-      <button type="submit" id="submit-btn">Login</button>
-    </form>
 
-    <button id="paid-btn">I Have Paid</button>
+  <div class="auth-container">
+    <h2 id="form-title">Login to Biluxe10</h2>
+    <p id="form-desc">Welcome back! Enter your details below</p>
 
-    <p class="switch">Don’t have an account? <span id="toggle">Signup</span></p>
+    <input type="email" id="email" placeholder="Email" required>
+    <input type="password" id="password" placeholder="Password" required>
+
+    <button onclick="handleAuth()">Login</button>
+
+    <p>
+      <span id="toggle-text">Don't have an account?</span>
+      <span class="toggle" onclick="toggleForm()"> Signup</span>
+    </p>
+
+    <div class="status" id="status"></div>
   </div>
 
-  <script src="https://unpkg.com/@supabase/supabase-js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
     const SUPABASE_URL = "https://cisbvzecomyueslqkmbd.supabase.co";
     const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNpc2J2emVjb215dWVzbHFrbWJkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk5MDMwNTIsImV4cCI6MjA3NTQ3OTA1Mn0.hUNwgoIt-hgh21a1WNqsGkC2QC6mpwAcio5ek86kAfc";
-    const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    const form = document.getElementById("auth-form");
-    const toggle = document.getElementById("toggle");
-    const title = document.getElementById("form-title");
-    const signupFields = document.getElementById("signup-fields");
-    const submitBtn = document.getElementById("submit-btn");
-    const eye = document.getElementById("toggle-eye");
-    const paidBtn = document.getElementById("paid-btn");
-    let isSignup = false;
-    let currentUser = null;
+    let isLogin = true;
 
-    // 👁️ Toggle password visibility
-    eye.addEventListener("click", () => {
-      const pass = document.getElementById("password");
-      pass.type = pass.type === "password" ? "text" : "password";
-    });
+    function toggleForm() {
+      const title = document.getElementById("form-title");
+      const desc = document.getElementById("form-desc");
+      const button = document.querySelector("button");
+      const toggleText = document.getElementById("toggle-text");
 
-    // 🔄 Toggle Login / Signup
-    toggle.addEventListener("click", () => {
-      isSignup = !isSignup;
-      title.textContent = isSignup ? "Signup" : "Login";
-      signupFields.style.display = isSignup ? "block" : "none";
-      submitBtn.textContent = isSignup ? "Signup" : "Login";
-      toggle.textContent = isSignup ? "Login" : "Signup";
-      paidBtn.style.display = "none";
-    });
-
-    // 🚀 Form submission
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const email = document.getElementById("email").value.trim();
-      const password = document.getElementById("password").value.trim();
-
-      if (isSignup) {
-        const { data, error } = await client.auth.signUp({ email, password });
-        if (error) return alert("❌ Signup Error: " + error.message);
-        alert("Signup successful! Please choose your package to continue.");
-        window.location.href = "products.html";
+      if (isLogin) {
+        title.textContent = "Create Your Account";
+        desc.textContent = "Join Biluxe10 and start your earning journey 🚀";
+        button.textContent = "Signup";
+        toggleText.textContent = "Already have an account?";
       } else {
-        const { data, error } = await client.auth.signInWithPassword({ email, password });
-        if (error) return alert("❌ Login Error: " + error.message);
-        currentUser = data.user;
-        checkPaymentAndRedirect(currentUser);
+        title.textContent = "Login to Biluxe10";
+        desc.textContent = "Welcome back! Enter your details below";
+        button.textContent = "Login";
+        toggleText.textContent = "Don't have an account?";
       }
-    });
 
-    // 🔍 Check payment and redirect
-    async function checkPaymentAndRedirect(user) {
-      const { data, error } = await client
-        .from("payments")
-        .select("status")
-        .eq("user_id", user.id)
-        .single();
+      isLogin = !isLogin;
+    }
 
-      if (error || !data) {
-        alert("No payment record found. Please click 'I Have Paid' after your payment.");
-        paidBtn.style.display = "block";
+    async function handleAuth() {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      const status = document.getElementById("status");
+
+      if (!email || !password) {
+        status.textContent = "⚠️ Please fill all fields!";
         return;
       }
 
-      if (data.status === "approved") {
-        window.location.href = "dashboard.html";
-      } else if (data.status === "pending") {
-        alert("Your payment is pending admin approval. Please wait.");
-      } else {
-        alert("Payment not completed. Please click 'I Have Paid' if you've paid.");
-        paidBtn.style.display = "block";
+      status.textContent = "Processing...";
+
+      try {
+        if (isLogin) {
+          const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+          if (error) throw error;
+          status.textContent = "✅ Login successful! Redirecting...";
+          setTimeout(() => window.location.href = "products.html", 1000);
+        } else {
+          const { data, error } = await supabase.auth.signUp({ email, password });
+          if (error) throw error;
+          status.textContent = "✅ Signup successful! Redirecting...";
+          setTimeout(() => window.location.href = "products.html", 1000);
+        }
+      } catch (err) {
+        console.error(err);
+        status.textContent = "❌ " + err.message;
       }
     }
-
-    // 💳 “I Have Paid” button click
-    paidBtn.addEventListener("click", async () => {
-      if (!currentUser) return alert("Please login first.");
-
-      const { data, error } = await client
-        .from("payments")
-        .insert([{ user_id: currentUser.id, status: "pending", created_at: new Date() }]);
-
-      if (error) return alert("❌ Error sending payment request: " + error.message);
-
-      alert("✅ Payment request sent! Admin will review and approve shortly.");
-      paidBtn.style.display = "none";
-    });
   </script>
+
 </body>
-</html>      
+</html>
