@@ -3,68 +3,44 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>User Dashboard | Biluxe10</title>
+  <title>Your Dashboard | Biluxe10</title>
   <style>
-    *{margin:0;padding:0;box-sizing:border-box;font-family:"Poppins",sans-serif;}
-    body{
-      min-height:100vh;
-      background:linear-gradient(135deg,#202020,#2a2a2a,#151515);
-      background-size:400% 400%;
-      animation:bgMove 10s ease infinite;
-      color:#fff;
-      display:flex;
-      justify-content:center;
-      align-items:center;
+    body {
+      font-family: "Poppins", sans-serif;
+      background: linear-gradient(135deg,#1c1c1c,#2a2a2a);
+      color: #fff;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
     }
-    @keyframes bgMove{
-      0%{background-position:0% 50%}
-      50%{background-position:100% 50%}
-      100%{background-position:0% 50%}
+    .card {
+      background: rgba(255,255,255,0.08);
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.4);
+      width: 350px;
     }
-    .container{
-      background:rgba(255,255,255,0.08);
-      padding:30px;
-      border-radius:16px;
-      width:380px;
-      box-shadow:0 0 20px rgba(0,0,0,0.4);
-      backdrop-filter:blur(10px);
-      text-align:center;
+    button {
+      margin-top: 20px;
+      background: #00ffd0;
+      color: #000;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
     }
-    h2{color:#00ffd0;margin-bottom:10px;}
-    p{margin:8px 0;color:#ddd;}
-    .info-box{
-      margin-top:15px;
-      text-align:left;
-      background:rgba(255,255,255,0.05);
-      padding:15px;
-      border-radius:10px;
-    }
-    .logout-btn{
-      margin-top:20px;
-      padding:10px 20px;
-      background:#ff4f4f;
-      border:none;
-      border-radius:8px;
-      color:#fff;
-      font-weight:600;
-      cursor:pointer;
-      transition:.3s;
-    }
-    .logout-btn:hover{background:#d63b3b;}
+    button:hover { background: #00cfa4; }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h2>Welcome 👋</h2>
-    <p id="user-email"></p>
-
-    <div class="info-box">
-      <p><strong>Full Name:</strong> <span id="user-name">Loading...</span></p>
-      <p><strong>Join Date:</strong> <span id="join-date">Loading...</span></p>
-      <p><strong>Payment Status:</strong> <span id="payment-status">Loading...</span></p>
-    </div>
-
-    <button class="logout-btn" id="logout-btn">Logout</button>
+  <div class="card">
+    <h2>Welcome, <span id="user-email">User</span> 👋</h2>
+    <p id="user-status">Checking your payment status...</p>
+    <button id="logout">Logout</button>
   </div>
 
   <script src="https://unpkg.com/@supabase/supabase-js"></script>
@@ -73,43 +49,36 @@
     const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNpc2J2emVjb215dWVzbHFrbWJkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk5MDMwNTIsImV4cCI6MjA3NTQ3OTA1Mn0.hUNwgoIt-hgh21a1WNqsGkC2QC6mpwAcio5ek86kAfc";
     const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    const userEmail = document.getElementById("user-email");
-    const userName = document.getElementById("user-name");
-    const joinDate = document.getElementById("join-date");
-    const paymentStatus = document.getElementById("payment-status");
-    const logoutBtn = document.getElementById("logout-btn");
+    const emailEl = document.getElementById("user-email");
+    const statusEl = document.getElementById("user-status");
+    const logoutBtn = document.getElementById("logout");
 
-    // 🟢 Check current user
-    async function loadUserData() {
-      const { data: { user }, error } = await client.auth.getUser();
-      if (error || !user) {
-        alert("Session expired. Please log in again.");
+    // 🧠 Get user session
+    window.addEventListener("load", async () => {
+      const { data } = await client.auth.getSession();
+      const user = data?.session?.user;
+      if (!user) {
+        alert("Session expired. Please login again.");
         window.location.href = "auth.html";
         return;
       }
 
-      userEmail.textContent = user.email;
+      emailEl.textContent = user.email;
 
-      // 🔍 Fetch payment info
-      const { data: payment, error: payError } = await client
+      // Fetch payment status
+      const { data: payments } = await client
         .from("payments")
-        .select("status, created_at")
+        .select("status")
         .eq("user_id", user.id)
         .order("created_at", { ascending: false })
-        .limit(1)
-        .single();
+        .limit(1);
 
-      if (payError || !payment) {
-        paymentStatus.textContent = "No payment record found ❌";
+      if (payments && payments.length > 0) {
+        statusEl.textContent = "Payment Status: " + payments[0].status.toUpperCase();
       } else {
-        paymentStatus.textContent = payment.status === "approved" ? "✅ Approved" : payment.status;
-        joinDate.textContent = new Date(payment.created_at).toLocaleDateString();
+        statusEl.textContent = "No payment record found.";
       }
-
-      // Optionally fetch user name from “profiles” table if you have one
-      // Otherwise just show email name part
-      userName.textContent = user.user_metadata?.full_name || user.email.split("@")[0];
-    }
+    });
 
     // 🚪 Logout
     logoutBtn.addEventListener("click", async () => {
@@ -117,8 +86,6 @@
       alert("Logged out successfully!");
       window.location.href = "auth.html";
     });
-
-    loadUserData();
   </script>
 </body>
 </html>
