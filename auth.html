@@ -107,60 +107,22 @@
     const SUPABASE_URL = "https://cisbvzecomyueslqkmbd.supabase.co";
     const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNpc2J2emVjb215dWVzbHFrbWJkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk5MDMwNTIsImV4cCI6MjA3NTQ3OTA1Mn0.hUNwgoIt-hgh21a1WNqsGkC2QC6mpwAcio5ek86kAfc";
     const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+<script>
+const showSignup = document.getElementById("show-signup");
+const showLogin = document.getElementById("show-login");
 
-    let isLogin = true;
+if (showSignup && showLogin) {
+  showSignup.addEventListener("click", (e) => {
+    e.preventDefault();
+    document.getElementById("login-section").style.display = "none";
+    document.getElementById("signup-section").style.display = "block";
+  });
 
-    function toggleForm() {
-      const title = document.getElementById("form-title");
-      const desc = document.getElementById("form-desc");
-      const button = document.querySelector("button");
-      const toggleText = document.getElementById("toggle-text");
-
-      if (isLogin) {
-        title.textContent = "Create Your Account";
-        desc.textContent = "Join Biluxe10 and start your earning journey 🚀";
-        button.textContent = "Signup";
-        toggleText.textContent = "Already have an account?";
-      } else {
-        title.textContent = "Login to Biluxe10";
-        desc.textContent = "Welcome back! Enter your details below";
-        button.textContent = "Login";
-        toggleText.textContent = "Don't have an account?";
-      }
-
-      isLogin = !isLogin;
-    }
-
-    async function handleAuth() {
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
-      const status = document.getElementById("status");
-
-      if (!email || !password) {
-        status.textContent = "⚠️ Please fill all fields!";
-        return;
-      }
-
-      status.textContent = "Processing...";
-
-      try {
-        if (isLogin) {
-          const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-          if (error) throw error;
-          status.textContent = "✅ Login successful! Redirecting...";
-          setTimeout(() => window.location.href = "products.html", 1000);
-        } else {
-          const { data, error } = await supabase.auth.signUp({ email, password });
-          if (error) throw error;
-          status.textContent = "✅ Signup successful! Redirecting...";
-          setTimeout(() => window.location.href = "products.html", 1000);
-        }
-      } catch (err) {
-        console.error(err);
-        status.textContent = "❌ " + err.message;
-      }
-    }
-  </script>
-
-</body>
-</html>
+  showLogin.addEventListener("click", (e) => {
+    e.preventDefault();
+    document.getElementById("signup-section").style.display = "none";
+    document.getElementById("login-section").style.display = "block";
+  });
+}
+</script>
+    
