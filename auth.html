@@ -1,4 +1,4 @@
-    <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -49,6 +49,12 @@
     .password-box i{
       position:absolute;right:10px;top:12px;cursor:pointer;color:#666;
     }
+    #paid-btn {
+      margin-top:10px;
+      background:#ffcc00;
+      color:#000;
+    }
+    #paid-btn:hover {background:#ffaa00;}
   </style>
 </head>
 <body>
@@ -67,6 +73,10 @@
       </div>
       <button type="submit" id="submit-btn">Login</button>
     </form>
+
+    <!-- I Have Paid button -->
+    <button id="paid-btn" style="display:none;">💰 I Have Paid</button>
+
     <p class="switch">Don’t have an account? <span id="toggle">Signup</span></p>
   </div>
 
@@ -82,7 +92,9 @@
     const signupFields = document.getElementById("signup-fields");
     const submitBtn = document.getElementById("submit-btn");
     const eye = document.getElementById("toggle-eye");
+    const paidBtn = document.getElementById("paid-btn");
     let isSignup = false;
+    let currentUser = null;
 
     // 👁️ Toggle password visibility
     eye.addEventListener("click", () => {
@@ -97,6 +109,7 @@
       signupFields.style.display = isSignup ? "block" : "none";
       submitBtn.textContent = isSignup ? "Signup" : "Login";
       toggle.textContent = isSignup ? "Login" : "Signup";
+      paidBtn.style.display = "none";
     });
 
     // 🚀 Form submission
@@ -108,14 +121,32 @@
       if (isSignup) {
         const { data, error } = await client.auth.signUp({ email, password });
         if (error) return alert("❌ Signup Error: " + error.message);
-        alert("Signup successful! Please choose your package to continue.");
-        window.location.href = "products.html";
+        alert("✅ Signup successful! Please pay your package fee and click 'I Have Paid'.");
+        currentUser = data.user;
+        paidBtn.style.display = "block";
       } else {
         const { data, error } = await client.auth.signInWithPassword({ email, password });
         if (error) return alert("❌ Login Error: " + error.message);
-        const user = data.user;
-        checkPaymentAndRedirect(user);
+        currentUser = data.user;
+        checkPaymentAndRedirect(currentUser);
       }
+    });
+
+    // 💰 When user clicks "I Have Paid"
+    paidBtn.addEventListener("click", async () => {
+      if (!currentUser) return alert("Please login first.");
+      const { error } = await client.from("payments").insert([
+        {
+          user_id: currentUser.id,
+          amount: 0,
+          package_name: "Starter",
+          status: "pending",
+          created_at: new Date().toISOString()
+        }
+      ]);
+      if (error) return alert("❌ Payment record error: " + error.message);
+      alert("✅ Payment recorded! Admin will verify soon.");
+      paidBtn.style.display = "none";
     });
 
     // 🔍 Check payment and redirect
@@ -126,17 +157,16 @@
         .eq("user_id", user.id)
         .single();
 
-      if (error) {
-        alert("Please make sure your payment is processed.");
-        window.location.href = "products.html";
+      if (error || !data) {
+        alert("Please complete your payment first.");
+        paidBtn.style.display = "block";
         return;
       }
 
-      if (data && data.status === "approved") {
+      if (data.status === "approved") {
         window.location.href = "dashboard.html";
       } else {
-        alert("Please complete your payment to access your dashboard.");
-        window.location.href = "products.html";
+        alert("⏳ Payment pending. Wait for admin approval.");
       }
     }
   </script>
