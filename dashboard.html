@@ -1,91 +1,124 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>User Dashboard</title>
-  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Dashboard | Biluxe10</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: linear-gradient(135deg, #ff7e5f, #feb47b);
-      color: #fff;
-      text-align: center;
-      padding: 30px;
+    *{margin:0;padding:0;box-sizing:border-box;font-family:"Poppins",sans-serif;}
+    body{
+      min-height:100vh;
+      background:linear-gradient(135deg,#202020,#2a2a2a,#151515);
+      background-size:400% 400%;
+      animation:bgMove 10s ease infinite;
+      color:#fff;
+      display:flex;
+      justify-content:center;
+      align-items:center;
     }
-    .card {
-      background: #fff;
-      color: #333;
-      border-radius: 12px;
-      padding: 20px;
-      margin: 10px auto;
-      width: 280px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    @keyframes bgMove{
+      0%{background-position:0% 50%}
+      50%{background-position:100% 50%}
+      100%{background-position:0% 50%}
     }
-    .pending {
-      background: #ffcc00;
-      color: #000;
-      padding: 20px;
-      border-radius: 10px;
-      margin-top: 50px;
+    .container{
+      background:rgba(255,255,255,0.08);
+      padding:30px;
+      border-radius:16px;
+      width:380px;
+      box-shadow:0 0 20px rgba(0,0,0,0.4);
+      backdrop-filter:blur(10px);
+      text-align:center;
     }
+    h2{color:#00ffd0;margin-bottom:10px;}
+    p{margin:8px 0;color:#ddd;}
+    .info-box{
+      margin-top:15px;
+      text-align:left;
+      background:rgba(255,255,255,0.05);
+      padding:15px;
+      border-radius:10px;
+    }
+    .logout-btn{
+      margin-top:20px;
+      padding:10px 20px;
+      background:#ff4f4f;
+      border:none;
+      border-radius:8px;
+      color:#fff;
+      font-weight:600;
+      cursor:pointer;
+      transition:.3s;
+    }
+    .logout-btn:hover{background:#d63b3b;}
   </style>
 </head>
 <body>
+  <div class="container">
+    <h2>Welcome 👋</h2>
+    <p id="user-email"></p>
 
-  <h1>Welcome to Your Dashboard</h1>
-  <div id="dashboard"></div>
+    <div class="info-box">
+      <p><strong>Full Name:</strong> <span id="user-name">Loading...</span></p>
+      <p><strong>Join Date:</strong> <span id="join-date">Loading...</span></p>
+      <p><strong>Payment Status:</strong> <span id="payment-status">Loading...</span></p>
+    </div>
 
+    <button class="logout-btn" id="logout-btn">Logout</button>
+  </div>
+
+  <script src="https://unpkg.com/@supabase/supabase-js"></script>
   <script>
     const SUPABASE_URL = "https://cisbvzecomyueslqkmbd.supabase.co";
-const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNpc2J2emVjb215dWVzbHFrbWJkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk5MDMwNTIsImV4cCI6MjA3NTQ3OTA1Mn0.hUNwgoIt-hgh21a1WNqsGkC2QC6mpwAcio5ek86kAfc";
-    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNpc2J2emVjb215dWVzbHFrbWJkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk5MDMwNTIsImV4cCI6MjA3NTQ3OTA1Mn0.hUNwgoIt-hgh21a1WNqsGkC2QC6mpwAcio5ek86kAfc";
+    const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    async function loadDashboard() {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        document.getElementById('dashboard').innerHTML = "<div class='pending'>Please log in first.</div>";
+    const userEmail = document.getElementById("user-email");
+    const userName = document.getElementById("user-name");
+    const joinDate = document.getElementById("join-date");
+    const paymentStatus = document.getElementById("payment-status");
+    const logoutBtn = document.getElementById("logout-btn");
+
+    // 🟢 Check current user
+    async function loadUserData() {
+      const { data: { user }, error } = await client.auth.getUser();
+      if (error || !user) {
+        alert("Session expired. Please log in again.");
+        window.location.href = "auth.html";
         return;
       }
 
-      const { data, error } = await supabase
-        .from('users')
-        .select('*')
-        .eq('id', user.id)
+      userEmail.textContent = user.email;
+
+      // 🔍 Fetch payment info
+      const { data: payment, error: payError } = await client
+        .from("payments")
+        .select("status, created_at")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false })
+        .limit(1)
         .single();
 
-      if (error || !data) {
-        document.getElementById('dashboard').innerHTML = "<div class='pending'>User data not found.</div>";
-        return;
+      if (payError || !payment) {
+        paymentStatus.textContent = "No payment record found ❌";
+      } else {
+        paymentStatus.textContent = payment.status === "approved" ? "✅ Approved" : payment.status;
+        joinDate.textContent = new Date(payment.created_at).toLocaleDateString();
       }
 
-      if (!data.verified) {
-        document.getElementById('dashboard').innerHTML = "<div class='pending'>Your account is pending admin verification.</div>";
-        return;
-      }
-
-      document.getElementById('dashboard').innerHTML = `
-        <div class='card'>
-          <h3>Total Earnings</h3>
-          <p>₹${data.total_earnings}</p>
-        </div>
-        <div class='card'>
-          <h3>Total Withdrawals</h3>
-          <p>₹${data.total_withdrawals}</p>
-        </div>
-        <div class='card'>
-          <h3>Referral Bonus</h3>
-          <p>₹${data.referral_bonus}</p>
-        </div>
-        <div class='card'>
-          <h3>Team Members</h3>
-          <p>${data.team_members}</p>
-        </div>
-      `;
+      // Optionally fetch user name from “profiles” table if you have one
+      // Otherwise just show email name part
+      userName.textContent = user.user_metadata?.full_name || user.email.split("@")[0];
     }
 
-    loadDashboard();
-  </script>
+    // 🚪 Logout
+    logoutBtn.addEventListener("click", async () => {
+      await client.auth.signOut();
+      alert("Logged out successfully!");
+      window.location.href = "auth.html";
+    });
 
+    loadUserData();
+  </script>
 </body>
 </html>
