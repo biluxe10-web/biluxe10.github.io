@@ -1,252 +1,91 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Biluxe10 Dashboard</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-    <style>
-      body {
-        background: linear-gradient(135deg, #0f172a, #1e293b);
-        font-family: "Poppins", sans-serif;
-      }
-      .card {
-        background: rgba(255, 255, 255, 0.05);
-        backdrop-filter: blur(10px);
-        border-radius: 16px;
-        padding: 1.5rem;
-        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-      }
-      .menu {
-        transition: all 0.3s ease;
-      }
-      .menu.hidden {
-        transform: translateX(-100%);
-      }
-    </style>
-  </head>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>User Dashboard</title>
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #ff7e5f, #feb47b);
+      color: #fff;
+      text-align: center;
+      padding: 30px;
+    }
+    .card {
+      background: #fff;
+      color: #333;
+      border-radius: 12px;
+      padding: 20px;
+      margin: 10px auto;
+      width: 280px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+    .pending {
+      background: #ffcc00;
+      color: #000;
+      padding: 20px;
+      border-radius: 10px;
+      margin-top: 50px;
+    }
+  </style>
+</head>
+<body>
 
-  <body class="text-white relative">
-    <!-- Sidebar -->
-    <div
-      id="sidebar"
-      class="menu fixed top-0 left-0 h-full w-64 bg-gray-900/90 p-5 hidden md:block"
-    >
-      <h2 class="text-2xl font-bold mb-6">Biluxe10</h2>
-      <ul class="space-y-4">
-        <li><button onclick="showSection('dashboard')">🏠 Dashboard</button></li>
-        <li><button onclick="showSection('tasks')">📋 Daily Tasks</button></li>
-        <li><button onclick="showSection('withdrawal')">💸 Withdrawal</button></li>
-        <li><button onclick="showSection('income')">💰 Income</button></li>
-        <li><button onclick="showSection('referral')">🔗 Refer & Earn</button></li>
-        <li><button onclick="showSection('about')">ℹ️ About</button></li>
-        <li><button onclick="logout()">🚪 Logout</button></li>
-      </ul>
-    </div>
+  <h1>Welcome to Your Dashboard</h1>
+  <div id="dashboard"></div>
 
-    <!-- Top Navbar -->
-    <div class="flex justify-between items-center p-4 bg-gray-900 md:hidden">
-      <button id="menuBtn">☰</button>
-      <h2 class="font-bold text-xl">Biluxe10</h2>
-    </div>
+  <script>
+    const SUPABASE_URL = "https://cisbvzecomyueslqkmbd.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNpc2J2emVjb215dWVzbHFrbWJkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk5MDMwNTIsImV4cCI6MjA3NTQ3OTA1Mn0.hUNwgoIt-hgh21a1WNqsGkC2QC6mpwAcio5ek86kAfc";
+    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    <!-- Main -->
-    <main class="md:ml-64 p-6" id="mainContent">
-      <!-- Dashboard -->
-      <section id="dashboard">
-        <h1 class="text-3xl font-bold mb-4">Welcome Back!</h1>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div class="card text-center">
-            <h3 class="text-lg">Wallet Balance</h3>
-            <p id="wallet" class="text-2xl font-bold">₹0</p>
-          </div>
-          <div class="card text-center">
-            <h3 class="text-lg">Total Earnings</h3>
-            <p id="earnings" class="text-2xl font-bold">₹0</p>
-          </div>
-          <div class="card text-center">
-            <h3 class="text-lg">Task Points</h3>
-            <p id="points" class="text-2xl font-bold">0</p>
-          </div>
-          <div class="card text-center">
-            <h3 class="text-lg">Team Members</h3>
-            <p id="team" class="text-2xl font-bold">0</p>
-          </div>
+    async function loadDashboard() {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        document.getElementById('dashboard').innerHTML = "<div class='pending'>Please log in first.</div>";
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from('users')
+        .select('*')
+        .eq('id', user.id)
+        .single();
+
+      if (error || !data) {
+        document.getElementById('dashboard').innerHTML = "<div class='pending'>User data not found.</div>";
+        return;
+      }
+
+      if (!data.verified) {
+        document.getElementById('dashboard').innerHTML = "<div class='pending'>Your account is pending admin verification.</div>";
+        return;
+      }
+
+      document.getElementById('dashboard').innerHTML = `
+        <div class='card'>
+          <h3>Total Earnings</h3>
+          <p>₹${data.total_earnings}</p>
         </div>
-      </section>
-
-      <!-- Tasks -->
-      <section id="tasks" class="hidden">
-        <h2 class="text-2xl font-bold mb-4">Daily Tasks</h2>
-        <div class="grid md:grid-cols-3 gap-4">
-          <div class="card">
-            <h3 class="font-bold">🎥 Upload Reel</h3>
-            <p>Earn 20 Points per video uploaded with #Biluxe10</p>
-            <button
-              class="mt-2 bg-indigo-500 px-3 py-1 rounded"
-              onclick="completeTask('reel',20)"
-            >
-              Submit Task
-            </button>
-          </div>
-          <div class="card">
-            <h3 class="font-bold">⭐ Give Review</h3>
-            <p>Earn 10 Points by writing feedback</p>
-            <button
-              class="mt-2 bg-indigo-500 px-3 py-1 rounded"
-              onclick="completeTask('review',10)"
-            >
-              Submit Task
-            </button>
-          </div>
-          <div class="card">
-            <h3 class="font-bold">👁️ Watch Ads</h3>
-            <p>Earn 5 Points for every ad watched</p>
-            <button
-              class="mt-2 bg-indigo-500 px-3 py-1 rounded"
-              onclick="completeTask('ads',5)"
-            >
-              Submit Task
-            </button>
-          </div>
+        <div class='card'>
+          <h3>Total Withdrawals</h3>
+          <p>₹${data.total_withdrawals}</p>
         </div>
-      </section>
-
-      <!-- Withdrawal -->
-      <section id="withdrawal" class="hidden">
-        <h2 class="text-2xl font-bold mb-4">Withdraw Funds</h2>
-        <div class="card max-w-md mx-auto text-black">
-          <label class="block mb-2 text-white">Enter Amount (₹)</label>
-          <input
-            id="withdrawAmount"
-            type="number"
-            placeholder="Enter amount"
-            class="w-full p-2 rounded mb-3"
-          />
-          <label class="block mb-2 text-white">Payment Mode</label>
-          <select id="method" class="w-full p-2 rounded mb-3">
-            <option>UPI</option>
-            <option>Bank Transfer</option>
-            <option>Crypto</option>
-          </select>
-          <button
-            class="bg-green-500 px-4 py-2 rounded w-full"
-            onclick="withdrawFunds()"
-          >
-            Withdraw Now
-          </button>
+        <div class='card'>
+          <h3>Referral Bonus</h3>
+          <p>₹${data.referral_bonus}</p>
         </div>
-      </section>
-
-      <!-- Income -->
-      <section id="income" class="hidden">
-        <h2 class="text-2xl font-bold mb-4">Earning Breakdown</h2>
-        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-          <div class="card text-center">
-            <h3>Direct Commission</h3>
-            <p id="directCommission" class="text-xl font-bold">₹0</p>
-          </div>
-          <div class="card text-center">
-            <h3>Passive Income</h3>
-            <p id="passiveIncome" class="text-xl font-bold">₹0</p>
-          </div>
-          <div class="card text-center">
-            <h3>Ads Bonus</h3>
-            <p id="adsBonus" class="text-xl font-bold">₹0</p>
-          </div>
+        <div class='card'>
+          <h3>Team Members</h3>
+          <p>${data.team_members}</p>
         </div>
-      </section>
+      `;
+    }
 
-      <!-- Referral -->
-      <section id="referral" class="hidden">
-        <h2 class="text-2xl font-bold mb-4">Refer & Earn</h2>
-        <div class="card max-w-lg mx-auto text-center">
-          <p>Your Referral Link:</p>
-          <input
-            id="refLink"
-            readonly
-            class="text-black p-2 rounded w-full mt-2"
-          />
-          <button
-            class="mt-3 bg-indigo-500 px-4 py-2 rounded"
-            onclick="copyReferral()"
-          >
-            Copy Link
-          </button>
-        </div>
-      </section>
+    loadDashboard();
+  </script>
 
-      <!-- About -->
-      <section id="about" class="hidden">
-        <h2 class="text-2xl font-bold mb-4">About Biluxe10</h2>
-        <div class="card">
-          <p>
-            Biluxe10 is a modern earning platform that rewards users for
-            completing creative and engagement-based tasks. Earn through daily
-            tasks, referrals, and performance bonuses in a transparent system.
-          </p>
-          <p class="mt-2">📧 Email: biluxe10@gmail.com</p>
-          <p>📸 Instagram: @bilu_xe10</p>
-        </div>
-      </section>
-    </main>
-
-    <!-- Script -->
-    <script>
-      const SUPABASE_URL = "https://cisbvzecomyueslqkmbd.supabase.co";
-      const SUPABASE_KEY =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNpc2J2emVjb215dWVzbHFrbWJkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk5MDMwNTIsImV4cCI6MjA3NTQ3OTA1Mn0.hUNwgoIt-hgh21a1WNqsGkC2QC6mpwAcio5ek86kAfc";
-      const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-      // Sidebar toggle
-      document.getElementById("menuBtn").addEventListener("click", () => {
-        document.getElementById("sidebar").classList.toggle("hidden");
-      });
-
-      function showSection(id) {
-        document.querySelectorAll("main section").forEach((sec) => {
-          sec.classList.add("hidden");
-        });
-        document.getElementById(id).classList.remove("hidden");
-      }
-
-      async function completeTask(type, points) {
-        alert(`${type} task completed! +${points} points added.`);
-        let p = document.getElementById("points");
-        p.textContent = parseInt(p.textContent) + points;
-      }
-
-      async function withdrawFunds() {
-        const amt = document.getElementById("withdrawAmount").value;
-        if (!amt) return alert("Enter amount!");
-        alert(`Withdrawal of ₹${amt} requested successfully.`);
-      }
-
-      function copyReferral() {
-        const link = document.getElementById("refLink");
-        link.select();
-        document.execCommand("copy");
-        alert("Referral link copied!");
-      }
-
-      async function logout() {
-        await supabase.auth.signOut();
-        alert("Logged out successfully!");
-      }
-
-      // Generate referral link & load user
-      (async () => {
-        const {
-          data: { user },
-        } = await supabase.auth.getUser();
-
-        if (user) {
-          document.getElementById("refLink").value = `${window.location.origin}?ref=${user.id}`;
-        } else {
-          document.getElementById("refLink").value = "Login required to view link";
-        }
-      })();
-    </script>
-  </body>
-        </html>
+</body>
+</html>
