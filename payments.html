@@ -1,1 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payment | Biluxe10</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #121212, #1e1e1e);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
 
+    .payment-container {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 20px;
+      padding: 30px;
+      max-width: 400px;
+      text-align: center;
+      box-shadow: 0 0 25px rgba(255, 255, 255, 0.1);
+    }
+
+    .payment-container img {
+      width: 250px;
+      height: 250px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      object-fit: cover;
+    }
+
+    h2 {
+      margin-bottom: 10px;
+      font-size: 24px;
+      color: #fff;
+    }
+
+    p {
+      color: #ccc;
+      margin-bottom: 15px;
+    }
+
+    input[type="file"] {
+      margin: 10px 0;
+      background: #222;
+      border: 1px solid #333;
+      padding: 10px;
+      border-radius: 10px;
+      color: #aaa;
+    }
+
+    button {
+      background: #00d084;
+      color: black;
+      padding: 12px 25px;
+      border: none;
+      border-radius: 10px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background: #00ff9d;
+    }
+
+    .status {
+      margin-top: 15px;
+      color: #00ff9d;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="payment-container">
+    <h2>Complete Your Payment</h2>
+    <p>Scan this QR code or use UPI ID below</p>
+    <img src="AccountQRCodeKotak Mahindra Bank - 5869_DARK_THEME (2) (1).png" alt="Payment QR">
+    <p>UPI ID: <strong>9019254743@axl</strong></p>
+
+    <p>After payment, please upload your screenshot below 👇</p>
+    <input type="file" id="screenshot" accept="image/*">
+    <button onclick="uploadProof()">I Have Paid</button>
+    <div class="status" id="status"></div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const SUPABASE_URL = "https://cisbvzecomyueslqkmbd.supabase.co";
+    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNpc2J2emVjb215dWVzbHFrbWJkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk5MDMwNTIsImV4cCI6MjA3NTQ3OTA1Mn0.hUNwgoIt-hgh21a1WNqsGkC2QC6mpwAcio5ek86kAfc";
+    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    async function uploadProof() {
+      const fileInput = document.getElementById("screenshot");
+      const status = document.getElementById("status");
+
+      if (!fileInput.files.length) {
+        alert("Please upload your payment screenshot!");
+        return;
+      }
+
+      const file = fileInput.files[0];
+      const user = (await supabase.auth.getUser()).data.user;
+
+      if (!user) {
+        alert("Please login first!");
+        window.location.href = "auth.html";
+        return;
+      }
+
+      const fileName = `${user.id}_${Date.now()}.png`;
+
+      const { data, error } = await supabase.storage
+        .from("payment_proofs")
+        .upload(fileName, file);
+
+      if (error) {
+        console.error(error);
+        status.textContent = "❌ Upload failed. Try again!";
+        return;
+      }
+
+      const { data: insertData, error: insertError } = await supabase
+        .from("payments")
+        .insert([
+          {
+            email: user.email,
+            proof_url: data.path,
+            status: "pending",
+            amount: 999,
+            created_at: new Date().toISOString()
+          }
+        ]);
+
+      if (insertError) {
+        console.error(insertError);
+        status.textContent = "❌ Failed to record payment!";
+      } else {
+        status.textContent = "✅ Payment proof submitted successfully! Waiting for admin approval.";
+        fileInput.value = "";
+      }
+    }
+  </script>
+</body>
+</html>
