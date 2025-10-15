@@ -3,79 +3,101 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Biluxe10 | Dashboard</title>
+  <title>Biluxe10 Dashboard</title>
   <link rel="stylesheet" href="style.css" />
-  <script src="https://unpkg.com/@supabase/supabase-js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.0.0/fonts/remixicon.css" rel="stylesheet">
+  <script src="script.js" defer></script>
 </head>
 <body>
-  <!-- 🔹 Sidebar -->
-  <div class="sidebar" id="sidebar">
-    <div class="logo">
-      <img src="logo.png" alt="Biluxe10" />
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
       <h2>Biluxe10</h2>
+      <i class="ri-close-line" id="close-btn"></i>
     </div>
-    <ul>
-      <li><a href="dashboard.html" class="active">🏠 Dashboard</a></li>
-      <li><a href="daily-task.html">✅ Daily Task</a></li>
-      <li><a href="update-profile.html">👤 Update Profile</a></li>
-      <li><a href="my-team.html">👥 My Team</a></li>
-      <li><a href="income.html">💰 Income</a></li>
-      <li><a href="withdrawal.html">🏦 Withdrawal</a></li>
-      <li><a href="transactions.html">📜 All Transaction</a></li>
-      <li><a href="about.html">ℹ️ About Us</a></li>
-      <li><a href="contact.html">📞 Contact Us</a></li>
-      <li><a href="#" id="logout">🚪 Logout</a></li>
+    <ul class="sidebar-menu">
+      <li><a href="dashboard.html" class="active"><i class="ri-dashboard-line"></i> Dashboard</a></li>
+      <li><a href="daily-task.html"><i class="ri-calendar-check-line"></i> Daily Task</a></li>
+      <li><a href="update-profile.html"><i class="ri-user-settings-line"></i> Update Profile</a></li>
+      <li><a href="my-team.html"><i class="ri-team-line"></i> My Team</a></li>
+      <li><a href="income.html"><i class="ri-money-dollar-circle-line"></i> Income</a></li>
+      <li><a href="withdrawal.html"><i class="ri-bank-card-line"></i> Withdrawal</a></li>
+      <li><a href="all-transactions.html"><i class="ri-list-unordered"></i> All Transactions</a></li>
+      <li><a href="about.html"><i class="ri-information-line"></i> About Us</a></li>
+      <li><a href="contact.html"><i class="ri-contacts-line"></i> Contact Us</a></li>
+      <li><a href="#" id="logout"><i class="ri-logout-box-r-line"></i> Logout</a></li>
     </ul>
-  </div>
+  </aside>
 
-  <!-- 🔸 Main Content -->
-  <div class="main">
+  <!-- Main Content -->
+  <main class="main">
     <header>
-      <div class="menu-btn" id="menu-btn">☰</div>
-      <div class="user-info">
-        <h3>Welcome, <span id="userName">User</span></h3>
-        <p>ID: <span id="userId">---</span></p>
+      <i class="ri-menu-line" id="menu-btn"></i>
+      <div class="profile">
+        <img src="https://cdn-icons-png.flaticon.com/512/847/847969.png" alt="User">
       </div>
     </header>
 
-    <section class="cards">
-      <div class="card">
-        <h4>Total Earnings</h4>
-        <p id="earnings">₹0</p>
-      </div>
-      <div class="card">
-        <h4>Total Withdrawals</h4>
-        <p id="withdrawals">₹0</p>
-      </div>
-      <div class="card">
-        <h4>Referral Bonus</h4>
-        <p id="refBonus">₹0</p>
-      </div>
-      <div class="card">
-        <h4>Team Members</h4>
-        <p id="teamCount">0</p>
+    <section class="welcome">
+      <h2>Hello, <span id="userName">User</span> 👋</h2>
+      <p>Welcome back to your dashboard</p>
+    </section>
+
+    <section class="quick-actions">
+      <div class="card"><i class="ri-eye-line"></i><p>Task View</p></div>
+      <div class="card"><i class="ri-wallet-3-line"></i><p>Withdraw</p></div>
+      <div class="card"><i class="ri-headphone-line"></i><p>Support</p></div>
+      <div class="card"><i class="ri-send-plane-line"></i><p>Telegram Channel</p></div>
+    </section>
+
+    <section class="wallet">
+      <div class="wallet-card">
+        <h3>Wallet Balance</h3>
+        <h1>₹<span id="walletBalance">0</span></h1>
+        <button class="btn">Withdraw</button>
       </div>
     </section>
 
-    <section class="section">
+    <section class="overview">
+      <h3>Performance Overview</h3>
+      <div class="overview-grid">
+        <div class="box">
+          <h4>Total Earnings</h4>
+          <p>₹<span id="totalEarnings">0</span></p>
+        </div>
+        <div class="box">
+          <h4>Total Withdrawals</h4>
+          <p>₹<span id="totalWithdrawals">0</span></p>
+        </div>
+        <div class="box">
+          <h4>Referral Bonus</h4>
+          <p>₹<span id="referralBonus">0</span></p>
+        </div>
+      </div>
+    </section>
+
+    <section class="earnings">
       <h3>Earnings Breakdown</h3>
-      <div class="sub-cards">
-        <div class="sub-card">
-          <h5>Active Income</h5>
-          <p>₹1200</p>
-        </div>
-        <div class="sub-card">
-          <h5>Passive Income</h5>
-          <p>₹800</p>
-        </div>
-        <div class="sub-card">
-          <h5>Ad Commission</h5>
-          <p>₹150</p>
-        </div>
+      <div class="earn-grid">
+        <div class="box"><i class="ri-time-line"></i><p>Ad View Income</p><span>₹<span id="adIncome">0</span></span></div>
+        <div class="box"><i class="ri-user-add-line"></i><p>Signup Income</p><span>₹<span id="signupIncome">0</span></span></div>
+        <div class="box"><i class="ri-telegram-line"></i><p>Telegram Income</p><span>₹<span id="telegramIncome">0</span></span></div>
       </div>
     </section>
-  </div>
 
-  <script src="script.js"></script>
+    <section class="refer">
+      <h3>Refer & Earn</h3>
+      <p>Your Referral Code:</p>
+      <div class="ref-box" id="refLink">https://biluxe10.in/invite?mylink=USERCODE</div>
+      <div class="share-btns">
+        <button class="btn"><i class="ri-whatsapp-line"></i> WhatsApp</button>
+        <button class="btn"><i class="ri-telegram-line"></i> Telegram</button>
+      </div>
+    </section>
+
+    <footer>
+      <p>© 2025 Biluxe10. All Rights Reserved.</p>
+    </footer>
+  </main>
 </body>
-</html>
+            </html>
