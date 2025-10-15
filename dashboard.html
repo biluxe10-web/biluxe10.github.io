@@ -4,100 +4,213 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Biluxe10 Dashboard</title>
-  <link rel="stylesheet" href="style.css" />
-  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.0.0/fonts/remixicon.css" rel="stylesheet">
-  <script src="script.js" defer></script>
+
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #071a2c;
+      color: #f5f5f5;
+      margin: 0;
+      overflow-x: hidden;
+    }
+
+    header {
+      background: #0b2540;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 15px 25px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.4);
+    }
+
+    header img {
+      height: 45px;
+    }
+
+    .menu-btn {
+      font-size: 28px;
+      cursor: pointer;
+      color: #fbc531;
+    }
+
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: -260px;
+      width: 250px;
+      height: 100%;
+      background: #0b2540;
+      transition: 0.3s;
+      padding-top: 70px;
+      box-shadow: 2px 0 10px rgba(0,0,0,0.4);
+    }
+
+    .sidebar.active {
+      left: 0;
+    }
+
+    .sidebar ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .sidebar ul li {
+      padding: 15px 25px;
+      cursor: pointer;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .sidebar ul li:hover {
+      background: #fbc531;
+      color: #0b2540;
+      font-weight: 600;
+    }
+
+    .content {
+      margin: 20px;
+      transition: 0.3s;
+    }
+
+    .card {
+      background: #102a43;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+
+    .card h2 {
+      color: #fbc531;
+      margin: 0 0 10px 0;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      color: #aaa;
+      background: #0b2540;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+    }
+  </style>
 </head>
+
 <body>
-  <!-- Sidebar -->
-  <aside class="sidebar">
-    <div class="sidebar-header">
-      <h2>Biluxe10</h2>
-      <i class="ri-close-line" id="close-btn"></i>
-    </div>
-    <ul class="sidebar-menu">
-      <li><a href="dashboard.html" class="active"><i class="ri-dashboard-line"></i> Dashboard</a></li>
-      <li><a href="daily-task.html"><i class="ri-calendar-check-line"></i> Daily Task</a></li>
-      <li><a href="update-profile.html"><i class="ri-user-settings-line"></i> Update Profile</a></li>
-      <li><a href="my-team.html"><i class="ri-team-line"></i> My Team</a></li>
-      <li><a href="income.html"><i class="ri-money-dollar-circle-line"></i> Income</a></li>
-      <li><a href="withdrawal.html"><i class="ri-bank-card-line"></i> Withdrawal</a></li>
-      <li><a href="all-transactions.html"><i class="ri-list-unordered"></i> All Transactions</a></li>
-      <li><a href="about.html"><i class="ri-information-line"></i> About Us</a></li>
-      <li><a href="contact.html"><i class="ri-contacts-line"></i> Contact Us</a></li>
-      <li><a href="#" id="logout"><i class="ri-logout-box-r-line"></i> Logout</a></li>
+  <header>
+    <img src="logo.png" alt="Biluxe10 Logo">
+    <span class="menu-btn">&#9776;</span>
+  </header>
+
+  <aside class="sidebar" id="sidebar">
+    <ul>
+      <li onclick="showSection('dashboard')">Dashboard</li>
+      <li onclick="showSection('daily-task')">Daily Task</li>
+      <li onclick="showSection('update-profile')">Update Profile</li>
+      <li onclick="showSection('my-team')">My Team</li>
+      <li onclick="showSection('income')">Income</li>
+      <li onclick="showSection('transactions')">Transactions</li>
+      <li onclick="showSection('about')">About Us</li>
+      <li onclick="showSection('contact')">Contact Us</li>
+      <li onclick="logout()">Logout</li>
     </ul>
   </aside>
 
-  <!-- Main Content -->
-  <main class="main">
-    <header>
-      <i class="ri-menu-line" id="menu-btn"></i>
-      <div class="profile">
-        <img src="https://cdn-icons-png.flaticon.com/512/847/847969.png" alt="User">
+  <main class="content">
+    <section id="dashboard" class="section active">
+      <div class="card">
+        <h2>Welcome to your Biluxe10 Dashboard</h2>
+        <p><strong>Name:</strong> <span id="user-name">Loading...</span></p>
+        <p><strong>Email:</strong> <span id="user-email">Loading...</span></p>
+        <p><strong>Joined:</strong> <span id="user-joined">Loading...</span></p>
       </div>
-    </header>
 
-    <section class="welcome">
-      <h2>Hello, <span id="userName">User</span> 👋</h2>
-      <p>Welcome back to your dashboard</p>
-    </section>
-
-    <section class="quick-actions">
-      <div class="card"><i class="ri-eye-line"></i><p>Task View</p></div>
-      <div class="card"><i class="ri-wallet-3-line"></i><p>Withdraw</p></div>
-      <div class="card"><i class="ri-headphone-line"></i><p>Support</p></div>
-      <div class="card"><i class="ri-send-plane-line"></i><p>Telegram Channel</p></div>
-    </section>
-
-    <section class="wallet">
-      <div class="wallet-card">
-        <h3>Wallet Balance</h3>
-        <h1>₹<span id="walletBalance">0</span></h1>
-        <button class="btn">Withdraw</button>
-      </div>
-    </section>
-
-    <section class="overview">
-      <h3>Performance Overview</h3>
-      <div class="overview-grid">
-        <div class="box">
-          <h4>Total Earnings</h4>
-          <p>₹<span id="totalEarnings">0</span></p>
+      <div class="grid">
+        <div class="card">
+          <h2>Earnings</h2>
+          <p><span id="earnings">₹0</span></p>
         </div>
-        <div class="box">
-          <h4>Total Withdrawals</h4>
-          <p>₹<span id="totalWithdrawals">0</span></p>
+        <div class="card">
+          <h2>Withdrawals</h2>
+          <p>Coming Soon</p>
         </div>
-        <div class="box">
-          <h4>Referral Bonus</h4>
-          <p>₹<span id="referralBonus">0</span></p>
+        <div class="card">
+          <h2>My Team</h2>
+          <p id="team-count">0 Members</p>
         </div>
       </div>
     </section>
-
-    <section class="earnings">
-      <h3>Earnings Breakdown</h3>
-      <div class="earn-grid">
-        <div class="box"><i class="ri-time-line"></i><p>Ad View Income</p><span>₹<span id="adIncome">0</span></span></div>
-        <div class="box"><i class="ri-user-add-line"></i><p>Signup Income</p><span>₹<span id="signupIncome">0</span></span></div>
-        <div class="box"><i class="ri-telegram-line"></i><p>Telegram Income</p><span>₹<span id="telegramIncome">0</span></span></div>
-      </div>
-    </section>
-
-    <section class="refer">
-      <h3>Refer & Earn</h3>
-      <p>Your Referral Code:</p>
-      <div class="ref-box" id="refLink">https://biluxe10.in/invite?mylink=USERCODE</div>
-      <div class="share-btns">
-        <button class="btn"><i class="ri-whatsapp-line"></i> WhatsApp</button>
-        <button class="btn"><i class="ri-telegram-line"></i> Telegram</button>
-      </div>
-    </section>
-
-    <footer>
-      <p>© 2025 Biluxe10. All Rights Reserved.</p>
-    </footer>
   </main>
+
+  <footer>© 2025 Biluxe10. All rights reserved.</footer>
+
+  <script src="https://unpkg.com/@supabase/supabase-js"></script>
+  <script>
+    const SUPABASE_URL = "https://cisbvzecomyueslqkmbd.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNpc2J2emVjb215dWVzbHFrbWJkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk5MDMwNTIsImV4cCI6MjA3NTQ3OTA1Mn0.hUNwgoIt-hgh21a1WNqsGkC2QC6mpwAcio5ek86kAfc";
+    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    const menuBtn = document.querySelector('.menu-btn');
+    const sidebar = document.getElementById('sidebar');
+    const userName = document.getElementById('user-name');
+    const userEmail = document.getElementById('user-email');
+    const userJoined = document.getElementById('user-joined');
+    const earnings = document.getElementById('earnings');
+    const teamCount = document.getElementById('team-count');
+
+    menuBtn.addEventListener('click', () => {
+      sidebar.classList.toggle('active');
+    });
+
+    function showSection(sectionId) {
+      document.querySelectorAll('.section').forEach(sec => sec.style.display = 'none');
+      document.getElementById(sectionId).style.display = 'block';
+      sidebar.classList.remove('active');
+    }
+
+    async function loadUserData() {
+      const storedEmail = localStorage.getItem('userEmail');
+      if (!storedEmail) return;
+
+      const { data, error } = await supabase
+        .from('members')
+        .select('*')
+        .eq('member_email', storedEmail)
+        .single();
+
+      if (data) {
+        userName.textContent = data.member_name;
+        userEmail.textContent = data.member_email;
+        userJoined.textContent = new Date(data.joined_at).toLocaleDateString();
+        earnings.textContent = `₹${data.earnings || 0}`;
+      }
+
+      // Realtime subscription
+      supabase
+        .channel('realtime:members')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'members' }, payload => {
+          if (payload.new.member_email === storedEmail) {
+            earnings.textContent = `₹${payload.new.earnings}`;
+          }
+        })
+        .subscribe();
+    }
+
+    function logout() {
+      localStorage.removeItem('userEmail');
+      window.location.href = 'login.html';
+    }
+
+    loadUserData();
+  </script>
 </body>
-            </html>
+        </html>
