@@ -1,205 +1,174 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Biluxe10 Dashboard</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Biluxe10 | Dashboard</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Poppins', sans-serif;
+    *{margin:0;padding:0;box-sizing:border-box;font-family:"Poppins",sans-serif}
+    body{
+      background:linear-gradient(135deg,#1a1a1a,#2b2b2b);
+      color:#fff;min-height:100vh;overflow-x:hidden;
+      transition:filter 0.4s ease;
     }
-
-    body {
-      background-color: #0f1f1c;
-      color: #f7f4ed;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      min-height: 100vh;
-      padding-top: 80px;
+    header{
+      display:flex;align-items:center;justify-content:space-between;
+      padding:15px 25px;background:#111;border-bottom:1px solid #00ffd0;
+      position:sticky;top:0;z-index:10;
     }
-
-    /* Topbar */
-    .topbar {
-      background: linear-gradient(90deg, #0d3b32, #145c4b);
-      color: #E8DCC5;
-      width: 100%;
-      height: 60px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 20px;
-      position: fixed;
-      top: 0;
-      left: 0;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-      z-index: 1000;
+    header h1{color:#00ffd0;font-size:1.4rem;}
+    #menu-btn{font-size:1.8rem;cursor:pointer;}
+    .container{padding:20px;}
+    .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:15px;margin-bottom:25px;}
+    .card{
+      background:rgba(255,255,255,0.08);border-radius:16px;padding:20px;
+      text-align:center;box-shadow:0 0 15px rgba(0,0,0,0.3);
     }
-    .logo {
-      font-weight: 600;
-      font-size: 1.2rem;
-      color: #E8DCC5;
+    .card h3{color:#00ffd0;margin-bottom:10px;}
+    .card p{font-size:1.3rem;font-weight:600;}
+    .btn{
+      display:inline-block;padding:10px 18px;margin-top:10px;background:#00ffd0;
+      color:#000;border:none;border-radius:8px;cursor:pointer;font-weight:600;
+      transition:0.3s;
     }
-    .menu-toggle {
-      font-size: 24px;
-      cursor: pointer;
-      color: #E8DCC5;
+    .btn:hover{background:#00cfa4;}
+    .channels{display:flex;gap:10px;justify-content:center;margin:20px 0;}
+    .channels a{
+      text-decoration:none;color:#fff;padding:10px 20px;border-radius:8px;
+      background:#333;border:1px solid #00ffd0;transition:0.3s;
     }
-
-    /* Sidebar */
-    .sidebar {
-      width: 250px;
-      background: linear-gradient(180deg, #0C3432, #124b46);
-      position: fixed;
-      left: -250px;
-      top: 0;
-      height: 100%;
-      transition: all 0.3s ease;
-      padding-top: 60px;
-      z-index: 999;
-      box-shadow: 4px 0 10px rgba(0,0,0,0.3);
+    .channels a:hover{background:#00ffd0;color:#000;}
+    #sidebar{
+      position:fixed;top:0;left:-260px;width:250px;height:100%;
+      background:#111;box-shadow:2px 0 10px rgba(0,0,0,0.5);
+      transition:0.4s;padding:25px;
+      z-index:20;
     }
-    .sidebar.active { left: 0; }
-    .sidebar ul { list-style: none; }
-    .sidebar ul li {
-      padding: 15px 20px;
-      border-bottom: 1px solid rgba(255,255,255,0.1);
-    }
-    .sidebar ul li a {
-      text-decoration: none;
-      color: #E8DCC5;
-      display: block;
-      transition: 0.3s;
-    }
-    .sidebar ul li:hover {
-      background: rgba(255, 215, 0, 0.2);
-      color: #FFD700;
-    }
-
-    /* Main Content */
-    .main {
-      width: 90%;
-      max-width: 1000px;
-      margin-top: 30px;
-      transition: margin-left 0.3s ease;
-    }
-
-    .main h2 {
-      margin-bottom: 20px;
-      font-size: 1.8rem;
-      color: #FFD700;
-      text-align: center;
-    }
-
-    /* Cards Container */
-    .cards {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 20px;
-    }
-
-    .card {
-      background: linear-gradient(145deg, #12453f, #0e3934);
-      border-radius: 14px;
-      padding: 20px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-      transition: 0.3s;
-    }
-    .card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-    }
-
-    .card h3 {
-      color: #FFD700;
-      font-size: 1.1rem;
-      margin-bottom: 10px;
-    }
-
-    .card p {
-      font-size: 1.4rem;
-      font-weight: 600;
-      color: #f7f4ed;
-    }
-
-    .footer {
-      margin-top: 50px;
-      color: rgba(255,255,255,0.6);
-      font-size: 0.85rem;
-    }
-
-    @media (max-width: 768px) {
-      .main { width: 95%; }
-      .sidebar { width: 220px; }
-    }
+    #sidebar.active{left:0;}
+    #sidebar h2{color:#00ffd0;margin-bottom:20px;}
+    #sidebar ul{list-style:none;}
+    #sidebar ul li{margin:15px 0;}
+    #sidebar ul li a{text-decoration:none;color:#ccc;font-weight:500;}
+    #sidebar ul li a:hover{color:#00ffd0;}
+    .blurred{filter:blur(8px);}
   </style>
 </head>
 <body>
+  <header>
+    <h1>Biluxe10 Dashboard</h1>
+    <div id="menu-btn">☰</div>
+  </header>
 
-  <div class="topbar">
-    <div class="logo">Biluxe10 Dashboard</div>
-    <div class="menu-toggle" onclick="toggleSidebar()">☰</div>
-  </div>
-
-  <div class="sidebar" id="sidebar">
+  <aside id="sidebar">
+    <h2>Menu</h2>
     <ul>
-      <li><a href="#">🏠 Overview</a></li>
-      <li><a href="#">💰 Earnings</a></li>
-      <li><a href="#">📦 Tasks</a></li>
-      <li><a href="#">👤 Profile</a></li>
-      <li><a href="#">🚪 Logout</a></li>
+      <li><a href="#">Dashboard</a></li>
+      <li><a href="#">Task View</a></li>
+      <li><a href="#">Telegram Channel</a></li>
+      <li><a href="#">WhatsApp Channel</a></li>
+      <li><a href="#">Withdraw</a></li>
+      <li><a href="#" id="logout-btn">Logout</a></li>
     </ul>
-  </div>
+  </aside>
 
-  <div class="main" id="main">
-    <h2>Earnings Overview</h2>
-    <div class="cards">
-      <div class="card">
-        <h3>Total Earnings</h3>
-        <p id="total">₹0</p>
+  <main id="content">
+    <div class="container">
+      <div class="cards">
+        <div class="card">
+          <h3>Total Earning</h3>
+          <p id="totalEarning">₹0</p>
+        </div>
+        <div class="card">
+          <h3>Total Withdrawal</h3>
+          <p id="totalWithdrawal">₹0</p>
+        </div>
+        <div class="card">
+          <h3>Wallet Balance</h3>
+          <p id="walletBalance">₹0</p>
+        </div>
       </div>
-      <div class="card">
-        <h3>Direct Income</h3>
-        <p id="direct">₹0</p>
+
+      <h2 style="color:#00ffd0;margin-bottom:10px;">Performance Overview</h2>
+      <div class="cards">
+        <div class="card"><h3>Active Commission</h3><p id="activeCommission">₹0</p></div>
+        <div class="card"><h3>Passive Commission</h3><p id="passiveCommission">₹0</p></div>
+        <div class="card"><h3>Ads Commission</h3><p id="adsCommission">₹0</p></div>
+        <div class="card"><h3>Task Points</h3><p id="taskPoints">0</p></div>
       </div>
-      <div class="card">
-        <h3>Passive Income</h3>
-        <p id="passive">₹0</p>
+
+      <div class="channels">
+        <a href="#" id="telegram">Telegram Channel</a>
+        <a href="#" id="whatsapp">WhatsApp Channel</a>
       </div>
-      <div class="card">
-        <h3>Task Points</h3>
-        <p id="tasks">0</p>
-      </div>
+
+      <button class="btn" id="withdrawBtn">Withdraw Now</button>
     </div>
-    <div class="footer">© 2025 Biluxe10 | All Rights Reserved</div>
-  </div>
+  </main>
 
+  <script src="https://unpkg.com/@supabase/supabase-js"></script>
   <script>
-    function toggleSidebar() {
-      document.getElementById("sidebar").classList.toggle("active");
-    }
-
-    // Example Supabase (replace with real connection later)
+    // 👉 Yaha apna Supabase details daalna
     const SUPABASE_URL = "https://cisbvzecomyueslqkmbd.supabase.co";
-    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNpc2J2emVjb215dWVzbHFrbWJkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk5MDMwNTIsImV4cCI6MjA3NTQ3OTA1Mn0.hUNwgoIt-hgh21a1WNqsGkC2QC6mpwAcio5ek86kAfc";
-    const { createClient } = window.supabase;
-    const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNpc2J2emVjb215dWVzbHFrbWJkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk5MDMwNTIsImV4cCI6MjA3NTQ3OTA1Mn0.hUNwgoIt-hgh21a1WNqsGkC2QC6mpwAcio5ek86kAfc";
+    const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    // check login status
-    async function checkUser() {
-      const { data } = await supabase.auth.getUser();
-      if (!data?.user) {
-        window.location.href = "signin.html";
+    const sidebar = document.getElementById("sidebar");
+    const menuBtn = document.getElementById("menu-btn");
+    const content = document.getElementById("content");
+
+    menuBtn.addEventListener("click", () => {
+      sidebar.classList.toggle("active");
+      content.classList.toggle("blurred");
+    });
+
+    // 🔐 Check current user & fetch data
+    window.addEventListener("load", async () => {
+      const { data } = await client.auth.getSession();
+      const user = data?.session?.user;
+      if (!user) {
+        alert("Please login first!");
+        window.location.href = "auth.html";
+        return;
+      }
+      fetchUserData(user.id);
+    });
+
+    // 📊 Fetch user data from Supabase
+    async function fetchUserData(userId) {
+      try {
+        const { data, error } = await client
+          .from("earnings")
+          .select("*")
+          .eq("user_id", userId)
+          .single();
+
+        if (error || !data) {
+          console.log("No earning data yet.");
+          return;
+        }
+
+        document.getElementById("totalEarning").textContent = "₹" + (data.total_earning || 0);
+        document.getElementById("totalWithdrawal").textContent = "₹" + (data.total_withdrawal || 0);
+        document.getElementById("walletBalance").textContent = "₹" + (data.wallet_balance || 0);
+        document.getElementById("activeCommission").textContent = "₹" + (data.active_commission || 0);
+        document.getElementById("passiveCommission").textContent = "₹" + (data.passive_commission || 0);
+        document.getElementById("adsCommission").textContent = "₹" + (data.ads_commission || 0);
+        document.getElementById("taskPoints").textContent = data.task_points || 0;
+      } catch (err) {
+        console.error("Fetch error:", err.message);
       }
     }
 
-    checkUser();
-  </script>
+    // 🚪 Logout
+    document.getElementById("logout-btn").addEventListener("click", async () => {
+      await client.auth.signOut();
+      window.location.href = "auth.html";
+    });
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+    // 💸 Withdraw button
+    document.getElementById("withdrawBtn").addEventListener("click", () => {
+      alert("Withdrawal request feature coming soon!");
+    });
+  </script>
 </body>
-  </html>
+</html>
