@@ -1,0 +1,33 @@
+<script>
+  // Demo values
+  const demoData = {
+    total_earnings: 240000,
+    wallet_balance: 240000, // Assuming full balance for demo
+    total_withdrawal: 160000,    // Assuming nothing withdrawn yet
+    active_commission: 160000,
+    passive_commission: 60000,
+    ads_commission: 20000,
+    task_points: 50000
+  };
+
+  function loadDashboardDemo() {
+    document.getElementById("totalEarning").innerText = `₹${demoData.total_earnings}`;
+    document.getElementById("walletBalance").innerText = `₹${demoData.wallet_balance}`;
+    document.getElementById("withdrawn").innerText = `₹${demoData.total_withdrawal}`;
+    document.getElementById("activeCommission").innerText = `₹${demoData.active_commission}`;
+    document.getElementById("passiveCommission").innerText = `₹${demoData.passive_commission}`;
+    document.getElementById("taskPoints").innerText = `${demoData.task_points}`;
+
+    // Add a card for Ads Commission
+    if (!document.getElementById("adsCommissionCard")) {
+      const cardsContainer = document.querySelector(".cards");
+      const adsCard = document.createElement("div");
+      adsCard.className = "card";
+      adsCard.id = "adsCommissionCard";
+      adsCard.innerHTML = `<h3>Ads Commission</h3><p>₹${demoData.ads_commission}</p>`;
+      cardsContainer.appendChild(adsCard);
+    }
+  }
+
+  loadDashboardDemo();
+</script>
