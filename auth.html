@@ -1,4 +1,4 @@
-    <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -7,24 +7,58 @@
   <style>
     *{margin:0;padding:0;box-sizing:border-box;font-family:"Poppins",sans-serif}
     body{
-      height:100vh;display:flex;align-items:center;justify-content:center;
+      height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
       background:linear-gradient(135deg,#2b2b2b,#3d3d3d,#222);
-      background-size:400% 400%;animation:bgMove 10s ease infinite;color:#fff;
+      background-size:400% 400%;
+      animation:bgMove 10s ease infinite;
+      color:#fff;
     }
     @keyframes bgMove{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
-    .box{background:rgba(255,255,255,0.1);padding:40px;border-radius:16px;width:350px;text-align:center;
-      box-shadow:0 0 20px rgba(0,0,0,0.4);backdrop-filter:blur(10px);}
+    .box{
+      background:rgba(255,255,255,0.1);
+      padding:40px;
+      border-radius:16px;
+      width:350px;
+      text-align:center;
+      box-shadow:0 0 20px rgba(0,0,0,0.4);
+      backdrop-filter:blur(10px);
+    }
     h2{margin-bottom:20px;color:#00ffd0}
-    input{width:100%;padding:12px;margin:8px 0;border:none;border-radius:8px;outline:none;}
-    button{width:100%;padding:12px;border:none;background:#00ffd0;color:#000;font-weight:600;border-radius:8px;
-      cursor:pointer;transition:.3s;}
+    input{
+      width:100%;padding:12px;margin:8px 0;
+      border:none;border-radius:8px;outline:none;
+    }
+    button{
+      width:100%;
+      padding:12px;
+      border:none;
+      background:#00ffd0;
+      color:#000;
+      font-weight:600;
+      border-radius:8px;
+      cursor:pointer;
+      transition:.3s;
+    }
     button:hover{background:#00cfa4}
     .switch{margin-top:15px;color:#bbb}
     .switch span{color:#00ffd0;cursor:pointer}
     .password-box{position:relative;}
-    .password-box i{position:absolute;right:10px;top:12px;cursor:pointer;color:#666;}
-    #paid-btn{margin-top:15px;background:#ffb800;color:#000;font-weight:600;display:none;}
-    #paid-btn:hover{background:#e0a600;}
+    .password-box i{
+      position:absolute;right:10px;top:12px;cursor:pointer;color:#666;
+    }
+    #paid-btn {
+      margin-top:15px;
+      background:#ffb800;
+      color:#000;
+      font-weight:600;
+      display:none;
+    }
+    #paid-btn:hover {
+      background:#e0a600;
+    }
   </style>
 </head>
 <body>
@@ -32,7 +66,7 @@
     <h2 id="form-title">Login</h2>
     <form id="auth-form">
       <div id="signup-fields" style="display:none;">
-        <input type="text" id="name" placeholder="Full Name" />
+        <input type="text" id="name" placeholder="Full Name" required />
         <input type="tel" id="phone" placeholder="Phone Number" />
         <input type="text" id="referral" placeholder="Referral Code (optional)" />
       </div>
@@ -43,114 +77,112 @@
       </div>
       <button type="submit" id="submit-btn">Login</button>
     </form>
+
     <button id="paid-btn">I Have Paid</button>
+
     <p class="switch">Don’t have an account? <span id="toggle">Signup</span></p>
   </div>
+<script src="https://unpkg.com/@supabase/supabase-js"></script>
+<script>
+  const SUPABASE_URL = "https://cisbvzecomyueslqkmbd.supabase.co";
+  const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNpc2J2emVjb215dWVzbHFrbWJkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk5MDMwNTIsImV4cCI6MjA3NTQ3OTA1Mn0.hUNwgoIt-hgh21a1WNqsGkC2QC6mpwAcio5ek86kAfc";
+  const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-  <script src="https://unpkg.com/@supabase/supabase-js"></script>
-  <script>
-    const SUPABASE_URL = "https://cisbvzecomyueslqkmbd.supabase.co";
-    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNpc2J2emVjb215dWVzbHFrbWJkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk5MDMwNTIsImV4cCI6MjA3NTQ3OTA1Mn0.hUNwgoIt-hgh21a1WNqsGkC2QC6mpwAcio5ek86kAfc";
-    const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  const form = document.getElementById("auth-form");
+  const toggle = document.getElementById("toggle");
+  const title = document.getElementById("form-title");
+  const signupFields = document.getElementById("signup-fields");
+  const submitBtn = document.getElementById("submit-btn");
+  const eye = document.getElementById("toggle-eye");
+  const paidBtn = document.getElementById("paid-btn");
+  let isSignup = false;
+  let currentUser = null;
 
-    const form = document.getElementById("auth-form");
-    const toggle = document.getElementById("toggle");
-    const title = document.getElementById("form-title");
-    const signupFields = document.getElementById("signup-fields");
-    const submitBtn = document.getElementById("submit-btn");
-    const eye = document.getElementById("toggle-eye");
-    const paidBtn = document.getElementById("paid-btn");
-    let isSignup = false;
-    let currentUser = null;
+  // 👁️ Toggle password visibility
+  eye.addEventListener("click", () => {
+    const pass = document.getElementById("password");
+    pass.type = pass.type === "password" ? "text" : "password";
+  });
 
-    // 👁️ Password toggle
-    eye.addEventListener("click", () => {
-      const pass = document.getElementById("password");
-      pass.type = pass.type === "password" ? "text" : "password";
-    });
+  // 🔄 Toggle Login / Signup
+  toggle.addEventListener("click", () => {
+    isSignup = !isSignup;
+    title.textContent = isSignup ? "Signup" : "Login";
+    signupFields.style.display = isSignup ? "block" : "none";
+    submitBtn.textContent = isSignup ? "Signup" : "Login";
+    toggle.textContent = isSignup ? "Login" : "Signup";
+    paidBtn.style.display = "none";
+  });
 
-    // 🔄 Toggle Login/Signup
-    toggle.addEventListener("click", () => {
-      isSignup = !isSignup;
-      title.textContent = isSignup ? "Signup" : "Login";
-      signupFields.style.display = isSignup ? "block" : "none";
-      submitBtn.textContent = isSignup ? "Signup" : "Login";
-      toggle.textContent = isSignup ? "Login" : "Signup";
-      paidBtn.style.display = "none";
-    });
+  // 🚀 Form submission
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value.trim();
 
-    // 🧠 Auto login check
-    window.addEventListener("load", async () => {
-      const { data } = await client.auth.getSession();
-      const user = data?.session?.user;
-      if (user) {
-        console.log("Already logged in:", user.email);
-        checkPaymentAndRedirect(user);
-      }
-    });
+    if (isSignup) {
+      const { data, error } = await client.auth.signUp({ email, password });
+      if (error) return alert("❌ Signup Error: " + error.message);
+      alert("Signup successful! Please choose your package to continue.");
+      window.location.href = "products.html";
+    } else {
+      const { data, error } = await client.auth.signInWithPassword({ email, password });
+      if (error) return alert("❌ Login Error: " + error.message);
+      currentUser = data.user;
+      checkPaymentAndRedirect(currentUser);
+    }
+  });
 
-    // 🚀 Auth form submit
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const email = document.getElementById("email").value.trim();
-      const password = document.getElementById("password").value.trim();
+  // ✅ Payment check logic
+  async function checkPaymentAndRedirect(user) {
+    const { data, error } = await client
+      .from("payments")
+      .select("status, created_at")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false })
+      .limit(1);
 
-      if (isSignup) {
-        const { error } = await client.auth.signUp({ email, password });
-        if (error) return alert("❌ Signup Error: " + error.message);
-        alert("✅ Signup successful! Proceed to payment.");
-        window.location.href = "products.html";
-      } else {
-        const { data, error } = await client.auth.signInWithPassword({ email, password });
-        if (error) return alert("❌ Login Error: " + error.message);
-        const user = data?.user;
-        if (!user) return alert("No user found. Try again.");
-        currentUser = user;
-        checkPaymentAndRedirect(user);
-      }
-    });
-
-    // 💳 Payment check
-    async function checkPaymentAndRedirect(user) {
-      const { data, error } = await client
-        .from("payments")
-        .select("status")
-        .eq("user_id", user.id)
-        .order("created_at", { ascending: false })
-        .limit(1);
-
-      if (error) {
-        console.error(error);
-        return alert("Error checking payment.");
-      }
-
-      if (!data || data.length === 0) {
-        paidBtn.style.display = "block";
-        currentUser = user;
-        return alert("No payment record found. Click 'I Have Paid'.");
-      }
-
-      const payment = data[0];
-      if (payment.status === "approved") {
-        window.location.href = "dashboard.html";
-      } else if (payment.status === "pending") {
-        alert("⏳ Payment pending admin approval.");
-      } else {
-        paidBtn.style.display = "block";
-        alert("❌ Payment not completed. Click 'I Have Paid'.");
-      }
+    if (error) {
+      console.error("Error checking payment:", error);
+      alert("Error checking payment. Please try again later.");
+      return;
     }
 
-    // 🔘 “I Have Paid” button
-    paidBtn.addEventListener("click", async () => {
-      if (!currentUser) return alert("Please login first.");
-      const { error } = await client
-        .from("payments")
-        .insert([{ user_id: currentUser.id, status: "pending" }]);
-      if (error) return alert("❌ Error sending request: " + error.message);
-      alert("✅ Payment request sent! Admin will approve soon.");
-      paidBtn.style.display = "none";
-    });
-  </script>
-</body>
-</html>
+    if (!data || data.length === 0) {
+      alert("No payment record found. Please click 'I Have Paid' after your payment.");
+      paidBtn.style.display = "block";
+      return;
+    }
+
+    const payment = data[0];
+    console.log("Payment status:", payment.status);
+
+    if (payment.status === "approved") {
+      alert("✅ Payment approved! Redirecting to dashboard...");
+      window.location.href = "dashboard.html";
+    } else if (payment.status === "pending") {
+      alert("⏳ Your payment is pending admin approval. Please wait.");
+    } else {
+      alert("❌ Payment not completed. Please click 'I Have Paid' if you've already paid.");
+      paidBtn.style.display = "block";
+    }
+  }
+
+  // 💳 “I Have Paid” button click
+  paidBtn.addEventListener("click", async () => {
+    if (!currentUser) return alert("Please login first.");
+
+    const { data, error } = await client
+      .from("payments")
+      .insert([{ 
+        user_id: currentUser.id, 
+        status: "pending", 
+        created_at: new Date().toISOString() 
+      }]);
+
+    if (error) return alert("❌ Error sending payment request: " + error.message);
+
+    alert("✅ Payment request sent! Admin will review and approve shortly.");
+    paidBtn.style.display = "none";
+  });
+</script>
