@@ -1,4 +1,4 @@
-    <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -13,7 +13,7 @@
     }
     @keyframes bgMove{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
     .box{background:rgba(255,255,255,0.1);padding:40px;border-radius:16px;width:350px;text-align:center;
-      box-shadow:0 0 20px rgba(0,0,0,0.4);backdrop-filter:blur(10px);}
+      box-shadow:0 0 20px rgba(0,0,0,0.4);backdrop-filter:blur(10px);}    
     h2{margin-bottom:20px;color:#00ffd0}
     input{width:100%;padding:12px;margin:8px 0;border:none;border-radius:8px;outline:none;}
     button{width:100%;padding:12px;border:none;background:#00ffd0;color:#000;font-weight:600;border-radius:8px;
@@ -25,11 +25,13 @@
     .password-box i{position:absolute;right:10px;top:12px;cursor:pointer;color:#666;}
     #paid-btn{margin-top:15px;background:#ffb800;color:#000;font-weight:600;display:none;}
     #paid-btn:hover{background:#e0a600;}
+    .banner{background:rgba(0,0,0,0.25);padding:8px;border-radius:8px;margin-bottom:10px;color:#ffd;}    
   </style>
 </head>
 <body>
   <div class="box">
     <h2 id="form-title">Login</h2>
+    <div id="user-banner" style="display:none;" class="banner"></div>
     <form id="auth-form">
       <div id="signup-fields" style="display:none;">
         <input type="text" id="name" placeholder="Full Name" />
@@ -47,12 +49,15 @@
     <p class="switch">Don’t have an account? <span id="toggle">Signup</span></p>
   </div>
 
-  <script src="https://unpkg.com/@supabase/supabase-js"></script>
+  <!-- Supabase script (v2) -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
   <script>
+    // --- CONFIG ---
     const SUPABASE_URL = "https://cisbvzecomyueslqkmbd.supabase.co";
     const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNpc2J2emVjb215dWVzbHFrbWJkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk5MDMwNTIsImV4cCI6MjA3NTQ3OTA1Mn0.hUNwgoIt-hgh21a1WNqsGkC2QC6mpwAcio5ek86kAfc";
-    const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+    // --- DOM ---
     const form = document.getElementById("auth-form");
     const toggle = document.getElementById("toggle");
     const title = document.getElementById("form-title");
@@ -60,37 +65,45 @@
     const submitBtn = document.getElementById("submit-btn");
     const eye = document.getElementById("toggle-eye");
     const paidBtn = document.getElementById("paid-btn");
+    const banner = document.getElementById("user-banner");
     let isSignup = false;
     let currentUser = null;
 
-    // 👁️ Password toggle
+    // Password toggle
     eye.addEventListener("click", () => {
       const pass = document.getElementById("password");
       pass.type = pass.type === "password" ? "text" : "password";
     });
 
-    // 🔄 Toggle Login/Signup manually
+    // Toggle Login/Signup manually
     toggle.addEventListener("click", () => {
       isSignup = !isSignup;
       updateFormView();
     });
 
-    // 🧠 Auto login check
+    // On load: read ?open param and check session *without* auto-redirect
     window.addEventListener("load", async () => {
       const params = new URLSearchParams(window.location.search);
-      const open = params.get("open");
+      const open = params.get("open"); // supports login or signup
 
-      // Auto open signup form if ?open=signup
-      if (open === "signup") {
-        isSignup = true;
-        updateFormView();
-      }
+      if (open === "signup") isSignup = true;
+      updateFormView();
 
-      const { data } = await client.auth.getSession();
-      const user = data?.session?.user;
-      if (user) {
-        console.log("Already logged in:", user.email);
-        checkPaymentAndRedirect(user);
+      // Check if there's an active session but DO NOT auto-redirect.
+      // Instead show a small banner allowing the user to continue.
+      try {
+        const { data } = await supabase.auth.getSession();
+        const user = data?.session?.user || null;
+        if (user) {
+          currentUser = user;
+          banner.style.display = "block";
+          banner.innerHTML = `Logged in as <strong>${user.email}</strong>. <button id=\"continue-btn\">Continue</button>`;
+          document.getElementById("continue-btn").addEventListener("click", () => {
+            checkPaymentAndRedirect(user);
+          });
+        }
+      } catch (err) {
+        console.error("Session check error:", err);
       }
     });
 
@@ -102,62 +115,72 @@
       paidBtn.style.display = "none";
     }
 
-    // 🚀 Auth form submit
+    // Auth form submit
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
       const email = document.getElementById("email").value.trim();
       const password = document.getElementById("password").value.trim();
 
+      if (!email || !password) return alert("Please enter email and password.");
+
       if (isSignup) {
-        const { error } = await client.auth.signUp({ email, password });
+        const { data, error } = await supabase.auth.signUp({ email, password });
         if (error) return alert("❌ Signup Error: " + error.message);
+        // Optionally store extra user data in your users table here (name/phone)
         alert("✅ Signup successful! Please complete payment.");
+        // Redirect to products so user can pay
         window.location.href = "products.html";
       } else {
-        const { data, error } = await client.auth.signInWithPassword({ email, password });
+        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) return alert("❌ Login Error: " + error.message);
         const user = data?.user;
         if (!user) return alert("No user found. Try again.");
         currentUser = user;
+        // After login, check payment and redirect appropriately
         checkPaymentAndRedirect(user);
       }
     });
 
-    // 💳 Payment check
+    // Payment check
     async function checkPaymentAndRedirect(user) {
-      const { data, error } = await client
-        .from("payments")
-        .select("status")
-        .eq("user_id", user.id)
-        .order("created_at", { ascending: false })
-        .limit(1);
+      try {
+        const { data, error } = await supabase
+          .from("payments")
+          .select("status,created_at")
+          .eq("user_id", user.id)
+          .order("created_at", { ascending: false })
+          .limit(1);
 
-      if (error) {
-        console.error(error);
-        return alert("Error checking payment.");
-      }
+        if (error) {
+          console.error(error);
+          return alert("Error checking payment.");
+        }
 
-      if (!data || data.length === 0) {
-        paidBtn.style.display = "block";
-        currentUser = user;
-        return alert("No payment record found. Click 'I Have Paid'.");
-      }
+        if (!data || data.length === 0) {
+          paidBtn.style.display = "block";
+          currentUser = user;
+          return alert("No payment record found. Click 'I Have Paid'.");
+        }
 
-      const payment = data[0];
-      if (payment.status === "approved") {
-        window.location.href = "dashboard.html";
-      } else if (payment.status === "pending") {
-        alert("⏳ Payment pending admin approval.");
-      } else {
-        paidBtn.style.display = "block";
-        alert("❌ Payment not completed. Click 'I Have Paid'.");
+        const payment = data[0];
+        if (payment.status === "approved") {
+          window.location.href = "dashboard.html";
+        } else if (payment.status === "pending") {
+          alert("⏳ Payment pending admin approval.");
+        } else {
+          paidBtn.style.display = "block";
+          alert("❌ Payment not completed. Click 'I Have Paid'.");
+        }
+      } catch (err) {
+        console.error("Payment check failed:", err);
+        alert("Error checking payment. Try again later.");
       }
     }
 
-    // 🔘 “I Have Paid” button
+    // “I Have Paid” button
     paidBtn.addEventListener("click", async () => {
       if (!currentUser) return alert("Please login first.");
-      const { error } = await client
+      const { error } = await supabase
         .from("payments")
         .insert([{ user_id: currentUser.id, status: "pending" }]);
       if (error) return alert("❌ Error sending request: " + error.message);
