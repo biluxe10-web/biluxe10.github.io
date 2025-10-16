@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+    <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -81,7 +81,6 @@
 
     // 🧠 Auto login check
     window.addEventListener("load", async () => {
-      await client.auth.signOut(); // 🔹 Added line to stop auto-login
       const { data } = await client.auth.getSession();
       const user = data?.session?.user;
       if (user) {
