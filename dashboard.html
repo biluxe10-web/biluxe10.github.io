@@ -1,196 +1,33 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Biluxe10 | User Dashboard</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+<script>
+  // Demo values
+  const demoData = {
+    total_earnings: 240000,
+    wallet_balance: 240000, // Assuming full balance for demo
+    total_withdrawal: 0,    // Assuming nothing withdrawn yet
+    active_commission: 160000,
+    passive_commission: 60000,
+    ads_commission: 20000,
+    task_points: 50000
+  };
 
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Poppins', sans-serif;
+  function loadDashboardDemo() {
+    document.getElementById("totalEarning").innerText = `₹${demoData.total_earnings}`;
+    document.getElementById("walletBalance").innerText = `₹${demoData.wallet_balance}`;
+    document.getElementById("withdrawn").innerText = `₹${demoData.total_withdrawal}`;
+    document.getElementById("activeCommission").innerText = `₹${demoData.active_commission}`;
+    document.getElementById("passiveCommission").innerText = `₹${demoData.passive_commission}`;
+    document.getElementById("taskPoints").innerText = `${demoData.task_points}`;
+
+    // Add a card for Ads Commission
+    if (!document.getElementById("adsCommissionCard")) {
+      const cardsContainer = document.querySelector(".cards");
+      const adsCard = document.createElement("div");
+      adsCard.className = "card";
+      adsCard.id = "adsCommissionCard";
+      adsCard.innerHTML = `<h3>Ads Commission</h3><p>₹${demoData.ads_commission}</p>`;
+      cardsContainer.appendChild(adsCard);
     }
+  }
 
-    body {
-      display: flex;
-      height: 100vh;
-      background: #f5f6fa;
-      color: #333;
-    }
-
-    /* Sidebar */
-    .sidebar {
-      width: 240px;
-      background: linear-gradient(180deg, #007bff, #0056b3);
-      color: white;
-      display: flex;
-      flex-direction: column;
-      padding: 20px 10px;
-    }
-
-    .sidebar h2 {
-      text-align: center;
-      margin-bottom: 30px;
-      font-weight: 600;
-    }
-
-    .menu-item {
-      padding: 12px 15px;
-      border-radius: 8px;
-      margin-bottom: 8px;
-      transition: 0.3s;
-      cursor: pointer;
-    }
-
-    .menu-item:hover {
-      background: rgba(255, 255, 255, 0.15);
-    }
-
-    .main {
-      flex: 1;
-      padding: 30px;
-      overflow-y: auto;
-    }
-
-    .cards {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 20px;
-    }
-
-    .card {
-      background: white;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-      text-align: center;
-    }
-
-    .card h3 {
-      color: #555;
-      font-size: 1rem;
-      margin-bottom: 8px;
-    }
-
-    .card p {
-      font-size: 1.4rem;
-      font-weight: bold;
-      color: #007bff;
-    }
-
-    .logout {
-      margin-top: auto;
-      background: rgba(255,255,255,0.2);
-      text-align: center;
-      padding: 10px;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-
-    .logout:hover {
-      background: rgba(255,255,255,0.3);
-    }
-  </style>
-</head>
-<body>
-  <div class="sidebar">
-    <h2>Biluxe10</h2>
-    <div class="menu-item">🏠 Dashboard</div>
-    <div class="menu-item">📋 Daily Task</div>
-    <div class="menu-item">👤 Update Profile</div>
-    <div class="menu-item">👥 My Team</div>
-    <div class="menu-item">💰 Income</div>
-    <div class="menu-item">💳 Withdrawal</div>
-    <div class="menu-item">📜 All Transactions</div>
-    <div class="menu-item">ℹ️ About Us</div>
-    <div class="menu-item">📞 Contact Us</div>
-    <div class="logout" id="logoutBtn">🚪 Logout</div>
-  </div>
-
-  <div class="main">
-    <h1>Welcome to Your Dashboard 👋</h1>
-    <p style="margin-bottom: 25px;">Track your earnings, commissions, and tasks below.</p>
-
-    <div class="cards">
-      <div class="card">
-        <h3>Total Earnings</h3>
-        <p id="totalEarning">₹0</p>
-      </div>
-
-      <div class="card">
-        <h3>Wallet Balance</h3>
-        <p id="walletBalance">₹0</p>
-      </div>
-
-      <div class="card">
-        <h3>Total Withdrawal</h3>
-        <p id="withdrawn">₹0</p>
-      </div>
-
-      <div class="card">
-        <h3>Active Commission</h3>
-        <p id="activeCommission">₹0</p>
-      </div>
-
-      <div class="card">
-        <h3>Passive Commission</h3>
-        <p id="passiveCommission">₹0</p>
-      </div>
-
-      <div class="card">
-        <h3>Task Points</h3>
-        <p id="taskPoints">0</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- Supabase JS -->
-  <script type="module">
-    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
-const SUPABASE_URL = "https://cisbvzecomyueslqkmbd.supabase.co";
-const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNpc2J2emVjb215dWVzbHFrbWJkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk5MDMwNTIsImV4cCI6MjA3NTQ3OTA1Mn0.hUNwgoIt-hgh21a1WNqsGkC2QC6mpwAcio5ek86kAfc";
-    const supabase = createClient(supabaseUrl, supabaseKey)
-
-    // Example: user id stored after login
-    const userId = localStorage.getItem('user_id')
-
-    async function loadDashboard() {
-      if (!userId) {
-        alert("Please log in first!");
-        window.location.href = "auth.html";
-        return;
-      }
-
-      const { data, error } = await supabase
-        .from('earnings')
-        .select('*')
-        .eq('User_id', userId)
-        .single();
-
-      if (error || !data) {
-        console.log(error)
-        return
-      }
-
-      document.getElementById("totalEarning").innerText = `₹${data.total_earnings || 0}`
-      document.getElementById("walletBalance").innerText = `₹${data.wallet_balance || 0}`
-      document.getElementById("withdrawn").innerText = `₹${data.total_withdrawal || 0}`
-      document.getElementById("activeCommission").innerText = `₹${data.active_commission || 0}`
-      document.getElementById("passiveCommission").innerText = `₹${data.passive_commission || 0}`
-      document.getElementById("taskPoints").innerText = `${data.task_points || 0}`
-      document.getElementById("ads_commission").innerText = `₹ ${data.ads_commission || 0}`
-    }
-
-    loadDashboard()
-
-    document.getElementById("logoutBtn").addEventListener("click", async () => {
-      await supabase.auth.signOut()
-      localStorage.clear()
-      window.location.href = "index.html"
-    })
-  </script>
-</body>
-</html>
+  loadDashboardDemo();
+</script>
