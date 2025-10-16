@@ -1,323 +1,163 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Biluxe10 — Dashboard</title>
-
-  <!-- Supabase JS (v2) -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Biluxe10 Dashboard</title>
   <style>
-    :root{
-      --aqua-top: linear-gradient(90deg,#2de0f7,#4fd8d6);
-      --bg-water: linear-gradient(135deg,#d7f7ff,#b6f0ff 40%, #fff6ff 100%);
-      --card-grad: linear-gradient(135deg,#6b4eff,#3b9cff);
-      --white-glass: rgba(255,255,255,0.85);
-      --soft-shadow: 0 8px 20px rgba(0,0,0,0.12);
-      --radius: 16px;
-    }
-    *{box-sizing:border-box;margin:0;padding:0;font-family:"Poppins",system-ui,Arial;}
-    body{
-      min-height:100vh;
-      background: var(--bg-water);
-      -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
-      transition: filter .35s ease;
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+
+    body {
+      background: #f3f5fc;
+      transition: filter 0.3s ease;
     }
 
-    /* Topbar */
-    .topbar{
-      position:sticky;top:0;z-index:30;
-      display:flex;align-items:center;justify-content:space-between;
-      padding:14px 16px;background:var(--aqua-top);color:#06343a;
-      box-shadow:0 3px 10px rgba(0,0,0,0.08);
-    }
-    .hamburger{font-size:24px;cursor:pointer;user-select:none}
-    .brand{display:flex;align-items:center;gap:10px}
-    .brand h1{font-size:1rem;color:#042a2b;margin:0}
-    .avatar{
-      width:44px;height:44px;border-radius:50%;
-      background:#ffd27a;display:flex;align-items:center;justify-content:center;
-      box-shadow:0 2px 8px rgba(0,0,0,0.12);
-      font-weight:700;color:#2b2b2b;
+    header {
+      background: linear-gradient(90deg, #0072ff, #00c6ff);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 15px 20px;
     }
 
-    /* layout */
-    .wrap{display:flex;min-height:calc(100vh - 64px);}
-    /* Sidebar */
-    .sidebar{
-      width:280px;background:linear-gradient(180deg,#0f7c86,#0b6970);
-      color:#fff;padding:22px;border-right:1px solid rgba(255,255,255,0.03);
-      position:fixed;left:-320px;top:64px;bottom:0;transition:left .42s ease;z-index:40;border-radius:0 14px 14px 0;
-      box-shadow:8px 0 30px rgba(0,0,0,0.15);
-    }
-    .sidebar.open{left:0;}
-    .sidebar h2{font-size:1.15rem;margin-bottom:18px;color:#fff}
-    .nav{list-style:none;padding:0;margin:0}
-    .nav li{padding:12px 10px;border-radius:8px;margin-bottom:8px;cursor:pointer;display:flex;align-items:center;gap:12px}
-    .nav li:hover{background:rgba(255,255,255,0.05)}
-    .nav a{color:#fff;text-decoration:none;font-weight:600}
-
-    .logout{
-      display:block;margin-top:18px;background:#ff6b6b;color:#fff;border:none;padding:10px;border-radius:10px;cursor:pointer;font-weight:700;width:100%;
-      box-shadow:0 6px 18px rgba(255,107,107,0.18);
+    header h2 {
+      font-size: 20px;
+      letter-spacing: 1px;
     }
 
-    /* Main content */
-    .main{
-      flex:1;margin-left:0;padding:20px;padding-top:26px;transition:filter .35s ease;
-    }
-    .main.inner{
-      max-width:980px;margin:0 auto;
+    .menu-btn {
+      font-size: 25px;
+      cursor: pointer;
     }
 
-    .greeting{
-      background: linear-gradient(135deg,#6b4eff,#3b9cff);
-      color:white;padding:26px;border-radius:18px;box-shadow:var(--soft-shadow);
-      margin-bottom:18px;
+    .sidebar {
+      position: fixed;
+      top: 0; left: -260px;
+      width: 260px;
+      height: 100%;
+      background: linear-gradient(180deg, #0072ff, #00c6ff);
+      color: white;
+      padding-top: 60px;
+      transition: left 0.3s ease;
+      z-index: 999;
     }
-    .greeting h2{font-size:1.6rem;margin-bottom:8px}
-    .greeting p{opacity:0.9}
 
-    /* grid of small cards */
-    .grid{
-      display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:18px;
+    .sidebar.active {
+      left: 0;
     }
-    .small{
-      background:var(--white-glass);padding:18px;border-radius:14px;box-shadow:var(--soft-shadow);text-align:center;color:#17323a;
-    }
-    .small h4{margin-bottom:10px;color:#4a4a4a;font-weight:700}
-    .small p{font-size:1.2rem;font-weight:700;color:#062f32}
 
-    /* wallet big */
-    .wallet{
-      background: linear-gradient(135deg,#5b3bff,#4789ff);
-      color:#fff;padding:22px;border-radius:18px;box-shadow:var(--soft-shadow);
-      margin:18px 0;
+    .sidebar ul {
+      list-style: none;
+      padding: 0;
     }
-    .wallet h3{font-weight:600;margin-bottom:6px}
-    .wallet .amount{font-size:2.6rem;font-weight:800;letter-spacing:1px}
 
-    /* performance section */
-    .perf{
-      background:var(--white-glass);border-radius:18px;padding:18px;box-shadow:var(--soft-shadow);
-      margin-bottom:22px;
+    .sidebar ul li {
+      padding: 15px 25px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      cursor: pointer;
     }
-    .perf h3{color:#06343a;margin-bottom:12px}
-    .perf-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
-    .perf-card{background:#fff;border-radius:12px;padding:12px;text-align:center;box-shadow:0 6px 18px rgba(0,0,0,0.06)}
-    .perf-card h4{color:#444;margin-bottom:8px}
-    .perf-card p{font-weight:700;color:#0b6b6b}
 
-    /* referral */
-    .ref{
-      background:#fff;border-radius:12px;padding:16px;box-shadow:var(--soft-shadow);text-align:center;margin-bottom:30px;
+    .sidebar ul li:hover {
+      background: rgba(255,255,255,0.1);
     }
-    .ref .link{background:linear-gradient(180deg,#f6f9ff,#eef7ff);padding:12px;border-radius:10px;color:#08323a;display:block;margin:10px 0;font-weight:700}
-    .ref .share{display:flex;gap:10px;justify-content:center;margin-top:8px}
-    .ref .share a{display:inline-block;padding:10px 14px;border-radius:50%;background:#00b7c9;color:#fff;text-decoration:none}
 
-    /* responsive */
-    @media(max-width:900px){
-      .sidebar{left:-320px;position:fixed;top:64px}
-      .main{padding:14px}
+    .user-info {
+      padding: 20px;
+      text-align: center;
+      border-bottom: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .user-info img {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      margin-bottom: 10px;
+      border: 2px solid white;
+    }
+
+    .user-info h3 {
+      font-size: 18px;
+      margin-bottom: 5px;
+    }
+
+    .user-info p {
+      font-size: 14px;
+      opacity: 0.9;
+    }
+
+    .content {
+      padding: 25px;
+    }
+
+    .blur {
+      filter: blur(5px);
+      pointer-events: none;
+    }
+
+    a {
+      text-decoration: none;
+      color: white;
+      display: block;
     }
   </style>
 </head>
 <body>
-  <div class="topbar">
-    <div style="display:flex;align-items:center;gap:14px">
-      <div class="hamburger" id="hamb">☰</div>
-      <div class="brand">
-        <img src="" alt="" style="width:36px;height:36px;border-radius:8px;background:transparent;">
-        <h1>Power To Rise</h1>
-      </div>
+
+  <header>
+    <h2>Biluxe10 Dashboard</h2>
+    <span class="menu-btn">&#9776;</span>
+  </header>
+
+  <div class="sidebar" id="sidebar">
+    <div class="user-info">
+      <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="User">
+      <h3 id="userName">User Name</h3>
+      <p>ID: <span id="userId">BLX12345</span></p>
     </div>
-    <div class="avatar" id="topAvatar">U</div>
+    <ul>
+      <li><a href="#">Dashboard</a></li>
+      <li><a href="#">Daily Task</a></li>
+      <li><a href="#">Update Profile</a></li>
+      <li><a href="#">My Team</a></li>
+      <li><a href="#">Income</a></li>
+      <li><a href="#">T-Code Redeem</a></li>
+      <li><a href="#">T-Code</a></li>
+      <li><a href="#">Withdrawal</a></li>
+      <li><a href="#">Utility</a></li>
+      <li><a href="#">All Transaction</a></li>
+      <li><a href="#">About Us</a></li>
+      <li><a href="#">Contact Us</a></li>
+      <li><a href="#">Chat Support</a></li>
+      <li><a href="auth.html">Logout</a></li>
+    </ul>
   </div>
 
-  <div class="wrap">
-    <!-- Sidebar -->
-    <aside class="sidebar" id="sidebar">
-      <h2>Dashboard Menu</h2>
-      <ul class="nav">
-        <li><a href="dashboard.html">🏠 Dashboard</a></li>
-        <li><a href="tasks.html">🗓 Task View</a></li>
-        <li><a href="profile.html">👤 Update Profile</a></li>
-        <li><a href="team.html">👥 My Team</a></li>
-        <li><a href="income.html">💰 Income</a></li>
-        <li><a href="tcode_redeem.html">🔑 T-Code Redeem</a></li>
-        <li><a href="withdrawal.html">💳 Withdrawal</a></li>
-        <li><a href="transactions.html">📄 All Transaction</a></li>
-      </ul>
-
-      <button class="logout" id="logoutBtn">Logout</button>
-    </aside>
-
-    <!-- Main -->
-    <main class="main" id="mainContent">
-      <div class="main inner">
-        <!-- Greeting -->
-        <div class="greeting" id="greetingCard">
-          <h2 id="helloText">Hello, User!</h2>
-          <p>Welcome back to your dashboard</p>
-        </div>
-
-        <!-- quick actions -->
-        <div class="grid">
-          <div class="small">
-            <h4>Task View</h4>
-            <p><a href="tasks.html" style="text-decoration:none;color:inherit">Open</a></p>
-          </div>
-          <div class="small">
-            <h4>Withdraw</h4>
-            <p><a href="withdrawal.html" style="text-decoration:none;color:inherit">Open</a></p>
-          </div>
-          <div class="small">
-            <h4>Telegram Channel</h4>
-            <p><a id="tgBtn" href="#" target="_blank" style="text-decoration:none;color:inherit">Join</a></p>
-          </div>
-          <div class="small">
-            <h4>WhatsApp Channel</h4>
-            <p><a id="waBtn" href="#" target="_blank" style="text-decoration:none;color:inherit">Join</a></p>
-          </div>
-        </div>
-
-        <!-- Wallet -->
-        <div class="wallet">
-          <h3>Wallet Balance</h3>
-          <div class="amount" id="walletAmount">₹0</div>
-          <div style="margin-top:10px"><a href="withdrawal.html" style="color:rgba(255,255,255,0.95);text-decoration:none;font-weight:700">→ Withdraw</a></div>
-        </div>
-
-        <!-- Performance -->
-        <div class="perf">
-          <h3>Performance Overview</h3>
-          <div class="perf-grid">
-            <div class="perf-card"><h4>Total Earnings</h4><p id="totalEarnings">₹0</p></div>
-            <div class="perf-card"><h4>Active Commission</h4><p id="activeComm">₹0</p></div>
-            <div class="perf-card"><h4>Passive Commission</h4><p id="passiveComm">₹0</p></div>
-            <div class="perf-card"><h4>Ads Commission</h4><p id="adsComm">₹0</p></div>
-          </div>
-        </div>
-
-        <!-- Referral -->
-        <div class="ref">
-          <h3>Your Referral Link</h3>
-          <div id="refCode" class="link">Generating...</div>
-          <div class="share">
-            <a id="shareWA" href="#" title="Share on WhatsApp">📩</a>
-            <a id="shareTG" href="#" title="Share on Telegram">✈️</a>
-          </div>
-        </div>
-
-        <!-- footer -->
-        <div style="text-align:center;color:#666;padding:22px 0">© 2025 Power To Rise</div>
-      </div>
-    </main>
+  <div class="content" id="mainContent">
+    <h3>Welcome back, <span id="welcomeUser">User</span> 👋</h3>
+    <p>This is your Biluxe10 personal dashboard.</p>
   </div>
 
   <script>
-    // ---------- CONFIG ----------
-    // Replace these with your project's Supabase URL & anon key:
-   const SUPABASE_URL = "https://cisbvzecomyueslqkmbd.supabase.co";
-const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNpc2J2emVjb215dWVzbHFrbWJkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk5MDMwNTIsImV4cCI6MjA3NTQ3OTA1Mn0.hUNwgoIt-hgh21a1WNqsGkC2QC6mpwAcio5ek86kAfc";
-
-    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-    // sidebar toggle + blur
-    const hamb = document.getElementById('hamb');
+    const menuBtn = document.querySelector('.menu-btn');
     const sidebar = document.getElementById('sidebar');
-    const mainContent = document.getElementById('mainContent');
+    const content = document.getElementById('mainContent');
 
-    hamb.addEventListener('click', () => {
-      sidebar.classList.toggle('open');
-      const isOpen = sidebar.classList.contains('open');
-      document.body.style.filter = isOpen ? 'blur(8px)' : 'none';
-      // keep sidebar content crisp
-      sidebar.style.filter = 'none';
+    menuBtn.addEventListener('click', () => {
+      sidebar.classList.toggle('active');
+      content.classList.toggle('blur');
     });
 
-    // logout
-    document.getElementById('logoutBtn').addEventListener('click', async () => {
-      try{
-        await supabase.auth.signOut();
-      }catch(e){ console.warn(e) }
-      window.location.href = 'auth.html';
-    });
+    // Example user data (replace with real from subbase)
+    const userData = {
+      name: "Rahul Verma",
+      id: "BLX10249"
+    };
 
-    // load user & earnings
-    async function loadDashboard(){
-      // get session user
-      const { data: sessionData, error: sessionErr } = await supabase.auth.getSession();
-      const user = sessionData?.session?.user;
-
-      if(!user){
-        // no session -> redirect to auth
-        window.location.href = 'auth.html';
-        return;
-      }
-
-      // show avatar initial and name/email
-      const displayName = user.user_metadata?.name || user.email?.split('@')[0] || 'User';
-      document.getElementById('helloText').textContent = `Hello, ${displayName}!`;
-      document.getElementById('topAvatar').textContent = (displayName[0] || 'U').toUpperCase();
-
-      // attempt to load profile row from 'members' or 'profiles'
-      let profile = null;
-      try{
-        const { data: p1 } = await supabase.from('members').select('*').eq('id', user.id).maybeSingle();
-        profile = p1 || null;
-        if(!profile){
-          const { data: p2 } = await supabase.from('profiles').select('*').eq('id', user.id).maybeSingle();
-          profile = p2 || null;
-        }
-      }catch(err){ console.warn('profile read err',err) }
-
-      // referral code logic: prefer profile.referral_code or members.referral, else fallback to user id slice
-      let refCode = profile?.referral_code || profile?.referral || null;
-      if(!refCode){
-        // fallback generate (short)
-        refCode = user.id.slice(0,8);
-      }
-      // build referral link (you can change base)
-      const base = window.location.origin + window.location.pathname.replace(/[^\/]*$/,''); // current folder
-      const referralLink = `${window.location.origin}/?mylink=${encodeURIComponent(refCode)}`;
-      document.getElementById('refCode').textContent = referralLink;
-      document.getElementById('shareWA').href = `https://wa.me/?text=${encodeURIComponent('Join using my link: '+referralLink)}`;
-      document.getElementById('shareTG').href = `https://t.me/share/url?url=${encodeURIComponent(referralLink)}`;
-
-      // try load earnings from 'earnings' table
-      try{
-        const { data: earn, error: earnErr } = await supabase.from('earnings').select('*').eq('user_id', user.id).maybeSingle();
-        if(earn && !earnErr){
-          // map fields (use fallback 0)
-          const total = earn.total_earnings ?? earn.total_earning ?? 0;
-          const wallet = earn.wallet_balance ?? earn.wallet ?? 0;
-          const active = earn.active_commission ?? earn.active_commission ?? 0;
-          const passive = earn.passive_commission ?? earn.passive_commission ?? 0;
-          const ads = earn.ads_commission ?? earn.ads_commission ?? 0;
-
-          document.getElementById('totalEarnings').textContent = '₹' + Number(total).toLocaleString();
-          document.getElementById('walletAmount').textContent = '₹' + Number(wallet).toLocaleString();
-          document.getElementById('activeComm').textContent = '₹' + Number(active).toLocaleString();
-          document.getElementById('passiveComm').textContent = '₹' + Number(passive).toLocaleString();
-          document.getElementById('adsComm').textContent = '₹' + Number(ads).toLocaleString();
-        } else {
-          // leave zero defaults (good: "until earning exists show 0")
-        }
-      }catch(e){
-        console.warn('earnings read err', e);
-      }
-
-      // set external channel URLs (change to your real channels)
-      document.getElementById('tgBtn').href = 'https://t.me/your_channel_here';
-      document.getElementById('waBtn').href = 'https://wa.me/your_number_here';
-    }
-
-    // initialize
-    loadDashboard();
+    document.getElementById('userName').textContent = userData.name;
+    document.getElementById('userId').textContent = userData.id;
+    document.getElementById('welcomeUser').textContent = userData.name;
   </script>
+
 </body>
-              </html>
+</html>
