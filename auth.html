@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+    <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -69,18 +69,23 @@
       pass.type = pass.type === "password" ? "text" : "password";
     });
 
-    // 🔄 Toggle Login/Signup
+    // 🔄 Toggle Login/Signup manually
     toggle.addEventListener("click", () => {
       isSignup = !isSignup;
-      title.textContent = isSignup ? "Signup" : "Login";
-      signupFields.style.display = isSignup ? "block" : "none";
-      submitBtn.textContent = isSignup ? "Signup" : "Login";
-      toggle.textContent = isSignup ? "Login" : "Signup";
-      paidBtn.style.display = "none";
+      updateFormView();
     });
 
     // 🧠 Auto login check
     window.addEventListener("load", async () => {
+      const params = new URLSearchParams(window.location.search);
+      const open = params.get("open");
+
+      // Auto open signup form if ?open=signup
+      if (open === "signup") {
+        isSignup = true;
+        updateFormView();
+      }
+
       const { data } = await client.auth.getSession();
       const user = data?.session?.user;
       if (user) {
@@ -88,6 +93,14 @@
         checkPaymentAndRedirect(user);
       }
     });
+
+    function updateFormView() {
+      title.textContent = isSignup ? "Signup" : "Login";
+      signupFields.style.display = isSignup ? "block" : "none";
+      submitBtn.textContent = isSignup ? "Signup" : "Login";
+      toggle.textContent = isSignup ? "Login" : "Signup";
+      paidBtn.style.display = "none";
+    }
 
     // 🚀 Auth form submit
     form.addEventListener("submit", async (e) => {
@@ -98,7 +111,7 @@
       if (isSignup) {
         const { error } = await client.auth.signUp({ email, password });
         if (error) return alert("❌ Signup Error: " + error.message);
-        alert("✅ Signup successful! Proceed to payment.");
+        alert("✅ Signup successful! Please complete payment.");
         window.location.href = "products.html";
       } else {
         const { data, error } = await client.auth.signInWithPassword({ email, password });
