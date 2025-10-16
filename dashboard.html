@@ -154,9 +154,7 @@
         document.getElementById("passiveCommission").textContent = "₹" + (data.passive_commission || 0);
         document.getElementById("adsCommission").textContent = "₹" + (data.ads_commission || 0);
         document.getElementById("taskPoints").textContent = data.task_points || 0;
-      } catch (err) {
-        console.error("Fetch error:", err.message);
-      }
+    
     }
 
     // 🚪 Logout
