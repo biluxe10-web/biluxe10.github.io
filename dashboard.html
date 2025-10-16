@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Biluxe10 Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background-color: #0f1f1c;
+      color: #f7f4ed;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding-top: 80px;
+    }
+
+    /* Topbar */
+    .topbar {
+      background: linear-gradient(90deg, #0d3b32, #145c4b);
+      color: #E8DCC5;
+      width: 100%;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      position: fixed;
+      top: 0;
+      left: 0;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+      z-index: 1000;
+    }
+    .logo {
+      font-weight: 600;
+      font-size: 1.2rem;
+      color: #E8DCC5;
+    }
+    .menu-toggle {
+      font-size: 24px;
+      cursor: pointer;
+      color: #E8DCC5;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 250px;
+      background: linear-gradient(180deg, #0C3432, #124b46);
+      position: fixed;
+      left: -250px;
+      top: 0;
+      height: 100%;
+      transition: all 0.3s ease;
+      padding-top: 60px;
+      z-index: 999;
+      box-shadow: 4px 0 10px rgba(0,0,0,0.3);
+    }
+    .sidebar.active { left: 0; }
+    .sidebar ul { list-style: none; }
+    .sidebar ul li {
+      padding: 15px 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    .sidebar ul li a {
+      text-decoration: none;
+      color: #E8DCC5;
+      display: block;
+      transition: 0.3s;
+    }
+    .sidebar ul li:hover {
+      background: rgba(255, 215, 0, 0.2);
+      color: #FFD700;
+    }
+
+    /* Main Content */
+    .main {
+      width: 90%;
+      max-width: 1000px;
+      margin-top: 30px;
+      transition: margin-left 0.3s ease;
+    }
+
+    .main h2 {
+      margin-bottom: 20px;
+      font-size: 1.8rem;
+      color: #FFD700;
+      text-align: center;
+    }
+
+    /* Cards Container */
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background: linear-gradient(145deg, #12453f, #0e3934);
+      border-radius: 14px;
+      padding: 20px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+      transition: 0.3s;
+    }
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+    }
+
+    .card h3 {
+      color: #FFD700;
+      font-size: 1.1rem;
+      margin-bottom: 10px;
+    }
+
+    .card p {
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: #f7f4ed;
+    }
+
+    .footer {
+      margin-top: 50px;
+      color: rgba(255,255,255,0.6);
+      font-size: 0.85rem;
+    }
+
+    @media (max-width: 768px) {
+      .main { width: 95%; }
+      .sidebar { width: 220px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="topbar">
+    <div class="logo">Biluxe10 Dashboard</div>
+    <div class="menu-toggle" onclick="toggleSidebar()">☰</div>
+  </div>
+
+  <div class="sidebar" id="sidebar">
+    <ul>
+      <li><a href="#">🏠 Overview</a></li>
+      <li><a href="#">💰 Earnings</a></li>
+      <li><a href="#">📦 Tasks</a></li>
+      <li><a href="#">👤 Profile</a></li>
+      <li><a href="#">🚪 Logout</a></li>
+    </ul>
+  </div>
+
+  <div class="main" id="main">
+    <h2>Earnings Overview</h2>
+    <div class="cards">
+      <div class="card">
+        <h3>Total Earnings</h3>
+        <p id="total">₹0</p>
+      </div>
+      <div class="card">
+        <h3>Direct Income</h3>
+        <p id="direct">₹0</p>
+      </div>
+      <div class="card">
+        <h3>Passive Income</h3>
+        <p id="passive">₹0</p>
+      </div>
+      <div class="card">
+        <h3>Task Points</h3>
+        <p id="tasks">0</p>
+      </div>
+    </div>
+    <div class="footer">© 2025 Biluxe10 | All Rights Reserved</div>
+  </div>
+
+  <script>
+    function toggleSidebar() {
+      document.getElementById("sidebar").classList.toggle("active");
+    }
+
+    // Example Supabase (replace with real connection later)
+    const SUPABASE_URL = "https://cisbvzecomyueslqkmbd.supabase.co";
+    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNpc2J2emVjb215dWVzbHFrbWJkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk5MDMwNTIsImV4cCI6MjA3NTQ3OTA1Mn0.hUNwgoIt-hgh21a1WNqsGkC2QC6mpwAcio5ek86kAfc";
+    const { createClient } = window.supabase;
+    const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    // check login status
+    async function checkUser() {
+      const { data } = await supabase.auth.getUser();
+      if (!data?.user) {
+        window.location.href = "signin.html";
+      }
+    }
+
+    checkUser();
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+</body>
+  </html>
