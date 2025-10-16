@@ -3,170 +3,145 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Biluxe10 | Dashboard</title>
+  <title>Biluxe10 - Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+
   <style>
-    *{margin:0;padding:0;box-sizing:border-box;font-family:"Poppins",sans-serif}
-    body{
-      background:linear-gradient(135deg,#1a1a1a,#2b2b2b);
-      color:#fff;min-height:100vh;overflow-x:hidden;
-      transition:filter 0.4s ease;
+    * {margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif;}
+    body {display: flex; min-height: 100vh; background: #f5f7fb;}
+
+    /* Sidebar */
+    .sidebar {
+      width: 240px;
+      background: linear-gradient(180deg, #0077b6, #00b4d8);
+      color: white;
+      padding-top: 30px;
+      position: fixed;
+      height: 100%;
     }
-    header{
-      display:flex;align-items:center;justify-content:space-between;
-      padding:15px 25px;background:#111;border-bottom:1px solid #00ffd0;
-      position:sticky;top:0;z-index:10;
+    .sidebar h2 {
+      text-align: center;
+      font-size: 22px;
+      margin-bottom: 20px;
     }
-    header h1{color:#00ffd0;font-size:1.4rem;}
-    #menu-btn{font-size:1.8rem;cursor:pointer;}
-    .container{padding:20px;}
-    .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:15px;margin-bottom:25px;}
-    .card{
-      background:rgba(255,255,255,0.08);border-radius:16px;padding:20px;
-      text-align:center;box-shadow:0 0 15px rgba(0,0,0,0.3);
+    .sidebar ul {
+      list-style: none;
+      padding: 0;
     }
-    .card h3{color:#00ffd0;margin-bottom:10px;}
-    .card p{font-size:1.3rem;font-weight:600;}
-    .btn{
-      display:inline-block;padding:10px 18px;margin-top:10px;background:#00ffd0;
-      color:#000;border:none;border-radius:8px;cursor:pointer;font-weight:600;
-      transition:0.3s;
+    .sidebar ul li {
+      padding: 12px 20px;
+      cursor: pointer;
+      transition: 0.3s;
     }
-    .btn:hover{background:#00cfa4;}
-    .channels{display:flex;gap:10px;justify-content:center;margin:20px 0;}
-    .channels a{
-      text-decoration:none;color:#fff;padding:10px 20px;border-radius:8px;
-      background:#333;border:1px solid #00ffd0;transition:0.3s;
+    .sidebar ul li:hover {
+      background: rgba(255,255,255,0.1);
     }
-    .channels a:hover{background:#00ffd0;color:#000;}
-    #sidebar{
-      position:fixed;top:0;left:-260px;width:250px;height:100%;
-      background:#111;box-shadow:2px 0 10px rgba(0,0,0,0.5);
-      transition:0.4s;padding:25px;
-      z-index:20;
+
+    /* Main dashboard area */
+    .main {
+      margin-left: 240px;
+      padding: 30px;
+      flex: 1;
     }
-    #sidebar.active{left:0;}
-    #sidebar h2{color:#00ffd0;margin-bottom:20px;}
-    #sidebar ul{list-style:none;}
-    #sidebar ul li{margin:15px 0;}
-    #sidebar ul li a{text-decoration:none;color:#ccc;font-weight:500;}
-    #sidebar ul li a:hover{color:#00ffd0;}
-    .blurred{filter:blur(8px);}
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+    }
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    .card h3 {
+      color: #0077b6;
+      margin-bottom: 10px;
+    }
+    .card p {
+      font-size: 20px;
+      font-weight: 600;
+      color: #222;
+    }
+
+    @media (max-width: 768px) {
+      .sidebar {width: 200px;}
+      .main {margin-left: 200px;}
+    }
   </style>
 </head>
 <body>
-  <header>
-    <h1>Biluxe10 Dashboard</h1>
-    <div id="menu-btn">☰</div>
-  </header>
 
-  <aside id="sidebar">
-    <h2>Menu</h2>
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <h2>Biluxe10</h2>
     <ul>
-      <li><a href="#">Dashboard</a></li>
-      <li><a href="#">Task View</a></li>
-      <li><a href="#">Telegram Channel</a></li>
-      <li><a href="#">WhatsApp Channel</a></li>
-      <li><a href="#">Withdraw</a></li>
-      <li><a href="#" id="logout-btn">Logout</a></li>
+      <li>🏠 Dashboard</li>
+      <li>✅ Daily Task</li>
+      <li>👤 Update Profile</li>
+      <li>👥 My Team</li>
+      <li>💰 Income</li>
+      <li>💳 Withdrawal</li>
+      <li>📄 All Transaction</li>
+      <li>🏢 About Us</li>
+      <li>☎️ Contact Us</li>
+      <li>🚪 Logout</li>
     </ul>
-  </aside>
+  </div>
 
-  <main id="content">
-    <div class="container">
-      <div class="cards">
-        <div class="card">
-          <h3>Total Earning</h3>
-          <p id="totalEarning">₹0</p>
-        </div>
-        <div class="card">
-          <h3>Total Withdrawal</h3>
-          <p id="totalWithdrawal">₹0</p>
-        </div>
-        <div class="card">
-          <h3>Wallet Balance</h3>
-          <p id="walletBalance">₹0</p>
-        </div>
-      </div>
-
-      <h2 style="color:#00ffd0;margin-bottom:10px;">Performance Overview</h2>
-      <div class="cards">
-        <div class="card"><h3>Active Commission</h3><p id="activeCommission">₹0</p></div>
-        <div class="card"><h3>Passive Commission</h3><p id="passiveCommission">₹0</p></div>
-        <div class="card"><h3>Ads Commission</h3><p id="adsCommission">₹0</p></div>
-        <div class="card"><h3>Task Points</h3><p id="taskPoints">0</p></div>
-      </div>
-
-      <div class="channels">
-        <a href="#" id="telegram">Telegram Channel</a>
-        <a href="#" id="whatsapp">WhatsApp Channel</a>
-      </div>
-
-      <button class="btn" id="withdrawBtn">Withdraw Now</button>
+  <!-- Main Dashboard -->
+  <div class="main">
+    <h1>Welcome Back 👋</h1>
+    <p>Your Performance Overview</p>
+    <div class="cards">
+      <div class="card"><h3>Total Earning</h3><p id="totalEarning">₹0</p></div>
+      <div class="card"><h3>Total Withdrawal</h3><p id="totalWithdrawal">₹0</p></div>
+      <div class="card"><h3>Task Points</h3><p id="taskPoints">0</p></div>
+      <div class="card"><h3>Active Commission</h3><p id="activeCommission">₹0</p></div>
+      <div class="card"><h3>Passive Commission</h3><p id="passiveCommission">₹0</p></div>
+      <div class="card"><h3>Ads Commission</h3><p id="adsCommission">₹0</p></div>
     </div>
-  </main>
+  </div>
 
-  <script src="https://unpkg.com/@supabase/supabase-js"></script>
   <script>
-    // 👉 Yaha apna Supabase details daalna
-    const SUPABASE_URL = "https://YOUR_SUPABASE_URL.supabase.co"; // 🔗 replace this
-    const SUPABASE_KEY = "YOUR_PUBLIC_ANON_KEY"; // 🔑 replace this
-    const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    // 🧩 Supabase connection
+    const SUPABASE_URL = "https://cisbvzecomyueslqkmbd.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNpc2J2emVjb215dWVzbHFrbWJkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk5MDMwNTIsImV4cCI6MjA3NTQ3OTA1Mn0.hUNwgoIt-hgh21a1WNqsGkC2QC6mpwAcio5ek86kAfc";
+    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    const sidebar = document.getElementById("sidebar");
-    const menuBtn = document.getElementById("menu-btn");
-    const content = document.getElementById("content");
+    // Replace with logged-in user's UUID (after auth setup)
+    const userUUID = localStorage.getItem("uuid");
 
-    menuBtn.addEventListener("click", () => {
-      sidebar.classList.toggle("active");
-      content.classList.toggle("blurred");
-    });
-
-    // 🔐 Check current user & fetch data
-    window.addEventListener("load", async () => {
-      const { data } = await client.auth.getSession();
-      const user = data?.session?.user;
-      if (!user) {
-        alert("Please login first!");
-        window.location.href = "auth.html";
+    async function loadDashboard() {
+      if (!userUUID) {
+        alert("Please log in first!");
+        window.location.href = "login.html";
         return;
       }
-      fetchUserData(user.id);
-    });
 
-    // 📊 Fetch user data from Supabase
-    async function fetchUserData(userId) {
-      try {
-        const { data, error } = await client
-          .from("earnings")
-          .select("*")
-          .eq("user_id", userId)
-          .single();
+      const { data, error } = await supabase
+        .from("earning")
+        .select("*")
+        .eq("uuid", userUUID)
+        .single();
 
-        if (error || !data) {
-          console.log("No earning data yet.");
-          return;
-        }
+      if (error) {
+        console.error("Error loading data:", error);
+        return;
+      }
 
-        document.getElementById("totalEarning").textContent = "₹" + (data.total_earning || 0);
-        document.getElementById("totalWithdrawal").textContent = "₹" + (data.total_withdrawal || 0);
-        document.getElementById("walletBalance").textContent = "₹" + (data.wallet_balance || 0);
-        document.getElementById("activeCommission").textContent = "₹" + (data.active_commission || 0);
-        document.getElementById("passiveCommission").textContent = "₹" + (data.passive_commission || 0);
-        document.getElementById("adsCommission").textContent = "₹" + (data.ads_commission || 0);
-        document.getElementById("taskPoints").textContent = data.task_points || 0;
-    
+      // Display data
+      document.getElementById("totalEarning").textContent = `₹${data.total_earning || 0}`;
+      document.getElementById("totalWithdrawal").textContent = `₹${data.total_withdrawal || 0}`;
+      document.getElementById("taskPoints").textContent = data.task_points || 0;
+      document.getElementById("activeCommission").textContent = `₹${data.active_commission || 0}`;
+      document.getElementById("passiveCommission").textContent = `₹${data.passive_commission || 0}`;
+      document.getElementById("adsCommission").textContent = `₹${data.ads_commission || 0}`;
     }
 
-    // 🚪 Logout
-    document.getElementById("logout-btn").addEventListener("click", async () => {
-      await client.auth.signOut();
-      window.location.href = "auth.html";
-    });
-
-    // 💸 Withdraw button
-    document.getElementById("withdrawBtn").addEventListener("click", () => {
-      alert("Withdrawal request feature coming soon!");
-    });
+    loadDashboard();
   </script>
 </body>
 </html>
