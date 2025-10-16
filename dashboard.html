@@ -1,147 +1,196 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Biluxe10 - Dashboard</title>
+  <title>Biluxe10 | User Dashboard</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 
   <style>
-    * {margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif;}
-    body {display: flex; min-height: 100vh; background: #f5f7fb;}
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      display: flex;
+      height: 100vh;
+      background: #f5f6fa;
+      color: #333;
+    }
 
     /* Sidebar */
     .sidebar {
       width: 240px;
-      background: linear-gradient(180deg, #0077b6, #00b4d8);
+      background: linear-gradient(180deg, #007bff, #0056b3);
       color: white;
-      padding-top: 30px;
-      position: fixed;
-      height: 100%;
+      display: flex;
+      flex-direction: column;
+      padding: 20px 10px;
     }
+
     .sidebar h2 {
       text-align: center;
-      font-size: 22px;
-      margin-bottom: 20px;
-    }
-    .sidebar ul {
-      list-style: none;
-      padding: 0;
-    }
-    .sidebar ul li {
-      padding: 12px 20px;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-    .sidebar ul li:hover {
-      background: rgba(255,255,255,0.1);
+      margin-bottom: 30px;
+      font-weight: 600;
     }
 
-    /* Main dashboard area */
-    .main {
-      margin-left: 240px;
-      padding: 30px;
-      flex: 1;
+    .menu-item {
+      padding: 12px 15px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      transition: 0.3s;
+      cursor: pointer;
     }
+
+    .menu-item:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    .main {
+      flex: 1;
+      padding: 30px;
+      overflow-y: auto;
+    }
+
     .cards {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
       gap: 20px;
     }
+
     .card {
       background: white;
-      border-radius: 12px;
       padding: 20px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      border-radius: 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
       text-align: center;
     }
+
     .card h3 {
-      color: #0077b6;
-      margin-bottom: 10px;
-    }
-    .card p {
-      font-size: 20px;
-      font-weight: 600;
-      color: #222;
+      color: #555;
+      font-size: 1rem;
+      margin-bottom: 8px;
     }
 
-    @media (max-width: 768px) {
-      .sidebar {width: 200px;}
-      .main {margin-left: 200px;}
+    .card p {
+      font-size: 1.4rem;
+      font-weight: bold;
+      color: #007bff;
+    }
+
+    .logout {
+      margin-top: auto;
+      background: rgba(255,255,255,0.2);
+      text-align: center;
+      padding: 10px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .logout:hover {
+      background: rgba(255,255,255,0.3);
     }
   </style>
 </head>
 <body>
-
-  <!-- Sidebar -->
   <div class="sidebar">
     <h2>Biluxe10</h2>
-    <ul>
-      <li>🏠 Dashboard</li>
-      <li>✅ Daily Task</li>
-      <li>👤 Update Profile</li>
-      <li>👥 My Team</li>
-      <li>💰 Income</li>
-      <li>💳 Withdrawal</li>
-      <li>📄 All Transaction</li>
-      <li>🏢 About Us</li>
-      <li>☎️ Contact Us</li>
-      <li>🚪 Logout</li>
-    </ul>
+    <div class="menu-item">🏠 Dashboard</div>
+    <div class="menu-item">📋 Daily Task</div>
+    <div class="menu-item">👤 Update Profile</div>
+    <div class="menu-item">👥 My Team</div>
+    <div class="menu-item">💰 Income</div>
+    <div class="menu-item">💳 Withdrawal</div>
+    <div class="menu-item">📜 All Transactions</div>
+    <div class="menu-item">ℹ️ About Us</div>
+    <div class="menu-item">📞 Contact Us</div>
+    <div class="logout" id="logoutBtn">🚪 Logout</div>
   </div>
 
-  <!-- Main Dashboard -->
   <div class="main">
-    <h1>Welcome Back 👋</h1>
-    <p>Your Performance Overview</p>
+    <h1>Welcome to Your Dashboard 👋</h1>
+    <p style="margin-bottom: 25px;">Track your earnings, commissions, and tasks below.</p>
+
     <div class="cards">
-      <div class="card"><h3>Total Earning</h3><p id="totalEarning">₹0</p></div>
-      <div class="card"><h3>Total Withdrawal</h3><p id="totalWithdrawal">₹0</p></div>
-      <div class="card"><h3>Task Points</h3><p id="taskPoints">0</p></div>
-      <div class="card"><h3>Active Commission</h3><p id="activeCommission">₹0</p></div>
-      <div class="card"><h3>Passive Commission</h3><p id="passiveCommission">₹0</p></div>
-      <div class="card"><h3>Ads Commission</h3><p id="adsCommission">₹0</p></div>
+      <div class="card">
+        <h3>Total Earnings</h3>
+        <p id="totalEarning">₹0</p>
+      </div>
+
+      <div class="card">
+        <h3>Wallet Balance</h3>
+        <p id="walletBalance">₹0</p>
+      </div>
+
+      <div class="card">
+        <h3>Total Withdrawal</h3>
+        <p id="withdrawn">₹0</p>
+      </div>
+
+      <div class="card">
+        <h3>Active Commission</h3>
+        <p id="activeCommission">₹0</p>
+      </div>
+
+      <div class="card">
+        <h3>Passive Commission</h3>
+        <p id="passiveCommission">₹0</p>
+      </div>
+
+      <div class="card">
+        <h3>Task Points</h3>
+        <p id="taskPoints">0</p>
+      </div>
     </div>
   </div>
 
-  <script>
-    // 🧩 Supabase connection
-    const SUPABASE_URL = "https://cisbvzecomyueslqkmbd.supabase.co";
+  <!-- Supabase JS -->
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
+const SUPABASE_URL = "https://cisbvzecomyueslqkmbd.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNpc2J2emVjb215dWVzbHFrbWJkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk5MDMwNTIsImV4cCI6MjA3NTQ3OTA1Mn0.hUNwgoIt-hgh21a1WNqsGkC2QC6mpwAcio5ek86kAfc";
-    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    const supabase = createClient(supabaseUrl, supabaseKey)
 
-    // Replace with logged-in user's UUID (after auth setup)
-    const userUUID = localStorage.getItem("uuid");
+    // Example: user id stored after login
+    const userId = localStorage.getItem('user_id')
 
     async function loadDashboard() {
-      if (!userUUID) {
+      if (!userId) {
         alert("Please log in first!");
-        window.location.href = "login.html";
+        window.location.href = "auth.html";
         return;
       }
 
       const { data, error } = await supabase
-        .from("earning")
-        .select("*")
-        .eq("uuid", userUUID)
+        .from('earnings')
+        .select('*')
+        .eq('User_id', userId)
         .single();
 
-      if (error) {
-        console.error("Error loading data:", error);
-        return;
+      if (error || !data) {
+        console.log(error)
+        return
       }
 
-      // Display data
-      document.getElementById("totalEarning").textContent = `₹${data.total_earning || 0}`;
-      document.getElementById("totalWithdrawal").textContent = `₹${data.total_withdrawal || 0}`;
-      document.getElementById("taskPoints").textContent = data.task_points || 0;
-      document.getElementById("activeCommission").textContent = `₹${data.active_commission || 0}`;
-      document.getElementById("passiveCommission").textContent = `₹${data.passive_commission || 0}`;
-      document.getElementById("adsCommission").textContent = `₹${data.ads_commission || 0}`;
+      document.getElementById("totalEarning").innerText = `₹${data.total_earnings || 0}`
+      document.getElementById("walletBalance").innerText = `₹${data.wallet_balance || 0}`
+      document.getElementById("withdrawn").innerText = `₹${data.total_withdrawal || 0}`
+      document.getElementById("activeCommission").innerText = `₹${data.active_commission || 0}`
+      document.getElementById("passiveCommission").innerText = `₹${data.passive_commission || 0}`
+      document.getElementById("taskPoints").innerText = `${data.task_points || 0}`
+      document.getElementById("ads_commission").innerText = `₹ ${data.ads_commission || 0}`
     }
 
-    loadDashboard();
+    loadDashboard()
+
+    document.getElementById("logoutBtn").addEventListener("click", async () => {
+      await supabase.auth.signOut()
+      localStorage.clear()
+      window.location.href = "index.html"
+    })
   </script>
 </body>
 </html>
