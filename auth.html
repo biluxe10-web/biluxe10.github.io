@@ -1,15 +1,15 @@
-        <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <title>Biluxe10 | Auth</title>
-
-  <!-- Firebase v10 Modular -->
   <script type="module">
+    // Firebase v10 Modular Imports
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
     import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
     import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
 
+    // Firebase Config (from you)
     const firebaseConfig = {
       apiKey: "AIzaSyDxxkC9iD1V1w-53Kf4oBrHEXlBLvCc7sE",
       authDomain: "biluxe10-3e894.firebaseapp.com",
@@ -19,11 +19,12 @@
       appId: "1:804749588233:web:7777648c0c7834733c05d8"
     };
 
+    // Initialize Firebase
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    // Signup function
+    // Signup Function
     window.signup = async () => {
       const name = document.getElementById("signupName").value;
       const email = document.getElementById("signupEmail").value;
@@ -49,13 +50,13 @@
         });
 
         alert("Signup successful! Proceed to choose your pack.");
-        window.location.href = "product.html";
+        window.location.href = "product.html"; // existing product page
       } catch (error) {
         alert("Error: " + error.message);
       }
     }
 
-    // Login function
+    // Login Function
     window.login = async () => {
       const email = document.getElementById("loginEmail").value;
       const password = document.getElementById("loginPassword").value;
