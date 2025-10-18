@@ -1,186 +1,164 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Biluxe10 | Auth</title>
-  <script type="module">
-    // Firebase v10 Modular Imports
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
-    import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
+<meta charset="UTF-8">
+<title>Biluxe10 | Auth</title>
 
-    // Firebase Config (from you)
-    const firebaseConfig = {
-      apiKey: "AIzaSyDxxkC9iD1V1w-53Kf4oBrHEXlBLvCc7sE",
-      authDomain: "biluxe10-3e894.firebaseapp.com",
-      projectId: "biluxe10-3e894",
-      storageBucket: "biluxe10-3e894.firebasestorage.app",
-      messagingSenderId: "804749588233",
-      appId: "1:804749588233:web:7777648c0c7834733c05d8"
-    };
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, RecaptchaVerifier, signInWithPhoneNumber } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
+  import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
 
-    // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
+  const firebaseConfig = {
+    apiKey: "AIzaSyDxxkC9iD1V1w-53Kf4oBrHEXlBLvCc7sE",
+    authDomain: "biluxe10-3e894.firebaseapp.com",
+    projectId: "biluxe10-3e894",
+    storageBucket: "biluxe10-3e894.firebasestorage.app",
+    messagingSenderId: "804749588233",
+    appId: "1:804749588233:web:7777648c0c7834733c05d8"
+  };
 
-    // Signup Function
-    window.signup = async () => {
-      const name = document.getElementById("signupName").value;
-      const email = document.getElementById("signupEmail").value;
-      const password = document.getElementById("signupPassword").value;
-      const referral = document.getElementById("signupReferral").value;
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
 
-      if(!name || !email || !password){
-        alert("Please fill all fields!");
-        return;
-      }
+  // --- Email/Password Signup
+  window.signup = async () => {
+    const name = document.getElementById("signupName").value;
+    const email = document.getElementById("signupEmail").value;
+    const password = document.getElementById("signupPassword").value;
+    const referral = document.getElementById("signupReferral").value;
 
-      try {
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        const user = userCredential.user;
+    if(!name || !email || !password){
+      alert("Fill all fields!");
+      return;
+    }
 
-        await setDoc(doc(db, "users", user.uid), {
-          name: name,
-          email: email,
-          referralCode: referral,
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+      await setDoc(doc(db, "users", user.uid), {
+        name,
+        email,
+        referralCode: referral,
+        paymentStatus: "pending",
+        adminVerified: false,
+        joinedAt: serverTimestamp()
+      });
+      window.location.href = "product.html";
+    } catch (error) {
+      alert(error.message);
+    }
+  };
+
+  // --- Email/Password Login
+  window.login = async () => {
+    const email = document.getElementById("loginEmail").value;
+    const password = document.getElementById("loginPassword").value;
+    if(!email || !password){ alert("Fill all fields!"); return; }
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      window.location.href = "product.html";
+    } catch(error) { alert(error.message); }
+  };
+
+  // --- Google Login
+  window.googleLogin = async () => {
+    const provider = new GoogleAuthProvider();
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+      // save in Firestore if new
+      await setDoc(doc(db, "users", user.uid), {
+        name: user.displayName,
+        email: user.email,
+        referralCode: "",
+        paymentStatus: "pending",
+        adminVerified: false,
+        joinedAt: serverTimestamp()
+      }, { merge:true });
+      window.location.href = "product.html";
+    } catch(error){ alert(error.message); }
+  };
+
+  // --- Phone Number Login
+  window.phoneLogin = () => {
+    const phone = document.getElementById("phoneNumber").value;
+    if(!phone){ alert("Enter phone number"); return; }
+
+    window.recaptchaVerifier = new RecaptchaVerifier('recaptcha-container', { 'size': 'invisible' }, auth);
+
+    signInWithPhoneNumber(auth, phone, window.recaptchaVerifier)
+      .then(confirmationResult => {
+        window.confirmationResult = confirmationResult;
+        const code = prompt("Enter the OTP sent to your phone");
+        return confirmationResult.confirm(code);
+      })
+      .then(result => {
+        const user = result.user;
+        setDoc(doc(db, "users", user.uid), {
+          name: "Phone User",
+          phone: user.phoneNumber,
           paymentStatus: "pending",
           adminVerified: false,
           joinedAt: serverTimestamp()
-        });
-
-        alert("Signup successful! Proceed to choose your pack.");
-        window.location.href = "product.html"; // existing product page
-      } catch (error) {
-        alert("Error: " + error.message);
-      }
-    }
-
-    // Login Function
-    window.login = async () => {
-      const email = document.getElementById("loginEmail").value;
-      const password = document.getElementById("loginPassword").value;
-
-      if(!email || !password){
-        alert("Please fill all fields!");
-        return;
-      }
-
-      try {
-        await signInWithEmailAndPassword(auth, email, password);
+        }, { merge:true });
         window.location.href = "product.html";
-      } catch (error) {
-        alert("Error: " + error.message);
-      }
-    }
-  </script>
+      })
+      .catch(error => alert(error.message));
+  };
+</script>
 
-  <style>
-    body {
-      margin:0; padding:0;
-      font-family: 'Poppins', sans-serif;
-      background: linear-gradient(to right, #f6d365, #fda085);
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .container {
-      background: rgba(255,255,255,0.95);
-      border-radius: 15px;
-      padding: 40px;
-      max-width: 400px;
-      width: 100%;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-    }
-
-    h1 { text-align:center; margin-bottom:20px; color:#333; }
-    input {
-      width:100%;
-      padding:10px;
-      margin:10px 0;
-      border-radius:8px;
-      border:1px solid #ccc;
-      outline:none;
-      font-size:16px;
-    }
-    button {
-      width:100%;
-      padding:12px;
-      margin:10px 0;
-      border:none;
-      border-radius:8px;
-      background: #ff7e5f;
-      color:white;
-      font-size:16px;
-      cursor:pointer;
-      transition:0.3s;
-    }
-    button:hover { background: #eb5e28; }
-
-    .toggle-btns {
-      display:flex;
-      justify-content: space-between;
-      margin-bottom:20px;
-    }
-    .toggle-btns button {
-      width:48%;
-      background:#ccc;
-      color:#333;
-    }
-    .toggle-btns button.active { background:#ff7e5f; color:white; }
-    
-    .form-section { display:none; }
-    .form-section.active { display:block; }
-  </style>
+<style>
+  body{ margin:0; padding:0; font-family:'Poppins'; display:flex; justify-content:center; align-items:center; min-height:100vh; background:linear-gradient(to right,#f6d365,#fda085);}
+  .container{background:rgba(255,255,255,0.95);padding:40px;border-radius:15px;max-width:400px;width:100%;box-shadow:0 10px 25px rgba(0,0,0,0.2);}
+  h1{text-align:center;margin-bottom:20px;color:#333;}
+  input, button{width:100%;padding:10px;margin:10px 0;border-radius:8px;font-size:16px;}
+  input{border:1px solid #ccc;outline:none;}
+  button{border:none;background:#ff7e5f;color:white;cursor:pointer;transition:0.3s;}
+  button:hover{background:#eb5e28;}
+  .toggle-btns{display:flex;justify-content:space-between;margin-bottom:20px;}
+  .toggle-btns button{width:48%;background:#ccc;color:#333;}
+  .toggle-btns button.active{background:#ff7e5f;color:white;}
+  .form-section{display:none;}
+  .form-section.active{display:block;}
+</style>
 </head>
 <body>
 
-  <div class="container">
-    <h1>Biluxe10</h1>
-    <div class="toggle-btns">
-      <button id="signupToggle" class="active">Sign Up</button>
-      <button id="loginToggle">Login</button>
-    </div>
-
-    <!-- Sign Up Form -->
-    <div id="signupForm" class="form-section active">
-      <input type="text" id="signupName" placeholder="Full Name">
-      <input type="email" id="signupEmail" placeholder="Email">
-      <input type="password" id="signupPassword" placeholder="Password">
-      <input type="text" id="signupReferral" placeholder="Referral Code (optional)">
-      <button onclick="signup()">Sign Up</button>
-    </div>
-
-    <!-- Login Form -->
-    <div id="loginForm" class="form-section">
-      <input type="email" id="loginEmail" placeholder="Email">
-      <input type="password" id="loginPassword" placeholder="Password">
-      <button onclick="login()">Login</button>
-    </div>
+<div class="container">
+  <h1>Biluxe10</h1>
+  <div class="toggle-btns">
+    <button id="signupToggle" class="active">Sign Up</button>
+    <button id="loginToggle">Login</button>
   </div>
 
-  <script>
-    const signupBtn = document.getElementById("signupToggle");
-    const loginBtn = document.getElementById("loginToggle");
-    const signupForm = document.getElementById("signupForm");
-    const loginForm = document.getElementById("loginForm");
+  <div id="signupForm" class="form-section active">
+    <input type="text" id="signupName" placeholder="Full Name">
+    <input type="email" id="signupEmail" placeholder="Email">
+    <input type="password" id="signupPassword" placeholder="Password">
+    <input type="text" id="signupReferral" placeholder="Referral Code (optional)">
+    <button onclick="signup()">Sign Up</button>
+  </div>
 
-    signupBtn.onclick = () => {
-      signupBtn.classList.add("active");
-      loginBtn.classList.remove("active");
-      signupForm.classList.add("active");
-      loginForm.classList.remove("active");
-    }
+  <div id="loginForm" class="form-section">
+    <input type="email" id="loginEmail" placeholder="Email">
+    <input type="password" id="loginPassword" placeholder="Password">
+    <button onclick="login()">Login</button>
+    <button onclick="googleLogin()">Login with Google</button>
+    <input type="text" id="phoneNumber" placeholder="Phone Number (+91)">
+    <div id="recaptcha-container"></div>
+    <button onclick="phoneLogin()">Login with Phone</button>
+  </div>
+</div>
 
-    loginBtn.onclick = () => {
-      loginBtn.classList.add("active");
-      signupBtn.classList.remove("active");
-      loginForm.classList.add("active");
-      signupForm.classList.remove("active");
-    }
-  </script>
+<script>
+  const signupBtn = document.getElementById("signupToggle");
+  const loginBtn = document.getElementById("loginToggle");
+  const signupForm = document.getElementById("signupForm");
+  const loginForm = document.getElementById("loginForm");
+  signupBtn.onclick = ()=>{signupBtn.classList.add("active");loginBtn.classList.remove("active");signupForm.classList.add("active");loginForm.classList.remove("active");}
+  loginBtn.onclick = ()=>{loginBtn.classList.add("active");signupBtn.classList.remove("active");loginForm.classList.add("active");signupForm.classList.remove("active");}
+</script>
 </body>
-</html>
-    
+      </html>
