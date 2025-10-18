@@ -37,7 +37,7 @@ window.signup = async () => {
     await setDoc(doc(db,"users",user.uid),{
       name, email, referralCode: referral, paymentStatus:"pending", adminVerified:false, joinedAt:serverTimestamp()
     });
-    window.location.href="product.html"; // redirect after signup
+    window.location.href="products.html"; // redirect after signup
   } catch(error){
     if(error.code==="auth/email-already-in-use"){
       alert("Email already in use! Redirecting to products.html...");
