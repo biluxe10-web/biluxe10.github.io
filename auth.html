@@ -40,8 +40,8 @@ window.signup = async () => {
     window.location.href="products.html"; // redirect after signup
   } catch(error){
     if(error.code==="auth/email-already-in-use"){
-      alert("Email already in use! Redirecting to products.html...");
-      window.location.href="product.html";
+      alert("Email already in use! Redirecting to products page ...");
+      window.location.href="products.html";
     } else { alert(error.message); }
   }
 };
@@ -51,7 +51,7 @@ window.login = async () => {
   const email = document.getElementById("loginEmail").value;
   const password = document.getElementById("loginPassword").value;
   if(!email || !password){ alert("Fill all fields!"); return; }
-  try { await signInWithEmailAndPassword(auth,email,password); window.location.href="product.html"; }
+  try { await signInWithEmailAndPassword(auth,email,password); window.location.href="products.html"; }
   catch(error){ alert(error.message); }
 };
 
@@ -64,7 +64,7 @@ window.googleLogin = async () => {
     await setDoc(doc(db,"users",user.uid),{
       name:user.displayName,email:user.email,referralCode:"",paymentStatus:"pending",adminVerified:false,joinedAt:serverTimestamp()
     },{merge:true});
-    window.location.href="product.html";
+    window.location.href="products.html";
   } catch(error){ alert(error.message); }
 };
 
@@ -85,7 +85,7 @@ window.phoneLogin = () => {
       setDoc(doc(db,"users",user.uid),{
         name:"Phone User", phone:user.phoneNumber, paymentStatus:"pending", adminVerified:false, joinedAt:serverTimestamp()
       },{merge:true});
-      window.location.href="product.html";
+      window.location.href="products.html";
     })
     .catch(error => alert(error.message));
 };
