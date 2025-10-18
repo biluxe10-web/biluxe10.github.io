@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Biluxe10 | Admin Panel</title>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+import { getFirestore, collection, getDocs, doc, updateDoc, query, where } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDxxkC9iD1V1w-53Kf4oBrHEXlBLvCc7sE",
+  authDomain: "biluxe10-3e894.firebaseapp.com",
+  projectId: "biluxe10-3e894",
+  storageBucket: "biluxe10-3e894.firebasestorage.app",
+  messagingSenderId: "804749588233",
+  appId: "1:804749588233:web:7777648c0c7834733c05d8"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// Fetch pending payments
+async function fetchPendingPayments(){
+  const paymentsRef = collection(db,"payments");
+  const q = query(paymentsRef, where("status","==","pending"));
+  const querySnapshot = await getDocs(q);
+
+  const tableBody = document.getElementById("paymentsTableBody");
+  tableBody.innerHTML = "";
+
+  querySnapshot.forEach((docSnap)=>{
+    const data = docSnap.data();
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${data.utr}</td>
+      <td>${data.name}</td>
+      <td>${data.email}</td>
+      <td>${data.upi}</td>
+      <td>${data.status}</td>
+      <td><button onclick="verifyPayment('${docSnap.id}','${data.uid}')">Verify</button></td>
+    `;
+    tableBody.appendChild(tr);
+  });
+}
+
+// Verify payment
+window.verifyPayment = async (utr, uid)=>{
+  try{
+    await updateDoc(doc(db,"payments",utr),{status:"verified"});
+    await updateDoc(doc(db,"users",uid),{paymentStatus:"verified", adminVerified:true});
+    alert("Payment verified successfully!");
+    fetchPendingPayments(); // refresh table
+  } catch(error){
+    alert(error.message);
+  }
+}
+
+// Load table on page load
+window.onload = fetchPendingPayments;
+</script>
+
+<style>
+body{
+  font-family:'Poppins',sans-serif;
+  background:linear-gradient(to right,#fbc2eb,#a6c1ee);
+  margin:0; padding:0;
+}
+.container{
+  max-width:900px;
+  margin:40px auto;
+  background:rgba(255,255,255,0.95);
+  padding:30px;
+  border-radius:20px;
+  box-shadow:0 15px 40px rgba(0,0,0,0.3);
+}
+h1{text-align:center; margin-bottom:30px; color:#ff4e50;}
+table{
+  width:100%;
+  border-collapse:collapse;
+  text-align:left;
+}
+th, td{
+  padding:12px 15px;
+  border-bottom:1px solid #ddd;
+}
+th{
+  background:#ff4e50;
+  color:white;
+}
+button{
+  padding:8px 12px;
+  border:none;
+  border-radius:8px;
+  background:#28a745;
+  color:white;
+  cursor:pointer;
+  transition:0.3s;
+}
+button:hover{background:#218838;}
+@media(max-width:600px){
+  table,thead,tbody,th,td,tr{display:block;}
+  th{display:none;}
+  td{padding:10px; position:relative;}
+  td:before{
+    position:absolute;
+    left:10px;
+    font-weight:bold;
+    content:attr(data-label);
+  }
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+<h1>Biluxe10 Admin Panel</h1>
+<table>
+  <thead>
+    <tr>
+      <th>UTR</th>
+      <th>Name</th>
+      <th>Email</th>
+      <th>UPI</th>
+      <th>Status</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody id="paymentsTableBody">
+    <!-- Dynamic data will load here -->
+  </tbody>
+</table>
+</div>
+</body>
+</html>
