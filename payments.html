@@ -3,17 +3,27 @@
 <head>
   <meta charset="UTF-8">
   <title>Biluxe10 | Payment</title>
-  <script src="firebase-init.js"></script>
-</head>
-<body>
-  <h1>Submit Your Payment</h1>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+    import { getAuth } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
+    import { getFirestore, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
+    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-storage.js";
 
-  <input type="text" id="utrNumber" placeholder="Enter UTR / Transaction ID"><br>
-  <input type="file" id="paymentProof"><br>
-  <button onclick="submitPayment()">Submit Payment</button>
+    const firebaseConfig = {
+      apiKey: "AIzaSyDxxkC9iD1V1w-53Kf4oBrHEXlBLvCc7sE",
+      authDomain: "biluxe10-3e894.firebaseapp.com",
+      projectId: "biluxe10-3e894",
+      storageBucket: "biluxe10-3e894.firebasestorage.app",
+      messagingSenderId: "804749588233",
+      appId: "1:804749588233:web:7777648c0c7834733c05d8"
+    };
 
-  <script>
-    async function submitPayment() {
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const storage = getStorage(app);
+
+    window.submitPayment = async () => {
       const user = auth.currentUser;
       if (!user) {
         alert("Please login first");
@@ -25,29 +35,64 @@
       const proofFile = document.getElementById("paymentProof").files[0];
 
       if (!utr || !proofFile) {
-        alert("Please enter UTR and upload proof");
+        alert("Please enter UTR and upload screenshot!");
         return;
       }
 
       try {
-        // Upload file to Firebase Storage
-        const storageRef = firebase.ref(firebase.getStorage(), 'paymentProofs/' + user.uid + '/' + proofFile.name);
-        await firebase.uploadBytes(storageRef, proofFile);
-        const proofURL = await firebase.getDownloadURL(storageRef);
+        const storageRef = ref(storage, 'paymentProofs/' + user.uid + '/' + proofFile.name);
+        await uploadBytes(storageRef, proofFile);
+        const proofURL = await getDownloadURL(storageRef);
 
-        // Update Firestore
-        await firebase.updateDoc(firebase.doc(db, "users", user.uid), {
+        await updateDoc(doc(db, "users", user.uid), {
           paymentStatus: "submitted",
           paymentUTR: utr,
           paymentProof: proofURL
         });
 
         alert("Payment submitted! Waiting for admin verification.");
-        window.location.href = "auth.html"; // Redirect back to login after payment
+        window.location.href = "auth.html"; // redirect to login
       } catch (error) {
         alert("Error: " + error.message);
       }
     }
   </script>
+
+  <style>
+    body {
+      margin:0; padding:0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(to right, #fbc2eb, #a6c1ee);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .container {
+      background: rgba(255,255,255,0.95);
+      border-radius: 15px;
+      padding: 40px;
+      max-width: 400px;
+      width: 100%;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      text-align:center;
+    }
+
+    h1 { color:#333; margin-bottom:20px; }
+    input, button { width:100%; padding:10px; margin:10px 0; border-radius:8px; border:1px solid #ccc; font-size:16px; }
+    button { border:none; background:#ff7e5f; color:white; cursor:pointer; transition:0.3s; }
+    button:hover { background:#eb5e28; }
+    .upi-id { background:#f3f3f3; padding:10px; border-radius:8px; margin-bottom:15px; font-weight:bold; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Make Your Payment</h1>
+    <div class="upi-id">Pay to UPI: 9019254743@axl</div>
+    <input type="text" id="utrNumber" placeholder="Enter UTR / Transaction ID">
+    <input type="file" id="paymentProof">
+    <button onclick="submitPayment()">Submit Payment</button>
+  </div>
 </body>
-</html>
+  </html>
