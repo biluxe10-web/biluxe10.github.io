@@ -1,171 +1,115 @@
-      <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Biluxe10 | Payment</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Biluxe10 | Payment</title>
+  <script type="module">
+    // Import Firebase SDKs
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
+    import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js";
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
-import { getFirestore, doc, setDoc, getDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
+    // Firebase Config (use your own config here)
+    const firebaseConfig = {
+      apiKey: "AIzaSyDxxkC9iD1V1w-53Kf4oBrHEXlBLvCc7sE",
+      authDomain: "biluxe10-3e894.firebaseapp.com",
+      projectId: "biluxe10-3e894",
+      storageBucket: "biluxe10-3e894.firebasestorage.app",
+      messagingSenderId: "804749588233",
+      appId: "1:804749588233:web:7777648c0c7834733c05d8"
+    };
 
-const firebaseConfig = {
-  apiKey: "AIzaSyDxxkC9iD1V1w-53Kf4oBrHEXlBLvCc7sE",
-  authDomain: "biluxe10-3e894.firebaseapp.com",
-  projectId: "biluxe10-3e894",
-  storageBucket: "biluxe10-3e894.firebasestorage.app",
-  messagingSenderId: "804749588233",
-  appId: "1:804749588233:web:7777648c0c7834733c05d8"
-};
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const auth = getAuth(app);
+    // Handle Payment Submit
+    async function submitPayment() {
+      const name = document.getElementById("name").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const utr = document.getElementById("utr").value.trim();
 
-window.submitPayment = async () => {
-  const user = auth.currentUser;
-  if(!user){
-    alert("Please login first to submit payment!");
-    window.location.href = "auth.html";
-    return;
-  }
-
-  const name = document.getElementById("payerName").value.trim();
-  const upi = document.getElementById("upiId").value.trim();
-  const utr = document.getElementById("utr").value.trim();
-
-  if(!name || !upi || !utr){
-    alert("Please fill all fields!");
-    return;
-  }
-
-  try{
-    // Save payment info in Firestore
-    await setDoc(doc(db,"payments",utr),{
-      uid: user.uid,
-      email: user.email,
-      name,
-      upi,
-      utr,
-      status: "pending",
-      submittedAt: serverTimestamp()
-    });
-
-    // Update user paymentStatus
-    await setDoc(doc(db,"users",user.uid),{
-      paymentStatus:"pending"
-    },{merge:true});
-
-    alert("Payment submitted! Wait for admin verification.");
-    window.location.href = "products.html";
-  } catch(error){ alert(error.message); }
-};
-
-// Auto check if user payment is verified
-onAuthStateChanged(auth, async (user)=>{
-  if(user){
-    const userRef = doc(db,"users",user.uid);
-    const userSnap = await getDoc(userRef);
-    if(userSnap.exists()){
-      const data = userSnap.data();
-      if(data.paymentStatus === "verified" && data.adminVerified === true){
-        // Payment approved → redirect dashboard
-        window.location.href = "dashboard.html";
+      if (!name || !email || !utr) {
+        alert("⚠️ Please fill all fields!");
+        return;
       }
+
+      const customUserId = email.replace(/[@.]/g, "_"); // use email as ID base
+      const paymentId = customUserId + "_payment1";
+
+      await setDoc(doc(db, "payments", paymentId), {
+        uid: customUserId,
+        name,
+        email,
+        upi: "9019254743@axl",
+        utr,
+        status: "pending",
+        submittedAt: serverTimestamp()
+      });
+
+      alert("✅ Payment submitted successfully!\nPlease wait for admin approval.");
+      window.location.href = "login.html"; // go to login after payment
     }
-  }
-});
-</script>
 
-<style>
-body{
-  margin:0; padding:0;
-  font-family:'Poppins',sans-serif;
-  background: linear-gradient(to right, #fbc2eb, #a6c1ee);
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  min-height:100vh;
-}
-.container{
-  background: rgba(255,255,255,0.95);
-  padding:40px;
-  border-radius:20px;
-  max-width:450px;
-  width:90%;
-  box-shadow:0 15px 40px rgba(0,0,0,0.3);
-  text-align:center;
-}
-h1{
-  margin-bottom:20px;
-  color:#ff4e50;
-  text-shadow:1px 1px 3px rgba(0,0,0,0.2);
-}
-input{
-  width:100%;
-  padding:15px;
-  margin:12px 0;
-  border-radius:10px;
-  border:1px solid #ccc;
-  outline:none;
-  font-size:16px;
-}
-input:focus{
-  border-color:#ff4e50;
-  box-shadow:0 0 5px rgba(255,78,80,0.5);
-}
-button{
-  width:100%;
-  padding:15px;
-  margin-top:20px;
-  border:none;
-  border-radius:12px;
-  background:#ff4e50;
-  color:white;
-  font-size:18px;
-  cursor:pointer;
-  transition:0.3s;
-}
-button:hover{
-  background:#e43d3d;
-}
-.card{
-  background:white;
-  padding:20px;
-  border-radius:15px;
-  margin:15px 0;
-  box-shadow:0 10px 20px rgba(0,0,0,0.15);
-  text-align:left;
-}
-.card p{
-  margin:8px 0;
-  color:#555;
-  font-size:15px;
-}
-@media(max-width:500px){
-  .container{padding:25px;}
-  input,button{padding:12px;font-size:16px;}
-}
-</style>
+    window.submitPayment = submitPayment;
+  </script>
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: "Poppins", sans-serif;
+      background: linear-gradient(135deg, #1d2671, #c33764);
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+    }
+    .card {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      padding: 30px;
+      width: 350px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+      backdrop-filter: blur(10px);
+      text-align: center;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 8px;
+      outline: none;
+      font-size: 16px;
+    }
+    button {
+      background: #00ff88;
+      color: #000;
+      font-weight: 600;
+      border: none;
+      border-radius: 10px;
+      padding: 12px;
+      width: 100%;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    button:hover {
+      background: #00cc6a;
+    }
+    h2 {
+      margin-bottom: 10px;
+    }
+  </style>
 </head>
-
 <body>
-<div class="container">
-  <h1>Payment Gateway</h1>
-
   <div class="card">
-    <input type="text" id="payerName" placeholder="Full Name">
-    <input type="text" id="upiId" placeholder="UPI ID" value="9019254743@axl">
-    <input type="text" id="utr" placeholder="UTR / Transaction ID">
+    <h2>💸 Biluxe10 Payment</h2>
+    <p>Send payment to: <strong>9019254743@axl</strong></p>
+    <input type="text" id="name" placeholder="Enter your name" />
+    <input type="email" id="email" placeholder="Enter your email" />
+    <input type="text" id="utr" placeholder="Enter UTR / Transaction ID" />
     <button onclick="submitPayment()">I Have Paid</button>
   </div>
-
-  <div class="card">
-    <p>✅ Click "I Have Paid" after completing the payment.</p>
-    <p>✅ Your payment will be verified by admin.</p>
-    <p>✅ Once approved, you will be redirected directly to your dashboard.</p>
-  </div>
-</div>
 </body>
 </html>
