@@ -1,14 +1,14 @@
-    <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Biluxe10 | Payment</title>
 
-<!-- Firebase SDK v10 -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
-import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
+import { getFirestore, doc, setDoc, getDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDxxkC9iD1V1w-53Kf4oBrHEXlBLvCc7sE",
@@ -21,9 +21,16 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+const auth = getAuth(app);
 
-// Submit Payment
 window.submitPayment = async () => {
+  const user = auth.currentUser;
+  if(!user){
+    alert("Please login first to submit payment!");
+    window.location.href = "auth.html";
+    return;
+  }
+
   const name = document.getElementById("payerName").value.trim();
   const upi = document.getElementById("upiId").value.trim();
   const utr = document.getElementById("utr").value.trim();
@@ -34,23 +41,46 @@ window.submitPayment = async () => {
   }
 
   try{
+    // Save payment info in Firestore
     await setDoc(doc(db,"payments",utr),{
-      name, upi, utr,
-      status:"pending",
-      submittedAt:serverTimestamp()
+      uid: user.uid,
+      email: user.email,
+      name,
+      upi,
+      utr,
+      status: "pending",
+      submittedAt: serverTimestamp()
     });
+
+    // Update user paymentStatus
+    await setDoc(doc(db,"users",user.uid),{
+      paymentStatus:"pending"
+    },{merge:true});
+
     alert("Payment submitted! Wait for admin verification.");
-    window.location.href="products.html";
-  } catch(error){
-    alert(error.message);
-  }
+    window.location.href = "products.html";
+  } catch(error){ alert(error.message); }
 };
+
+// Auto check if user payment is verified
+onAuthStateChanged(auth, async (user)=>{
+  if(user){
+    const userRef = doc(db,"users",user.uid);
+    const userSnap = await getDoc(userRef);
+    if(userSnap.exists()){
+      const data = userSnap.data();
+      if(data.paymentStatus === "verified" && data.adminVerified === true){
+        // Payment approved → redirect dashboard
+        window.location.href = "dashboard.html";
+      }
+    }
+  }
+});
 </script>
 
 <style>
 body{
-  margin:0;
-  padding:0;
+  margin:0; padding:0;
   font-family:'Poppins',sans-serif;
   background: linear-gradient(to right, #fbc2eb, #a6c1ee);
   display:flex;
@@ -128,14 +158,13 @@ button:hover{
     <input type="text" id="payerName" placeholder="Full Name">
     <input type="text" id="upiId" placeholder="UPI ID" value="9019254743@axl">
     <input type="text" id="utr" placeholder="UTR / Transaction ID">
-    <button onclick="submitPayment()">Submit Payment</button>
+    <button onclick="submitPayment()">I Have Paid</button>
   </div>
 
   <div class="card">
-    <p>✅ Enter your payment details above.</p>
-    <p>✅ Your UPI ID is pre-filled for convenience.</p>
-    <p>✅ Admin will verify your payment.</p>
-    <p>✅ Once verified, you can access your dashboard.</p>
+    <p>✅ Click "I Have Paid" after completing the payment.</p>
+    <p>✅ Your payment will be verified by admin.</p>
+    <p>✅ Once approved, you will be redirected directly to your dashboard.</p>
   </div>
 </div>
 </body>
