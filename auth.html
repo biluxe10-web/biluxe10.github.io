@@ -1,70 +1,186 @@
-    <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <title>Biluxe10 | Auth</title>
-  <script src="firebase-init.js"></script>
-</head>
-<body>
-  <h1>Biluxe10 Login / Signup</h1>
+  <script type="module">
+    // Firebase imports (modular v10)
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
+    import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
 
-  <!-- Signup Form -->
-  <div>
-    <h2>Sign Up</h2>
-    <input type="text" id="signupName" placeholder="Full Name"><br>
-    <input type="email" id="signupEmail" placeholder="Email"><br>
-    <input type="password" id="signupPassword" placeholder="Password"><br>
-    <input type="text" id="signupReferral" placeholder="Referral Code (optional)"><br>
-    <button onclick="signup()">Sign Up</button>
-  </div>
+    // Firebase config (from you)
+    const firebaseConfig = {
+      apiKey: "AIzaSyDxxkC9iD1V1w-53Kf4oBrHEXlBLvCc7sE",
+      authDomain: "biluxe10-3e894.firebaseapp.com",
+      projectId: "biluxe10-3e894",
+      storageBucket: "biluxe10-3e894.firebasestorage.app",
+      messagingSenderId: "804749588233",
+      appId: "1:804749588233:web:7777648c0c7834733c05d8"
+    };
 
-  <!-- Login Form -->
-  <div>
-    <h2>Login</h2>
-    <input type="email" id="loginEmail" placeholder="Email"><br>
-    <input type="password" id="loginPassword" placeholder="Password"><br>
-    <button onclick="login()">Login</button>
-  </div>
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
 
-  <script>
-    async function signup() {
+    // Signup function
+    window.signup = async () => {
       const name = document.getElementById("signupName").value;
       const email = document.getElementById("signupEmail").value;
       const password = document.getElementById("signupPassword").value;
       const referral = document.getElementById("signupReferral").value;
 
+      if(!name || !email || !password){
+        alert("Please fill all fields!");
+        return;
+      }
+
       try {
-        const userCredential = await firebase.createUserWithEmailAndPassword(auth, email, password);
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
 
-        await firebase.setDoc(firebase.doc(db, "users", user.uid), {
+        await setDoc(doc(db, "users", user.uid), {
           name: name,
           email: email,
           referralCode: referral,
           paymentStatus: "pending",
           adminVerified: false,
-          joinedAt: firebase.serverTimestamp()
+          joinedAt: serverTimestamp()
         });
 
         alert("Signup successful! Proceed to choose your pack.");
-        window.location.href = "product.html"; // redirect to existing product page
+        window.location.href = "product.html"; // existing product page
       } catch (error) {
         alert("Error: " + error.message);
       }
     }
 
-    async function login() {
+    // Login function
+    window.login = async () => {
       const email = document.getElementById("loginEmail").value;
       const password = document.getElementById("loginPassword").value;
 
-      try {
-        const userCredential = await firebase.signInWithEmailAndPassword(auth, email, password);
-        const user = userCredential.user;
+      if(!email || !password){
+        alert("Please fill all fields!");
+        return;
+      }
 
-        window.location.href = "product.html"; // redirect to product page
+      try {
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+        window.location.href = "product.html";
       } catch (error) {
         alert("Error: " + error.message);
       }
+    }
+  </script>
+
+  <style>
+    body {
+      margin:0; padding:0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(to right, #f6d365, #fda085); /* positive warm gradient */
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .container {
+      background: rgba(255,255,255,0.95);
+      border-radius: 15px;
+      padding: 40px;
+      max-width: 400px;
+      width: 100%;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    }
+
+    h1 { text-align:center; margin-bottom:20px; color:#333; }
+    input {
+      width:100%;
+      padding:10px;
+      margin:10px 0;
+      border-radius:8px;
+      border:1px solid #ccc;
+      outline:none;
+      font-size:16px;
+    }
+    button {
+      width:100%;
+      padding:12px;
+      margin:10px 0;
+      border:none;
+      border-radius:8px;
+      background: #ff7e5f;
+      color:white;
+      font-size:16px;
+      cursor:pointer;
+      transition:0.3s;
+    }
+    button:hover { background: #eb5e28; }
+
+    .toggle-btns {
+      display:flex;
+      justify-content: space-between;
+      margin-bottom:20px;
+    }
+    .toggle-btns button {
+      width:48%;
+      background:#ccc;
+      color:#333;
+    }
+    .toggle-btns button.active { background:#ff7e5f; color:white; }
+    
+    .form-section { display:none; }
+    .form-section.active { display:block; }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>Biluxe10</h1>
+    <div class="toggle-btns">
+      <button id="signupToggle" class="active">Sign Up</button>
+      <button id="loginToggle">Login</button>
+    </div>
+
+    <!-- Sign Up Form -->
+    <div id="signupForm" class="form-section active">
+      <input type="text" id="signupName" placeholder="Full Name">
+      <input type="email" id="signupEmail" placeholder="Email">
+      <input type="password" id="signupPassword" placeholder="Password">
+      <input type="text" id="signupReferral" placeholder="Referral Code (optional)">
+      <button onclick="signup()">Sign Up</button>
+    </div>
+
+    <!-- Login Form -->
+    <div id="loginForm" class="form-section">
+      <input type="email" id="loginEmail" placeholder="Email">
+      <input type="password" id="loginPassword" placeholder="Password">
+      <button onclick="login()">Login</button>
+    </div>
+  </div>
+
+  <script>
+    // Toggle between signup/login
+    const signupBtn = document.getElementById("signupToggle");
+    const loginBtn = document.getElementById("loginToggle");
+    const signupForm = document.getElementById("signupForm");
+    const loginForm = document.getElementById("loginForm");
+
+    signupBtn.onclick = () => {
+      signupBtn.classList.add("active");
+      loginBtn.classList.remove("active");
+      signupForm.classList.add("active");
+      loginForm.classList.remove("active");
+    }
+
+    loginBtn.onclick = () => {
+      loginBtn.classList.add("active");
+      signupBtn.classList.remove("active");
+      loginForm.classList.add("active");
+      signupForm.classList.remove("active");
     }
   </script>
 </body>
