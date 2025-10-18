@@ -1,15 +1,15 @@
-<!DOCTYPE html>
+        <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <title>Biluxe10 | Auth</title>
+
+  <!-- Firebase v10 Modular -->
   <script type="module">
-    // Firebase imports (modular v10)
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
     import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
     import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
 
-    // Firebase config (from you)
     const firebaseConfig = {
       apiKey: "AIzaSyDxxkC9iD1V1w-53Kf4oBrHEXlBLvCc7sE",
       authDomain: "biluxe10-3e894.firebaseapp.com",
@@ -19,7 +19,6 @@
       appId: "1:804749588233:web:7777648c0c7834733c05d8"
     };
 
-    // Initialize Firebase
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
@@ -50,7 +49,7 @@
         });
 
         alert("Signup successful! Proceed to choose your pack.");
-        window.location.href = "product.html"; // existing product page
+        window.location.href = "product.html";
       } catch (error) {
         alert("Error: " + error.message);
       }
@@ -67,8 +66,7 @@
       }
 
       try {
-        const userCredential = await signInWithEmailAndPassword(auth, email, password);
-        const user = userCredential.user;
+        await signInWithEmailAndPassword(auth, email, password);
         window.location.href = "product.html";
       } catch (error) {
         alert("Error: " + error.message);
@@ -80,7 +78,7 @@
     body {
       margin:0; padding:0;
       font-family: 'Poppins', sans-serif;
-      background: linear-gradient(to right, #f6d365, #fda085); /* positive warm gradient */
+      background: linear-gradient(to right, #f6d365, #fda085);
       min-height: 100vh;
       display: flex;
       justify-content: center;
@@ -163,7 +161,6 @@
   </div>
 
   <script>
-    // Toggle between signup/login
     const signupBtn = document.getElementById("signupToggle");
     const loginBtn = document.getElementById("loginToggle");
     const signupForm = document.getElementById("signupForm");
@@ -185,3 +182,4 @@
   </script>
 </body>
 </html>
+    
