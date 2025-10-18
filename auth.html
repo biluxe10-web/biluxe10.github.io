@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Biluxe10 | Auth</title>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
@@ -22,55 +23,72 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// Email/Password Signup
+// --- Email/Password Signup
 window.signup = async () => {
-  const name = document.getElementById("signupName").value;
-  const email = document.getElementById("signupEmail").value;
-  const password = document.getElementById("signupPassword").value;
-  const referral = document.getElementById("signupReferral").value;
+  const name = document.getElementById("signupName").value.trim();
+  const email = document.getElementById("signupEmail").value.trim();
+  const password = document.getElementById("signupPassword").value.trim();
+  const referral = document.getElementById("signupReferral").value.trim();
 
-  if(!name || !email || !password){ alert("Fill all fields!"); return; }
+  if(!name || !email || !password){
+    alert("Fill all fields!");
+    return;
+  }
 
   try {
     const userCredential = await createUserWithEmailAndPassword(auth,email,password);
     const user = userCredential.user;
+
     await setDoc(doc(db,"users",user.uid),{
       name, email, referralCode: referral, paymentStatus:"pending", adminVerified:false, joinedAt:serverTimestamp()
     });
+
     window.location.href="products.html"; // redirect after signup
   } catch(error){
     if(error.code==="auth/email-already-in-use"){
-      alert("Email already in use! Redirecting to products page ...");
+      alert("Email already in use! Redirecting to products page...");
       window.location.href="products.html";
-    } else { alert(error.message); }
+    } else {
+      alert(error.message);
+    }
   }
 };
 
-// Email/Password Login
+// --- Email/Password Login
 window.login = async () => {
-  const email = document.getElementById("loginEmail").value;
-  const password = document.getElementById("loginPassword").value;
+  const email = document.getElementById("loginEmail").value.trim();
+  const password = document.getElementById("loginPassword").value.trim();
   if(!email || !password){ alert("Fill all fields!"); return; }
-  try { await signInWithEmailAndPassword(auth,email,password); window.location.href="products.html"; }
+  try { 
+    await signInWithEmailAndPassword(auth,email,password); 
+    window.location.href="products.html"; 
+  }
   catch(error){ alert(error.message); }
 };
 
-// Google Login
+// --- Google Signup/Login
 window.googleLogin = async () => {
   const provider = new GoogleAuthProvider();
   try{
     const result = await signInWithPopup(auth,provider);
     const user = result.user;
+
     await setDoc(doc(db,"users",user.uid),{
-      name:user.displayName,email:user.email,referralCode:"",paymentStatus:"pending",adminVerified:false,joinedAt:serverTimestamp()
+      name:user.displayName,
+      email:user.email,
+      referralCode:"",
+      paymentStatus:"pending",
+      adminVerified:false,
+      joinedAt:serverTimestamp()
     },{merge:true});
+
     window.location.href="products.html";
   } catch(error){ alert(error.message); }
 };
 
-// Phone Login
+// --- Phone Signup/Login
 window.phoneLogin = () => {
-  const phone = document.getElementById("phoneNumber").value;
+  const phone = document.getElementById("phoneNumber").value.trim();
   if(!phone){ alert("Enter phone number"); return; }
 
   window.recaptchaVerifier = new RecaptchaVerifier('recaptcha-container',{'size':'invisible'},auth);
@@ -83,7 +101,11 @@ window.phoneLogin = () => {
     .then(result => {
       const user = result.user;
       setDoc(doc(db,"users",user.uid),{
-        name:"Phone User", phone:user.phoneNumber, paymentStatus:"pending", adminVerified:false, joinedAt:serverTimestamp()
+        name:"Phone User",
+        phone:user.phoneNumber,
+        paymentStatus:"pending",
+        adminVerified:false,
+        joinedAt:serverTimestamp()
       },{merge:true});
       window.location.href="products.html";
     })
@@ -92,20 +114,22 @@ window.phoneLogin = () => {
 </script>
 
 <style>
-body{margin:0;padding:0;font-family:'Poppins';display:flex;justify-content:center;align-items:center;min-height:100vh;background:linear-gradient(to right,#f6d365,#fda085);}
-.container{background:rgba(255,255,255,0.95);padding:40px;border-radius:15px;max-width:400px;width:100%;box-shadow:0 10px 25px rgba(0,0,0,0.2);}
-h1{text-align:center;margin-bottom:20px;color:#333;}
-input,button{width:100%;padding:10px;margin:10px 0;border-radius:8px;font-size:16px;}
+body{margin:0;padding:0;font-family:'Poppins',sans-serif;display:flex;justify-content:center;align-items:center;min-height:100vh;background:linear-gradient(to right,#f6d365,#fda085);}
+.container{background:rgba(255,255,255,0.95);padding:40px;border-radius:20px;max-width:450px;width:90%;box-shadow:0 15px 40px rgba(0,0,0,0.3);text-align:center;}
+h1{margin-bottom:20px;color:#ff4e50;text-shadow:1px 1px 3px rgba(0,0,0,0.2);}
+input,button{width:100%;padding:12px;margin:10px 0;border-radius:10px;font-size:16px;}
 input{border:1px solid #ccc;outline:none;}
-button{border:none;background:#ff7e5f;color:white;cursor:pointer;transition:0.3s;}
-button:hover{background:#eb5e28;}
+input:focus{border-color:#ff4e50;box-shadow:0 0 5px rgba(255,78,80,0.5);}
+button{border:none;background:#ff4e50;color:white;cursor:pointer;transition:0.3s;}
+button:hover{background:#e43d3d;}
 .toggle-btns{display:flex;justify-content:space-between;margin-bottom:20px;}
 .toggle-btns button{width:48%;background:#ccc;color:#333;}
-.toggle-btns button.active{background:#ff7e5f;color:white;}
+.toggle-btns button.active{background:#ff4e50;color:white;}
 .form-section{display:none;}
 .form-section.active{display:block;}
 </style>
 </head>
+
 <body>
 <div class="container">
 <h1>Biluxe10</h1>
@@ -114,21 +138,29 @@ button:hover{background:#eb5e28;}
 <button id="loginToggle">Login</button>
 </div>
 
+<!-- Signup Form -->
 <div id="signupForm" class="form-section active">
 <input type="text" id="signupName" placeholder="Full Name">
 <input type="email" id="signupEmail" placeholder="Email">
 <input type="password" id="signupPassword" placeholder="Password">
 <input type="text" id="signupReferral" placeholder="Referral Code (optional)">
 <button onclick="signup()">Sign Up</button>
+
+<!-- Google + Phone Signup -->
+<button onclick="googleLogin()">Sign Up with Google</button>
+<input type="text" id="phoneNumber" placeholder="Phone Number (+91)">
+<div id="recaptcha-container"></div>
+<button onclick="phoneLogin()">Sign Up with Phone</button>
 </div>
 
+<!-- Login Form -->
 <div id="loginForm" class="form-section">
 <input type="email" id="loginEmail" placeholder="Email">
 <input type="password" id="loginPassword" placeholder="Password">
 <button onclick="login()">Login</button>
 <button onclick="googleLogin()">Login with Google</button>
-<input type="text" id="phoneNumber" placeholder="Phone Number (+91)">
-<div id="recaptcha-container"></div>
+<input type="text" id="phoneNumberLogin" placeholder="Phone Number (+91)">
+<div id="recaptcha-container-login"></div>
 <button onclick="phoneLogin()">Login with Phone</button>
 </div>
 </div>
@@ -138,8 +170,20 @@ const signupBtn=document.getElementById("signupToggle");
 const loginBtn=document.getElementById("loginToggle");
 const signupForm=document.getElementById("signupForm");
 const loginForm=document.getElementById("loginForm");
-signupBtn.onclick=()=>{signupBtn.classList.add("active");loginBtn.classList.remove("active");signupForm.classList.add("active");loginForm.classList.remove("active");}
-loginBtn.onclick=()=>{loginBtn.classList.add("active");signupBtn.classList.remove("active");loginForm.classList.add("active");signupForm.classList.remove("active");}
+
+signupBtn.onclick=()=>{
+signupBtn.classList.add("active");
+loginBtn.classList.remove("active");
+signupForm.classList.add("active");
+loginForm.classList.remove("active");
+}
+
+loginBtn.onclick=()=>{
+loginBtn.classList.add("active");
+signupBtn.classList.remove("active");
+loginForm.classList.add("active");
+signupForm.classList.remove("active");
+}
 </script>
 </body>
 </html>
