@@ -1,94 +1,201 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Biluxe10 | Dashboard</title>
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
-    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyDxxkC9iD1V1w-53Kf4oBrHEXlBLvCc7sE",
-      authDomain: "biluxe10-3e894.firebaseapp.com",
-      projectId: "biluxe10-3e894",
-      storageBucket: "biluxe10-3e894.firebasestorage.app",
-      messagingSenderId: "804749588233",
-      appId: "1:804749588233:web:7777648c0c7834733c05d8"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-
-    onAuthStateChanged(auth, async (user) => {
-      if(!user){
-        alert("Please login first!");
-        window.location.href = "auth.html";
-        return;
-      }
-
-      const docRef = doc(db, "users", user.uid);
-      const docSnap = await getDoc(docRef);
-
-      if(!docSnap.exists()){
-        alert("User data not found!");
-        return;
-      }
-
-      const data = docSnap.data();
-
-      if(data.paymentStatus !== "submitted" || data.adminVerified !== true){
-        alert("Payment not verified by admin!");
-        window.location.href = "auth.html";
-        return;
-      }
-
-      // Fill dashboard content
-      const dashboard = document.getElementById("dashboardContent");
-      dashboard.innerHTML = `
-        <div class="cards">
-          <div class="card"><h3>Name</h3><p>${data.name}</p></div>
-          <div class="card"><h3>Email</h3><p>${data.email}</p></div>
-          <div class="card"><h3>Selected Pack</h3><p>${data.selectedPack || 'Not selected'}</p></div>
-          <div class="card"><h3>Payment Status</h3><p>${data.paymentStatus}</p></div>
-          <div class="card"><h3>Admin Verified</h3><p>${data.adminVerified}</p></div>
-          <div class="card"><h3>Earnings</h3><p>${data.earnings || 0}</p></div>
-        </div>
-      `;
-    });
-  </script>
-
-  <style>
-    body {
-      margin:0; padding:0;
-      font-family:'Poppins', sans-serif;
-      background: linear-gradient(135deg,#f093fb,#f5576c,#4facfe);
-      min-height:100vh;
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      padding:30px 10px;
-    }
-
-    h1 { color:white; text-align:center; margin-bottom:30px; }
-    .cards { display:flex; flex-wrap:wrap; justify-content:center; gap:20px; }
-    .card {
-      background: rgba(255,255,255,0.95);
-      padding:20px;
-      border-radius:15px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-      width:200px;
-      text-align:center;
-      transition:0.3s;
-    }
-    .card:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(0,0,0,0.3);}
-    .card h3 { margin-bottom:10px; color:#ff5e57; }
-    .card p { font-size:18px; font-weight:bold; color:#333; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Biluxe10 | Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
+  body{background:#f5f7fa url('assets/images/background.jpg') no-repeat center/cover;min-height:100vh;}
+  .container{max-width:1200px;margin:50px auto;padding:20px;background:rgba(255,255,255,0.95);border-radius:15px;box-shadow:0 5px 20px rgba(0,0,0,0.1);}
+  .dashboard-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;}
+  .dashboard-header h1{color:#333;}
+  .dashboard-header button{padding:8px 15px;background:#FF6B6B;color:#fff;border:none;border-radius:5px;cursor:pointer;}
+  .dashboard-nav ul{display:flex;gap:15px;list-style:none;margin-bottom:20px;}
+  .dashboard-nav ul li a{color:#333;font-weight:600;transition:0.3s;}
+  .dashboard-nav ul li a:hover{color:#FF6B6B;}
+  .section{margin-bottom:30px;padding:15px;border-radius:10px;background:#fff;box-shadow:0 3px 10px rgba(0,0,0,0.05);}
+  .section h2{margin-bottom:15px;color:#FF6B6B;}
+  ul{list-style:none;padding-left:0;}
+  li{padding:5px 0;border-bottom:1px solid #eee;}
+  input, select, button{margin-top:10px;padding:8px;display:block;width:200px;}
+  button{background:#FF6B6B;color:#fff;border:none;border-radius:5px;cursor:pointer;}
+</style>
 </head>
 <body>
-  <h1>Welcome to Your Dashboard</h1>
-  <div id="dashboardContent"></div>
+<div class="container">
+  <header class="dashboard-header">
+    <h1>Welcome, <span id="user-name"></span></h1>
+    <button id="logout-btn">Logout</button>
+  </header>
+
+  <nav class="dashboard-nav">
+    <ul>
+      <li><a href="#profile">Profile</a></li>
+      <li><a href="#earnings">Earnings</a></li>
+      <li><a href="#products">Products</a></li>
+      <li><a href="#referrals">Referrals</a></li>
+      <li><a href="#withdrawal">Withdraw</a></li>
+      <li><a href="#support">Support</a></li>
+    </ul>
+  </nav>
+
+  <section id="profile" class="section">
+    <h2>Profile</h2>
+    <p><strong>Name:</strong> <span id="profile-name"></span></p>
+    <p><strong>Email:</strong> <span id="profile-email"></span></p>
+    <p><strong>Phone:</strong> <span id="profile-phone"></span></p>
+    <p><strong>Referral Code:</strong> <span id="profile-referral"></span></p>
+  </section>
+
+  <section id="earnings" class="section">
+    <h2>Earnings</h2>
+    <p><strong>Total:</strong> ₹<span id="total-earnings"></span></p>
+    <p><strong>Active:</strong> ₹<span id="active-commission"></span></p>
+    <p><strong>Passive:</strong> ₹<span id="passive-commission"></span></p>
+    <p><strong>Bonus:</strong> ₹<span id="bonus-commission"></span></p>
+  </section>
+
+  <section id="products" class="section">
+    <h2>Products</h2>
+    <ul id="products-list"></ul>
+  </section>
+
+  <section id="referrals" class="section">
+    <h2>Referrals</h2>
+    <p><strong>Total:</strong> <span id="referral-count"></span></p>
+    <ul id="referral-list"></ul>
+  </section>
+
+  <section id="withdrawal" class="section">
+    <h2>Withdraw</h2>
+    <p><strong>Available Balance:</strong> ₹<span id="withdraw-balance"></span></p>
+    <input type="number" id="withdraw-amount" placeholder="Enter amount">
+    <select id="withdraw-method">
+      <option value="UPI">UPI</option>
+      <option value="Bank">Bank Transfer</option>
+      <option value="PayPal">PayPal</option>
+    </select>
+    <button id="withdraw-btn">Request Withdraw</button>
+    <ul id="withdrawal-list"></ul>
+  </section>
+
+  <section id="support" class="section">
+    <h2>Support Tickets</h2>
+    <ul id="support-list"></ul>
+  </section>
+</div>
+
+<!-- Firebase + JS -->
+<script type="module">
+  // Firebase imports
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-auth.js";
+  import { getFirestore, doc, getDoc, collection, getDocs, addDoc, query, where } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-firestore.js";
+
+  // Firebase config
+  const firebaseConfig = {
+    apiKey: "AIzaSyDxxkC9iD1V1w-53Kf4oBrHEXlBLvCc7sE",
+    authDomain: "biluxe10-3e894.firebaseapp.com",
+    projectId: "biluxe10-3e894",
+    storageBucket: "biluxe10-3e894.firebasestorage.app",
+    messagingSenderId: "804749588233",
+    appId: "1:804749588233:web:7777648c0c7834733c05d8"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  // Logout
+  document.getElementById('logout-btn').addEventListener('click', () => {
+    signOut(auth).then(()=>{window.location.href="index.html";});
+  });
+
+  // Auth check & fetch user data
+  onAuthStateChanged(auth, async (user)=>{
+    if(user){
+      const uid = user.uid;
+      const userDoc = await getDoc(doc(db,"users",uid));
+      if(!userDoc.exists()){ alert("User data not found!"); return; }
+
+      const userData = userDoc.data();
+      document.getElementById('user-name').textContent = userData.name;
+      document.getElementById('profile-name').textContent = userData.name;
+      document.getElementById('profile-email').textContent = userData.email;
+      document.getElementById('profile-phone').textContent = userData.phone;
+      document.getElementById('profile-referral').textContent = userData.referralCode;
+      document.getElementById('withdraw-balance').textContent = userData.totalEarnings || 0;
+
+      // Fetch Earnings
+      let total = 0, active=0, passive=0, bonus=0;
+      const earningsSnap = await getDocs(query(collection(db,"earnings"), where("userId","==",uid)));
+      earningsSnap.forEach(doc=>{
+        const e = doc.data();
+        total += e.amount;
+        if(e.type=="active") active += e.amount;
+        if(e.type=="passive") passive += e.amount;
+        if(e.type=="bonus") bonus += e.amount;
+      });
+      document.getElementById('total-earnings').textContent = total;
+      document.getElementById('active-commission').textContent = active;
+      document.getElementById('passive-commission').textContent = passive;
+      document.getElementById('bonus-commission').textContent = bonus;
+
+      // Fetch Products
+      const userProductsSnap = await getDocs(query(collection(db,"userProducts"), where("userId","==",uid)));
+      const productsList = document.getElementById('products-list'); productsList.innerHTML="";
+      for(const up of userProductsSnap.docs){
+        const prodDoc = await getDoc(doc(db,"products",up.data().productId));
+        if(prodDoc.exists()){
+          const li = document.createElement('li'); li.textContent = prodDoc.data().title; productsList.appendChild(li);
+        }
+      }
+
+      // Fetch Referrals
+      const referralsSnap = await getDocs(query(collection(db,"referrals"), where("userId","==",uid)));
+      const referralList = document.getElementById('referral-list'); referralList.innerHTML="";
+      document.getElementById('referral-count').textContent = referralsSnap.size;
+      referralsSnap.forEach(r=>{
+        const li = document.createElement('li'); li.textContent = r.data().referredUserId + " | ₹" + r.data().commission; referralList.appendChild(li);
+      });
+
+      // Fetch Withdrawal Requests
+      const withdrawSnap = await getDocs(query(collection(db,"withdrawalRequests"), where("userId","==",uid)));
+      const withdrawList = document.getElementById('withdrawal-list'); withdrawList.innerHTML="";
+      withdrawSnap.forEach(w=>{
+        const li = document.createElement('li'); li.textContent = "₹"+w.data().amount+" | "+w.data().status; withdrawList.appendChild(li);
+      });
+
+      // Withdraw Button
+      document.getElementById('withdraw-btn').addEventListener('click', async ()=>{
+        const amt = parseInt(document.getElementById('withdraw-amount').value);
+        const method = document.getElementById('withdraw-method').value;
+        if(!amt || amt>userData.totalEarnings){ alert("Invalid amount"); return; }
+        await addDoc(collection(db,"withdrawalRequests"),{
+          userId: uid,
+          amount: amt,
+          status: "pending",
+          requestedAt: new Date(),
+          method: method
+        });
+        alert("Withdrawal requested!");
+        location.reload();
+      });
+
+      // Support tickets (optional)
+      const supportSnap = await getDocs(query(collection(db,"supportTickets"), where("userId","==",uid)));
+      const supportList = document.getElementById('support-list'); supportList.innerHTML="";
+      supportSnap.forEach(s=>{
+        const li = document.createElement('li'); li.textContent = s.data().subject + " | " + s.data().status; supportList.appendChild(li);
+      });
+
+    } else {
+      window.location.href="index.html";
+    }
+  });
+</script>
 </body>
-</html>
+  </html>
