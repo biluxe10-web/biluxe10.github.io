@@ -6,45 +6,60 @@
   <title>Biluxe10 Payment</title>
   <style>
     body {
-      font-family: 'Poppins', sans-serif;
+      font-family: "Poppins", sans-serif;
       text-align: center;
-      background: #f8f9fa;
-      padding-top: 100px;
+      background: linear-gradient(to right, #f5af19, #f12711);
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
     .container {
-      background: white;
-      display: inline-block;
-      padding: 40px;
-      border-radius: 15px;
-      box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+      background: #fff;
+      padding: 40px 60px;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      max-width: 400px;
+      width: 100%;
+    }
+    h2 {
+      color: #333;
+      margin-bottom: 20px;
+    }
+    p {
+      color: #555;
+      margin-bottom: 30px;
     }
     button {
-      background: #f39c12;
+      background-color: #f39c12;
+      color: white;
       border: none;
       padding: 12px 25px;
-      color: white;
-      font-size: 16px;
       border-radius: 10px;
+      font-size: 16px;
       cursor: pointer;
       transition: 0.3s;
     }
     button:hover {
-      background: #e67e22;
+      background-color: #e67e22;
     }
   </style>
 </head>
 <body>
+
   <div class="container">
     <h2>Complete Your Payment</h2>
-    <p>After making the payment, click below to confirm.</p>
+    <p>After making your payment to <strong>UPI: 9019254743@axl</strong>, click below.</p>
     <button id="paidBtn">✅ I Have Paid</button>
   </div>
 
+  <!-- Firebase -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
     import { getFirestore, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
 
-    // 🔥 apna Firebase config yahan daal
     const firebaseConfig = {
       apiKey: "YOUR_API_KEY",
       authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
@@ -58,9 +73,9 @@
     const db = getFirestore(app);
 
     document.getElementById("paidBtn").addEventListener("click", async () => {
-      const email = localStorage.getItem("userEmail");
+      const email = localStorage.getItem("userEmail"); // saved during signup/login
       if (!email) {
-        alert("User not found. Please login again.");
+        alert("User not found. Please login first.");
         window.location.href = "auth.html";
         return;
       }
@@ -68,10 +83,11 @@
       try {
         const userRef = doc(db, "users_collection", email);
         await updateDoc(userRef, { status: "pending" });
-        alert("✅ Payment submitted! Please wait for admin approval.");
-        window.location.href = "auth.html"; // redirect to login/signup
-      } catch (err) {
-        console.error(err);
+        alert("Payment completed. Waiting for admin approval.");
+        // Redirect to login page (auth.html login toggle)
+        window.location.href = "auth.html";
+      } catch (error) {
+        console.error("Error updating payment status:", error);
         alert("Something went wrong. Try again.");
       }
     });
