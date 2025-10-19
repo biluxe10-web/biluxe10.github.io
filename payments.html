@@ -1,115 +1,80 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Biluxe10 | Payment</title>
-  <script type="module">
-    // Import Firebase SDKs
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
-    import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js";
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Biluxe10 Payment</title>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      text-align: center;
+      background: #f8f9fa;
+      padding-top: 100px;
+    }
+    .container {
+      background: white;
+      display: inline-block;
+      padding: 40px;
+      border-radius: 15px;
+      box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+    }
+    button {
+      background: #f39c12;
+      border: none;
+      padding: 12px 25px;
+      color: white;
+      font-size: 16px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    button:hover {
+      background: #e67e22;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Complete Your Payment</h2>
+    <p>After making the payment, click below to confirm.</p>
+    <button id="paidBtn">✅ I Have Paid</button>
+  </div>
 
-    // Firebase Config (use your own config here)
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
+    import { getFirestore, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
+
+    // 🔥 apna Firebase config yahan daal
     const firebaseConfig = {
-      apiKey: "AIzaSyDxxkC9iD1V1w-53Kf4oBrHEXlBLvCc7sE",
-      authDomain: "biluxe10-3e894.firebaseapp.com",
-      projectId: "biluxe10-3e894",
-      storageBucket: "biluxe10-3e894.firebasestorage.app",
-      messagingSenderId: "804749588233",
-      appId: "1:804749588233:web:7777648c0c7834733c05d8"
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_PROJECT_ID.appspot.com",
+      messagingSenderId: "YOUR_SENDER_ID",
+      appId: "YOUR_APP_ID"
     };
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    // Handle Payment Submit
-    async function submitPayment() {
-      const name = document.getElementById("name").value.trim();
-      const email = document.getElementById("email").value.trim();
-      const utr = document.getElementById("utr").value.trim();
-
-      if (!name || !email || !utr) {
-        alert("⚠️ Please fill all fields!");
+    document.getElementById("paidBtn").addEventListener("click", async () => {
+      const email = localStorage.getItem("userEmail");
+      if (!email) {
+        alert("User not found. Please login again.");
+        window.location.href = "auth.html";
         return;
       }
 
-      const customUserId = email.replace(/[@.]/g, "_"); // use email as ID base
-      const paymentId = customUserId + "_payment1";
-
-      await setDoc(doc(db, "payments", paymentId), {
-        uid: customUserId,
-        name,
-        email,
-        upi: "9019254743@axl",
-        utr,
-        status: "pending",
-        submittedAt: serverTimestamp()
-      });
-
-      alert("✅ Payment submitted successfully!\nPlease wait for admin approval.");
-      window.location.href = "login.html"; // go to login after payment
-    }
-
-    window.submitPayment = submitPayment;
+      try {
+        const userRef = doc(db, "users_collection", email);
+        await updateDoc(userRef, { status: "pending" });
+        alert("✅ Payment submitted! Please wait for admin approval.");
+        window.location.href = "auth.html"; // redirect to login/signup
+      } catch (err) {
+        console.error(err);
+        alert("Something went wrong. Try again.");
+      }
+    });
   </script>
-
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: "Poppins", sans-serif;
-      background: linear-gradient(135deg, #1d2671, #c33764);
-      height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #fff;
-    }
-    .card {
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 20px;
-      padding: 30px;
-      width: 350px;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
-      backdrop-filter: blur(10px);
-      text-align: center;
-    }
-    input {
-      width: 100%;
-      padding: 10px;
-      margin: 10px 0;
-      border: none;
-      border-radius: 8px;
-      outline: none;
-      font-size: 16px;
-    }
-    button {
-      background: #00ff88;
-      color: #000;
-      font-weight: 600;
-      border: none;
-      border-radius: 10px;
-      padding: 12px;
-      width: 100%;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-    button:hover {
-      background: #00cc6a;
-    }
-    h2 {
-      margin-bottom: 10px;
-    }
-  </style>
-</head>
-<body>
-  <div class="card">
-    <h2>💸 Biluxe10 Payment</h2>
-    <p>Send payment to: <strong>9019254743@axl</strong></p>
-    <input type="text" id="name" placeholder="Enter your name" />
-    <input type="email" id="email" placeholder="Enter your email" />
-    <input type="text" id="utr" placeholder="Enter UTR / Transaction ID" />
-    <button onclick="submitPayment()">I Have Paid</button>
-  </div>
 </body>
 </html>
