@@ -22,11 +22,18 @@
     border-radius: 15px;
     box-shadow: 0 8px 20px rgba(0,0,0,0.3);
     width: 90%;
-    max-width: 500px;
+    max-width: 480px;
     text-align: center;
   }
-  h2 { color: #222; margin-bottom: 20px; }
-  .upi { background: #f1f1f1; padding: 15px; border-radius: 10px; margin-bottom: 20px; font-weight: 600; }
+  h2 { color: #222; margin-bottom: 20px; font-weight: 700; }
+  .upi {
+    background: #f8f8f8;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    font-weight: 600;
+    font-size: 16px;
+  }
   input[type="text"], input[type="file"] {
     width: 100%;
     padding: 12px;
@@ -46,25 +53,31 @@
     transition: 0.3s;
   }
   button:hover { background-color: #e67e22; }
-  .alert { margin: 15px 0; color: green; font-weight: 600; }
+  .alert {
+    margin: 15px 0;
+    color: green;
+    font-weight: 600;
+  }
 </style>
 </head>
 <body>
 <div class="container">
   <h2>Complete Your Payment</h2>
   <p class="upi">Pay to UPI ID: <strong>9019254743@axl</strong></p>
-  <p>After payment, upload your UTR screenshot and enter UTR number.</p>
+  <p>After payment, upload your UTR screenshot and enter UTR number below.</p>
+  
   <input type="text" id="utr" placeholder="Enter UTR Number" required>
   <input type="file" id="screenshot" accept="image/*" required>
+  
   <button id="paidBtn">✅ I Have Paid</button>
   <p class="alert" id="msg"></p>
 </div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
-import { getFirestore, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
+import { getFirestore, doc, updateDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
 
-// Firebase config
+// Firebase Config
 const firebaseConfig = {
   apiKey: "AIzaSyDxxkC9iD1V1w-53Kf4oBrHEXlBLvCc7sE",
   authDomain: "biluxe10-3e894.firebaseapp.com",
@@ -78,29 +91,35 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 document.getElementById("paidBtn").addEventListener("click", async () => {
-  const email = localStorage.getItem("userEmail"); // Must be set during signup/login
-  const utr = document.getElementById("utr").value;
+  const utr = document.getElementById("utr").value.trim();
   const screenshot = document.getElementById("screenshot").files[0];
   const msg = document.getElementById("msg");
-  }
+
   if (!utr || !screenshot) {
-    msg.innerText = "Please enter UTR number and upload screenshot!";
+    msg.style.color = "red";
+    msg.innerText = "⚠️ Please enter UTR and upload screenshot!";
     return;
   }
 
   try {
-    const userRef = doc(db, "users_collection", email);
-    await updateDoc(userRef, {
-      paymentStatus: "pending",
+    // Save payment record (no user check)
+    const paymentRef = doc(db, "payments", utr);
+    await setDoc(paymentRef, {
       utrNumber: utr,
       screenshotName: screenshot.name,
+      paymentStatus: "pending",
       timestamp: new Date()
     });
-    msg.innerText = "Payment completed! Waiting for admin approval...";
-    setTimeout(() => { window.location.href = "auth.html"; }, 2000);
+
+    msg.style.color = "green";
+    msg.innerText = "✅ Payment completed! Waiting for admin approval...";
+    setTimeout(() => {
+      window.location.href = "auth.html";
+    }, 2000);
   } catch (err) {
     console.error(err);
-    msg.innerText = "Something went wrong. Please try again.";
+    msg.style.color = "red";
+    msg.innerText = "❌ Something went wrong. Please try again.";
   }
 });
 </script>
