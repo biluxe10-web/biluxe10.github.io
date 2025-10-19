@@ -102,10 +102,7 @@ document.getElementById("paidBtn").addEventListener("click", async () => {
     const screenshot = document.getElementById("screenshot").files[0];
     const msg = document.getElementById("msg");
 
-    if(!email){
-        alert("User not found. Please login first.");
-        window.location.href = "auth.html";
-        return;
+    
     }
 
     if(!utr || !screenshot){
