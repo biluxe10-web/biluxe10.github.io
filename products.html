@@ -1,212 +1,282 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Biluxe10 Packages</title>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-7404G2V978"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-7404G2V978');
+</script>
+  <!-- SEO Meta Tags -->
+  <title>Biluxe10 - Products</title>
+  <meta name="description" content="Explore Biluxe10's products and packages designed to help you succeed in affiliate marketing and online business.">
+  <meta name="keywords" content="Biluxe10 products, affiliate packages, online business tools, earning plans, digital marketing products">
+  <meta name="robots" content="index, follow">
+  <meta name="author" content="Biluxe10">
   <style>
-    body { font-family: 'Poppins', sans-serif; margin:0; padding:0; background:#f9f9f9; color:#222 }
-    nav { background:#111; padding:15px; text-align:center }
-    nav a { color:#fff; text-decoration:none; margin:0 15px; font-weight:500 }
-    nav a:hover { color:#f39c12 }
-    .container { max-width:1200px; margin:40px auto; padding:20px }
-    h1 { text-align:center; margin-bottom:30px }
-    .products { display:grid; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); gap:20px }
-    .card { background:#fff; border-radius:12px; padding:20px; box-shadow:0 4px 8px rgba(0,0,0,0.1); transition:0.3s }
-    .card:hover { transform:translateY(-5px); box-shadow:0 6px 12px rgba(0,0,0,0.15) }
-    .card img { width:100%; border-radius:8px }
-    .price { font-weight:bold; color:#f39c12; margin:10px 0 15px; display:block }
-    .btn { display:inline-block; margin-top:10px; padding:10px 20px; background:#f39c12; color:#fff; border:none; border-radius:8px; cursor:pointer; font-weight:600 }
-    .btn:hover { background:#e67e22 }
-    #paymentModal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); align-items:center; justify-content:center; z-index:1000 }
-    .modal-content { background:#fff; border-radius:12px; padding:20px; width:90%; max-width:450px; text-align:left }
-    .upi-box { background:#f5f5f5; padding:12px; border-radius:8px; margin-bottom:15px; font-weight:600 }
-    .qr { width:220px; display:block; margin:10px auto; border-radius:8px }
-    input[type="text"], input[type="file"] { width:100%; padding:10px; margin:8px 0; border:1px solid #ccc; border-radius:8px }
-    .small { font-size:13px; color:#555 }
-    .success { color:green; font-weight:700 }
-    .note { margin-top:10px; font-size:14px; color:#666 }
-    .row { display:flex; justify-content:space-between; align-items:center }
-    .copy-btn { padding:8px 10px; border:none; border-radius:8px; background:#222; color:#fff; cursor:pointer }
+    body {
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f9f9f9;
+    }
+    nav {
+      background: #111;
+      padding: 15px;
+      text-align: center;
+    }
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin: 0 15px;
+      font-weight: 500;
+    }
+    nav a:hover {
+      color: #f39c12;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 40px auto;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+      color: #222;
+    }
+    .products {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 20px;
+    }
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      transition: 0.3s;
+    }
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
+    .card img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 8px;
+    } .card img {
+  width: 100%;          /* photo pura card ke andar stretch hoga */
+  height: auto;         /* ratio theek rahega */
+  border-radius: 12px 12px 0 0; /* sirf upar ke kone gol */
+  display: block;
+}
+    .card h2 {
+      margin: 15px 0 10px;
+      color: #333;
+    }
+    .card p {
+      font-size: 14px;
+      color: #555;
+      line-height: 1.6;
+      text-align: justify;
+    }
+    .price {
+      font-weight: bold;
+      color: #f39c12;
+      margin: 10px 0;
+      display: block;
+    }
+    .btn {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 10px 20px;
+      background: #f39c12;
+      color: white;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    .btn:hover {
+      background: #e67e22;
+    }
   </style>
 </head>
 <body>
 
+  <!-- Navigation -->
   <nav>
     <a href="index.html">Home</a>
     <a href="products.html">Packages</a>
+  
   </nav>
 
   <div class="container">
     <h1>Our Exclusive Packages</h1>
-    <div class="products" id="productList"></div>
-  </div>
+    <div class="products">
 
-  <!-- Payment Modal -->
-  <div id="paymentModal">
-    <div class="modal-content">
-      <h2 id="modalPackTitle">Pack Name</h2>
-
-      <div class="upi-box">
-        <div class="small">Pay to this UPI ID or scan QR below:</div>
-        <div class="row" style="margin-top:8px;">
-          <div>
-            <div class="small">UPI ID</div>
-            <div style="font-weight:800; margin-top:4px;" id="upiIdText">9019254743@axl</div>
-          </div>
-          <div><button class="copy-btn" id="copyUpiBtn">Copy</button></div>
-        </div>
+      <!-- Package 1 -->
+      <div class="card">
+        <img src="file_00000000049461f7920d19bc75bf27d7.png" alt="Starter Success Pack" width="300">
+        <h2>Starter Success Pack</h2>
+        <span class="price">₹999</span>
+          The Starter Success Pack is designed for beginners who want to take their first step in the digital world. 
+          This package helps you grow from zero to earning up to ₹1 Lakh without any prior investment. 
+          It provides simplified learning modules and practical steps anyone can follow. 
+          With easy-to-understand strategies, even someone with no background in business can start applying the knowledge. 
+          You will learn how to set up the basics of online income streams with minimal effort. 
+          Our training ensures step-by-step clarity with examples for faster results. 
+          This is your entry ticket into the Biluxe10 ecosystem and your chance to build a solid foundation. 
+          Affordable, effective, and designed to give you your very first taste of financial success. 
+          Perfect for students, beginners, and anyone curious about earning online. 
+          Start your journey with confidence today!
+        </p>
+        <a href="https://www.instagram.com/bilu_xe10?igsh=NWc0ajRtbnJmazh2&text=I%20want%20to%20buy%20this%20Starter%20Success%20Pack" target="_blank">
+  <button class="btn">Get It Now</button>
+        </a>
       </div>
 
-      <img id="qrImage" src="https://raw.githubusercontent.com/biluxe10-web/biluxe10.github.io/refs/heads/main/AccountQRCodeKotak%20Mahindra%20Bank%20%20-%205869_DARK_THEME.png" alt="UPI QR" class="qr" />
-
-      <p class="note">After sending payment via your UPI app, fill in the Transaction / Reference ID below and optionally upload a screenshot.</p>
-
-      <label class="small">Transaction / UPI Reference ID</label>
-      <input id="txnInput" type="text" placeholder="e.g. TXN123456789" />
-
-      <label class="small">Upload payment screenshot (optional)</label>
-      <input id="screenshotInput" type="file" accept="image/*" />
-
-      <div style="margin-top:15px; display:flex; gap:8px;">
-        <button class="btn" id="submitPaymentBtn">I Have Paid</button>
-        <button class="btn" style="background:#555" id="cancelBtn">Cancel</button>
+      <!-- Package 2 -->
+      <div class="card">
+        <img src="file_00000000ed7861f7940aaa12396a8cf7.png" alt="Advanced Success Pack 2499" width="300">
+        <h2>Advance Success Pack</h2>
+        <span class="price">₹2499</span>
+        
+          The Advance Success Pack is your pathway from zero to earning up to ₹10 Lakhs without investment. 
+          It’s crafted for individuals who want to scale faster after learning the basics. 
+          This package gives you access to advanced tools, digital strategies, and proven growth hacks. 
+          You will master high-income skills and understand how to implement them in real-world opportunities. 
+          The content is structured to help you replicate success models used by top online earners. 
+          Each module is designed with clarity, making learning practical and highly impactful. 
+          You also get advanced case studies and detailed breakdowns of online earning systems. 
+          By following this program, you can achieve rapid and measurable results. 
+          It bridges the gap between beginner and pro level seamlessly. 
+          Invest in this pack if you want to turn side hustles into serious income streams.
+        </p>
+         <a href="https://www.instagram.com/bilu_xe10?igsh=NWc0ajRtbnJmazh2&text=I%20want%20to%20buy%20Advance%20Success%20Pack" target="_blank">
+  <button class="btn">Get It Now</button>
+</a>
       </div>
 
-      <p id="modalStatus" class="note"></p>
+      <!-- Package 3 -->
+      <div class= "card">
+        <img src="file_0000000086e4622fb63ce9f3956bbcb1.png" alt="Digital empire system pack 3499">
+        <h2> Digital Empire System</h2>
+        <span class="price">₹3499</span>
+        <p>
+          The Digital Empire System is designed to help you build wealth at scale and aim for earning up to ₹1 Crore. 
+          This is not just a package—it’s a complete business roadmap for building an empire online. 
+          You will learn multiple digital business models that can generate passive income streams. 
+          Our system introduces high-demand markets and profitable niches you can dominate. 
+          You’ll get insights into automation, scaling, and using advanced tools effectively. 
+          With this knowledge, you can multiply your income channels and secure long-term growth. 
+          The strategies covered are based on real-world case studies of successful digital entrepreneurs. 
+          Every chapter is crafted to unlock new growth potential for you. 
+          If you are serious about achieving financial freedom and want a solid plan, this pack is your answer. 
+          Start building your own digital empire today with confidence and guidance.
+        </p>
+        <a href="https://www.instagram.com/bilu_xe10?igsh=NWc0ajRtbnJmazh2&text=I%20want%20to%20buy%20Digital%20Empire%20System" target="_blank">
+  <button class="btn">Get It Now</button>
+</a>
+      </div>
+
+      <!-- Package 4 -->
+      <div class="card">
+        <img src="file_00000000b8d861f4930644f5a6d8054d.png" alt="Editing mastery">
+        <h2>Editing Mastery</h2>
+        <span class="price">₹4999</span>
+        <p>
+          Editing Mastery is the ultimate program to learn powerful video and content editing skills. 
+          This package is fully specialized, and even a 7th class student can understand it easily. 
+          You will gain complete knowledge of editing tools, techniques, and professional workflows. 
+          From beginner-level basics to advanced editing tricks, everything is included step by step. 
+          The lessons are designed to be practical so you can start creating right away. 
+          You will learn how to edit for social media, YouTube, and professional business content. 
+          With this mastery, you can also start freelancing and build a side hustle. 
+          Editing has become one of the most in-demand skills, and this pack equips you perfectly. 
+          Practical exercises ensure you learn by doing, not just theory. 
+          This pack is for creators, entrepreneurs, and anyone who wants to make high-quality digital content.
+        </p>
+        <a href="https://www.instagram.com/bilu_xe10?igsh=NWc0ajRtbnJmazh2&text=I%20want%20to%20buy%20Editing%20Mastery" target="_blank">
+  <button class="btn">Get It Now</button>
+</a>
+      </div>
+
+      <!-- Package 5 -->
+      <div class="card">
+        <img src="file_00000000832461faafd5a3755e5fae00.png" alt="Ultimate dropshipping system">
+        <h2>Ultimate Dropshipping System</h2>
+        <span class="price">₹9999</span>
+        <p>
+          The Ultimate Dropshipping System teaches you how to set up and run your e-commerce business from scratch. 
+          You will learn step-by-step how to create an online store without handling inventory. 
+          This package covers product research, finding suppliers, and setting up automated systems. 
+          You will also learn marketing strategies to generate consistent sales. 
+          Dropshipping is one of the most profitable online business models today, and this pack makes it simple. 
+          With detailed modules, you can quickly go from beginner to running a full-fledged store. 
+          The training includes tips for scaling to international markets and expanding globally. 
+          You will also learn how to use tools that reduce costs and increase profits. 
+          Each lesson is practical and based on real-life successful dropshipping businesses. 
+          If you want to build your e-commerce empire, this is the perfect package.
+        </p>
+        <a href="https://www.instagram.com/bilu_xe10?igsh=NWc0ajRtbnJmazh2&text=I%20want%20to%20buy%20Ultimate%20Dropshipping%20System" target="_blank">
+  <button class="btn">Get It Now</button>
+</a>
+      </div>
+
+      <!-- Package 6 -->
+      <div class="card">
+        <img src="file_00000000bf04620a8d4a21838cb258f3.png" alt=" Crypto trading mastery">
+        <h2>Crypto Trading Mastery</h2>
+        <span class="price">₹15999</span>
+        <p>
+          Crypto Trading Mastery is a complete guide to making money from cryptocurrency trading. 
+          This package takes you from basics to becoming a pro trader in one journey. 
+          You will learn market analysis, chart reading, and trading strategies step by step. 
+          The modules include both beginner and advanced trading techniques. 
+          With this program, you can learn how to minimize risks and maximize profits. 
+          You will also get insights into portfolio building and risk management. 
+          The course content is structured to build confidence in trading decisions. 
+          You will also explore opportunities in long-term investing and day trading. 
+          From understanding blockchain basics to advanced trading psychology, everything is covered. 
+          If you want to make serious income from crypto markets, this mastery is your best choice.
+        </p>
+        <a href="https://www.instagram.com/bilu_xe10?igsh=NWc0ajRtbnJmazh2&text=I%20want%20to%20buy%20Crypto%20Trading%20Mastery" target="_blank">
+  <button class="btn">Get It Now</button>
+</a>
+      </div>
+
+      <!-- Package 7 -->
+      <div class="card">
+        <img src="file_000000008bbc61fabe3b760d241a3ce4.png" alt="Future ai">
+        <h2>Future AI System</h2>
+        <span class="price">₹23999</span>
+        <p>
+          The Future AI System is a specialized package for mastering artificial intelligence tools. 
+          You will learn how to access, use, and monetize AI technologies effectively. 
+          This pack covers automation, AI-powered content creation, and business growth hacks. 
+          You will discover how AI can save time and create entirely new income streams. 
+          The training explains step-by-step usage of top AI platforms and tools. 
+          From chatbots to image generation, every powerful AI use-case is covered. 
+          This system prepares you for the future where AI dominates industries. 
+          You will also learn how to create services and businesses powered by AI. 
+          The program is practical, result-focused, and designed to unlock next-level opportunities. 
+          If you want to stay ahead of the curve and earn with AI, this package is for you.
+        </p>
+        <a href="https://www.instagram.com/bilu_xe10?igsh=NWc0ajRtbnJmazh2&text=I%20want%20to%20buy%20Future%20AI%20System" target="_blank">
+  <button class="btn">Get It Now</button>
+</a>
+      </div>
+
     </div>
   </div>
 
-  <script>
-    const SUPABASE_URL = "https://cisbvzecomyueslqkmbd.supabase.co";
-    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNpc2J2emVjb215dWVzbHFrbWJkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk5MDMwNTIsImV4cCI6MjA3NTQ3OTA1Mn0.hUNwgoIt-hgh21a1WNqsGkC2QC6mpwAcio5ek86kAfc";
-    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-    const products = [
-      {
-        name: "Starter Success Pack",
-        price: 999,
-        img: "file_00000000049461f7920d19bc75bf27d7.png",
-        description: `The Starter Success Pack is designed for beginners who want to take their first step in the digital world. 
-This package helps you grow from zero to earning up to ₹1 Lakh without any prior investment. 
-It provides simplified learning modules and practical steps anyone can follow...`
-      },
-      {
-        name: "Advance Success Pack",
-        price: 2499,
-        img: "file_00000000ed7861f7940aaa12396a8cf7.png",
-        description: `The Advance Success Pack is your pathway from zero to earning up to ₹10 Lakhs without investment. 
-It’s crafted for individuals who want to scale faster...`
-      },
-      {
-        name: "Digital Empire System",
-        price: 3499,
-        img: "file_0000000086e4622fb63ce9f3956bbcb1.png",
-        description: `The Digital Empire System is designed to help you build wealth at scale and aim for earning up to ₹1 Crore...`
-      },
-      {
-        name: "Editing Mastery",
-        price: 4999,
-        img: "file_00000000b8d861f4930644f5a6d8054d.png",
-        description: `Editing Mastery is the ultimate program to learn powerful video and content editing skills...`
-      },
-      {
-        name: "Ultimate Dropshipping System",
-        price: 9999,
-        img: "file_00000000832461faafd5a3755e5fae00.png",
-        description: `The Ultimate Dropshipping System teaches you how to set up and run your e-commerce business from scratch...`
-      },
-      {
-        name: "Crypto Trading Mastery",
-        price: 15999,
-        img: "file_00000000bf04620a8d4a21838cb258f3.png",
-        description: `Crypto Trading Mastery is a complete guide to making money from cryptocurrency trading...`
-      },
-      {
-        name: "Future AI System",
-        price: 23999,
-        img: "file_000000008bbc61fabe3b760d241a3ce4.png",
-        description: `The Future AI System is a specialized package for mastering artificial intelligence tools...`
-      }
-    ];
-
-    const container = document.getElementById("productList");
-    products.forEach(p => {
-      const card = document.createElement("div");
-      card.className = "card";
-      card.innerHTML = `
-        <img src="${p.img}" alt="${p.name}">
-        <h2>${p.name}</h2>
-        <span class="price">₹${p.price}</span>
-        <p>${p.description}</p>
-        <button class="btn" onclick="openPayment('${p.name}', ${p.price})">Get It Now</button>
-      `;
-      container.appendChild(card);
-    });
-
-    const modal = document.getElementById("paymentModal");
-    const modalTitle = document.getElementById("modalPackTitle");
-    const copyBtn = document.getElementById("copyUpiBtn");
-    const txnInput = document.getElementById("txnInput");
-    const screenshotInput = document.getElementById("screenshotInput");
-    const statusMsg = document.getElementById("modalStatus");
-    const submitBtn = document.getElementById("submitPaymentBtn");
-    const cancelBtn = document.getElementById("cancelBtn");
-
-    let currentPack = "";
-    let currentPrice = 0;
-
-    function openPayment(name, price) {
-      modalTitle.textContent = `${name} — ₹${price}`;
-      currentPack = name;
-      currentPrice = price;
-      modal.style.display = "flex";
-    }
-
-    cancelBtn.onclick = () => modal.style.display = "none";
-    copyBtn.onclick = () => {
-      navigator.clipboard.writeText("9019254743@axl");
-      copyBtn.textContent = "Copied!";
-      setTimeout(()=>copyBtn.textContent="Copy",1200);
-    };
-
-    submitBtn.onclick = async () => {
-      const txn = txnInput.value.trim();
-      if (!txn) { statusMsg.textContent = "Enter transaction ID."; return; }
-
-      const { data: userData, error: userErr } = await supabaseClient.auth.getUser();
-      if (userErr || !userData.user) {
-        statusMsg.textContent = "Please log in first.";
-        return;
-      }
-
-      let screenshotUrl = null;
-      if (screenshotInput.files.length) {
-        const file = screenshotInput.files[0];
-        const path = `payment-proofs/${userData.user.id}/${Date.now()}_${file.name}`;
-        const { error: uploadError } = await supabaseClient.storage.from('payment-proofs').upload(path, file);
-        if (!uploadError) {
-          const { data: urlData } = supabaseClient.storage.from('payment-proofs').getPublicUrl(path);
-          screenshotUrl = urlData.publicUrl;
-        }
-      }
-
-      const paymentData = {
-        user_id: userData.user.id,
-        pack_name: currentPack,
-        amount: currentPrice,
-        status: "pending",
-        transaction_id: txn,
-        payment_screenshot_url: screenshotUrl
-      };
-
-      const { error } = await supabaseClient.from("payments").insert([paymentData]);
-      if (error) { statusMsg.textContent = "Error submitting payment."; return; }
-
-      statusMsg.innerHTML = "<span class='success'>✅ Payment submitted. Wait for admin approval.</span>";
-      setTimeout(()=>modal.style.display="none",2000);
-    };
-  </script>
 </body>
 </html>
+    
