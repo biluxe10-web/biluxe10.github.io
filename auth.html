@@ -1,189 +1,181 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Biluxe10 | Auth</title>
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, RecaptchaVerifier, signInWithPhoneNumber } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
-import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Biluxe10 | Login & Signup</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, rgba(243,156,18,0.9), rgba(231,76,60,0.9)), url('https://images.unsplash.com/photo-1522204501928-9b3f1a0b5c44?auto=format&fit=crop&w=1400&q=80');
+      background-size: cover;
+      background-position: center;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
 
-// Firebase config
-const firebaseConfig = {
-  apiKey: "AIzaSyDxxkC9iD1V1w-53Kf4oBrHEXlBLvCc7sE",
-  authDomain: "biluxe10-3e894.firebaseapp.com",
-  projectId: "biluxe10-3e894",
-  storageBucket: "biluxe10-3e894.firebasestorage.app",
-  messagingSenderId: "804749588233",
-  appId: "1:804749588233:web:7777648c0c7834733c05d8"
-};
+    .auth-box {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      width: 90%;
+      max-width: 400px;
+      padding: 40px;
+      text-align: center;
+      transition: 0.5s ease;
+    }
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
+    h2 {
+      color: #e67e22;
+      margin-bottom: 20px;
+    }
 
-// --- Email/Password Signup
-window.signup = async () => {
-  const name = document.getElementById("signupName").value.trim();
-  const email = document.getElementById("signupEmail").value.trim();
-  const password = document.getElementById("signupPassword").value.trim();
-  const referral = document.getElementById("signupReferral").value.trim();
+    input {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      font-size: 15px;
+    }
 
-  if(!name || !email || !password){
-    alert("Fill all fields!");
-    return;
-  }
+    button {
+      background: linear-gradient(135deg, #f39c12, #e74c3c);
+      border: none;
+      color: white;
+      padding: 12px 20px;
+      border-radius: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.3s;
+      width: 100%;
+    }
 
-  try {
-    const userCredential = await createUserWithEmailAndPassword(auth,email,password);
-    const user = userCredential.user;
+    button:hover {
+      background: linear-gradient(135deg, #e67e22, #c0392b);
+    }
 
-    await setDoc(doc(db,"users",user.uid),{
-      name, email, referralCode: referral, paymentStatus:"pending", adminVerified:false, joinedAt:serverTimestamp()
+    p {
+      font-size: 14px;
+      color: #333;
+    }
+
+    a {
+      color: #e67e22;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+
+  <div class="auth-box" id="signupBox">
+    <h2>Create Account</h2>
+    <input type="text" id="signupName" placeholder="Full Name" />
+    <input type="email" id="signupEmail" placeholder="Email Address" />
+    <input type="password" id="signupPassword" placeholder="Password" />
+    <button id="signupBtn">Sign Up</button>
+    <p>Already have an account? <a id="goLogin">Login</a></p>
+  </div>
+
+  <div class="auth-box hidden" id="loginBox">
+    <h2>Welcome Back</h2>
+    <input type="email" id="loginEmail" placeholder="Email Address" />
+    <input type="password" id="loginPassword" placeholder="Password" />
+    <button id="loginBtn">Login</button>
+    <p>Don’t have an account? <a id="goSignup">Sign Up</a></p>
+  </div>
+
+  <script type="module">
+    // Import Firebase SDKs
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js";
+    import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
+
+    // Firebase Config (replace with yours)
+    const firebaseConfig = {
+      apiKey: "AIzaSyDxxkC9iD1V1w-53Kf4oBrHEXlBLvCc7sE",
+      authDomain: "biluxe10-3e894.firebaseapp.com",
+      projectId: "biluxe10-3e894",
+      storageBucket: "biluxe10-3e894.firebasestorage.app",
+      messagingSenderId: "804749588233",
+      appId: "1:804749588233:web:7777648c0c7834733c05d8"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // Toggle between login/signup
+    document.getElementById("goLogin").onclick = () => {
+      document.getElementById("signupBox").classList.add("hidden");
+      document.getElementById("loginBox").classList.remove("hidden");
+    };
+
+    document.getElementById("goSignup").onclick = () => {
+      document.getElementById("loginBox").classList.add("hidden");
+      document.getElementById("signupBox").classList.remove("hidden");
+    };
+
+    // Signup Function
+    document.getElementById("signupBtn").addEventListener("click", async () => {
+      const name = document.getElementById("signupName").value.trim();
+      const email = document.getElementById("signupEmail").value.trim();
+      const password = document.getElementById("signupPassword").value.trim();
+
+      if (!name || !email || !password) {
+        alert("Please fill in all fields.");
+        return;
+      }
+
+      try {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+
+        await setDoc(doc(db, "users_collection", user.email), {
+          name: name,
+          email: email,
+          paymentStatus: "not_paid",
+          createdAt: new Date()
+        });
+
+        localStorage.setItem("userEmail", user.email);
+        alert("Signup successful!");
+        window.location.href = "products.html"; // ✅ Go to products after signup
+
+      } catch (error) {
+        alert("Error: " + error.message);
+      }
     });
 
-    window.location.href="products.html"; // redirect after signup
-  } catch(error){
-    if(error.code==="auth/email-already-in-use"){
-      alert("Email already in use! Redirecting to products page...");
-      window.location.href="products.html";
-    } else {
-      alert(error.message);
-    }
-  }
-};
+    // Login Function
+    document.getElementById("loginBtn").addEventListener("click", async () => {
+      const email = document.getElementById("loginEmail").value.trim();
+      const password = document.getElementById("loginPassword").value.trim();
 
-// --- Email/Password Login
-window.login = async () => {
-  const email = document.getElementById("loginEmail").value.trim();
-  const password = document.getElementById("loginPassword").value.trim();
-  if(!email || !password){ alert("Fill all fields!"); return; }
-  try { 
-    await signInWithEmailAndPassword(auth,email,password); 
-    window.location.href="products.html"; 
-  }
-  catch(error){ alert(error.message); }
-};
+      if (!email || !password) {
+        alert("Please enter your email and password.");
+        return;
+      }
 
-// --- Google Signup/Login
-window.googleLogin = async () => {
-  const provider = new GoogleAuthProvider();
-  try{
-    const result = await signInWithPopup(auth,provider);
-    const user = result.user;
+      try {
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+        localStorage.setItem("userEmail", user.email);
 
-    await setDoc(doc(db,"users",user.uid),{
-      name:user.displayName,
-      email:user.email,
-      referralCode:"",
-      paymentStatus:"pending",
-      adminVerified:false,
-      joinedAt:serverTimestamp()
-    },{merge:true});
-
-    window.location.href="products.html";
-  } catch(error){ alert(error.message); }
-};
-
-// --- Phone Signup/Login
-window.phoneLogin = () => {
-  const phone = document.getElementById("phoneNumber").value.trim();
-  if(!phone){ alert("Enter phone number"); return; }
-
-  window.recaptchaVerifier = new RecaptchaVerifier('recaptcha-container',{'size':'invisible'},auth);
-  signInWithPhoneNumber(auth,phone,window.recaptchaVerifier)
-    .then(confirmationResult => {
-      window.confirmationResult = confirmationResult;
-      const code = prompt("Enter OTP sent to your phone");
-      return confirmationResult.confirm(code);
-    })
-    .then(result => {
-      const user = result.user;
-      setDoc(doc(db,"users",user.uid),{
-        name:"Phone User",
-        phone:user.phoneNumber,
-        paymentStatus:"pending",
-        adminVerified:false,
-        joinedAt:serverTimestamp()
-      },{merge:true});
-      window.location.href="products.html";
-    })
-    .catch(error => alert(error.message));
-};
-</script>
-
-<style>
-body{margin:0;padding:0;font-family:'Poppins',sans-serif;display:flex;justify-content:center;align-items:center;min-height:100vh;background:linear-gradient(to right,#f6d365,#fda085);}
-.container{background:rgba(255,255,255,0.95);padding:40px;border-radius:20px;max-width:450px;width:90%;box-shadow:0 15px 40px rgba(0,0,0,0.3);text-align:center;}
-h1{margin-bottom:20px;color:#ff4e50;text-shadow:1px 1px 3px rgba(0,0,0,0.2);}
-input,button{width:100%;padding:12px;margin:10px 0;border-radius:10px;font-size:16px;}
-input{border:1px solid #ccc;outline:none;}
-input:focus{border-color:#ff4e50;box-shadow:0 0 5px rgba(255,78,80,0.5);}
-button{border:none;background:#ff4e50;color:white;cursor:pointer;transition:0.3s;}
-button:hover{background:#e43d3d;}
-.toggle-btns{display:flex;justify-content:space-between;margin-bottom:20px;}
-.toggle-btns button{width:48%;background:#ccc;color:#333;}
-.toggle-btns button.active{background:#ff4e50;color:white;}
-.form-section{display:none;}
-.form-section.active{display:block;}
-</style>
-</head>
-
-<body>
-<div class="container">
-<h1>Biluxe10</h1>
-<div class="toggle-btns">
-<button id="signupToggle" class="active">Sign Up</button>
-<button id="loginToggle">Login</button>
-</div>
-
-<!-- Signup Form -->
-<div id="signupForm" class="form-section active">
-<input type="text" id="signupName" placeholder="Full Name">
-<input type="email" id="signupEmail" placeholder="Email">
-<input type="password" id="signupPassword" placeholder="Password">
-<input type="text" id="signupReferral" placeholder="Referral Code (optional)">
-<button onclick="signup()">Sign Up</button>
-
-<!-- Google + Phone Signup -->
-<button onclick="googleLogin()">Sign Up with Google</button>
-<input type="text" id="phoneNumber" placeholder="Phone Number (+91)">
-<div id="recaptcha-container"></div>
-<button onclick="phoneLogin()">Sign Up with Phone</button>
-</div>
-
-<!-- Login Form -->
-<div id="loginForm" class="form-section">
-<input type="email" id="loginEmail" placeholder="Email">
-<input type="password" id="loginPassword" placeholder="Password">
-<button onclick="login()">Login</button>
-<button onclick="googleLogin()">Login with Google</button>
-<input type="text" id="phoneNumberLogin" placeholder="Phone Number (+91)">
-<div id="recaptcha-container-login"></div>
-<button onclick="phoneLogin()">Login with Phone</button>
-</div>
-</div>
-
-<script>
-const signupBtn=document.getElementById("signupToggle");
-const loginBtn=document.getElementById("loginToggle");
-const signupForm=document.getElementById("signupForm");
-const loginForm=document.getElementById("loginForm");
-
-signupBtn.onclick=()=>{
-signupBtn.classList.add("active");
-loginBtn.classList.remove("active");
-signupForm.classList.add("active");
-loginForm.classList.remove("active");
-}
-
-loginBtn.onclick=()=>{
-loginBtn.classList.add("active");
-signupBtn.classList.remove("active");
-loginForm.classList.add("active");
-signupForm.classList.remove("active");
-}
-</script>
+        alert("Login successful!");
+        window.location.href = "dashboard.html"; // ✅ Go to dashboard after login
+      } catch (error) {
+        alert("Login failed: " + error.message);
+      }
+    });
+  </script>
 </body>
 </html>
