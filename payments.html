@@ -82,11 +82,6 @@ document.getElementById("paidBtn").addEventListener("click", async () => {
   const utr = document.getElementById("utr").value;
   const screenshot = document.getElementById("screenshot").files[0];
   const msg = document.getElementById("msg");
-
-  if (!email) {
-    msg.innerText = "User not found. Please login first.";
-    setTimeout(() => { window.location.href = "auth.html"; }, 2000);
-    return;
   }
   if (!utr || !screenshot) {
     msg.innerText = "Please enter UTR number and upload screenshot!";
