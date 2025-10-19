@@ -1,106 +1,107 @@
-<!DOCTYPE html>
+  <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Biluxe10 | Login & Signup</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Biluxe10 | Login & Signup</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, rgba(243,156,18,0.9), rgba(231,76,60,0.9)), url('https://images.unsplash.com/photo-1522204501928-9b3f1a0b5c44?auto=format&fit=crop&w=1400&q=80');
+      background-size: cover;
+      background-position: center;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
 
-<!-- Google Font -->
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+    .auth-box {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      width: 90%;
+      max-width: 400px;
+      padding: 40px;
+      text-align: center;
+      transition: 0.5s ease;
+    }
 
-<style>
-  body {
-    margin: 0;
-    font-family: 'Poppins', sans-serif;
-    background: url('https://i.ibb.co/9bvSnXw/biluxe-bg.jpg') no-repeat center center/cover;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-  }
+    h2 {
+      color: #e67e22;
+      margin-bottom: 20px;
+    }
 
-  .container {
-    background: rgba(255, 255, 255, 0.92);
-    padding: 40px;
-    border-radius: 20px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-    width: 90%;
-    max-width: 400px;
-    text-align: center;
-  }
+    input {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      font-size: 15px;
+    }
 
-  h2 {
-    color: #004d40;
-    margin-bottom: 25px;
-    font-weight: 600;
-  }
+    button {
+      background: linear-gradient(135deg, #f39c12, #e74c3c);
+      border: none;
+      color: white;
+      padding: 12px 20px;
+      border-radius: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.3s;
+      width: 100%;
+    }
 
-  input {
-    width: 100%;
-    padding: 12px;
-    margin-bottom: 15px;
-    border-radius: 10px;
-    border: 1px solid #ccc;
-    font-size: 14px;
-  }
+    button:hover {
+      background: linear-gradient(135deg, #e67e22, #c0392b);
+    }
 
-  button {
-    width: 100%;
-    padding: 12px;
-    background-color: #004d40;
-    color: #fff;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    font-size: 16px;
-    font-weight: 600;
-    transition: 0.3s;
-  }
+    p {
+      font-size: 14px;
+      color: #333;
+    }
 
-  button:hover {
-    background-color: #00796b;
-  }
+    a {
+      color: #e67e22;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+    }
 
-  p {
-    margin-top: 15px;
-    font-size: 14px;
-    color: #333;
-  }
-
-  a {
-    color: #004d40;
-    font-weight: 600;
-    text-decoration: none;
-  }
-
-  .alert {
-    color: red;
-    font-size: 14px;
-    margin-top: 10px;
-  }
-</style>
+    .hidden { display: none; }
+  </style>
 </head>
-
 <body>
-  <div class="container" id="authContainer">
-    <h2 id="formTitle">Create Account</h2>
-    <input type="text" id="name" placeholder="Full Name" required />
-    <input type="email" id="email" placeholder="Email Address" required />
-    <input type="password" id="password" placeholder="Password" required />
-    <input type="tel" id="phone" placeholder="Phone Number" required />
-    <input type="text" id="referral" placeholder="Referral Code (Optional)" />
-    <button id="signupBtn">Sign Up</button>
 
-    <p>Already have an account? <a href="#" id="toggleForm">Login</a></p>
-    <p class="alert" id="msg"></p>
+  <div class="auth-box" id="signupBox">
+    <h2>Create Account</h2>
+    <input type="text" id="signupName" placeholder="Full Name" />
+    <input type="email" id="signupEmail" placeholder="Email Address" />
+    <input type="password" id="signupPassword" placeholder="Password" />
+    <input type="text" id="signupPhone" placeholder="Phone Number" /> <!-- NEW -->
+    <input type="text" id="signupReferral" placeholder="Referral Code (optional)" /> <!-- NEW -->
+    <button id="signupBtn">Sign Up</button>
+    <p>Already have an account? <a id="goLogin">Login</a></p>
+  </div>
+
+  <div class="auth-box hidden" id="loginBox">
+    <h2>Welcome Back</h2>
+    <input type="email" id="loginEmail" placeholder="Email Address" />
+    <input type="password" id="loginPassword" placeholder="Password" />
+    <button id="loginBtn">Login</button>
+    <p>Don’t have an account? <a id="goSignup">Sign Up</a></p>
   </div>
 
   <script type="module">
+    // Import Firebase SDKs
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
     import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js";
-    import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
+    import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
 
-    // Firebase Config
+    // Firebase Config (replace with yours)
     const firebaseConfig = {
       apiKey: "AIzaSyDxxkC9iD1V1w-53Kf4oBrHEXlBLvCc7sE",
       authDomain: "biluxe10-3e894.firebaseapp.com",
@@ -114,67 +115,71 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    const signupBtn = document.getElementById("signupBtn");
-    const toggleForm = document.getElementById("toggleForm");
-    const formTitle = document.getElementById("formTitle");
-    const msg = document.getElementById("msg");
+    // Toggle between login/signup
+    document.getElementById("goLogin").onclick = () => {
+      document.getElementById("signupBox").classList.add("hidden");
+      document.getElementById("loginBox").classList.remove("hidden");
+    };
 
-    let isLogin = false;
+    document.getElementById("goSignup").onclick = () => {
+      document.getElementById("loginBox").classList.add("hidden");
+      document.getElementById("signupBox").classList.remove("hidden");
+    };
 
-    toggleForm.addEventListener("click", () => {
-      isLogin = !isLogin;
-      formTitle.textContent = isLogin ? "Welcome Back" : "Create Account";
-      signupBtn.textContent = isLogin ? "Login" : "Sign Up";
-      document.getElementById("name").style.display = isLogin ? "none" : "block";
-      document.getElementById("phone").style.display = isLogin ? "none" : "block";
-      document.getElementById("referral").style.display = isLogin ? "none" : "block";
-      msg.textContent = "";
-    });
+    // Signup Function
+    document.getElementById("signupBtn").addEventListener("click", async () => {
+      const name = document.getElementById("signupName").value.trim();
+      const email = document.getElementById("signupEmail").value.trim();
+      const password = document.getElementById("signupPassword").value.trim();
+      const phone = document.getElementById("signupPhone").value.trim(); // NEW
+      const referral = document.getElementById("signupReferral").value.trim(); // NEW
 
-    signupBtn.addEventListener("click", async () => {
-      const name = document.getElementById("name").value;
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
-      const phone = document.getElementById("phone").value;
-      const referral = document.getElementById("referral").value;
-
-      if (!email || !password) {
-        msg.textContent = "Please fill all required fields.";
+      if (!name || !email || !password || !phone) {
+        alert("Please fill in all fields (except referral code).");
         return;
       }
 
       try {
-        if (isLogin) {
-          // LOGIN
-          const userCredential = await signInWithEmailAndPassword(auth, email, password);
-          localStorage.setItem("userEmail", email);
-          const userRef = doc(db, "users_collection", email);
-          const userSnap = await getDoc(userRef);
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
 
-          if (userSnap.exists() && userSnap.data().paymentStatus === "approved") {
-            window.location.href = "dashboard.html";
-          } else {
-            window.location.href = "products.html";
-          }
-        } else {
-          // SIGNUP
-          const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-          await setDoc(doc(db, "users_collection", email), {
-            name,
-            email,
-            phone,
-            referral,
-            paymentStatus: "unpaid",
-            createdAt: new Date()
-          });
-          localStorage.setItem("userEmail", email);
-          msg.style.color = "green";
-          msg.textContent = "Signup successful! Redirecting...";
-          setTimeout(() => window.location.href = "products.html", 1500);
-        }
+        await setDoc(doc(db, "users_collection", user.email), {
+          name: name,
+          email: email,
+          phone: phone, // NEW
+          referralCode: referral || "", // NEW
+          paymentStatus: "not_paid",
+          createdAt: new Date()
+        });
+
+        localStorage.setItem("userEmail", user.email);
+        alert("Signup successful!");
+        window.location.href = "products.html";
+
       } catch (error) {
-        console.error(error);
-        msg.textContent = error.message;
+        alert("Error: " + error.message);
+      }
+    });
+
+    // Login Function
+    document.getElementById("loginBtn").addEventListener("click", async () => {
+      const email = document.getElementById("loginEmail").value.trim();
+      const password = document.getElementById("loginPassword").value.trim();
+
+      if (!email || !password) {
+        alert("Please enter your email and password.");
+        return;
+      }
+
+      try {
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+        localStorage.setItem("userEmail", user.email);
+
+        alert("Login successful!");
+        window.location.href = "dashboard.html";
+      } catch (error) {
+        alert("Login failed: " + error.message);
       }
     });
   </script>
