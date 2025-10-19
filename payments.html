@@ -1,4 +1,4 @@
-  <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -24,6 +24,7 @@
       width: 90%;
       max-width: 500px;
       text-align: center;
+      animation: fadeIn 1s ease;
     }
     h2 {
       margin-bottom: 20px;
@@ -35,6 +36,7 @@
       border-radius: 10px;
       margin-bottom: 20px;
       font-weight: 600;
+      font-size: 16px;
     }
     input[type="text"], input[type="file"] {
       width: 100%;
@@ -62,6 +64,10 @@
       color: green;
       font-weight: 600;
     }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
   </style>
 </head>
 <body>
@@ -69,7 +75,7 @@
   <div class="container">
     <h2>Complete Your Payment</h2>
     <p class="upi">Pay to UPI ID: <strong>9019254743@axl</strong></p>
-    <p>After payment, upload your UTR screenshot and enter UTR number.</p>
+    <p>Enter your UTR number and upload the payment screenshot.</p>
     <input type="text" id="utr" placeholder="Enter UTR Number" required>
     <input type="file" id="screenshot" accept="image/*" required>
     <button id="paidBtn">✅ I Have Paid</button>
@@ -80,6 +86,7 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
     import { getFirestore, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
 
+    // 🔑 Replace with your Firebase config
     const firebaseConfig = {
       apiKey: "YOUR_API_KEY",
       authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
@@ -93,18 +100,18 @@
     const db = getFirestore(app);
 
     document.getElementById("paidBtn").addEventListener("click", async () => {
-      const email = localStorage.getItem("userEmail");
-      const utr = document.getElementById("utr").value;
+      const email = localStorage.getItem("userEmail"); // must set during signup/login
+      const utr = document.getElementById("utr").value.trim();
       const screenshot = document.getElementById("screenshot").files[0];
       const msg = document.getElementById("msg");
 
-      if(!email){
-        alert("User not found. Please login again.");
+      if (!email) {
+        alert("User not found. Please login first.");
         window.location.href = "auth.html";
         return;
       }
-      if(!utr || !screenshot){
-        alert("Please enter UTR and upload screenshot.");
+      if (!utr || !screenshot) {
+        alert("Please enter UTR number and upload screenshot.");
         return;
       }
 
@@ -116,16 +123,18 @@
           screenshotName: screenshot.name,
           timestamp: new Date()
         });
+
         msg.innerText = "Payment completed! Waiting for admin approval...";
         setTimeout(() => {
-          window.location.href = "auth.html"; // redirect to login
+          window.location.href = "auth.html"; // Redirect to login page
         }, 2000);
-      } catch (err) {
-        console.error(err);
-        alert("Something went wrong, try again.");
+
+      } catch (error) {
+        console.error(error);
+        alert("Something went wrong. Please try again.");
       }
     });
   </script>
 
 </body>
-</html>
+  </html>
