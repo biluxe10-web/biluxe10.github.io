@@ -1,140 +1,140 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Biluxe10 Payment</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-  <style>
-    body {
-      font-family: 'Poppins', sans-serif;
-      margin: 0;
-      padding: 0;
-      background: linear-gradient(135deg, #f39c12, #e74c3c);
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-    .container {
-      background: #fff;
-      padding: 40px;
-      border-radius: 15px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-      width: 90%;
-      max-width: 500px;
-      text-align: center;
-      animation: fadeIn 1s ease;
-    }
-    h2 {
-      margin-bottom: 20px;
-      color: #222;
-    }
-    .upi {
-      background: #f1f1f1;
-      padding: 15px;
-      border-radius: 10px;
-      margin-bottom: 20px;
-      font-weight: 600;
-      font-size: 16px;
-    }
-    input[type="text"], input[type="file"] {
-      width: 100%;
-      padding: 12px;
-      margin-bottom: 15px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      font-size: 14px;
-    }
-    button {
-      background-color: #f39c12;
-      color: white;
-      border: none;
-      padding: 12px 25px;
-      border-radius: 10px;
-      font-size: 16px;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-    button:hover {
-      background-color: #e67e22;
-    }
-    .alert {
-      margin: 15px 0;
-      color: green;
-      font-weight: 600;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Biluxe10 Payment</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+<style>
+body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(135deg, #f39c12, #e74c3c);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.container {
+    background: #fff;
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+    width: 90%;
+    max-width: 500px;
+    text-align: center;
+}
+h2 {
+    margin-bottom: 20px;
+    color: #222;
+}
+.upi {
+    background: #f1f1f1;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    font-weight: 600;
+}
+input[type="text"], input[type="file"] {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+}
+button {
+    background-color: #f39c12;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+button:hover {
+    background-color: #e67e22;
+}
+.alert {
+    margin: 15px 0;
+    font-weight: 600;
+}
+.alert.success { color: green; }
+.alert.error { color: red; }
+</style>
 </head>
 <body>
 
-  <div class="container">
+<div class="container">
     <h2>Complete Your Payment</h2>
     <p class="upi">Pay to UPI ID: <strong>9019254743@axl</strong></p>
-    <p>Enter your UTR number and upload the payment screenshot.</p>
+    <p>After payment, upload your UTR screenshot and enter UTR number.</p>
     <input type="text" id="utr" placeholder="Enter UTR Number" required>
     <input type="file" id="screenshot" accept="image/*" required>
     <button id="paidBtn">✅ I Have Paid</button>
     <p class="alert" id="msg"></p>
-  </div>
+</div>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
-    import { getFirestore, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
+import { getFirestore, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
 
-    // 🔑 Replace with your Firebase config
-    const firebaseConfig = {
-      apiKey: "YOUR_API_KEY",
-      authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-      projectId: "YOUR_PROJECT_ID",
-      storageBucket: "YOUR_PROJECT_ID.appspot.com",
-      messagingSenderId: "YOUR_SENDER_ID",
-      appId: "YOUR_APP_ID"
-    };
+// 🔹 Firebase Config
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_PROJECT_ID.appspot.com",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID"
+};
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
+// Init Firebase
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
-    document.getElementById("paidBtn").addEventListener("click", async () => {
-      const email = localStorage.getItem("userEmail"); // must set during signup/login
-      const utr = document.getElementById("utr").value.trim();
-      const screenshot = document.getElementById("screenshot").files[0];
-      const msg = document.getElementById("msg");
+// I Have Paid button click
+document.getElementById("paidBtn").addEventListener("click", async () => {
+    const email = localStorage.getItem("userEmail"); // Must be set at signup/login
+    const utr = document.getElementById("utr").value.trim();
+    const screenshot = document.getElementById("screenshot").files[0];
+    const msg = document.getElementById("msg");
 
-      if (!email) {
+    if(!email){
         alert("User not found. Please login first.");
         window.location.href = "auth.html";
         return;
-      }
-      if (!utr || !screenshot) {
-        alert("Please enter UTR number and upload screenshot.");
-        return;
-      }
+    }
 
-      try {
+    if(!utr || !screenshot){
+        alert("Please enter UTR and upload screenshot.");
+        return;
+    }
+
+    try {
         const userRef = doc(db, "users_collection", email);
         await updateDoc(userRef, {
-          paymentStatus: "pending",
-          utrNumber: utr,
-          screenshotName: screenshot.name,
-          timestamp: new Date()
+            paymentStatus: "pending",
+            utrNumber: utr,
+            screenshotName: screenshot.name,
+            timestamp: new Date()
         });
-
+        msg.className = "alert success";
         msg.innerText = "Payment completed! Waiting for admin approval...";
+
         setTimeout(() => {
-          window.location.href = "auth.html"; // Redirect to login page
+            window.location.href = "auth.html"; // Redirect to login
         }, 2000);
 
-      } catch (error) {
-        console.error(error);
-        alert("Something went wrong. Please try again.");
-      }
-    });
-  </script>
+    } catch(err){
+        console.error(err);
+        msg.className = "alert error";
+        msg.innerText = "Something went wrong. Try again.";
+    }
+});
+</script>
 
 </body>
-  </html>
+</html>
