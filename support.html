@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>Support</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet"><style>body{font-family:Poppins;background:#071029;color:#e6eef8;margin:0;padding:20px}.box{max-width:800px;margin:20px auto;background:#0b1220;padding:20px;border-radius:12px} input,textarea{width:100%;padding:10px;margin:8px 0;border-radius:8px;border:1px solid #223}</style></head>
+<body>
+<div class="box">
+  <h2>Support</h2>
+  <input id="subject" placeholder="Subject" />
+  <textarea id="message" rows="5" placeholder="Describe your issue"></textarea>
+  <button id="send" class="btn">Send Ticket</button>
+  <h3 style="margin-top:18px">Your Tickets</h3>
+  <ul id="list"></ul>
+</div>
+
+<script type="module">
+import { auth, db } from './firebase.js';
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js";
+import { collection, addDoc, query, where, getDocs, orderBy } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
+
+const subject = document.getElementById('subject'), message = document.getElementById('message'), send = document.getElementById('send'), list = document.getElementById('list');
+
+onAuthStateChanged(auth, async user=>{
+  if(!user) { location.href='auth.html'; return; }
+  load(user.uid);
+});
+
+async function load(uid){
+  list.innerHTML = '';
+  const q = query(collection(db,'supporttickets'), where('userId','==', uid), orderBy('createdAt','desc'));
+  const snap = await getDocs(q);
+  snap.forEach(s=>{
+    const d = s.data();
+    const li = document.createElement('li');
+    li.textContent = `${d.subject} • ${d.status||'open'}`;
+    list.appendChild(li);
+  });
+}
+
+send.addEventListener('click', async ()=>{
+  const user = auth.currentUser; if(!user) return;
+  await addDoc(collection(db,'supporttickets'), { userId:user.uid, subject:subject.value, message:message.value, status:'open', createdAt:new Date() });
+  subject.value=''; message.value=''; load(user.uid);
+  alert('Ticket created');
+});
+</script>
+</body>
+</html>
