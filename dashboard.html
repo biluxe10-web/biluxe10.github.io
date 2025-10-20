@@ -1,4 +1,4 @@
-   <!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -7,30 +7,23 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
     body {
-      font-family: 'Poppins', sans-serif;
       margin: 0;
+      font-family: 'Poppins', sans-serif;
       background: linear-gradient(135deg, #012d26, #016b59);
       color: white;
       min-height: 100vh;
     }
-
     header {
       background: #014033;
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding: 15px 25px;
-      position: sticky;
-      top: 0;
-      z-index: 10;
     }
-
     header h1 {
       font-size: 20px;
       color: #f5c542;
-      letter-spacing: 1px;
     }
-
     .menu-btn {
       font-size: 24px;
       cursor: pointer;
@@ -38,8 +31,6 @@
       border: none;
       color: white;
     }
-
-    /* Dropdown Menu */
     .menu {
       display: none;
       position: absolute;
@@ -48,48 +39,22 @@
       background: #013328;
       border-radius: 10px;
       overflow: hidden;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.4);
     }
-
-    .menu.active {
+    .menu.active { display: block; }
+    .menu a {
       display: block;
-      animation: fadeIn 0.3s ease;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .menu button {
-      display: block;
-      width: 200px;
-      padding: 12px 15px;
-      text-align: left;
-      background: none;
-      border: none;
+      text-decoration: none;
       color: white;
-      font-size: 15px;
-      cursor: pointer;
-      transition: background 0.3s;
+      padding: 12px 15px;
     }
+    .menu a:hover { background: rgba(255,215,0,0.15); }
 
-    .menu button:hover {
-      background: rgba(255, 215, 0, 0.15);
-    }
-
-    .content {
-      padding: 20px;
-    }
-
-    /* Earnings Cards */
     .cards {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
       gap: 15px;
-      margin-top: 20px;
+      padding: 20px;
     }
-
     .card {
       background: #014f3f;
       border-radius: 15px;
@@ -98,16 +63,8 @@
       box-shadow: 0 4px 15px rgba(0,0,0,0.3);
       transition: transform 0.3s;
     }
-
     .card:hover { transform: translateY(-5px); }
-
-    .card h3 { color: #f5c542; font-size: 18px; margin-bottom: 10px; }
-    .card p { font-size: 20px; font-weight: bold; color: white; }
-
-    /* Hide Sections Initially */
-    section { display: none; }
-    section.active { display: block; }
-
+    .card h3 { color: #f5c542; }
   </style>
 </head>
 <body>
@@ -115,126 +72,51 @@
     <h1>Biluxe10 Dashboard</h1>
     <button class="menu-btn">⋮</button>
     <div class="menu" id="menu">
-      <button onclick="showSection('earnings')">💰 Earnings</button>
-      <button onclick="showSection('team')">👥 Team Members</button>
-      <button onclick="showSection('withdrawals')">💳 Withdrawals</button>
-      <button onclick="showSection('profile')">👤 Profile</button>
-      <button onclick="showSection('support')">📢 Support</button>
-      <button onclick="logout()">🚪 Logout</button>
+      <a href="dashboard.html">💰 Earnings</a>
+      <a href="team.html">👥 Team Members</a>
+      <a href="withdrawal.html">💳 Withdrawals</a>
+      <a href="profile.html">👤 Profile</a>
+      <a href="referral.html">🔗 Referral</a>
+      <a href="support.html">📢 Support</a>
+      <a href="auth.html" onclick="localStorage.clear()">🚪 Logout</a>
     </div>
   </header>
 
-  <div class="content">
-    <!-- Earnings Section -->
-    <section id="earnings" class="active">
-      <h2>My Earnings</h2>
-      <div class="cards">
-        <div class="card">
-          <h3>Today’s Earning</h3>
-          <p id="todayEarning">₹0</p>
-        </div>
-        <div class="card">
-          <h3>Last 7 Days</h3>
-          <p id="weekEarning">₹0</p>
-        </div>
-        <div class="card">
-          <h3>Last 30 Days</h3>
-          <p id="monthEarning">₹0</p>
-        </div>
-        <div class="card">
-          <h3>All Time</h3>
-          <p id="totalEarning">₹0</p>
-        </div>
-      </div>
-
-      <h3 style="margin-top:30px;">Earning Breakdown</h3>
-      <div class="cards">
-        <div class="card"><h3>Active Income</h3><p id="activeIncome">₹0</p></div>
-        <div class="card"><h3>Passive Income</h3><p id="passiveIncome">₹0</p></div>
-        <div class="card"><h3>Ads Bonus</h3><p id="bonusIncome">₹0</p></div>
-      </div>
-    </section>
-
-    <!-- Team Section -->
-    <section id="team">
-      <h2>Team Members</h2>
-      <p>Your referral network will be displayed here.</p>
-    </section>
-
-    <!-- Withdrawals Section -->
-    <section id="withdrawals">
-      <h2>Withdrawals</h2>
-      <p>Your withdrawal requests and history will appear here.</p>
-    </section>
-
-    <!-- Profile Section -->
-    <section id="profile">
-      <h2>Profile Settings</h2>
-      <p>Edit your name, email, and contact info here.</p>
-    </section>
-
-    <!-- Support Section -->
-    <section id="support">
-      <h2>Support & Help</h2>
-      <p>Need assistance? Contact our support team here.</p>
-    </section>
+  <div class="cards">
+    <div class="card"><h3>Today’s Earning</h3><p id="todayEarning">₹0</p></div>
+    <div class="card"><h3>Last 7 Days</h3><p id="weekEarning">₹0</p></div>
+    <div class="card"><h3>Last 30 Days</h3><p id="monthEarning">₹0</p></div>
+    <div class="card"><h3>All Time</h3><p id="totalEarning">₹0</p></div>
+    <div class="card"><h3>Active Income</h3><p id="activeIncome">₹0</p></div>
+    <div class="card"><h3>Passive Income</h3><p id="passiveIncome">₹0</p></div>
+    <div class="card"><h3>Ads Bonus</h3><p id="bonusIncome">₹0</p></div>
   </div>
 
-  <!-- Firebase + JS -->
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
-    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyDxxkC9iD1V1w-53Kf4oBrHEXlBLvCc7sE",
-      authDomain: "biluxe10-3e894.firebaseapp.com",
-      projectId: "biluxe10-3e894",
-      storageBucket: "biluxe10-3e894.firebasestorage.app",
-      messagingSenderId: "804749588233",
-      appId: "1:804749588233:web:7777648c0c7834733c05d8"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
+    import { app, db } from "./firebase.js";
+    import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
 
     const email = localStorage.getItem("userEmail");
+    document.querySelector(".menu-btn").onclick = () => {
+      document.getElementById("menu").classList.toggle("active");
+    };
 
-    // Fetch User Data
     async function loadEarnings() {
       if (!email) return;
-      const userRef = doc(db, "users", email);
-      const userSnap = await getDoc(userRef);
-      if (userSnap.exists()) {
-        const data = userSnap.data();
-        document.getElementById("todayEarning").innerText = "₹" + (data.todayEarning || 0);
-        document.getElementById("weekEarning").innerText = "₹" + (data.weekEarning || 0);
-        document.getElementById("monthEarning").innerText = "₹" + (data.monthEarning || 0);
-        document.getElementById("totalEarning").innerText = "₹" + (data.totalEarnings || 0);
-        document.getElementById("activeIncome").innerText = "₹" + (data.activeIncome || 0);
-        document.getElementById("passiveIncome").innerText = "₹" + (data.passiveIncome || 0);
-        document.getElementById("bonusIncome").innerText = "₹" + (data.bonusIncome || 0);
+      const ref = doc(db, "users", email);
+      const snap = await getDoc(ref);
+      if (snap.exists()) {
+        const d = snap.data();
+        document.getElementById("todayEarning").innerText = "₹" + (d.todayEarning || 0);
+        document.getElementById("weekEarning").innerText = "₹" + (d.weekEarning || 0);
+        document.getElementById("monthEarning").innerText = "₹" + (d.monthEarning || 0);
+        document.getElementById("totalEarning").innerText = "₹" + (d.totalEarnings || 0);
+        document.getElementById("activeIncome").innerText = "₹" + (d.activeIncome || 0);
+        document.getElementById("passiveIncome").innerText = "₹" + (d.passiveIncome || 0);
+        document.getElementById("bonusIncome").innerText = "₹" + (d.bonusIncome || 0);
       }
     }
-
     loadEarnings();
-
-    // Section Switcher
-    window.showSection = (id) => {
-      document.querySelectorAll("section").forEach(s => s.classList.remove("active"));
-      document.getElementById(id).classList.add("active");
-      document.getElementById("menu").classList.remove("active");
-    }
-
-    // Menu Toggle
-    document.querySelector(".menu-btn").addEventListener("click", () => {
-      document.getElementById("menu").classList.toggle("active");
-    });
-
-    // Logout
-    window.logout = () => {
-      localStorage.removeItem("userEmail");
-      window.location.href = "auth.html";
-    };
   </script>
 </body>
-  </html>       
+</html>
