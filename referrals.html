@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>Referrals</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet"><style>body{font-family:Poppins;background:#071029;color:#e6eef8;margin:0;padding:20px}.box{max-width:900px;margin:20px auto;background:#0b1220;padding:20px;border-radius:12px}.small{color:#98a0b3}</style></head>
+<body>
+<div class="box">
+  <h2>Your Referral</h2>
+  <div class="small">Share this link to invite</div>
+  <div style="display:flex;gap:8px;margin-top:8px">
+    <input id="link" style="flex:1;padding:10px;border-radius:8px;border:1px solid #223" readonly />
+    <button id="copy" class="btn">Copy</button>
+  </div>
+
+  <h3 style="margin-top:18px">Team Members</h3>
+  <div class="small" id="count">Total: 0</div>
+  <ul id="team" style="margin-top:12px"></ul>
+</div>
+
+<script type="module">
+import { auth, db } from './firebase.js';
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js";
+import { getDoc, doc, query, where, getDocs, collection } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
+
+const linkEl = document.getElementById('link'), copyBtn = document.getElementById('copy'), teamEl = document.getElementById('team'), countEl = document.getElementById('count');
+
+onAuthStateChanged(auth, async user=>{
+  if(!user) { location.href='auth.html'; return; }
+  const uid = user.uid;
+  // read user doc for referral code
+  let snap = await getDoc(doc(db,'users',uid));
+  if(!snap.exists()) snap = await getDoc(doc(db,'Users_collection',uid));
+  const data = snap.data();
+  const ref = data.referralCode||('B10_'+uid.slice(-6));
+  const url = `${location.origin}/auth.html?ref=${encodeURIComponent(ref)}`;
+  linkEl.value = url;
+
+  // fetch referrals (collection 'referrals' where userId == uid OR where referredBy == ref)
+  const q = query(collection(db,'referrals'), where('userId','==', uid));
+  const snapR = await getDocs(q);
+  teamEl.innerHTML=''; countEl.textContent = 'Total: '+snapR.size;
+  snapR.forEach(r=>{
+    const d = r.data();
+    const li = document.createElement('li');
+    li.textContent = `${d.referredUserEmail || d.referredUserId || 'User'} • ₹${Number(d.commission||0).toLocaleString('en-IN')}`;
+    teamEl.appendChild(li);
+  });
+});
+
+copyBtn.addEventListener('click', ()=>{ linkEl.select(); document.execCommand('copy'); alert('Copied'); });
+</script>
+</body>
+</html>
