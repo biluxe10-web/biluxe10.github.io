@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Biluxe10 Payments</title>
+<title>Biluxe10 Payment</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 <style>
   body {
@@ -55,6 +55,7 @@
   button:hover { background-color: #e67e22; }
   .alert {
     margin: 15px 0;
+    color: green;
     font-weight: 600;
   }
 </style>
@@ -74,7 +75,7 @@
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
-import { getFirestore, doc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
+import { getFirestore, doc, updateDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
 
 // Firebase Config
 const firebaseConfig = {
@@ -93,7 +94,6 @@ document.getElementById("paidBtn").addEventListener("click", async () => {
   const utr = document.getElementById("utr").value.trim();
   const screenshot = document.getElementById("screenshot").files[0];
   const msg = document.getElementById("msg");
-  const userEmail = localStorage.getItem("userEmail"); // logged-in user email
 
   if (!utr || !screenshot) {
     msg.style.color = "red";
@@ -102,24 +102,19 @@ document.getElementById("paidBtn").addEventListener("click", async () => {
   }
 
   try {
-    // Save payment record linked to user email
+    // Save payment record (no user check)
     const paymentRef = doc(db, "payments", utr);
     await setDoc(paymentRef, {
-      userEmail,
       utrNumber: utr,
       screenshotName: screenshot.name,
       paymentStatus: "pending",
       timestamp: new Date()
     });
 
-    // Update user document paymentStatus to pending
-    const userRef = doc(db, "users_collection", userEmail);
-    await updateDoc(userRef, { paymentStatus: "pending" });
-
     msg.style.color = "green";
-    msg.innerText = "✅ Payment submitted! Waiting for admin approval...";
+    msg.innerText = "✅ Payment completed! Waiting for admin approval...";
     setTimeout(() => {
-      window.location.href = "auth.html"; // redirect to login
+      window.location.href = "auth.html";
     }, 2000);
   } catch (err) {
     console.error(err);
