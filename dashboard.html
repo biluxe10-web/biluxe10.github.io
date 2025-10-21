@@ -1,214 +1,80 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Biluxe10 · Dashboard</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-<style>
-:root{
-  --bg:#071029;
-  --card:#0b1220;
-  --muted:#98a0b3;
-  --accent:#f59e0b;
-  --accent2:#22c55e;
-}
-*{box-sizing:border-box}
-body{margin:0;background:linear-gradient(180deg,#071029,#0f1724);color:#e6eef8;font-family:Poppins,system-ui;min-height:100vh}
-.wrap{max-width:1150px;margin:28px auto;padding:20px}
-.header{display:flex;justify-content:space-between;align-items:center;gap:12px}
-.brand{display:flex;align-items:center;gap:12px}
-.logo{width:48px;height:48px;border-radius:10px;background:url('logo.jpg') center/cover no-repeat;}
-h1{margin:0;font-size:20px}
-.greet{color:var(--muted);font-size:13px}
-.container{display:grid;grid-template-columns:260px 1fr;gap:18px;margin-top:18px}
-.sidebar{background:var(--card);padding:18px;border-radius:12px;height:calc(100vh - 120px);position:sticky;top:20px}
-.avatar{width:62px;height:62px;border-radius:12px;background:linear-gradient(135deg,#0ea5e9,#7c3aed);display:flex;align-items:center;justify-content:center;font-weight:700}
-.menu a{display:block;color:#dbeafe;padding:10px;border-radius:8px;text-decoration:none;margin-bottom:6px;font-weight:600}
-.menu a:hover{background:rgba(255,255,255,0.03)}
-.main{min-height:500px}
-.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px}
-.card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:12px;padding:16px;border:1px solid rgba(255,255,255,0.02);position:relative;cursor:pointer;}
-.card .label{font-size:13px;color:var(--muted)}
-.card .value{font-size:20px;font-weight:700;margin-top:8px}
-.card .dots{position:absolute;top:10px;right:10px;font-size:18px;color:var(--muted);cursor:pointer}
-.section{margin-top:14px;background:var(--card);padding:14px;border-radius:12px}
-.list li{display:flex;justify-content:space-between;padding:8px;border-radius:8px;background:rgba(255,255,255,0.01);margin-bottom:8px;font-size:14px}
-.btn{background:linear-gradient(90deg,var(--accent),#ff6b6b);border:none;padding:9px 14px;border-radius:10px;color:white;font-weight:600;cursor:pointer}
-.hidden{display:none;}
-@media(max-width:880px){.container{grid-template-columns:1fr}.sidebar{position:relative;height:auto}}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Biluxe10 - Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+
+  <!-- Firebase -->
+  <script type="module">
+    // Import Firebase SDK
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+
+    // Your Firebase Config
+    const firebaseConfig = {
+      apiKey: "AIzaSyDxxkC9iD1V1w-53Kf4oBrHEXlBLvCc7sE",
+      authDomain: "biluxe10-3e894.firebaseapp.com",
+      projectId: "biluxe10-3e894",
+      storageBucket: "biluxe10-3e894.firebasestorage.app",
+      messagingSenderId: "804749588233",
+      appId: "1:804749588233:web:7777648c0c7834733c05d8"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    // User Check
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        document.getElementById("userEmail").textContent = user.email;
+      } else {
+        window.location.href = "login.html";
+      }
+    });
+
+    // Logout
+    function logoutUser() {
+      signOut(auth).then(() => {
+        window.location.href = "login.html";
+      });
+    }
+    window.logoutUser = logoutUser;
+  </script>
 </head>
 <body>
-<div class="wrap">
-  <div class="header">
-    <div class="brand">
-      <div class="logo"></div>
-      <div>
-        <h1 id="title">Biluxe10 Dashboard</h1>
-        <div class="greet" id="sub">Welcome back</div>
+
+  <div class="sidebar">
+    <h2>Biluxe10</h2>
+    <ul>
+      <li><a href="dashboard.html" class="active">Dashboard</a></li>
+      <li><a href="profile.html">Profile</a></li>
+      <li><a href="withdrawal.html">Withdrawal</a></li>
+      <li><a href="referral.html">Referral</a></li>
+      <li><a href="#" onclick="logoutUser()">Logout</a></li>
+    </ul>
+  </div>
+
+  <div class="main-content">
+    <h1>Welcome, <span id="userEmail"></span></h1>
+
+    <div class="cards">
+      <div class="card">
+        <h3>Total Earning</h3>
+        <p>₹2,40,000</p>
       </div>
-    </div>
-    <div style="display:flex;gap:8px;align-items:center">
-      <button class="btn" id="btn-referrals">Referrals</button>
-      <button class="btn" id="btn-withdraw">Withdraw</button>
-      <button class="btn" id="btn-logout">Logout</button>
+      <div class="card">
+        <h3>Active Commission</h3>
+        <p>₹1,20,000</p>
+      </div>
+      <div class="card">
+        <h3>Passive Commission</h3>
+        <p>₹24,000</p>
+      </div>
     </div>
   </div>
 
-  <div class="container">
-    <aside class="sidebar">
-      <div style="display:flex;gap:12px;align-items:center;margin-bottom:12px">
-        <div class="avatar" id="avatar">U</div>
-        <div>
-          <div id="name" style="font-weight:700"></div>
-          <div style="color:var(--muted);font-size:13px" id="email"></div>
-        </div>
-      </div>
-
-      <div style="margin-bottom:12px">
-        <div style="font-size:13px;color:var(--muted)">Referral Code</div>
-        <div style="font-weight:700;background:rgba(255,255,255,0.03);padding:8px;border-radius:8px;margin-top:6px" id="refcode">-</div>
-      </div>
-
-      <nav class="menu">
-        <a href="dashboard.html">Overview</a>
-        <a href="products.html">My Products</a>
-        <a href="earnings.html">Earnings</a>
-        <a href="withdrawals.html">Withdrawals</a>
-        <a href="referrals.html">My Team</a>
-        <a href="profile.html">Profile</a>
-        <a href="support.html">Support</a>
-      </nav>
-    </aside>
-
-    <main class="main">
-      <section class="cards" id="cards">
-        <div class="card" data-page="today.html"><div class="label">Today Earning</div><div class="value" id="today">₹0</div><div class="dots">⋮</div></div>
-        <div class="card" data-page="7days.html"><div class="label">Last 7 Days</div><div class="value" id="7days">₹0</div><div class="dots">⋮</div></div>
-        <div class="card" data-page="30days.html"><div class="label">Last 30 Days</div><div class="value" id="30days">₹0</div><div class="dots">⋮</div></div>
-        <div class="card" data-page="alltime.html"><div class="label">All Time</div><div class="value" id="alltime">₹0</div><div class="dots">⋮</div></div>
-        <div class="card" data-page="total.html"><div class="label">Total Earnings</div><div class="value" id="total">₹0</div><div class="dots">⋮</div></div>
-        <div class="card" data-page="active.html"><div class="label">Active Income</div><div class="value" id="active">₹0</div><div class="dots">⋮</div></div>
-        <div class="card" data-page="passive.html"><div class="label">Passive Income</div><div class="value" id="passive">₹0</div><div class="dots">⋮</div></div>
-        <div class="card" data-page="ads.html"><div class="label">Ads Bonus</div><div class="value" id="bonus">₹0</div><div class="dots">⋮</div></div>
-      </section>
-
-      <section class="section" style="margin-top:12px">
-        <div style="display:flex;justify-content:space-between;align-items:center">
-          <h3 style="margin:0">Recent Earnings</h3>
-          <div style="color:var(--muted)">Latest approved earnings</div>
-        </div>
-        <ul class="list" id="earn-list" style="margin-top:12px"></ul>
-      </section>
-
-      <section class="section" style="margin-top:12px">
-        <h3 style="margin:0">Withdrawals</h3>
-        <div class="small" style="color:var(--muted);margin-top:8px">Requests & statuses</div>
-        <ul class="list" id="withdraw-list" style="margin-top:12px"></ul>
-      </section>
-    </main>
-  </div>
-</div>
-
-<script type="module">
-import { auth, db } from './firebase.js';
-import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js";
-import { doc, getDoc, collection, query, where, getDocs, orderBy, limit, setDoc } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
-
-const ui = {
-  name: document.getElementById('name'),
-  email: document.getElementById('email'),
-  avatar: document.getElementById('avatar'),
-  refcode: document.getElementById('refcode'),
-  active: document.getElementById('active'),
-  passive: document.getElementById('passive'),
-  bonus: document.getElementById('bonus'),
-  alltime: document.getElementById('alltime'),
-  total: document.getElementById('total'),
-  today: document.getElementById('today'),
-  "7days": document.getElementById('7days'),
-  "30days": document.getElementById('30days'),
-  earnList: document.getElementById('earn-list'),
-  withdrawList: document.getElementById('withdraw-list'),
-  btnLogout: document.getElementById('btn-logout'),
-  btnWithdraw: document.getElementById('btn-withdraw'),
-  btnReferrals: document.getElementById('btn-referrals')
-};
-
-ui.btnLogout.addEventListener('click', ()=> signOut(auth).then(()=> location.href='auth.html').catch(e=>alert(e.message)));
-ui.btnWithdraw.addEventListener('click', ()=> location.href='withdrawals.html');
-ui.btnReferrals.addEventListener('click', ()=> location.href='referrals.html');
-
-onAuthStateChanged(auth, async user => {
-  if(!user) { location.href='auth.html'; return; }
-  const uid = user.uid;
-
-  let userRef = doc(db, 'users', uid);
-  let snap = await getDoc(userRef);
-  if(!snap.exists()){
-    userRef = doc(db, 'Users_collection', uid);
-    snap = await getDoc(userRef);
-  }
-  if(!snap.exists()){
-    await setDoc(doc(db,'users',uid), {
-      uid, name: user.displayName||'User', email: user.email||'', totalEarnings:0, activeIncome:0, passiveIncome:0, adsBonus:0, referralCode: 'B10_'+uid.slice(-6), createdAt:new Date()
-    });
-    snap = await getDoc(doc(db,'users',uid));
-  }
-
-  const userData = snap.data();
-  ui.name.textContent = userData.name||user.displayName||'User';
-  ui.email.textContent = userData.email||user.email||'';
-  ui.avatar.textContent = (userData.name||'U').slice(0,1).toUpperCase();
-  ui.refcode.textContent = userData.referralCode || userData.customuserid || '-';
-
-  // summary
-  ui.active.textContent = '₹'+(userData.activeIncome||0).toLocaleString('en-IN');
-  ui.passive.textContent = '₹'+(userData.passiveIncome||0).toLocaleString('en-IN');
-  ui.bonus.textContent = '₹'+(userData.adsBonus||0).toLocaleString('en-IN');
-  ui.alltime.textContent = '₹'+(userData.totalEarnings||0).toLocaleString('en-IN');
-  ui.total.textContent = '₹'+((userData.activeIncome||0)+(userData.passiveIncome||0)+(userData.adsBonus||0)).toLocaleString('en-IN');
-  ui.today.textContent = '₹'+((userData.today||0)).toLocaleString('en-IN');
-  ui["7days"].textContent = '₹'+((userData.last7days||0)).toLocaleString('en-IN');
-  ui["30days"].textContent = '₹'+((userData.last30days||0)).toLocaleString('en-IN');
-
-  // recent earnings
-  const earnQ = query(collection(db,'earnings'), where('userId','==', uid), where('status','==','approved'), orderBy('createdAt','desc'), limit(10));
-  const earnSnap = await getDocs(earnQ);
-  ui.earnList.innerHTML = '';
-  earnSnap.forEach(edoc=>{
-    const d = edoc.data();
-    const li = document.createElement('li');
-    const date = d.createdAt && d.createdAt.toDate ? d.createdAt.toDate().toLocaleString() : (new Date(d.createdAt)).toLocaleString();
-    li.innerHTML = `<div>${d.type||'income'} • ${d.source||''}</div><div>₹${Number(d.amount||0).toLocaleString('en-IN')} • <span style="color:#98a0b3">${date}</span></div>`;
-    ui.earnList.appendChild(li);
-  });
-
-  // withdrawals
-  const wQ = query(collection(db,'withdrawal'), where('userId','==', uid), orderBy('requestedAt','desc'));
-  const wSnap = await getDocs(wQ);
-  ui.withdrawList.innerHTML = '';
-  wSnap.forEach(w=>{
-    const d = w.data();
-    const li = document.createElement('li');
-    const dt = d.requestedAt && d.requestedAt.toDate ? d.requestedAt.toDate().toLocaleString() : (new Date(d.requestedAt||Date.now())).toLocaleString();
-    li.innerHTML = `<div>₹${Number(d.amount||0).toLocaleString('en-IN')} • ${d.method||'—'}</div><div style="color:var(--muted)">${d.status||'pending'} • ${dt}</div>`;
-    ui.withdrawList.appendChild(li);
-  });
-
-});
-
-// collapsible cards
-document.querySelectorAll('.card .dots').forEach(dot=>{
-  dot.addEventListener('click', e=>{
-    const card = e.target.closest('.card');
-    const page = card.dataset.page;
-    card.querySelector('.value').classList.toggle('hidden');
-    // open page on click
-    if(page) location.href = page;
-  });
-});
-</script>
 </body>
 </html>
+            
