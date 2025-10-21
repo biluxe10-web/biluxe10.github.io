@@ -142,6 +142,30 @@
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
 
+
+// Referral Tracking System
+const urlParams = new URLSearchParams(window.location.search);
+const referredBy = urlParams.get("ref");  // referral code from URL
+
+const referralCode = Math.random().toString(36).substring(2, 8).toUpperCase(); // unique code for new user
+
+await setDoc(doc(db, "user_collection", user.email), {
+  name: name,
+  email: email,
+  phone: phone,
+  password: password,
+  referralcode: referralCode,
+  referredby: referredBy || "",
+  role: "user",
+  paymentstatus: "pending",
+  joinedat: new Date(),
+  totalearnings: 0,
+  activeearnings: 0,
+  passiveearnings: 0,
+  adsbonus: 0
+});
+        
+
         // Save user in Firestore with paymentStatus "not_paid"
         await setDoc(doc(db, "users_collection", user.email), {
           name: name,
