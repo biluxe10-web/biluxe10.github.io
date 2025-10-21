@@ -1,18 +1,235 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Biluxe10 - Dashboard</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Biluxe10 Dashboard</title>
 
-  <!-- Firebase -->
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: "Poppins", sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: #f5f6fa;
+      color: #333;
+    }
+
+    /* Navbar */
+    .navbar {
+      background: #111;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 15px 20px;
+    }
+
+    .menu-icon {
+      font-size: 24px;
+      cursor: pointer;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: -260px;
+      width: 260px;
+      height: 100%;
+      background: #1e1e1e;
+      color: #fff;
+      padding-top: 60px;
+      transition: 0.3s;
+      z-index: 1000;
+    }
+
+    .sidebar.active {
+      left: 0;
+    }
+
+    .sidebar ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .sidebar ul li {
+      padding: 15px 20px;
+      border-bottom: 1px solid #333;
+      cursor: pointer;
+    }
+
+    .sidebar ul li:hover {
+      background: #333;
+    }
+
+    /* Main Dashboard */
+    .dashboard {
+      padding: 20px;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+
+    .card h3 {
+      font-size: 18px;
+      margin-bottom: 8px;
+    }
+
+    .card p {
+      font-size: 20px;
+      font-weight: 600;
+      color: #007bff;
+    }
+
+    /* Commissions */
+    .commission {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .commission-box {
+      background: #fff;
+      border-radius: 10px;
+      padding: 15px;
+      text-align: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    .commission-box h4 {
+      font-size: 16px;
+      color: #444;
+    }
+
+    .commission-box p {
+      font-size: 18px;
+      font-weight: 600;
+      color: #28a745;
+    }
+
+    /* Referral Section */
+    .referral {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+
+    .referral input {
+      width: 90%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      margin-bottom: 15px;
+    }
+
+    .share-buttons button {
+      margin: 5px;
+      padding: 8px 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      background: #007bff;
+      color: #fff;
+    }
+
+    .share-buttons button:hover {
+      background: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <div class="navbar">
+    <span class="menu-icon" onclick="toggleMenu()">☰</span>
+    <h2>Biluxe10 Dashboard</h2>
+  </div>
+
+  <!-- Sidebar -->
+  <div class="sidebar" id="sidebar">
+    <ul>
+      <li onclick="openPage('dashboard.html')">🏠 Dashboard</li>
+      <li onclick="openPage('profile.html')">👤 Profile</li>
+      <li onclick="openPage('earning.html')">💰 Earning</li>
+      <li onclick="openPage('withdrawal.html')">💵 Withdrawal</li>
+      <li onclick="openPage('team.html')">👥 My Team</li>
+      <li onclick="openPage('transaction.html')">💳 All Transaction</li>
+      <li onclick="openPage('ticket.html')">🎫 Ticket Raise</li>
+      <li onclick="logout()">🚪 Log Out</li>
+    </ul>
+  </div>
+
+  <!-- Dashboard -->
+  <div class="dashboard">
+    <div class="cards">
+      <div class="card">
+        <h3>Today’s Earning</h3>
+        <p>₹0.00</p>
+      </div>
+      <div class="card">
+        <h3>Last 7 Days</h3>
+        <p>₹0.00</p>
+      </div>
+      <div class="card">
+        <h3>This Month</h3>
+        <p>₹0.00</p>
+      </div>
+      <div class="card">
+        <h3>Lifetime Earning</h3>
+        <p>₹0.00</p>
+      </div>
+    </div>
+
+    <div class="commission">
+      <div class="commission-box">
+        <h4>Active Commission</h4>
+        <p>₹0.00</p>
+      </div>
+      <div class="commission-box">
+        <h4>Passive Commission</h4>
+        <p>₹0.00</p>
+      </div>
+      <div class="commission-box">
+        <h4>Ads Commission</h4>
+        <p>₹0.00</p>
+      </div>
+    </div>
+
+    <div class="referral">
+      <h3>Your Affiliate Link</h3>
+      <input type="text" id="refLink" value="https://biluxe10.com/?ref=USERID" readonly />
+      <div class="share-buttons">
+        <button onclick="copyLink()">Copy Link</button>
+        <button onclick="shareLink('whatsapp')">WhatsApp</button>
+        <button onclick="shareLink('telegram')">Telegram</button>
+        <button onclick="shareLink('facebook')">Facebook</button>
+        <button onclick="shareLink('twitter')">Twitter</button>
+      </div>
+    </div>
+  </div>
+
   <script type="module">
-    // Import Firebase SDK
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
-
-    // Your Firebase Config
     const firebaseConfig = {
       apiKey: "AIzaSyDxxkC9iD1V1w-53Kf4oBrHEXlBLvCc7sE",
       authDomain: "biluxe10-3e894.firebaseapp.com",
@@ -21,60 +238,39 @@
       messagingSenderId: "804749588233",
       appId: "1:804749588233:web:7777648c0c7834733c05d8"
     };
-
     const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-
-    // User Check
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        document.getElementById("userEmail").textContent = user.email;
-      } else {
-        window.location.href = "login.html";
-      }
-    });
-
-    // Logout
-    function logoutUser() {
-      signOut(auth).then(() => {
-        window.location.href = "login.html";
-      });
-    }
-    window.logoutUser = logoutUser;
   </script>
-</head>
-<body>
 
-  <div class="sidebar">
-    <h2>Biluxe10</h2>
-    <ul>
-      <li><a href="dashboard.html" class="active">Dashboard</a></li>
-      <li><a href="profile.html">Profile</a></li>
-      <li><a href="withdrawal.html">Withdrawal</a></li>
-      <li><a href="referral.html">Referral</a></li>
-      <li><a href="#" onclick="logoutUser()">Logout</a></li>
-    </ul>
-  </div>
+  <script>
+    function toggleMenu() {
+      document.getElementById("sidebar").classList.toggle("active");
+    }
 
-  <div class="main-content">
-    <h1>Welcome, <span id="userEmail"></span></h1>
+    function openPage(page) {
+      window.location.href = page;
+    }
 
-    <div class="cards">
-      <div class="card">
-        <h3>Total Earning</h3>
-        <p>₹2,40,000</p>
-      </div>
-      <div class="card">
-        <h3>Active Commission</h3>
-        <p>₹1,20,000</p>
-      </div>
-      <div class="card">
-        <h3>Passive Commission</h3>
-        <p>₹24,000</p>
-      </div>
-    </div>
-  </div>
+    function logout() {
+      alert("Logged out!");
+      window.location.href = "login.html";
+    }
 
+    function copyLink() {
+      const input = document.getElementById("refLink");
+      input.select();
+      document.execCommand("copy");
+      alert("Link copied!");
+    }
+
+    function shareLink(platform) {
+      const link = document.getElementById("refLink").value;
+      let url = "";
+      if (platform === "whatsapp") url = `https://wa.me/?text=${encodeURIComponent(link)}`;
+      if (platform === "telegram") url = `https://t.me/share/url?url=${encodeURIComponent(link)}`;
+      if (platform === "facebook") url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(link)}`;
+      if (platform === "twitter") url = `https://twitter.com/intent/tweet?url=${encodeURIComponent(link)}`;
+      window.open(url, "_blank");
+    }
+  </script>
 </body>
 </html>
-            
