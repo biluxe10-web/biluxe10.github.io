@@ -1,276 +1,194 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Biluxe10 Dashboard</title>
-
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
-
-  <style>
-    * {
-      box-sizing: border-box;
-      font-family: "Poppins", sans-serif;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      background: #f5f6fa;
-      color: #333;
-    }
-
-    /* Navbar */
-    .navbar {
-      background: #111;
-      color: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 15px 20px;
-    }
-
-    .menu-icon {
-      font-size: 24px;
-      cursor: pointer;
-    }
-
-    /* Sidebar */
-    .sidebar {
-      position: fixed;
-      top: 0;
-      left: -260px;
-      width: 260px;
-      height: 100%;
-      background: #1e1e1e;
-      color: #fff;
-      padding-top: 60px;
-      transition: 0.3s;
-      z-index: 1000;
-    }
-
-    .sidebar.active {
-      left: 0;
-    }
-
-    .sidebar ul {
-      list-style: none;
-      padding: 0;
-    }
-
-    .sidebar ul li {
-      padding: 15px 20px;
-      border-bottom: 1px solid #333;
-      cursor: pointer;
-    }
-
-    .sidebar ul li:hover {
-      background: #333;
-    }
-
-    /* Main Dashboard */
-    .dashboard {
-      padding: 20px;
-    }
-
-    .cards {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: 15px;
-      margin-bottom: 20px;
-    }
-
-    .card {
-      background: #fff;
-      border-radius: 10px;
-      padding: 20px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-      text-align: center;
-    }
-
-    .card h3 {
-      font-size: 18px;
-      margin-bottom: 8px;
-    }
-
-    .card p {
-      font-size: 20px;
-      font-weight: 600;
-      color: #007bff;
-    }
-
-    /* Commissions */
-    .commission {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 15px;
-      margin-bottom: 20px;
-    }
-
-    .commission-box {
-      background: #fff;
-      border-radius: 10px;
-      padding: 15px;
-      text-align: center;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    }
-
-    .commission-box h4 {
-      font-size: 16px;
-      color: #444;
-    }
-
-    .commission-box p {
-      font-size: 18px;
-      font-weight: 600;
-      color: #28a745;
-    }
-
-    /* Referral Section */
-    .referral {
-      background: #fff;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-      text-align: center;
-    }
-
-    .referral input {
-      width: 90%;
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      margin-bottom: 15px;
-    }
-
-    .share-buttons button {
-      margin: 5px;
-      padding: 8px 15px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      background: #007bff;
-      color: #fff;
-    }
-
-    .share-buttons button:hover {
-      background: #0056b3;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Biluxe10 Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
+body { background: linear-gradient(135deg, #f39c12, #e74c3c); min-height: 100vh; display: flex; }
+/* Sidebar */
+.sidebar { width: 250px; background: #111; color: #fff; padding: 20px; display: flex; flex-direction: column; }
+.sidebar img.logo { width: 150px; margin-bottom: 30px; }
+.sidebar a { color: #fff; text-decoration: none; margin: 10px 0; font-weight: 600; cursor: pointer; }
+.sidebar a:hover { color: #f39c12; }
+.hamburger { display: none; cursor: pointer; font-size: 24px; margin-bottom: 20px; }
+/* Main content */
+.main { flex: 1; padding: 20px; display: flex; flex-direction: column; }
+.topbar { display: flex; justify-content: flex-end; align-items: center; margin-bottom: 30px; }
+.topbar img { width: 50px; height: 50px; border-radius: 50%; margin-left: 15px; object-fit: cover; border: 2px solid #fff; }
+.cards { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 30px; }
+.card { flex: 1 1 200px; background: rgba(255,255,255,0.95); padding: 20px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.2); }
+.card h3 { margin-bottom: 10px; color: #e67e22; }
+.card p { font-size: 20px; font-weight: 600; }
+.section { background: rgba(255,255,255,0.95); padding: 20px; border-radius: 15px; margin-bottom: 30px; box-shadow: 0 5px 20px rgba(0,0,0,0.2); }
+.section h3 { margin-bottom: 15px; color: #e67e22; }
+.referral { display: flex; flex-direction: column; gap: 10px; }
+.referral input { padding: 10px; border-radius: 10px; border: 1px solid #ccc; font-size: 14px; }
+.share-buttons button { padding: 10px 15px; border-radius: 8px; border: none; cursor: pointer; margin-right: 10px; background: #f39c12; color: #fff; font-weight: 600; }
+.share-buttons button:hover { background: #e67e22; }
+@media(max-width: 900px) {
+  .sidebar { position: fixed; left: -250px; top: 0; height: 100%; transition: 0.3s; z-index: 1000; }
+  .sidebar.active { left: 0; }
+  .hamburger { display: block; color: #fff; }
+  .main { padding: 20px 10px; }
+}
+</style>
 </head>
 <body>
-  <div class="navbar">
-    <span class="menu-icon" onclick="toggleMenu()">☰</span>
-    <h2>Biluxe10 Dashboard</h2>
+
+<!-- Sidebar -->
+<div class="sidebar" id="sidebar">
+  <img src="biluxe10.jpg" alt="Biluxe10 Logo" class="logo">
+  <a href="dashboard.html">Dashboard</a>
+  <a href="profile.html">Profile</a>
+  <a href="earning.html">Earnings</a>
+  <a href="withdrawal.html">Withdrawal</a>
+  <a href="team.html">My Team</a>
+  <a href="transition.html">All Transactions</a>
+  <a href="ticket.html">Ticket Rise</a>
+  <a id="logoutBtn">Log Out</a>
+</div>
+
+<!-- Main content -->
+<div class="main">
+  <div class="hamburger" id="hamburger">&#9776;</div>
+  <div class="topbar">
+    <span id="username" style="color:white;font-weight:600;"></span>
+    <img src="" id="userPic" alt="User Profile">
   </div>
 
-  <!-- Sidebar -->
-  <div class="sidebar" id="sidebar">
-    <ul>
-      <li onclick="openPage('dashboard.html')">🏠 Dashboard</li>
-      <li onclick="openPage('profile.html')">👤 Profile</li>
-      <li onclick="openPage('earning.html')">💰 Earning</li>
-      <li onclick="openPage('withdrawal.html')">💵 Withdrawal</li>
-      <li onclick="openPage('team.html')">👥 My Team</li>
-      <li onclick="openPage('transaction.html')">💳 All Transaction</li>
-      <li onclick="openPage('ticket.html')">🎫 Ticket Raise</li>
-      <li onclick="logout()">🚪 Log Out</li>
-    </ul>
-  </div>
-
-  <!-- Dashboard -->
-  <div class="dashboard">
-    <div class="cards">
-      <div class="card">
-        <h3>Today’s Earning</h3>
-        <p>₹0.00</p>
-      </div>
-      <div class="card">
-        <h3>Last 7 Days</h3>
-        <p>₹0.00</p>
-      </div>
-      <div class="card">
-        <h3>This Month</h3>
-        <p>₹0.00</p>
-      </div>
-      <div class="card">
-        <h3>Lifetime Earning</h3>
-        <p>₹0.00</p>
-      </div>
+  <!-- Earnings Cards -->
+  <div class="cards">
+    <div class="card">
+      <h3>Today's Earnings</h3>
+      <p id="todayEarnings">₹0</p>
     </div>
-
-    <div class="commission">
-      <div class="commission-box">
-        <h4>Active Commission</h4>
-        <p>₹0.00</p>
-      </div>
-      <div class="commission-box">
-        <h4>Passive Commission</h4>
-        <p>₹0.00</p>
-      </div>
-      <div class="commission-box">
-        <h4>Ads Commission</h4>
-        <p>₹0.00</p>
-      </div>
+    <div class="card">
+      <h3>Last 7 Days</h3>
+      <p id="last7Earnings">₹0</p>
     </div>
-
-    <div class="referral">
-      <h3>Your Affiliate Link</h3>
-      <input type="text" id="refLink" value="https://biluxe10.com/?ref=USERID" readonly />
-      <div class="share-buttons">
-        <button onclick="copyLink()">Copy Link</button>
-        <button onclick="shareLink('whatsapp')">WhatsApp</button>
-        <button onclick="shareLink('telegram')">Telegram</button>
-        <button onclick="shareLink('facebook')">Facebook</button>
-        <button onclick="shareLink('twitter')">Twitter</button>
-      </div>
+    <div class="card">
+      <h3>Last 30 Days</h3>
+      <p id="last30Earnings">₹0</p>
+    </div>
+    <div class="card">
+      <h3>Lifetime Earnings</h3>
+      <p id="lifetimeEarnings">₹0</p>
     </div>
   </div>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-    const firebaseConfig = {
-      apiKey: "AIzaSyDxxkC9iD1V1w-53Kf4oBrHEXlBLvCc7sE",
-      authDomain: "biluxe10-3e894.firebaseapp.com",
-      projectId: "biluxe10-3e894",
-      storageBucket: "biluxe10-3e894.firebasestorage.app",
-      messagingSenderId: "804749588233",
-      appId: "1:804749588233:web:7777648c0c7834733c05d8"
-    };
-    const app = initializeApp(firebaseConfig);
-  </script>
+  <!-- Commission Section -->
+  <div class="section">
+    <h3>Commissions</h3>
+    <p>Active Commission: ₹<span id="activeCommission">0</span></p>
+    <p>Passive Commission: ₹<span id="passiveCommission">0</span></p>
+    <p>Ads Bonus: ₹<span id="adsBonus">0</span></p>
+  </div>
 
-  <script>
-    function toggleMenu() {
-      document.getElementById("sidebar").classList.toggle("active");
-    }
+  <!-- Referral Section -->
+  <div class="section referral">
+    <h3>Your Referral Link</h3>
+    <input type="text" id="referralLink" readonly>
+    <div class="share-buttons">
+      <button onclick="shareWhatsApp()">WhatsApp</button>
+      <button onclick="shareTelegram()">Telegram</button>
+      <button onclick="shareFacebook()">Facebook</button>
+    </div>
+  </div>
+</div>
 
-    function openPage(page) {
-      window.location.href = page;
-    }
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
+import { getFirestore, collection, query, where, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
 
-    function logout() {
-      alert("Logged out!");
-      window.location.href = "login.html";
-    }
+const firebaseConfig = {
+  apiKey: "AIzaSyDxxkC9iD1V1w-53Kf4oBrHEXlBLvCc7sE",
+  authDomain: "biluxe10-3e894.firebaseapp.com",
+  projectId: "biluxe10-3e894",
+  storageBucket: "biluxe10-3e894.firebasestorage.app",
+  messagingSenderId: "804749588233",
+  appId: "1:804749588233:web:7777648c0c7834733c05d8"
+};
 
-    function copyLink() {
-      const input = document.getElementById("refLink");
-      input.select();
-      document.execCommand("copy");
-      alert("Link copied!");
-    }
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
-    function shareLink(platform) {
-      const link = document.getElementById("refLink").value;
-      let url = "";
-      if (platform === "whatsapp") url = `https://wa.me/?text=${encodeURIComponent(link)}`;
-      if (platform === "telegram") url = `https://t.me/share/url?url=${encodeURIComponent(link)}`;
-      if (platform === "facebook") url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(link)}`;
-      if (platform === "twitter") url = `https://twitter.com/intent/tweet?url=${encodeURIComponent(link)}`;
-      window.open(url, "_blank");
-    }
-  </script>
+const userEmail = localStorage.getItem("userEmail"); 
+
+// Sidebar toggle
+const sidebar = document.getElementById("sidebar");
+const hamburger = document.getElementById("hamburger");
+hamburger.onclick = () => { sidebar.classList.toggle("active"); }
+
+// Logout
+document.getElementById("logoutBtn").onclick = () => {
+  localStorage.removeItem("userEmail");
+  window.location.href = "auth.html";
+}
+
+// Share buttons
+function shareWhatsApp() { const link = document.getElementById("referralLink").value; window.open(`https://wa.me/?text=Join%20Biluxe10%20with%20my%20referral%20link:%20${link}`, "_blank"); }
+function shareTelegram() { const link = document.getElementById("referralLink").value; window.open(`https://t.me/share/url?url=${link}`, "_blank"); }
+function shareFacebook() { const link = document.getElementById("referralLink").value; window.open(`https://www.facebook.com/sharer/sharer.php?u=${link}`, "_blank"); }
+
+// Packages
+const packages = {
+  "1 start success pack": 999,
+  "2 advance success pack": 2499,
+  "3 digital Empire system": 3499,
+  "4 editing mastery": 4999,
+  "5 ultimate Drop shipping system": 9999,
+  "6 Crypto trading mastery": 15999,
+  "7 future AI system": 23999
+};
+
+// Load user info and commissions
+async function loadUserInfo() {
+  const q = query(collection(db, "user_collection"), where("email", "==", userEmail));
+  const snapshot = await getDocs(q);
+  if (!snapshot.empty) {
+    const userData = snapshot.docs[0].data();
+    document.getElementById("username").innerText = userData.name;
+    document.getElementById("userPic").src = userData.profilepic || "default_user.jpg";
+    document.getElementById("referralLink").value = `${window.location.origin}/auth.html?ref=${userData.referralcode}`;
+
+    // Calculate commissions from referrals
+    const refSnap = await getDocs(query(collection(db, "referrals"), where("referreduserid", "==", userData.uid)));
+    let active = 0, passive = 0, ads = 0;
+    refSnap.forEach(doc => {
+      const data = doc.data();
+      const packagePrice = packages[data.package] || 0;
+      active += packagePrice * 0.5;
+      passive += packagePrice * 0.1;
+      ads += packagePrice * 0.05;
+    });
+    document.getElementById("activeCommission").innerText = active;
+    document.getElementById("passiveCommission").innerText = passive;
+    document.getElementById("adsBonus").innerText = ads;
+
+    // Load earnings (simplified example)
+    let today = 0, last7 = 0, last30 = 0, lifetime = 0;
+    const earningsSnap = await getDocs(query(collection(db, "earnings"), where("uid", "==", userData.uid)));
+    const now = new Date();
+    earningsSnap.forEach(doc => {
+      const data = doc.data();
+      const created = data.createdat.toDate();
+      lifetime += data.amount || 0;
+      if (created.toDateString() === now.toDateString()) today += data.amount || 0;
+      const diff = (now - created)/(1000*60*60*24);
+      if (diff <= 7) last7 += data.amount || 0;
+      if (diff <= 30) last30 += data.amount || 0;
+    });
+    document.getElementById("todayEarnings").innerText = `₹${today}`;
+    document.getElementById("last7Earnings").innerText = `₹${last7}`;
+    document.getElementById("last30Earnings").innerText = `₹${last30}`;
+    document.getElementById("lifetimeEarnings").innerText = `₹${lifetime}`;
+  }
+}
+
+loadUserInfo();
+</script>
 </body>
-</html>
+      </html>
