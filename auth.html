@@ -1,4 +1,4 @@
-  <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -76,17 +76,19 @@
 </head>
 <body>
 
+  <!-- Signup Box -->
   <div class="auth-box" id="signupBox">
     <h2>Create Account</h2>
     <input type="text" id="signupName" placeholder="Full Name" />
     <input type="email" id="signupEmail" placeholder="Email Address" />
     <input type="password" id="signupPassword" placeholder="Password" />
-    <input type="text" id="signupPhone" placeholder="Phone Number" /> <!-- NEW -->
-    <input type="text" id="signupReferral" placeholder="Referral Code (optional)" /> <!-- NEW -->
+    <input type="text" id="signupPhone" placeholder="Phone Number" />
+    <input type="text" id="signupReferral" placeholder="Referral Code (optional)" />
     <button id="signupBtn">Sign Up</button>
     <p>Already have an account? <a id="goLogin">Login</a></p>
   </div>
 
+  <!-- Login Box -->
   <div class="auth-box hidden" id="loginBox">
     <h2>Welcome Back</h2>
     <input type="email" id="loginEmail" placeholder="Email Address" />
@@ -96,12 +98,10 @@
   </div>
 
   <script type="module">
-    // Import Firebase SDKs
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
     import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js";
-    import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
+    import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
 
-    // Firebase Config (replace with yours)
     const firebaseConfig = {
       apiKey: "AIzaSyDxxkC9iD1V1w-53Kf4oBrHEXlBLvCc7sE",
       authDomain: "biluxe10-3e894.firebaseapp.com",
@@ -120,19 +120,18 @@
       document.getElementById("signupBox").classList.add("hidden");
       document.getElementById("loginBox").classList.remove("hidden");
     };
-
     document.getElementById("goSignup").onclick = () => {
       document.getElementById("loginBox").classList.add("hidden");
       document.getElementById("signupBox").classList.remove("hidden");
     };
 
-    // Signup Function
+    // Signup
     document.getElementById("signupBtn").addEventListener("click", async () => {
       const name = document.getElementById("signupName").value.trim();
       const email = document.getElementById("signupEmail").value.trim();
       const password = document.getElementById("signupPassword").value.trim();
-      const phone = document.getElementById("signupPhone").value.trim(); // NEW
-      const referral = document.getElementById("signupReferral").value.trim(); // NEW
+      const phone = document.getElementById("signupPhone").value.trim();
+      const referral = document.getElementById("signupReferral").value.trim();
 
       if (!name || !email || !password || !phone) {
         alert("Please fill in all fields (except referral code).");
@@ -143,17 +142,18 @@
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
 
+        // Save user in Firestore with paymentStatus "not_paid"
         await setDoc(doc(db, "users_collection", user.email), {
           name: name,
           email: email,
-          phone: phone, // NEW
-          referralCode: referral || "", // NEW
+          phone: phone,
+          referralCode: referral || "",
           paymentStatus: "not_paid",
           createdAt: new Date()
         });
 
         localStorage.setItem("userEmail", user.email);
-        alert("Signup successful!");
+        alert("Signup successful! Redirecting to products page...");
         window.location.href = "products.html";
 
       } catch (error) {
@@ -161,7 +161,7 @@
       }
     });
 
-    // Login Function
+    // Login
     document.getElementById("loginBtn").addEventListener("click", async () => {
       const email = document.getElementById("loginEmail").value.trim();
       const password = document.getElementById("loginPassword").value.trim();
@@ -174,10 +174,23 @@
       try {
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
-        localStorage.setItem("userEmail", user.email);
 
-        alert("Login successful!");
-        window.location.href = "dashboard.html";
+        // Payment approval check
+        const userDoc = await getDoc(doc(db, "users_collection", user.email));
+        if (userDoc.exists()) {
+          const status = userDoc.data().paymentStatus;
+          if (status === "paid") {
+            localStorage.setItem("userEmail", user.email);
+            alert("Login successful!");
+            window.location.href = "dashboard.html";
+          } else {
+            alert("Payment not approved yet! Please complete payment.");
+            window.location.href = "products.html";
+          }
+        } else {
+          alert("User record not found!");
+        }
+
       } catch (error) {
         alert("Login failed: " + error.message);
       }
