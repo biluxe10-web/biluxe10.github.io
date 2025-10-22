@@ -1,1 +1,63 @@
-      
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Biluxe10 — Profile</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="logo">Biluxe10</div>
+      <ul class="menu">
+        <li><a href="dashboard.html">🏠 Dashboard</a></li>
+        <li><a href="earnings.html">💰 Earnings</a></li>
+        <li><a href="transactions.html">📜 Transactions</a></li>
+        <li><a href="myteam.html">👥 My Team</a></li>
+        <li><a href="profile.html" class="active">🙍 Profile</a></li>
+        <li><a href="withdraw.html">💸 Withdraw</a></li>
+        <li><a href="support.html">💬 Support</a></li>
+        <li><a href="#" id="prof-logout">🚪 Logout</a></li>
+      </ul>
+    </aside>
+
+    <main class="main">
+      <div class="header">
+        <div class="h-title">Profile Settings</div>
+      </div>
+
+      <div class="card" style="display:flex;gap:18px;align-items:center">
+        <div>
+          <div class="avatar" id="prof-avatar">U</div>
+        </div>
+        <div style="flex:1">
+          <div class="form-row">
+            <label>Full Name</label>
+            <input id="prof-name" class="input" />
+          </div>
+          <div class="form-row">
+            <label>Email (can't change)</label>
+            <input id="prof-email" class="input" disabled />
+          </div>
+          <div class="form-row">
+            <label>Phone</label>
+            <input id="prof-phone" class="input" />
+          </div>
+          <div class="form-row">
+            <label>Upload Profile Picture</label>
+            <input id="prof-file" type="file" accept="image/*" />
+          </div>
+          <div style="display:flex;gap:10px">
+            <button id="save-profile" class="btn">Save Changes</button>
+            <button id="change-pass" class="button-muted">Change Password</button>
+          </div>
+          <p id="prof-msg" style="color:crimson;display:none"></p>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script type="module" src="js/firebase.js"></script>
+  <script type="module" src="js/profile.js"></script>
+  <script type="module" src="js/logout.js"></script>
+</body>
+</html>      
