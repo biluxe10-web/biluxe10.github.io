@@ -1,1 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Biluxe10 — Transactions</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="logo">Biluxe10</div>
+      <ul class="menu">
+        <li><a href="dashboard.html">🏠 Dashboard</a></li>
+        <li><a href="earnings.html">💰 Earnings</a></li>
+        <li><a href="transactions.html" class="active">📜 All Transactions</a></li>
+        <li><a href="myteam.html">👥 My Team</a></li>
+        <li><a href="profile.html">🙍 Profile</a></li>
+        <li><a href="withdraw.html">💸 Withdraw</a></li>
+        <li><a href="support.html">💬 Support</a></li>
+        <li><a href="#" id="lt-logout">🚪 Logout</a></li>
+      </ul>
+    </aside>
 
+    <main class="main">
+      <div class="header"><div class="h-title">All Transactions</div></div>
+      <div class="card">
+        <table class="table" id="tx-table">
+          <thead><tr><th>Type</th><th>Amount</th><th>Date</th><th>Status</th></tr></thead>
+          <tbody id="tx-body"><tr><td colspan="4" style="color:var(--muted)">Loading...</td></tr></tbody>
+        </table>
+      </div>
+    </main>
+  </div>
+
+  <script type="module" src="js/firebase.js"></script>
+  <script type="module" src="js/transactions.js"></script>
+  <script type="module" src="js/logout.js"></script>
+</body>
+</html>
