@@ -1,1 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Biluxe10 — Earnings</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="logo">Biluxe10</div>
+      <ul class="menu">
+        <li><a href="dashboard.html">🏠 Dashboard</a></li>
+        <li><a href="earnings.html" class="active">💰 Total Earnings</a></li>
+        <li><a href="transactions.html">📜 All Transactions</a></li>
+        <li><a href="team.html">👥 My Team</a></li>
+        <li><a href="profile.html">🙍 Profile</a></li>
+        <li><a href="withdrawal.html">💸 Withdraw</a></li>
+        <li><a href="support.html">💬 Support</a></li>
+        <li><a href="#" id="ln-logout">🚪 Logout</a></li>
+      </ul>
+    </aside>
 
+    <main class="main">
+      <div class="header"><div class="h-title">Earnings Breakdown</div></div>
+
+      <div class="card">
+        <div class="row">
+          <div class="card"><h3>Active Commission</h3><div class="value" id="active-val">₹0</div></div>
+          <div class="card"><h3>Passive Commission</h3><div class="value" id="passive-val">₹0</div></div>
+          <div class="card"><h3>Ads/Bonus</h3><div class="value" id="ads-val">₹0</div></div>
+          <div class="card"><h3>Total Earned</h3><div class="value" id="total-val">₹0</div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>History</h3>
+        <table class="table" id="earn-table">
+          <thead><tr><th>Type</th><th>Amount</th><th>Date</th><th>Status</th></tr></thead>
+          <tbody id="earn-body"><tr><td colspan="4" style="color:var(--muted)">Loading...</td></tr></tbody>
+        </table>
+      </div>
+    </main>
+  </div>
+
+  <script type="module" src="js/firebase.js"></script>
+  <script type="module" src="js/earnings.js"></script>
+  <script type="module" src="js/logout.js"></script>
+</body>
+</html>
