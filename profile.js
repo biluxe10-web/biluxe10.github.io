@@ -1,6 +1,6 @@
 // js/profile.js
 import { auth, db, storage } from "./firebase.js";
-import { onAuthStateChanged, updatePassword, reauthenticateWithCredential, EmailAuthProvider } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
 import { doc, getDoc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
 import { ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-storage.js";
 
@@ -15,9 +15,9 @@ const msg = document.getElementById('prof-msg');
 onAuthStateChanged(auth, async (user)=>{
   if(!user) return window.location.href='index.html';
   const uid = user.uid;
-  emailEl.value = user.email;
-  // load users doc
-  const uSnap = await getDoc(doc(db,'users',uid));
+  emailEl.value = user.email || '';
+  const uRef = doc(db,'users',uid);
+  const uSnap = await getDoc(uRef);
   if(uSnap.exists()){
     const d = uSnap.data();
     nameEl.value = d.name || '';
@@ -27,28 +27,28 @@ onAuthStateChanged(auth, async (user)=>{
   }
 });
 
-saveBtn.addEventListener('click', async ()=>{
-  msg.style.display='none';
-  const user = auth.currentUser;
-  if(!user) return window.location.href='index.html';
-  const uid = user.uid;
-  const newName = nameEl.value.trim();
-  const newPhone = phoneEl.value.trim();
-  try{
-    let profile_url = null;
-    if(fileEl.files && fileEl.files[0]){
-      const f = fileEl.files[0];
-      const storageRef = ref(storage, `profiles/${uid}_${Date.now()}_${f.name}`);
-      await uploadBytes(storageRef, f);
-      profile_url = await getDownloadURL(storageRef);
+if(saveBtn){
+  saveBtn.addEventListener('click', async ()=>{
+    msg.style.display='none';
+    const user = auth.currentUser;
+    if(!user) return window.location.href='index.html';
+    const uid = user.uid;
+    const newName = nameEl.value.trim();
+    const newPhone = phoneEl.value.trim();
+    try{
+      let profile_url = null;
+      if(fileEl.files && fileEl.files[0]){
+        const f = fileEl.files[0];
+        const storageRef = ref(storage, `profiles/${uid}_${Date.now()}_${f.name}`);
+        await uploadBytes(storageRef, f);
+        profile_url = await getDownloadURL(storageRef);
+      }
+      const updateData = { name: newName, phone: newPhone, updated_at: serverTimestamp() };
+      if(profile_url) updateData.profile_url = profile_url;
+      await updateDoc(doc(db,'users',uid), updateData);
+      msg.style.color='green'; msg.textContent='Profile updated'; msg.style.display='block';
+    } catch(e){
+      msg.textContent = e.message; msg.style.display='block';
     }
-    const updateData = { name: newName, phone: newPhone, updated_at: serverTimestamp() };
-    if(profile_url) updateData.profile_url = profile_url;
-    await updateDoc(doc(db,'users',uid), updateData);
-    document.getElementById('prof-msg').style.color = 'green';
-    document.getElementById('prof-msg').textContent = 'Profile updated';
-    document.getElementById('prof-msg').style.display = 'block';
-  } catch(e){
-    msg.textContent = e.message; msg.style.display='block';
-  }
-});
+  });
+}
