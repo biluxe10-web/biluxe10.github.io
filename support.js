@@ -21,7 +21,7 @@ onAuthStateChanged(auth, async (user)=>{
     spBody.innerHTML = '';
     snap.forEach(d=>{
       const r = d.data();
-      const date = r.created_at ? new Date(r.created_at.seconds*1000).toLocaleString() : '';
+      const date = r.created_at ? (r.created_at.toDate ? r.created_at.toDate().toLocaleString() : new Date(r.created_at).toLocaleString()) : '';
       const tr = document.createElement('tr');
       tr.innerHTML = `<td>${r.subject}</td><td>${date}</td><td>${r.status||'open'}</td>`;
       spBody.appendChild(tr);
@@ -29,19 +29,24 @@ onAuthStateChanged(auth, async (user)=>{
   }
 });
 
-btnSend.addEventListener('click', async ()=>{
-  spMsg.style.display='none';
-  const user = auth.currentUser;
-  if(!user) return window.location.href='index.html';
-  const uid = user.uid;
-  const subject = subj.value.trim();
-  const message = msgEl.value.trim();
-  if(!subject || !message){ spMsg.textContent='Subject and message required'; spMsg.style.display='block'; return; }
-  await addDoc(collection(db,'support_tickets'), {
-    user_id: uid,
-    subject, message, status:'open', created_at: serverTimestamp()
+if(btnSend){
+  btnSend.addEventListener('click', async ()=>{
+    spMsg.style.display='none';
+    const user = auth.currentUser;
+    if(!user) return window.location.href='index.html';
+    const uid = user.uid;
+    const subject = subj.value.trim();
+    const message = msgEl.value.trim();
+    if(!subject || !message){ spMsg.textContent='Subject and message required'; spMsg.style.display='block'; return; }
+    await addDoc(collection(db,'support_tickets'), {
+      user_id: uid,
+      subject,
+      message,
+      status: 'open',
+      created_at: serverTimestamp()
+    });
+    spMsg.style.color='green'; spMsg.textContent='Ticket sent'; spMsg.style.display='block';
+    subj.value=''; msgEl.value='';
+    setTimeout(()=>location.reload(),900);
   });
-  spMsg.style.color='green'; spMsg.textContent='Ticket sent'; spMsg.style.display='block';
-  subj.value=''; msgEl.value='';
-  setTimeout(()=>location.reload(),900);
-});
+}
