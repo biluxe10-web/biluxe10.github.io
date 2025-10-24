@@ -12,9 +12,9 @@
         <li><a href="dashboard.html">🏠 Dashboard</a></li>
         <li><a href="earnings.html">💰 Earnings</a></li>
         <li><a href="transactions.html">📜 Transactions</a></li>
-        <li><a href="myteam.html">👥 My Team</a></li>
+        <li><a href="team.html">👥 My Team</a></li>
         <li><a href="profile.html">🙍 Profile</a></li>
-        <li><a href="withdraw.html" class="active">💸 Withdraw</a></li>
+        <li><a href="withdrawal.html" class="active">💸 Withdraw</a></li>
         <li><a href="support.html">💬 Support</a></li>
         <li><a href="#" id="wd-logout">🚪 Logout</a></li>
       </ul>
@@ -22,22 +22,23 @@
 
     <main class="main">
       <div class="header"><div class="h-title">Withdraw Funds</div></div>
+
       <div class="card">
         <div class="form-row">
           <label>Available Balance</label>
-          <div id="availBalance" style="font-weight:800">₹0</div>
+          <div id="avail-balance" style="font-weight:800">₹0</div>
         </div>
         <div class="form-row">
           <label>Enter Amount</label>
           <input id="wd-amount" class="input" type="number" placeholder="Amount in ₹"/>
         </div>
         <div class="form-row">
-          <label>UPI ID or Bank Account</label>
+          <label>UPI ID or Bank Details</label>
           <input id="wd-method" class="input" placeholder="example@upi or account details"/>
         </div>
         <div style="display:flex;gap:10px">
           <button id="wd-request" class="btn">Request Withdraw</button>
-          <button id="wd-history" class="button-muted">View History</button>
+          <button id="wd-history" class="button-muted">Refresh</button>
         </div>
         <p id="wd-msg" style="display:none;color:crimson;margin-top:10px"></p>
       </div>
@@ -49,11 +50,12 @@
           <tbody id="wd-body"><tr><td colspan="4" style="color:var(--muted)">Loading...</td></tr></tbody>
         </table>
       </div>
+
     </main>
   </div>
 
   <script type="module" src="js/firebase.js"></script>
-  <script type="module" src="js/withdraw.js"></script>
+  <script type="module" src="js/withdrawal.js"></script>
   <script type="module" src="js/logout.js"></script>
 </body>
 </html>
