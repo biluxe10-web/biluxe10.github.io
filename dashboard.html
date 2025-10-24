@@ -1,1 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Biluxe10 — Dashboard</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="logo">Biluxe10</div>
+      <ul class="menu">
+        <li><a href="dashboard.html" class="active">🏠 Dashboard</a></li>
+        <li><a href="earnings.html">💰 Total Earnings</a></li>
+        <li><a href="transactions.html">📜 All Transactions</a></li>
+        <li><a href="team.html">👥 My Team</a></li>
+        <li><a href="profile.html">🙍 Profile</a></li>
+        <li><a href="withdrawal.html">💸 Withdraw</a></li>
+        <li><a href="support.html">💬 Support</a></li>
+        <li><a href="#" id="btn-logout">🚪 Logout</a></li>
+      </ul>
+    </aside>
 
+    <main class="main">
+      <div class="header">
+        <div>
+          <div class="h-title">Welcome back, <span id="display-name">Loading...</span></div>
+          <div style="color:var(--muted);font-size:13px" id="display-uid">UID: -</div>
+        </div>
+        <div style="display:flex;gap:14px;align-items:center">
+          <div class="avatar" id="avatar">U</div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="card">
+          <h3>Today's Earnings</h3>
+          <div class="value" id="today-earn">₹0</div>
+          <div style="color:var(--muted);font-size:13px">Today</div>
+        </div>
+
+        <div class="card">
+          <h3>Last 7 Days</h3>
+          <div class="value" id="week-earn">₹0</div>
+          <div style="color:var(--muted);font-size:13px">Last 7 days</div>
+        </div>
+
+        <div class="card">
+          <h3>Last 30 Days</h3>
+          <div class="value" id="month-earn">₹0</div>
+          <div style="color:var(--muted);font-size:13px">Last 30 days</div>
+        </div>
+
+        <div class="card">
+          <h3>All Time</h3>
+          <div class="value" id="all-earn">₹0</div>
+          <div style="color:var(--muted);font-size:13px">Since join</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 style="margin-top:0">Referral / Share</h3>
+        <p style="color:var(--muted)">Share your referral link — when new users sign up through your link and buy a pack, commissions are tracked automatically.</p>
+        <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+          <input id="ref-link" class="input" readonly style="min-width:260px"/>
+          <button id="copy-ref" class="btn">Copy</button>
+          <div style="margin-left:auto" class="share-icons">
+            <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" alt="WhatsApp" id="share-wa" title="Share on WhatsApp" style="width:34px;cursor:pointer"/>
+            <img src="https://cdn-icons-png.flaticon.com/512/733/733547.png" alt="Facebook" id="share-fb" title="Share on Facebook" style="width:34px;cursor:pointer"/>
+            <img src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png" alt="Snapchat" id="share-ss" title="Share on Snapchat" style="width:34px;cursor:pointer"/>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 style="margin-top:0">Recent Transactions</h3>
+        <table class="table" id="recent-table">
+          <thead><tr><th>Type</th><th>Amount</th><th>Date</th><th>Status</th></tr></thead>
+          <tbody id="recent-body"><tr><td colspan="4" style="color:var(--muted)">Loading...</td></tr></tbody>
+        </table>
+      </div>
+
+    </main>
+  </div>
+
+  <script type="module" src="js/firebase.js"></script>
+  <script type="module" src="js/dashboard.js"></script>
+  <script type="module" src="js/logout.js"></script>
+</body>
+</html>
