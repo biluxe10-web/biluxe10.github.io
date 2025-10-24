@@ -12,30 +12,28 @@
         <li><a href="dashboard.html">🏠 Dashboard</a></li>
         <li><a href="earnings.html">💰 Earnings</a></li>
         <li><a href="transactions.html">📜 Transactions</a></li>
-        <li><a href="myteam.html">👥 My Team</a></li>
+        <li><a href="team.html">👥 My Team</a></li>
         <li><a href="profile.html" class="active">🙍 Profile</a></li>
-        <li><a href="withdraw.html">💸 Withdraw</a></li>
+        <li><a href="withdrawal.html">💸 Withdraw</a></li>
         <li><a href="support.html">💬 Support</a></li>
         <li><a href="#" id="prof-logout">🚪 Logout</a></li>
       </ul>
     </aside>
 
     <main class="main">
-      <div class="header">
-        <div class="h-title">Profile Settings</div>
-      </div>
+      <div class="header"><div class="h-title">Profile Settings</div></div>
 
-      <div class="card" style="display:flex;gap:18px;align-items:center">
+      <div class="card" style="display:flex;gap:18px;align-items:center;flex-wrap:wrap">
         <div>
           <div class="avatar" id="prof-avatar">U</div>
         </div>
-        <div style="flex:1">
+        <div style="flex:1;min-width:260px">
           <div class="form-row">
             <label>Full Name</label>
             <input id="prof-name" class="input" />
           </div>
           <div class="form-row">
-            <label>Email (can't change)</label>
+            <label>Email (read-only)</label>
             <input id="prof-email" class="input" disabled />
           </div>
           <div class="form-row">
@@ -53,6 +51,7 @@
           <p id="prof-msg" style="color:crimson;display:none"></p>
         </div>
       </div>
+
     </main>
   </div>
 
@@ -60,4 +59,4 @@
   <script type="module" src="js/profile.js"></script>
   <script type="module" src="js/logout.js"></script>
 </body>
-</html>      
+</html>
