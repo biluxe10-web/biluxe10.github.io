@@ -4,51 +4,49 @@ import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.13.0/f
 import { doc, getDoc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
 import { ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-storage.js";
 
-const nameEl = document.getElementById('prof-name');
-const emailEl = document.getElementById('prof-email');
-const phoneEl = document.getElementById('prof-phone');
-const fileEl = document.getElementById('prof-file');
-const avatar = document.getElementById('prof-avatar');
-const saveBtn = document.getElementById('save-profile');
-const msg = document.getElementById('prof-msg');
+const profName = document.getElementById('profName');
+const profEmail = document.getElementById('profEmail');
+const profPhone = document.getElementById('profPhone');
+const profFile = document.getElementById('profFile');
+const profAvatar = document.getElementById('profAvatar');
+const saveProfile = document.getElementById('saveProfile');
+const profMsg = document.getElementById('profMsg');
 
 onAuthStateChanged(auth, async (user)=>{
-  if(!user) return window.location.href='index.html';
+  if(!user) return location.href='index.html';
   const uid = user.uid;
-  emailEl.value = user.email || '';
+  profEmail.value = user.email || '';
   const uRef = doc(db,'users',uid);
   const uSnap = await getDoc(uRef);
   if(uSnap.exists()){
     const d = uSnap.data();
-    nameEl.value = d.name || '';
-    phoneEl.value = d.phone || '';
-    if(d.profile_url) avatar.style.backgroundImage = `url(${d.profile_url})`;
-    else avatar.textContent = (d.name||'U').slice(0,1).toUpperCase();
+    profName.value = d.name || '';
+    profPhone.value = d.phone || '';
+    if(d.photoURL){ profAvatar.style.backgroundImage = `url(${d.photoURL})`; profAvatar.textContent = ''; }
+    else profAvatar.textContent = (d.name||'U').slice(0,1).toUpperCase();
   }
 });
 
-if(saveBtn){
-  saveBtn.addEventListener('click', async ()=>{
-    msg.style.display='none';
-    const user = auth.currentUser;
-    if(!user) return window.location.href='index.html';
+if(saveProfile){
+  saveProfile.addEventListener('click', async ()=>{
+    profMsg.style.display='none';
+    const user = auth.currentUser; if(!user) return location.href='index.html';
     const uid = user.uid;
-    const newName = nameEl.value.trim();
-    const newPhone = phoneEl.value.trim();
     try{
-      let profile_url = null;
-      if(fileEl.files && fileEl.files[0]){
-        const f = fileEl.files[0];
+      let photoURL = null;
+      if(profFile.files && profFile.files[0]){
+        const f = profFile.files[0];
         const storageRef = ref(storage, `profiles/${uid}_${Date.now()}_${f.name}`);
         await uploadBytes(storageRef, f);
-        profile_url = await getDownloadURL(storageRef);
+        photoURL = await getDownloadURL(storageRef);
       }
-      const updateData = { name: newName, phone: newPhone, updated_at: serverTimestamp() };
-      if(profile_url) updateData.profile_url = profile_url;
-      await updateDoc(doc(db,'users',uid), updateData);
-      msg.style.color='green'; msg.textContent='Profile updated'; msg.style.display='block';
+      const updates = { name: profName.value.trim(), phone: profPhone.value.trim(), updatedAt: serverTimestamp() };
+      if(photoURL) updates.photoURL = photoURL;
+      await updateDoc(doc(db,'users',uid), updates);
+      profMsg.style.color='green'; profMsg.textContent='Profile saved'; profMsg.style.display='block';
+      setTimeout(()=>profMsg.style.display='none',1400);
     } catch(e){
-      msg.textContent = e.message; msg.style.display='block';
+      profMsg.textContent = e.message; profMsg.style.display='block';
     }
   });
 }
