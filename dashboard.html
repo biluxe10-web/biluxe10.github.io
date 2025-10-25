@@ -1,1 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Biluxe10 Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@3.3.2/dist/tailwind.min.css">
+<style>
+body { font-family: 'Poppins', sans-serif; background: linear-gradient(135deg,#0f1724,#0aa66b); overflow-x:hidden; }
+.card { perspective: 1000px; cursor: pointer; }
+.card-inner { background: rgba(255,255,255,0.15); border-radius: 15px; padding:20px; transition: transform 0.5s; backdrop-filter: blur(10px); box-shadow: 0 8px 20px rgba(0,0,0,0.3);}
+.card:hover .card-inner { transform: rotateY(10deg) rotateX(10deg) scale(1.05);}
+.mute-button { position:fixed; top:20px; right:20px; background: rgba(0,0,0,0.5); color:white; border:none; padding:10px 15px; border-radius:10px; cursor:pointer; z-index:1000;}
+</style>
+</head>
+<body>
 
+<button class="mute-button" id="muteBtn">Mute</button>
+<audio id="bgMusic" loop autoplay>
+  <source src="https://www.bensound.com/bensound-music/bensound-summer.mp3" type="audio/mpeg">
+</audio>
+
+<div class="flex min-h-screen">
+<div class="w-64 bg-green-900 text-white p-5 flex flex-col">
+<h1 class="text-3xl font-bold mb-6">Biluxe10</h1>
+<nav class="flex flex-col gap-3">
+<a href="dashboard.html" class="hover:bg-green-700 p-2 rounded">Dashboard</a>
+<a href="earning.html" class="hover:bg-green-700 p-2 rounded">Earnings</a>
+<a href="profile.html" class="hover:bg-green-700 p-2 rounded">Profile</a>
+<a href="team.html" class="hover:bg-green-700 p-2 rounded">Team</a>
+<a href="withdrawal.html" class="hover:bg-green-700 p-2 rounded">Withdrawal</a>
+<a href="transaction.html" class="hover:bg-green-700 p-2 rounded">Transactions</a>
+<a href="referrals.html" class="hover:bg-green-700 p-2 rounded">Referrals</a>
+<a href="support.html" class="hover:bg-green-700 p-2 rounded">Support</a>
+<a href="logout.html" class="hover:bg-green-700 p-2 rounded">Logout</a>
+</nav>
+</div>
+
+<div class="flex-1 p-6">
+<h2 class="text-4xl font-bold text-white mb-6">Dashboard</h2>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<div class="card"><div class="card-inner"><h3 class="text-white text-lg">Today's Earnings</h3><p id="earnings-today" class="text-3xl font-bold text-white">₹0</p></div></div>
+<div class="card"><div class="card-inner"><h3 class="text-white text-lg">This Week</h3><p id="earnings-week" class="text-3xl font-bold text-white">₹0</p></div></div>
+<div class="card"><div class="card-inner"><h3 class="text-white text-lg">This Month</h3><p id="earnings-month" class="text-3xl font-bold text-white">₹0</p></div></div>
+<div class="card"><div class="card-inner"><h3 class="text-white text-lg">Total Earnings</h3><p id="earnings-total" class="text-3xl font-bold text-white">₹0</p></div></div>
+<div class="card"><div class="card-inner"><h3 class="text-white text-lg">Balance</h3><p id="balance" class="text-3xl font-bold text-white">₹0</p></div></div>
+<div class="card"><div class="card-inner"><h3 class="text-white text-lg">Rank</h3><p id="rank" class="text-3xl font-bold text-white">Affiliate</p></div></div>
+</div>
+</div>
+</div>
+
+<script src="js/firebase-config.js"></script>
+<script src="js/dashboard.js"></script>
+<script>
+const bgMusic=document.getElementById("bgMusic");
+const muteBtn=document.getElementById("muteBtn");
+muteBtn.addEventListener("click",()=>{if(bgMusic.paused){bgMusic.play();muteBtn.innerText="Mute";}else{bgMusic.pause();muteBtn.innerText="Unmute";}});
+</script>
+</body>
+</html>
