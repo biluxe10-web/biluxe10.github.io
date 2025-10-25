@@ -1,61 +1,39 @@
 <!DOCTYPE html>
-<html lang="en">
-<head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Biluxe10 — Withdraw</title>
-  <link rel="stylesheet" href="css/style.css">
+<html lang="en"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>Withdraw</title>
+<style>
+  body{margin:0;font-family:Poppins,Arial;background:linear-gradient(180deg,#f7fff9,#fff)}
+  .main{padding:28px;margin-left:120px}
+  .card{background:#fff;padding:18px;border-radius:12px;box-shadow:0 6px 20px rgba(12,18,25,0.05);margin-bottom:14px}
+  .input{padding:10px;border-radius:8px;border:1px solid #eef6f1;width:100%}
+  button.btn{background:#0aa66b;color:#fff;padding:10px 12px;border-radius:8px;border:none;cursor:pointer}
+  table{width:100%;border-collapse:collapse;margin-top:12px}
+  th,td{padding:12px;border-bottom:1px solid #f3f7f5;color:#6b7280}
+</style>
 </head>
 <body>
-  <div class="app">
-    <aside class="sidebar">
-      <div class="logo">Biluxe10</div>
-      <ul class="menu">
-        <li><a href="dashboard.html">🏠 Dashboard</a></li>
-        <li><a href="earnings.html">💰 Earnings</a></li>
-        <li><a href="transactions.html">📜 Transactions</a></li>
-        <li><a href="team.html">👥 My Team</a></li>
-        <li><a href="profile.html">🙍 Profile</a></li>
-        <li><a href="withdrawal.html" class="active">💸 Withdraw</a></li>
-        <li><a href="support.html">💬 Support</a></li>
-        <li><a href="#" id="wd-logout">🚪 Logout</a></li>
-      </ul>
-    </aside>
-
-    <main class="main">
-      <div class="header"><div class="h-title">Withdraw Funds</div></div>
-
-      <div class="card">
-        <div class="form-row">
-          <label>Available Balance</label>
-          <div id="avail-balance" style="font-weight:800">₹0</div>
+  <main class="main">
+    <h2>Request Withdrawal</h2>
+    <div class="card">
+      <div style="display:flex;gap:12px;align-items:center">
+        <div><div style="color:#6b7280">Available Balance</div><div id="availBal" style="font-weight:800;font-size:20px">₹0</div></div>
+        <div style="flex:1">
+          <label class="muted">Amount</label><input id="wdAmount" class="input" type="number" placeholder="Enter amount">
+          <label class="muted" style="margin-top:8px">UPI / Bank</label><input id="wdMethod" class="input" placeholder="example@upi or bank details">
+          <div style="margin-top:8px"><button id="wdRequest" class="btn">Request Withdraw</button></div>
+          <p id="wdMsg" style="color:crimson;display:none"></p>
         </div>
-        <div class="form-row">
-          <label>Enter Amount</label>
-          <input id="wd-amount" class="input" type="number" placeholder="Amount in ₹"/>
-        </div>
-        <div class="form-row">
-          <label>UPI ID or Bank Details</label>
-          <input id="wd-method" class="input" placeholder="example@upi or account details"/>
-        </div>
-        <div style="display:flex;gap:10px">
-          <button id="wd-request" class="btn">Request Withdraw</button>
-          <button id="wd-history" class="button-muted">Refresh</button>
-        </div>
-        <p id="wd-msg" style="display:none;color:crimson;margin-top:10px"></p>
       </div>
+    </div>
 
-      <div class="card">
-        <h3>Recent Withdrawal Requests</h3>
-        <table class="table" id="wd-table">
-          <thead><tr><th>Amount</th><th>Method</th><th>Date</th><th>Status</th></tr></thead>
-          <tbody id="wd-body"><tr><td colspan="4" style="color:var(--muted)">Loading...</td></tr></tbody>
-        </table>
-      </div>
+    <div class="card">
+      <h3>Withdrawal History</h3>
+      <table><thead><tr><th>Amount</th><th>Method</th><th>Date</th><th>Status</th></tr></thead>
+        <tbody id="wdBody"><tr><td colspan="4" style="color:#6b7280">Loading...</td></tr></tbody>
+      </table>
+    </div>
+  </main>
 
-    </main>
-  </div>
-
-  <script type="module" src="js/firebase.js"></script>
-  <script type="module" src="js/withdrawal.js"></script>
-  <script type="module" src="js/logout.js"></script>
+<script type="module" src="js/firebase.js"></script>
+<script type="module" src="js/withdrawal.js"></script>
 </body>
-</html>
+                            </html>
