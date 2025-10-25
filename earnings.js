@@ -1,41 +1,32 @@
-// js/earnings.js
-import { auth, db } from "./firebase.js";
-import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
-import { doc, onSnapshot, collection, query, where, orderBy, getDocs } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
-
-const activeVal = document.getElementById('activeVal');
-const passiveVal = document.getElementById('passiveVal');
-const adsVal = document.getElementById('adsVal');
-const totalVal = document.getElementById('totalVal');
-const earnBody = document.getElementById('earnBody');
-
-function rupee(x){return '₹'+Number(x||0).toLocaleString('en-IN');}
-
-onAuthStateChanged(auth, async (user)=>{
-  if(!user) return location.href='index.html';
-  const uid = user.uid;
-  const eRef = doc(db,'earnings',uid);
-  onSnapshot(eRef, snap=>{
-    if(!snap.exists()) return;
-    const d = snap.data();
-    activeVal.textContent = rupee(d.active_commission || 0);
-    passiveVal.textContent = rupee(d.passive_commission || 0);
-    adsVal.textContent = rupee(d.ads_commission || 0);
-    totalVal.textContent = rupee(d.totalEarnings || d.total || 0);
-  });
-
-  earnBody.innerHTML = '<tr><td colspan="4" style="color:#6b7280">Loading...</td></tr>';
-  const q = query(collection(db,'transactions'), where('uid','==',uid), orderBy('date','desc'));
-  const snap = await getDocs(q);
-  if(snap.empty) earnBody.innerHTML = '<tr><td colspan="4" style="color:#6b7280">No records</td></tr>';
+auth.onAuthStateChanged(user=>{
+  if(!user){window.location.href="index.html";}
   else{
-    earnBody.innerHTML='';
-    snap.forEach(d=>{
-      const t = d.data();
-      const date = t.date && t.date.toDate ? t.date.toDate().toLocaleString() : (t.date||'');
-      const tr = document.createElement('tr');
-      tr.innerHTML = `<td>${t.type}</td><td>${rupee(t.amount)}</td><td>${date}</td><td>${t.status||'done'}</td>`;
-      earnBody.appendChild(tr);
+    const uid=user.uid;
+    db.collection("users").doc(uid).get().then(doc=>{
+      if(doc.exists){
+        const data=doc.data();
+        document.getElementById("earnings-today").innerText=`₹${data.earnings_today||0}`;
+        document.getElementById("earnings-week").innerText=`₹${data.earnings_week||0}`;
+        document.getElementById("earnings-month").innerText=`₹${data.earnings_month||0}`;
+        document.getElementById("earnings-total").innerText=`₹${data.earnings_total||0}`;
+        document.getElementById("balance").innerText=`₹${data.balance||0}`;
+      }
+    });
+
+    // Fetch transactions
+    db.collection("transactions").where("userId","==",uid).orderBy("date","desc").get().then(snapshot=>{
+      const tbody=document.getElementById("transactions-body");
+      tbody.innerHTML="";
+      snapshot.forEach(doc=>{
+        const t=doc.data();
+        const row=document.createElement("tr");
+        row.innerHTML=`<td>${t.date.toDate().toLocaleDateString()}</td>
+                       <td>₹${t.amount}</td>
+                       <td>${t.type}</td>
+                       <td>${t.status}</td>
+                       <td>${t.source}</td>`;
+        tbody.appendChild(row);
+      });
     });
   }
 });
