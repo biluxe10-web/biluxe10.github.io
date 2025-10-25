@@ -1,42 +1,83 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Biluxe10 — Earnings</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Earnings - Biluxe10</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@3.3.2/dist/tailwind.min.css">
 <style>
-  /* reuse same standalone styles as dashboard but shorter */
-  :root{ --bg:#ffffff; --accent:#0aa66b; --muted:#6b7280; --card:#fff; --text:#0f1724; }
-  *{box-sizing:border-box;font-family:Poppins,Arial,sans-serif}
-  body{margin:0;background:linear-gradient(180deg,#f7fff9,#ffffff);color:var(--text);min-height:100vh}
-  .sidebar{position:fixed;left:18px;top:18px;bottom:18px;width:84px;background:linear-gradient(180deg,#0aa66b,#078a54);border-radius:0 12px 12px 0;padding:18px}
-  .main{margin-left:130px;padding:28px}
-  .card{background:var(--card);padding:18px;border-radius:12px;margin-bottom:16px;box-shadow:0 8px 24px rgba(16,24,40,0.06)}
-  .row{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
-  h3{margin:0 0 8px}
-  .value{font-size:22px;font-weight:700}
+body { font-family: 'Poppins', sans-serif; background: linear-gradient(135deg,#0f1724,#0aa66b); overflow-x:hidden; }
+.card { perspective: 1000px; cursor: pointer; }
+.card-inner { background: rgba(255,255,255,0.15); border-radius: 15px; padding:20px; transition: transform 0.5s; backdrop-filter: blur(10px); box-shadow: 0 8px 20px rgba(0,0,0,0.3);}
+.card:hover .card-inner { transform: rotateY(10deg) rotateX(10deg) scale(1.05);}
+.mute-button { position:fixed; top:20px; right:20px; background: rgba(0,0,0,0.5); color:white; border:none; padding:10px 15px; border-radius:10px; cursor:pointer; z-index:1000;}
+table { width: 100%; border-collapse: collapse; }
+th, td { padding: 12px; text-align: left; color: white; }
+th { background-color: rgba(0,0,0,0.3); }
+tr:nth-child(even) { background-color: rgba(255,255,255,0.1); }
 </style>
 </head>
 <body>
-  <aside class="sidebar">
-    <div style="color:#fff;font-weight:700">B10</div>
-  </aside>
-  <main class="main">
-    <h2>Earnings Details</h2>
-    <div class="card row">
-      <div><h3>Active Commission</h3><div class="value" id="activeVal">₹0</div></div>
-      <div><h3>Passive Commission</h3><div class="value" id="passiveVal">₹0</div></div>
-      <div><h3>Ads Bonus</h3><div class="value" id="adsVal">₹0</div></div>
-      <div><h3>Total</h3><div class="value" id="totalVal">₹0</div></div>
-    </div>
 
-    <div class="card">
-      <h3>Earnings History</h3>
-      <table style="width:100%;border-collapse:collapse"><thead><tr style="text-align:left"><th>Type</th><th>Amount</th><th>Date</th><th>Status</th></tr></thead>
-      <tbody id="earnBody"><tr><td colspan="4" style="color:var(--muted)">Loading...</td></tr></tbody></table>
-    </div>
-  </main>
+<button class="mute-button" id="muteBtn">Mute</button>
+<audio id="bgMusic" loop autoplay>
+  <source src="https://www.bensound.com/bensound-music/bensound-summer.mp3" type="audio/mpeg">
+</audio>
 
-<script type="module" src="js/firebase.js"></script>
-<script type="module" src="js/earnings.js"></script>
+<div class="flex min-h-screen">
+<div class="w-64 bg-green-900 text-white p-5 flex flex-col">
+<h1 class="text-3xl font-bold mb-6">Biluxe10</h1>
+<nav class="flex flex-col gap-3">
+<a href="dashboard.html" class="hover:bg-green-700 p-2 rounded">Dashboard</a>
+<a href="earning.html" class="hover:bg-green-700 p-2 rounded">Earnings</a>
+<a href="profile.html" class="hover:bg-green-700 p-2 rounded">Profile</a>
+<a href="team.html" class="hover:bg-green-700 p-2 rounded">Team</a>
+<a href="withdrawal.html" class="hover:bg-green-700 p-2 rounded">Withdrawal</a>
+<a href="transaction.html" class="hover:bg-green-700 p-2 rounded">Transactions</a>
+<a href="referrals.html" class="hover:bg-green-700 p-2 rounded">Referrals</a>
+<a href="support.html" class="hover:bg-green-700 p-2 rounded">Support</a>
+<a href="logout.html" class="hover:bg-green-700 p-2 rounded">Logout</a>
+</nav>
+</div>
+
+<div class="flex-1 p-6">
+<h2 class="text-4xl font-bold text-white mb-6">Earnings</h2>
+
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
+  <div class="card"><div class="card-inner"><h3 class="text-white text-lg">Today's Earnings</h3><p id="earnings-today" class="text-3xl font-bold text-white">₹0</p></div></div>
+  <div class="card"><div class="card-inner"><h3 class="text-white text-lg">This Week</h3><p id="earnings-week" class="text-3xl font-bold text-white">₹0</p></div></div>
+  <div class="card"><div class="card-inner"><h3 class="text-white text-lg">This Month</h3><p id="earnings-month" class="text-3xl font-bold text-white">₹0</p></div></div>
+  <div class="card"><div class="card-inner"><h3 class="text-white text-lg">Total Earnings</h3><p id="earnings-total" class="text-3xl font-bold text-white">₹0</p></div></div>
+  <div class="card"><div class="card-inner"><h3 class="text-white text-lg">Balance</h3><p id="balance" class="text-3xl font-bold text-white">₹0</p></div></div>
+</div>
+
+<div class="bg-white/10 rounded p-4">
+  <h3 class="text-white text-xl mb-2">Earnings Transactions</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Amount</th>
+        <th>Type</th>
+        <th>Status</th>
+        <th>Source</th>
+      </tr>
+    </thead>
+    <tbody id="transactions-body">
+      <!-- Transactions will be injected here by JS -->
+    </tbody>
+  </table>
+</div>
+</div>
+</div>
+
+<script src="js/firebase-config.js"></script>
+<script src="js/earning.js"></script>
+<script>
+const bgMusic=document.getElementById("bgMusic");
+const muteBtn=document.getElementById("muteBtn");
+muteBtn.addEventListener("click",()=>{if(bgMusic.paused){bgMusic.play();muteBtn.innerText="Mute";}else{bgMusic.pause();muteBtn.innerText="Unmute";}});
+</script>
 </body>
-      </html>
+</html>
