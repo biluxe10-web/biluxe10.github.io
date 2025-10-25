@@ -1,61 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Biluxe10 Dashboard</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@3.3.2/dist/tailwind.min.css">
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Biluxe10 — Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.3.2/dist/tailwind.min.css" rel="stylesheet">
 <style>
-body { font-family: 'Poppins', sans-serif; background: linear-gradient(135deg,#0f1724,#0aa66b); overflow-x:hidden; }
-.card { perspective: 1000px; cursor: pointer; }
-.card-inner { background: rgba(255,255,255,0.15); border-radius: 15px; padding:20px; transition: transform 0.5s; backdrop-filter: blur(10px); box-shadow: 0 8px 20px rgba(0,0,0,0.3);}
-.card:hover .card-inner { transform: rotateY(10deg) rotateX(10deg) scale(1.05);}
-.mute-button { position:fixed; top:20px; right:20px; background: rgba(0,0,0,0.5); color:white; border:none; padding:10px 15px; border-radius:10px; cursor:pointer; z-index:1000;}
+:root{--green:#0aa66b;--dark:#0f1724;--white:#ffffff;}
+html,body{height:100%;margin:0;font-family:'Poppins',sans-serif;background:linear-gradient(135deg,var(--white),#eafaf3);}
+.sidebar{width:260px;background:var(--green);color:white;padding:18px;border-radius:12px}
+.container{max-width:1200px;margin:28px auto;padding:12px}
+.card{perspective:1000px;}
+.card-inner{background:linear-gradient(180deg,rgba(255,255,255,0.95),rgba(255,255,255,0.9));border-radius:14px;padding:18px;box-shadow:0 12px 30px rgba(0,0,0,0.08);transition:transform .35s}
+.card:hover .card-inner{transform:rotateY(8deg) rotateX(6deg) scale(1.02)}
+.mute-button{position:fixed;top:18px;right:18px;background:rgba(0,0,0,0.6);color:white;border:none;padding:10px 14px;border-radius:10px;z-index:1000;cursor:pointer}
+.table th, .table td{padding:10px;text-align:left}
+@media(max-width:900px){.sidebar{display:none}}
 </style>
 </head>
 <body>
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
 
-<button class="mute-button" id="muteBtn">Mute</button>
-<audio id="bgMusic" loop autoplay>
-  <source src="https://www.bensound.com/bensound-music/bensound-summer.mp3" type="audio/mpeg">
-</audio>
+<div class="container flex gap-6">
+  <div class="sidebar">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:18px">
+      <img src="https://via.placeholder.com/64x64.png?text=B" style="height:56px;width:56px;border-radius:10px;object-fit:cover;border:2px solid rgba(255,255,255,0.14)">
+      <div><div style="font-weight:700">Biox Channel</div><div style="font-size:13px;opacity:0.9">Biluxe10</div></div>
+      <div style="margin-left:auto" id="menuBtn" title="Menu">
+        <svg width="20" height="20" fill="white" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg>
+      </div>
+    </div>
+    <nav style="display:flex;flex-direction:column;gap:8px">
+      <a href="dashboard.html" style="padding:10px;border-radius:8px;background:rgba(255,255,255,0.06);color:white">Dashboard</a>
+      <a href="earning.html" style="padding:10px;border-radius:8px;color:white">Earnings</a>
+      <a href="profile.html" style="padding:10px;border-radius:8px;color:white">Profile</a>
+      <a href="team.html" style="padding:10px;border-radius:8px;color:white">Team</a>
+      <a href="withdrawal.html" style="padding:10px;border-radius:8px;color:white">Withdrawal</a>
+      <a href="transaction.html" style="padding:10px;border-radius:8px;color:white">Transactions</a>
+      <a href="referrals.html" style="padding:10px;border-radius:8px;color:white">Referrals</a>
+      <a href="support.html" style="padding:10px;border-radius:8px;color:white">Support</a>
+    </nav>
+  </div>
 
-<div class="flex min-h-screen">
-<div class="w-64 bg-green-900 text-white p-5 flex flex-col">
-<h1 class="text-3xl font-bold mb-6">Biluxe10</h1>
-<nav class="flex flex-col gap-3">
-<a href="dashboard.html" class="hover:bg-green-700 p-2 rounded">Dashboard</a>
-<a href="earning.html" class="hover:bg-green-700 p-2 rounded">Earnings</a>
-<a href="profile.html" class="hover:bg-green-700 p-2 rounded">Profile</a>
-<a href="team.html" class="hover:bg-green-700 p-2 rounded">Team</a>
-<a href="withdrawal.html" class="hover:bg-green-700 p-2 rounded">Withdrawal</a>
-<a href="transaction.html" class="hover:bg-green-700 p-2 rounded">Transactions</a>
-<a href="referrals.html" class="hover:bg-green-700 p-2 rounded">Referrals</a>
-<a href="support.html" class="hover:bg-green-700 p-2 rounded">Support</a>
-<a href="logout.html" class="hover:bg-green-700 p-2 rounded">Logout</a>
-</nav>
-</div>
+  <div style="flex:1">
+    <button class="mute-button" id="muteBtn">Mute</button>
+    <h2 style="font-size:28px;margin-bottom:12px">Dashboard</h2>
 
-<div class="flex-1 p-6">
-<h2 class="text-4xl font-bold text-white mb-6">Dashboard</h2>
-<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-<div class="card"><div class="card-inner"><h3 class="text-white text-lg">Today's Earnings</h3><p id="earnings-today" class="text-3xl font-bold text-white">₹0</p></div></div>
-<div class="card"><div class="card-inner"><h3 class="text-white text-lg">This Week</h3><p id="earnings-week" class="text-3xl font-bold text-white">₹0</p></div></div>
-<div class="card"><div class="card-inner"><h3 class="text-white text-lg">This Month</h3><p id="earnings-month" class="text-3xl font-bold text-white">₹0</p></div></div>
-<div class="card"><div class="card-inner"><h3 class="text-white text-lg">Total Earnings</h3><p id="earnings-total" class="text-3xl font-bold text-white">₹0</p></div></div>
-<div class="card"><div class="card-inner"><h3 class="text-white text-lg">Balance</h3><p id="balance" class="text-3xl font-bold text-white">₹0</p></div></div>
-<div class="card"><div class="card-inner"><h3 class="text-white text-lg">Rank</h3><p id="rank" class="text-3xl font-bold text-white">Affiliate</p></div></div>
-</div>
-</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px">
+      <div class="card"><div class="card-inner"><h4>Today's Earnings</h4><div id="earnings-today" style="font-weight:700;font-size:20px">₹0</div></div></div>
+      <div class="card"><div class="card-inner"><h4>This Week</h4><div id="earnings-week" style="font-weight:700;font-size:20px">₹0</div></div></div>
+      <div class="card"><div class="card-inner"><h4>This Month</h4><div id="earnings-month" style="font-weight:700;font-size:20px">₹0</div></div></div>
+      <div class="card"><div class="card-inner"><h4>Total</h4><div id="earnings-total" style="font-weight:700;font-size:20px">₹0</div></div></div>
+      <div class="card"><div class="card-inner"><h4>Balance</h4><div id="balance" style="font-weight:700;font-size:20px">₹0</div></div></div>
+      <div class="card"><div class="card-inner"><h4>Rank</h4><div id="rank" style="font-weight:700;font-size:20px">Affiliate</div></div></div>
+    </div>
+  </div>
 </div>
 
 <script src="js/firebase-config.js"></script>
+<script src="js/common.js"></script>
 <script src="js/dashboard.js"></script>
-<script>
-const bgMusic=document.getElementById("bgMusic");
-const muteBtn=document.getElementById("muteBtn");
-muteBtn.addEventListener("click",()=>{if(bgMusic.paused){bgMusic.play();muteBtn.innerText="Mute";}else{bgMusic.pause();muteBtn.innerText="Unmute";}});
-</script>
 </body>
 </html>
