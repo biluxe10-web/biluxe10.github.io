@@ -1,69 +1,46 @@
-// js/dashboard.js
-import { auth, db } from "./firebase.js";
-import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
-import { doc, onSnapshot, collection, query, where, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
+// Import Firebase modules
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, doc, onSnapshot, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-const userNameEl = document.getElementById('userName');
-const userIdEl = document.getElementById('userId');
-const avatarEl = document.getElementById('avatar');
-const todayEarning = document.getElementById('todayEarning');
-const weekEarning = document.getElementById('weekEarning');
-const monthEarning = document.getElementById('monthEarning');
-const totalEarning = document.getElementById('totalEarning');
-const refLink = document.getElementById('refLink');
-const copyBtn = document.getElementById('copyBtn');
-const recentBody = document.getElementById('recentBody');
+// Your Firebase config (keep your same values)
+const firebaseConfig = {
+  apiKey: "AIzaSyDxxkC9iD1V1w-53Kf4oBrHEXlBLvCc7sE",
+  authDomain: "biluxe10-3e894.firebaseapp.com",
+  projectId: "biluxe10-3e894",
+  storageBucket: "biluxe10-3e894.firebasestorage.app",
+  messagingSenderId: "804749588233",
+  appId: "1:804749588233:web:7777648c0c7834733c05d8"
+};
 
-function rupee(x){return '₹'+Number(x||0).toLocaleString('en-IN');}
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
 
-onAuthStateChanged(auth, async (user)=>{
-  if(!user) return location.href='index.html';
-  const uid = user.uid;
-  userIdEl.textContent = `UID: ${uid}`;
+// Wait for user to be logged in
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    const userDocRef = doc(db, "user_collection", user.email);
 
-  // live user doc
-  const uRef = doc(db,'users',uid);
-  onSnapshot(uRef, snap=>{
-    if(!snap.exists()) return;
-    const d = snap.data();
-    userNameEl.textContent = d.name || 'Member';
-    if(d.photoURL) avatarEl.style.backgroundImage = `url(${d.photoURL})`;
-    else avatarEl.textContent = (d.name||'U').slice(0,1).toUpperCase();
-    refLink.value = `${location.origin}/index.html?ref=${d.referralCode || uid}`;
-  });
+    // 🔁 Real-time listener — updates live if data changes in Firebase
+    onSnapshot(userDocRef, (docSnap) => {
+      if (docSnap.exists()) {
+        const data = docSnap.data();
 
-  // earnings doc live
-  const eRef = doc(db,'earnings',uid);
-  onSnapshot(eRef, snap=>{
-    if(!snap.exists()) return;
-    const d = snap.data();
-    todayEarning.textContent = rupee(d.todayEarnings || d.today || 0);
-    weekEarning.textContent = rupee(d.weekEarnings || d.last7 || 0);
-    monthEarning.textContent = rupee(d.monthEarnings || d.last30 || 0);
-    totalEarning.textContent = rupee(d.totalEarnings || d.total || 0);
-  });
-
-  // recent txs
-  recentBody.innerHTML = '<tr><td colspan="4" style="color:#6b7280">Loading...</td></tr>';
-  const txQ = query(collection(db,'transactions'), where('uid','==',uid), orderBy('date','desc'), limit(6));
-  const txSnap = await getDocs(txQ);
-  if(txSnap.empty) recentBody.innerHTML = '<tr><td colspan="4" style="color:#6b7280">No transactions</td></tr>';
-  else{
-    recentBody.innerHTML = '';
-    txSnap.forEach(docSnap=>{
-      const t = docSnap.data();
-      const date = t.date && t.date.toDate ? t.date.toDate().toLocaleString() : (t.date||'');
-      const tr = document.createElement('tr');
-      tr.innerHTML = `<td>${t.type||'Txn'}</td><td>${rupee(t.amount)}</td><td>${date}</td><td>${t.status||'done'}</td>`;
-      recentBody.appendChild(tr);
+        // ✅ Update all dashboard fields
+        document.getElementById("userName").innerText = data.name || "User";
+        document.getElementById("totalEarnings").innerText = data.totalearnings || 0;
+        document.getElementById("activeEarnings").innerText = data.activeearnings || 0;
+        document.getElementById("passiveEarnings").innerText = data.passiveearnings || 0;
+        document.getElementById("adsBonus").innerText = data.adsbonus || 0;
+        document.getElementById("paymentStatus").innerText = data.paymentstatus || "Pending";
+        document.getElementById("userId").innerText = user.email;
+      } else {
+        console.log("⚠️ User data not found in Firestore!");
+      }
     });
+  } else {
+    window.location.href = "login.html"; // if not logged in
   }
 });
-
-if(copyBtn){
-  copyBtn.addEventListener('click', ()=>{
-    navigator.clipboard.writeText(refLink.value);
-    copyBtn.textContent='Copied';
-    setTimeout(()=>copyBtn.textContent='Copy',1400);
-  });
-             }
