@@ -1,56 +1,34 @@
 <!DOCTYPE html>
-<html lang="en">
-<head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Biluxe10 — Support</title>
-  <link rel="stylesheet" href="css/style.css">
+<html lang="en"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>Support</title>
+<style>
+  body{margin:0;font-family:Poppins,Arial;background:linear-gradient(180deg,#f7fff9,#fff)}
+  .main{padding:28px;margin-left:120px}
+  .card{background:#fff;padding:18px;border-radius:12px;box-shadow:0 6px 20px rgba(12,18,25,0.05);margin-bottom:14px}
+  .input{padding:10px;border-radius:8px;border:1px solid #eef6f1;width:100%}
+  button.btn{background:#0aa66b;color:#fff;padding:10px 12px;border-radius:8px;border:none;cursor:pointer}
+  table{width:100%;border-collapse:collapse;margin-top:12px}
+  th,td{padding:12px;border-bottom:1px solid #f3f7f5;color:#6b7280}
+</style>
 </head>
 <body>
-  <div class="app">
-    <aside class="sidebar">
-      <div class="logo">Biluxe10</div>
-      <ul class="menu">
-        <li><a href="dashboard.html">🏠 Dashboard</a></li>
-        <li><a href="earnings.html">💰 Earnings</a></li>
-        <li><a href="transactions.html">📜 Transactions</a></li>
-        <li><a href="team.html">👥 My Team</a></li>
-        <li><a href="profile.html">🙍 Profile</a></li>
-        <li><a href="withdrawal.html">💸 Withdraw</a></li>
-        <li><a href="support.html" class="active">💬 Support</a></li>
-        <li><a href="#" id="sp-logout">🚪 Logout</a></li>
-      </ul>
-    </aside>
+  <main class="main">
+    <h2>Support</h2>
+    <div class="card">
+      <label class="muted">Subject</label><input id="spSubject" class="input">
+      <label class="muted" style="margin-top:8px">Message</label><textarea id="spMessage" class="input" rows="6"></textarea>
+      <div style="margin-top:8px"><button id="spSend" class="btn">Send Ticket</button></div>
+      <p id="spMsg" style="color:crimson;display:none"></p>
+    </div>
 
-    <main class="main">
-      <div class="header"><div class="h-title">Support / Submit Ticket</div></div>
+    <div class="card">
+      <h3>Your Tickets</h3>
+      <table><thead><tr><th>Subject</th><th>Date</th><th>Status</th></tr></thead>
+        <tbody id="spBody"><tr><td colspan="3" style="color:#6b7280">Loading...</td></tr></tbody>
+      </table>
+    </div>
+  </main>
 
-      <div class="card">
-        <div class="form-row">
-          <label>Subject</label>
-          <input id="sp-subject" class="input"/>
-        </div>
-        <div class="form-row">
-          <label>Message</label>
-          <textarea id="sp-message" class="input" rows="6"></textarea>
-        </div>
-        <div style="display:flex;gap:10px">
-          <button id="sp-send" class="btn">Send Ticket</button>
-        </div>
-        <p id="sp-msg" style="color:crimson;display:none"></p>
-      </div>
-
-      <div class="card">
-        <h3>Your Tickets</h3>
-        <table class="table">
-          <thead><tr><th>Subject</th><th>Date</th><th>Status</th></tr></thead>
-          <tbody id="sp-body"><tr><td colspan="3" style="color:var(--muted)">Loading...</td></tr></tbody>
-        </table>
-      </div>
-
-    </main>
-  </div>
-
-  <script type="module" src="js/firebase.js"></script>
-  <script type="module" src="js/support.js"></script>
-  <script type="module" src="js/logout.js"></script>
+<script type="module" src="js/firebase.js"></script>
+<script type="module" src="js/support.js"></script>
 </body>
-                   </html>
+</html>
