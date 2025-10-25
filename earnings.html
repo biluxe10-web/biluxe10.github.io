@@ -1,49 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Biluxe10 — Earnings</title>
-  <link rel="stylesheet" href="css/style.css">
+<head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Biluxe10 — Earnings</title>
+<style>
+  /* reuse same standalone styles as dashboard but shorter */
+  :root{ --bg:#ffffff; --accent:#0aa66b; --muted:#6b7280; --card:#fff; --text:#0f1724; }
+  *{box-sizing:border-box;font-family:Poppins,Arial,sans-serif}
+  body{margin:0;background:linear-gradient(180deg,#f7fff9,#ffffff);color:var(--text);min-height:100vh}
+  .sidebar{position:fixed;left:18px;top:18px;bottom:18px;width:84px;background:linear-gradient(180deg,#0aa66b,#078a54);border-radius:0 12px 12px 0;padding:18px}
+  .main{margin-left:130px;padding:28px}
+  .card{background:var(--card);padding:18px;border-radius:12px;margin-bottom:16px;box-shadow:0 8px 24px rgba(16,24,40,0.06)}
+  .row{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+  h3{margin:0 0 8px}
+  .value{font-size:22px;font-weight:700}
+</style>
 </head>
 <body>
-  <div class="app">
-    <aside class="sidebar">
-      <div class="logo">Biluxe10</div>
-      <ul class="menu">
-        <li><a href="dashboard.html">🏠 Dashboard</a></li>
-        <li><a href="earnings.html" class="active">💰 Total Earnings</a></li>
-        <li><a href="transactions.html">📜 All Transactions</a></li>
-        <li><a href="team.html">👥 My Team</a></li>
-        <li><a href="profile.html">🙍 Profile</a></li>
-        <li><a href="withdrawal.html">💸 Withdraw</a></li>
-        <li><a href="support.html">💬 Support</a></li>
-        <li><a href="#" id="ln-logout">🚪 Logout</a></li>
-      </ul>
-    </aside>
+  <aside class="sidebar">
+    <div style="color:#fff;font-weight:700">B10</div>
+  </aside>
+  <main class="main">
+    <h2>Earnings Details</h2>
+    <div class="card row">
+      <div><h3>Active Commission</h3><div class="value" id="activeVal">₹0</div></div>
+      <div><h3>Passive Commission</h3><div class="value" id="passiveVal">₹0</div></div>
+      <div><h3>Ads Bonus</h3><div class="value" id="adsVal">₹0</div></div>
+      <div><h3>Total</h3><div class="value" id="totalVal">₹0</div></div>
+    </div>
 
-    <main class="main">
-      <div class="header"><div class="h-title">Earnings Breakdown</div></div>
+    <div class="card">
+      <h3>Earnings History</h3>
+      <table style="width:100%;border-collapse:collapse"><thead><tr style="text-align:left"><th>Type</th><th>Amount</th><th>Date</th><th>Status</th></tr></thead>
+      <tbody id="earnBody"><tr><td colspan="4" style="color:var(--muted)">Loading...</td></tr></tbody></table>
+    </div>
+  </main>
 
-      <div class="card">
-        <div class="row">
-          <div class="card"><h3>Active Commission</h3><div class="value" id="active-val">₹0</div></div>
-          <div class="card"><h3>Passive Commission</h3><div class="value" id="passive-val">₹0</div></div>
-          <div class="card"><h3>Ads/Bonus</h3><div class="value" id="ads-val">₹0</div></div>
-          <div class="card"><h3>Total Earned</h3><div class="value" id="total-val">₹0</div></div>
-        </div>
-      </div>
-
-      <div class="card">
-        <h3>History</h3>
-        <table class="table" id="earn-table">
-          <thead><tr><th>Type</th><th>Amount</th><th>Date</th><th>Status</th></tr></thead>
-          <tbody id="earn-body"><tr><td colspan="4" style="color:var(--muted)">Loading...</td></tr></tbody>
-        </table>
-      </div>
-    </main>
-  </div>
-
-  <script type="module" src="js/firebase.js"></script>
-  <script type="module" src="js/earnings.js"></script>
-  <script type="module" src="js/logout.js"></script>
+<script type="module" src="js/firebase.js"></script>
+<script type="module" src="js/earnings.js"></script>
 </body>
-</html>
+      </html>
