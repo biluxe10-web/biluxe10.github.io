@@ -1,66 +1,410 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Biluxe10 Dashboard</title>
-    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biluxe10 - Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body>
-    <div id="root"></div>
-    
-    <script type="text/babel">
-        // SIMPLE DASHBOARD - You can replace this with your actual Dashboard.js content
-        function Dashboard() {
-            const [currentPage, setCurrentPage] = React.useState('dashboard');
-            
-            const pages = {
-                dashboard: React.createElement('div', {className: 'p-6'},
-                    React.createElement('h1', {className: 'text-3xl font-bold mb-4'}, 'Biluxe10 Dashboard'),
-                    React.createElement('div', {className: 'grid grid-cols-1 md:grid-cols-4 gap-4 mb-6'},
-                        ['Today Earnings', 'Weekly', 'Monthly', 'Balance'].map(item =>
-                            React.createElement('div', {
-                                key: item,
-                                className: 'bg-white p-4 rounded-lg shadow'
-                            },
-                                React.createElement('h3', {className: 'text-gray-600'}, item),
-                                React.createElement('p', {className: 'text-2xl font-bold text-green-600'}, '₹0')
-                            )
-                        )
-                    )
-                ),
-                earnings: React.createElement('div', {className: 'p-6'},
-                    React.createElement('h1', {className: 'text-3xl font-bold mb-4'}, 'Earnings'),
-                    React.createElement('p', {}, 'Your earnings: ₹0')
-                )
-            };
-            
-            return React.createElement('div', {className: 'min-h-screen bg-gray-100'},
-                // Navigation
-                React.createElement('div', {className: 'bg-white shadow-sm p-4'},
-                    React.createElement('div', {className: 'flex space-x-4'},
-                        ['Dashboard', 'Earnings', 'Team', 'Profile'].map(page =>
-                            React.createElement('button', {
-                                key: page,
-                                onClick: () => setCurrentPage(page.toLowerCase()),
-                                className: `px-4 py-2 rounded-lg ${
-                                    currentPage === page.toLowerCase() 
-                                        ? 'bg-blue-600 text-white' 
-                                        : 'bg-gray-200 text-gray-700'
-                                }`
-                            }, page)
-                        )
-                    )
-                ),
-                
-                // Page Content
-                pages[currentPage] || pages.dashboard
-            );
+    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-storage.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        * {
+            font-family: 'Inter', sans-serif;
         }
-        
-        // Render immediately
-        ReactDOM.render(React.createElement(Dashboard), document.getElementById('root'));
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .stats-card {
+            transition: all 0.3s ease;
+            border-left: 4px solid;
+        }
+        .stats-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        .animate-float {
+            animation: float 3s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        .page-transition {
+            animation: slideIn 0.5s ease-out;
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .pulse-ring {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(0.8); opacity: 1; }
+            70% { transform: scale(1.2); opacity: 0.7; }
+            100% { transform: scale(0.8); opacity: 1; }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation Sidebar -->
+    <div class="sidebar fixed left-0 top-0 h-full w-64 bg-gradient-to-b from-gray-900 to-black text-white shadow-xl z-50">
+        <!-- Logo -->
+        <div class="p-6 border-b border-gray-800">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center animate-float">
+                    <i class="fas fa-rocket text-white"></i>
+                </div>
+                <h1 class="text-xl font-bold">Biluxe10</h1>
+            </div>
+        </div>
+
+        <!-- User Profile Mini -->
+        <div class="p-4 border-b border-gray-800">
+            <div class="flex items-center space-x-3">
+                <div class="relative">
+                    <img id="userProfilePic" src="https://via.placeholder.com/40" alt="Profile" class="w-10 h-10 rounded-full border-2 border-blue-500">
+                    <div class="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-gray-900"></div>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <p id="userName" class="text-sm font-medium truncate">Loading...</p>
+                    <p id="userRank" class="text-xs text-gray-400 truncate">Affiliate</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation Menu -->
+        <nav class="p-4 space-y-2">
+            <a href="dashboard.html" class="flex items-center space-x-3 p-3 rounded-lg bg-blue-600 text-white shadow-lg">
+                <i class="fas fa-chart-line w-5"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="earnings.html" class="flex items-center space-x-3 p-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition duration-300">
+                <i class="fas fa-money-bill-wave w-5"></i>
+                <span>Earnings</span>
+            </a>
+            <a href="withdrawal.html" class="flex items-center space-x-3 p-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition duration-300">
+                <i class="fas fa-wallet w-5"></i>
+                <span>Withdrawal</span>
+            </a>
+            <a href="team.html" class="flex items-center space-x-3 p-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition duration-300">
+                <i class="fas fa-users w-5"></i>
+                <span>My Team</span>
+            </a>
+            <a href="referral.html" class="flex items-center space-x-3 p-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition duration-300">
+                <i class="fas fa-share-alt w-5"></i>
+                <span>Refer & Earn</span>
+            </a>
+            <a href="packages.html" class="flex items-center space-x-3 p-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition duration-300">
+                <i class="fas fa-crown w-5"></i>
+                <span>Packages</span>
+            </a>
+            <a href="profile.html" class="flex items-center space-x-3 p-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition duration-300">
+                <i class="fas fa-user-circle w-5"></i>
+                <span>Profile</span>
+            </a>
+            <a href="support.html" class="flex items-center space-x-3 p-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition duration-300">
+                <i class="fas fa-headset w-5"></i>
+                <span>Support</span>
+            </a>
+        </nav>
+
+        <!-- Balance Footer -->
+        <div class="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-800">
+            <div class="bg-gradient-to-r from-green-500 to-emerald-600 text-white text-center py-2 rounded-lg font-semibold text-sm">
+                Balance: ₹<span id="userBalance">0</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="ml-64 min-h-screen">
+        <!-- Header -->
+        <header class="bg-white shadow-sm border-b border-gray-200">
+            <div class="flex items-center justify-between h-16 px-8">
+                <div>
+                    <h2 class="text-xl font-semibold text-gray-900">Welcome to Biluxe10 Dashboard</h2>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button class="p-2 text-gray-600 hover:text-gray-900 relative">
+                        <i class="fas fa-bell text-xl"></i>
+                        <span class="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></span>
+                    </button>
+                    <div class="flex items-center space-x-3 bg-gray-50 rounded-lg px-3 py-2">
+                        <img id="headerProfilePic" src="https://via.placeholder.com/32" alt="Profile" class="w-8 h-8 rounded-full border-2 border-blue-500">
+                        <span id="headerUserName" class="text-sm font-medium text-gray-900">User</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard Content -->
+        <main class="p-6 page-transition">
+            <!-- Welcome Header -->
+            <div class="bg-gradient-to-r from-blue-600 to-purple-700 rounded-2xl p-8 text-white mb-8 shadow-xl">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h1 class="text-4xl font-bold mb-2" id="welcomeMessage">Welcome back, User!</h1>
+                        <p class="text-blue-100 text-lg">Here's your earnings overview and performance metrics</p>
+                    </div>
+                    <div class="text-right">
+                        <div class="bg-white bg-opacity-20 rounded-lg px-4 py-2 inline-block">
+                            <span class="font-semibold" id="userMembership">Silver Member</span>
+                        </div>
+                        <p class="text-blue-100 mt-2" id="currentDate">Loading date...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <!-- Today's Earnings -->
+                <div class="stats-card bg-white rounded-xl shadow-sm p-6 border-l-4 border-green-500 hover:shadow-lg">
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mr-4">
+                            <i class="fas fa-rupee-sign text-green-600 text-xl"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-600">Today's Earnings</p>
+                            <p class="text-2xl font-bold text-gray-900">₹<span id="earningsToday">0</span></p>
+                        </div>
+                    </div>
+                    <div class="mt-4 flex items-center text-sm">
+                        <i class="fas fa-arrow-up text-green-500 mr-1"></i>
+                        <span class="text-green-600 font-semibold" id="todayGrowth">+0%</span>
+                        <span class="text-gray-500 ml-2">from yesterday</span>
+                    </div>
+                </div>
+
+                <!-- Weekly Earnings -->
+                <div class="stats-card bg-white rounded-xl shadow-sm p-6 border-l-4 border-blue-500 hover:shadow-lg">
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mr-4">
+                            <i class="fas fa-chart-line text-blue-600 text-xl"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-600">Weekly Earnings</p>
+                            <p class="text-2xl font-bold text-gray-900">₹<span id="earningsWeek">0</span></p>
+                        </div>
+                    </div>
+                    <div class="mt-4 flex items-center text-sm">
+                        <i class="fas fa-arrow-up text-blue-500 mr-1"></i>
+                        <span class="text-blue-600 font-semibold" id="weekGrowth">+0%</span>
+                        <span class="text-gray-500 ml-2">from last week</span>
+                    </div>
+                </div>
+
+                <!-- Monthly Earnings -->
+                <div class="stats-card bg-white rounded-xl shadow-sm p-6 border-l-4 border-purple-500 hover:shadow-lg">
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mr-4">
+                            <i class="fas fa-calendar-alt text-purple-600 text-xl"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-600">Monthly Earnings</p>
+                            <p class="text-2xl font-bold text-gray-900">₹<span id="earningsMonth">0</span></p>
+                        </div>
+                    </div>
+                    <div class="mt-4 flex items-center text-sm">
+                        <i class="fas fa-arrow-up text-purple-500 mr-1"></i>
+                        <span class="text-purple-600 font-semibold" id="monthGrowth">+0%</span>
+                        <span class="text-gray-500 ml-2">from last month</span>
+                    </div>
+                </div>
+
+                <!-- Total Balance -->
+                <div class="stats-card bg-white rounded-xl shadow-sm p-6 border-l-4 border-orange-500 hover:shadow-lg">
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center mr-4">
+                            <i class="fas fa-wallet text-orange-600 text-xl"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-600">Total Balance</p>
+                            <p class="text-2xl font-bold text-gray-900">₹<span id="totalBalance">0</span></p>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <button onclick="window.location.href='withdrawal.html'" class="text-sm bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition duration-300">
+                            Withdraw
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts & Team Stats -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                <!-- Earnings Chart -->
+                <div class="bg-white rounded-2xl shadow-sm p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Earnings Overview</h3>
+                    <div class="h-64 bg-gradient-to-br from-blue-50 to-indigo-100 rounded-lg flex items-center justify-center">
+                        <div class="text-center">
+                            <i class="fas fa-chart-bar text-4xl text-blue-500 mb-3"></i>
+                            <p class="text-gray-600">Earnings chart will be displayed here</p>
+                            <p class="text-sm text-gray-500">Real-time data from your transactions</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Team Overview -->
+                <div class="bg-white rounded-2xl shadow-sm p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Team Overview</h3>
+                    <div class="grid grid-cols-3 gap-4 mb-4">
+                        <div class="text-center p-4 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl text-white">
+                            <div class="text-2xl font-bold" id="directTeam">0</div>
+                            <div class="text-sm">Direct</div>
+                        </div>
+                        <div class="text-center p-4 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-xl text-white">
+                            <div class="text-2xl font-bold" id="totalTeam">0</div>
+                            <div class="text-sm">Total Team</div>
+                        </div>
+                        <div class="text-center p-4 bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl text-white">
+                            <div class="text-2xl font-bold" id="teamEarnings">0</div>
+                            <div class="text-sm">Active</div>
+                        </div>
+                    </div>
+                    <button onclick="window.location.href='team.html'" class="w-full bg-gray-100 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-200 transition duration-300">
+                        <i class="fas fa-users mr-2"></i>View Full Team
+                    </button>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="bg-gradient-to-r from-indigo-600 to-purple-700 rounded-2xl p-8 text-white">
+                <h3 class="text-xl font-semibold mb-6 text-center">Quick Actions</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <button onclick="window.location.href='referral.html'" class="bg-white bg-opacity-20 hover:bg-opacity-30 text-white py-4 px-6 rounded-xl font-semibold text-lg transition duration-300 backdrop-blur-sm">
+                        <i class="fas fa-share-alt mr-2"></i>Invite & Earn 65%
+                    </button>
+                    <button onclick="window.location.href='packages.html'" class="bg-white bg-opacity-20 hover:bg-opacity-30 text-white py-4 px-6 rounded-xl font-semibold text-lg transition duration-300 backdrop-blur-sm">
+                        <i class="fas fa-crown mr-2"></i>Upgrade Package
+                    </button>
+                    <button onclick="window.location.href='withdrawal.html'" class="bg-white bg-opacity-20 hover:bg-opacity-30 text-white py-4 px-6 rounded-xl font-semibold text-lg transition duration-300 backdrop-blur-sm">
+                        <i class="fas fa-wallet mr-2"></i>Withdraw Earnings
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Firebase & Dashboard Script -->
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDxxkC9iD1V1w-53Kf4oBrHEXlBLvCc7sE",
+            authDomain: "biluxe10-3e894.firebaseapp.com",
+            projectId: "biluxe10-3e894",
+            storageBucket: "biluxe10-3e894.firebasestorage.app",
+            messagingSenderId: "804749588233",
+            appId: "1:804749588233:web:7777648c0c7834733c05d8"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const auth = firebase.auth();
+        const storage = firebase.storage();
+
+        // Current User Data
+        let currentUser = null;
+        let userData = null;
+
+        // Initialize Dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuthState();
+            updateCurrentDate();
+        });
+
+        // Check Authentication
+        function checkAuthState() {
+            auth.onAuthStateChanged((user) => {
+                if (user) {
+                    currentUser = user;
+                    loadUserData(user.uid);
+                    loadTeamData(user.uid);
+                } else {
+                    // Redirect to login if not authenticated
+                    window.location.href = 'auth.html';
+                }
+            });
+        }
+
+        // Load User Data from Firestore
+        function loadUserData(userId) {
+            db.collection('users').doc(userId).onSnapshot((doc) => {
+                if (doc.exists) {
+                    userData = doc.data();
+                    updateUIWithUserData();
+                }
+            });
+        }
+
+        // Load Team Data
+        function loadTeamData(userId) {
+            db.collection('team').where('userId', '==', userId)
+                .onSnapshot((snapshot) => {
+                    const directMembers = snapshot.docs.filter(doc => doc.data().level === 1).length;
+                    const totalMembers = snapshot.docs.length;
+                    
+                    document.getElementById('directTeam').textContent = directMembers;
+                    document.getElementById('totalTeam').textContent = totalMembers;
+                    document.getElementById('teamEarnings').textContent = snapshot.docs.filter(doc => doc.data().status === 'active').length;
+                });
+        }
+
+        // Update UI with User Data
+        function updateUIWithUserData() {
+            if (!userData) return;
+
+            // Update Profile Information
+            document.getElementById('userName').textContent = userData.name || 'User';
+            document.getElementById('headerUserName').textContent = userData.name || 'User';
+            document.getElementById('userRank').textContent = userData.rank || 'Affiliate';
+            document.getElementById('userMembership').textContent = userData.membership || 'Silver' + ' Member';
+            document.getElementById('welcomeMessage').textContent = `Welcome back, ${userData.name?.split(' ')[0] || 'User'}!`;
+
+            // Update Profile Pictures
+            if (userData.profilePic) {
+                document.getElementById('userProfilePic').src = userData.profilePic;
+                document.getElementById('headerProfilePic').src = userData.profilePic;
+            }
+
+            // Update Earnings and Balance
+            document.getElementById('earningsToday').textContent = userData.earnings_today || 0;
+            document.getElementById('earningsWeek').textContent = userData.earnings_week || 0;
+            document.getElementById('earningsMonth').textContent = userData.earnings_month || 0;
+            document.getElementById('totalBalance').textContent = userData.balance || 0;
+            document.getElementById('userBalance').textContent = userData.balance || 0;
+
+            // Calculate growth percentages (you can replace with actual calculations)
+            document.getElementById('todayGrowth').textContent = '+12%';
+            document.getElementById('weekGrowth').textContent = '+25%';
+            document.getElementById('monthGrowth').textContent = '+42%';
+        }
+
+        // Update Current Date
+        function updateCurrentDate() {
+            const now = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('currentDate').textContent = now.toLocaleDateString('en-US', options);
+        }
+
+        // Logout Function
+        function logout() {
+            auth.signOut().then(() => {
+                window.location.href = 'auth.html';
+            });
+        }
     </script>
 </body>
 </html>
