@@ -206,7 +206,7 @@ await setDoc(doc(db, "user_collection", user.email), {
           if (status === "paid") {
             localStorage.setItem("userEmail", user.email);
             alert("Login successful!");
-            window.location.href = "Dashboard.js";
+            window.location.href = "dashboard.html";
           } else {
             alert("Payment not approved yet! Please complete payment.");
             window.location.href = "products.html";
