@@ -1,52 +1,537 @@
 <!DOCTYPE html>
-<html>
-<head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>Referrals</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet"><style>body{font-family:Poppins;background:#071029;color:#e6eef8;margin:0;padding:20px}.box{max-width:900px;margin:20px auto;background:#0b1220;padding:20px;border-radius:12px}.small{color:#98a0b3}</style></head>
-<body>
-<div class="box">
-  <h2>Your Referral</h2>
-  <div class="small">Share this link to invite</div>
-  <div style="display:flex;gap:8px;margin-top:8px">
-    <input id="link" style="flex:1;padding:10px;border-radius:8px;border:1px solid #223" readonly />
-    <button id="copy" class="btn">Copy</button>
-  </div>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biluxe10 - Refer & Earn</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+        .page-transition {
+            animation: slideIn 0.5s ease-out;
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .referral-card {
+            transition: all 0.3s ease;
+        }
+        .referral-card:hover {
+            transform: translateY(-5px);
+        }
+        .commission-badge {
+            transition: all 0.3s ease;
+        }
+        .commission-badge:hover {
+            transform: scale(1.05);
+        }
+        .share-button {
+            transition: all 0.3s ease;
+        }
+        .share-button:hover {
+            transform: scale(1.05);
+        }
+        .animate-bounce-slow {
+            animation: bounce 3s infinite;
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        .glow {
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+        @keyframes glow {
+            from { box-shadow: 0 0 20px rgba(99, 102, 241, 0.5); }
+            to { box-shadow: 0 0 30px rgba(99, 102, 241, 0.8); }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation Sidebar -->
+    <div class="sidebar fixed left-0 top-0 h-full w-64 bg-gradient-to-b from-gray-900 to-black text-white shadow-xl z-50">
+        <!-- Logo -->
+        <div class="p-6 border-b border-gray-800">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-rocket text-white"></i>
+                </div>
+                <h1 class="text-xl font-bold">Biluxe10</h1>
+            </div>
+        </div>
 
-  <h3 style="margin-top:18px">Team Members</h3>
-  <div class="small" id="count">Total: 0</div>
-  <ul id="team" style="margin-top:12px"></ul>
-</div>
+        <!-- User Profile Mini -->
+        <div class="p-4 border-b border-gray-800">
+            <div class="flex items-center space-x-3">
+                <div class="relative">
+                    <img id="userProfilePic" src="https://via.placeholder.com/40" alt="Profile" class="w-10 h-10 rounded-full border-2 border-blue-500">
+                    <div class="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-gray-900"></div>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <p id="userName" class="text-sm font-medium truncate">Loading...</p>
+                    <p id="userRank" class="text-xs text-gray-400 truncate">Affiliate</p>
+                </div>
+            </div>
+        </div>
 
-<script type="module">
-import { auth, db } from './firebase.js';
-import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js";
-import { getDoc, doc, query, where, getDocs, collection } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
+        <!-- Navigation Menu -->
+        <nav class="p-4 space-y-2">
+            <a href="dashboard.html" class="flex items-center space-x-3 p-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition duration-300">
+                <i class="fas fa-chart-line w-5"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="earnings.html" class="flex items-center space-x-3 p-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition duration-300">
+                <i class="fas fa-money-bill-wave w-5"></i>
+                <span>Earnings</span>
+            </a>
+            <a href="withdrawal.html" class="flex items-center space-x-3 p-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition duration-300">
+                <i class="fas fa-wallet w-5"></i>
+                <span>Withdrawal</span>
+            </a>
+            <a href="team.html" class="flex items-center space-x-3 p-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition duration-300">
+                <i class="fas fa-users w-5"></i>
+                <span>My Team</span>
+            </a>
+            <a href="referral.html" class="flex items-center space-x-3 p-3 rounded-lg bg-blue-600 text-white shadow-lg">
+                <i class="fas fa-share-alt w-5"></i>
+                <span>Refer & Earn</span>
+            </a>
+            <a href="packages.html" class="flex items-center space-x-3 p-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition duration-300">
+                <i class="fas fa-crown w-5"></i>
+                <span>Packages</span>
+            </a>
+            <a href="profile.html" class="flex items-center space-x-3 p-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition duration-300">
+                <i class="fas fa-user-circle w-5"></i>
+                <span>Profile</span>
+            </a>
+            <a href="support.html" class="flex items-center space-x-3 p-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition duration-300">
+                <i class="fas fa-headset w-5"></i>
+                <span>Support</span>
+            </a>
+        </nav>
 
-const linkEl = document.getElementById('link'), copyBtn = document.getElementById('copy'), teamEl = document.getElementById('team'), countEl = document.getElementById('count');
+        <!-- Balance Footer -->
+        <div class="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-800">
+            <div class="bg-gradient-to-r from-green-500 to-emerald-600 text-white text-center py-2 rounded-lg font-semibold text-sm">
+                Balance: ₹<span id="userBalance">0</span>
+            </div>
+        </div>
+    </div>
 
-onAuthStateChanged(auth, async user=>{
-  if(!user) { location.href='auth.html'; return; }
-  const uid = user.uid;
-  // read user doc for referral code
-  let snap = await getDoc(doc(db,'users',uid));
-  if(!snap.exists()) snap = await getDoc(doc(db,'Users_collection',uid));
-  const data = snap.data();
-  const ref = data.referralCode||('B10_'+uid.slice(-6));
-  const url = `${location.origin}/auth.html?ref=${encodeURIComponent(ref)}`;
-  linkEl.value = url;
+    <!-- Main Content -->
+    <div class="ml-64 min-h-screen">
+        <!-- Header -->
+        <header class="bg-white shadow-sm border-b border-gray-200">
+            <div class="flex items-center justify-between h-16 px-8">
+                <div>
+                    <h2 class="text-xl font-semibold text-gray-900">Refer & Earn</h2>
+                    <p class="text-sm text-gray-600">Invite friends and earn 65% total commission</p>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button class="p-2 text-gray-600 hover:text-gray-900 relative">
+                        <i class="fas fa-bell text-xl"></i>
+                        <span class="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></span>
+                    </button>
+                    <div class="flex items-center space-x-3 bg-gray-50 rounded-lg px-3 py-2">
+                        <img id="headerProfilePic" src="https://via.placeholder.com/32" alt="Profile" class="w-8 h-8 rounded-full border-2 border-blue-500">
+                        <span id="headerUserName" class="text-sm font-medium text-gray-900">User</span>
+                    </div>
+                </div>
+            </div>
+        </header>
 
-  // fetch referrals (collection 'referrals' where userId == uid OR where referredBy == ref)
-  const q = query(collection(db,'referrals'), where('userId','==', uid));
-  const snapR = await getDocs(q);
-  teamEl.innerHTML=''; countEl.textContent = 'Total: '+snapR.size;
-  snapR.forEach(r=>{
-    const d = r.data();
-    const li = document.createElement('li');
-    li.textContent = `${d.referredUserEmail || d.referredUserId || 'User'} • ₹${Number(d.commission||0).toLocaleString('en-IN')}`;
-    teamEl.appendChild(li);
-  });
-});
+        <!-- Referral Content -->
+        <main class="p-6 page-transition">
+            <!-- Hero Section -->
+            <div class="bg-gradient-to-br from-indigo-600 to-purple-700 rounded-2xl p-8 text-white mb-8 glow">
+                <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+                    <div class="flex-1">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="text-4xl animate-bounce-slow">🎯</div>
+                            <div>
+                                <h1 class="text-3xl font-bold mb-2">Earn 65% Total Commission!</h1>
+                                <p class="text-indigo-100 text-lg">Invite friends and build your network to maximize earnings</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Total Commission Badge -->
+                        <div class="inline-flex items-center space-x-2 bg-white bg-opacity-20 rounded-full px-4 py-2 backdrop-blur-sm">
+                            <i class="fas fa-bolt text-yellow-400"></i>
+                            <span class="font-semibold">Total Commission: 65%</span>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center lg:text-right">
+                        <div class="text-5xl font-bold mb-2">65%</div>
+                        <div class="text-indigo-200">Commission Rate</div>
+                    </div>
+                </div>
+            </div>
 
-copyBtn.addEventListener('click', ()=>{ linkEl.select(); document.execCommand('copy'); alert('Copied'); });
-</script>
+            <!-- Referral Link Card -->
+            <div class="referral-card bg-white rounded-2xl shadow-lg p-6 mb-8 border border-gray-200">
+                <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+                    <div class="flex-1">
+                        <h3 class="text-xl font-semibold text-gray-900 mb-3">Your Unique Referral Link</h3>
+                        <p class="text-gray-600 mb-4">Share this link with friends and start earning commissions</p>
+                        
+                        <div class="flex flex-col sm:flex-row gap-3">
+                            <input type="text" id="referralLink" 
+                                class="flex-1 px-4 py-3 border border-gray-300 rounded-lg bg-gray-50 text-gray-700 font-mono text-sm"
+                                readonly>
+                            <button id="copyBtn" 
+                                class="px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors share-button">
+                                <i class="fas fa-copy mr-2"></i>Copy Link
+                            </button>
+                        </div>
+                        
+                        <p class="text-sm text-gray-500 mt-2" id="copyStatus">Click the button to copy your referral link</p>
+                    </div>
+                    
+                    <div class="text-center">
+                        <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <i class="fas fa-link text-green-600 text-2xl"></i>
+                        </div>
+                        <p class="text-sm text-gray-600">Unique to you</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Commission Breakdown -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div class="referral-card bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl p-6 text-white text-center">
+                    <div class="text-4xl mb-3">💰</div>
+                    <h4 class="text-xl font-semibold mb-2">Direct (50%)</h4>
+                    <div class="text-3xl font-bold mb-3">50%</div>
+                    <p class="text-green-100 text-sm">From your direct referrals</p>
+                    <div class="mt-4 p-3 bg-white bg-opacity-20 rounded-lg">
+                        <p class="text-sm font-semibold">Earned: ₹<span id="directEarned">0</span></p>
+                    </div>
+                </div>
+
+                <div class="referral-card bg-gradient-to-br from-blue-500 to-cyan-600 rounded-2xl p-6 text-white text-center">
+                    <div class="text-4xl mb-3">🌐</div>
+                    <h4 class="text-xl font-semibold mb-2">Passive (10%)</h4>
+                    <div class="text-3xl font-bold mb-3">10%</div>
+                    <p class="text-blue-100 text-sm">From your team's referrals</p>
+                    <div class="mt-4 p-3 bg-white bg-opacity-20 rounded-lg">
+                        <p class="text-sm font-semibold">Earned: ₹<span id="passiveEarned">0</span></p>
+                    </div>
+                </div>
+
+                <div class="referral-card bg-gradient-to-br from-purple-500 to-pink-600 rounded-2xl p-6 text-white text-center">
+                    <div class="text-4xl mb-3">🚀</div>
+                    <h4 class="text-xl font-semibold mb-2">Ads Bonus (5%)</h4>
+                    <div class="text-3xl font-bold mb-3">5%</div>
+                    <p class="text-purple-100 text-sm">Extended network bonus</p>
+                    <div class="mt-4 p-3 bg-white bg-opacity-20 rounded-lg">
+                        <p class="text-sm font-semibold">Earned: ₹<span id="bonusEarned">0</span></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Share Options -->
+            <div class="bg-white rounded-2xl shadow-sm p-6 mb-8 border border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-900 mb-6 text-center">Share Via</h3>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <button id="whatsappShare" class="share-button p-4 bg-green-50 text-green-700 rounded-xl font-semibold hover:bg-green-100 transition-colors border border-green-200">
+                        <div class="text-2xl mb-2">📱</div>
+                        WhatsApp
+                    </button>
+                    
+                    <button id="telegramShare" class="share-button p-4 bg-blue-50 text-blue-700 rounded-xl font-semibold hover:bg-blue-100 transition-colors border border-blue-200">
+                        <div class="text-2xl mb-2">💬</div>
+                        Telegram
+                    </button>
+                    
+                    <button id="emailShare" class="share-button p-4 bg-gray-50 text-gray-700 rounded-xl font-semibold hover:bg-gray-100 transition-colors border border-gray-200">
+                        <div class="text-2xl mb-2">📧</div>
+                        Email
+                    </button>
+                    
+                    <button id="otherShare" class="share-button p-4 bg-indigo-50 text-indigo-700 rounded-xl font-semibold hover:bg-indigo-100 transition-colors border border-indigo-200">
+                        <div class="text-2xl mb-2">🔗</div>
+                        Other Apps
+                    </button>
+                </div>
+            </div>
+
+            <!-- Referral Statistics & How It Works -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Referral Statistics -->
+                <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-200">
+                    <h4 class="font-semibold text-gray-900 mb-4">Referral Statistics</h4>
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                            <span class="text-gray-600">Total Referrals:</span>
+                            <span class="font-semibold text-gray-900" id="totalReferrals">0</span>
+                        </div>
+                        <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                            <span class="text-gray-600">Active Referrals:</span>
+                            <span class="font-semibold text-green-600" id="activeReferrals">0</span>
+                        </div>
+                        <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                            <span class="text-gray-600">Direct Referrals:</span>
+                            <span class="font-semibold text-blue-600" id="directReferrals">0</span>
+                        </div>
+                        <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                            <span class="text-gray-600">Total Earned:</span>
+                            <span class="font-semibold text-green-600" id="totalEarned">₹0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- How It Works -->
+                <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-200">
+                    <h4 class="font-semibold text-gray-900 mb-4">How It Works</h4>
+                    <ul class="space-y-4">
+                        <li class="flex items-start gap-3">
+                            <span class="w-6 h-6 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-xs font-semibold flex-shrink-0">1</span>
+                            <div>
+                                <p class="font-medium text-gray-900">Share Your Link</p>
+                                <p class="text-sm text-gray-600">Share your unique referral link with friends and family</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="w-6 h-6 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-xs font-semibold flex-shrink-0">2</span>
+                            <div>
+                                <p class="font-medium text-gray-900">They Sign Up</p>
+                                <p class="text-sm text-gray-600">Friends sign up using your link and join Biluxe10</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="w-6 h-6 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-xs font-semibold flex-shrink-0">3</span>
+                            <div>
+                                <p class="font-medium text-gray-900">They Purchase</p>
+                                <p class="text-sm text-gray-600">They purchase any package to activate earnings</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="w-6 h-6 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-xs font-semibold flex-shrink-0">4</span>
+                            <div>
+                                <p class="font-medium text-gray-900">You Earn Commissions</p>
+                                <p class="text-sm text-gray-600">You earn 50% direct + 10% passive + 5% ads bonus</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Quick Tips -->
+            <div class="mt-8 bg-yellow-50 border border-yellow-200 rounded-2xl p-6">
+                <div class="flex items-start gap-3">
+                    <div class="text-2xl text-yellow-600">💡</div>
+                    <div>
+                        <h4 class="font-semibold text-yellow-800 mb-2">Pro Tips for Maximum Earnings</h4>
+                        <ul class="text-sm text-yellow-700 space-y-1">
+                            <li>• Share on social media platforms for wider reach</li>
+                            <li>• Create WhatsApp/Telegram groups for your team</li>
+                            <li>• Explain the 65% commission structure to attract referrals</li>
+                            <li>• Follow up with potential referrals personally</li>
+                            <li>• Track your team's performance in the Team section</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Firebase & Referral Script -->
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDxxkC9iD1V1w-53Kf4oBrHEXlBLvCc7sE",
+            authDomain: "biluxe10-3e894.firebaseapp.com",
+            projectId: "biluxe10-3e894",
+            storageBucket: "biluxe10-3e894.firebasestorage.app",
+            messagingSenderId: "804749588233",
+            appId: "1:804749588233:web:7777648c0c7834733c05d8"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const auth = firebase.auth();
+
+        let currentUser = null;
+        let userData = null;
+        let teamMembers = [];
+        let transactions = [];
+
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuthState();
+            setupShareButtons();
+        });
+
+        function checkAuthState() {
+            auth.onAuthStateChanged((user) => {
+                if (user) {
+                    currentUser = user;
+                    loadUserData(user.uid);
+                    loadTeamData(user.uid);
+                    loadTransactions(user.uid);
+                } else {
+                    window.location.href = 'auth.html';
+                }
+            });
+        }
+
+        function loadUserData(userId) {
+            db.collection('users').doc(userId).onSnapshot((doc) => {
+                if (doc.exists) {
+                    userData = doc.data();
+                    updateUserUI(userData);
+                    updateReferralLink();
+                }
+            });
+        }
+
+        function loadTeamData(userId) {
+            db.collection('team')
+                .where('userId', '==', userId)
+                .onSnapshot((snapshot) => {
+                    teamMembers = [];
+                    snapshot.forEach((doc) => {
+                        teamMembers.push(doc.data());
+                    });
+                    updateReferralStats();
+                });
+        }
+
+        function loadTransactions(userId) {
+            db.collection('transactions')
+                .where('userId', '==', userId)
+                .where('type', 'in', ['earning', 'bonus'])
+                .onSnapshot((snapshot) => {
+                    transactions = [];
+                    snapshot.forEach((doc) => {
+                        transactions.push(doc.data());
+                    });
+                    calculateEarnings();
+                });
+        }
+
+        function updateReferralLink() {
+            if (userData && userData.referralCode) {
+                const referralLink = `https://biluxe10.com/signup?ref=${userData.referralCode}`;
+                document.getElementById('referralLink').value = referralLink;
+            }
+        }
+
+        function setupShareButtons() {
+            // Copy Link
+            document.getElementById('copyBtn').addEventListener('click', copyReferralLink);
+            
+            // WhatsApp Share
+            document.getElementById('whatsappShare').addEventListener('click', shareOnWhatsApp);
+            
+            // Telegram Share
+            document.getElementById('telegramShare').addEventListener('click', shareOnTelegram);
+            
+            // Email Share
+            document.getElementById('emailShare').addEventListener('click', shareViaEmail);
+            
+            // Other Apps
+            document.getElementById('otherShare').addEventListener('click', copyReferralLink);
+        }
+
+        function copyReferralLink() {
+            const referralLink = document.getElementById('referralLink');
+            referralLink.select();
+            referralLink.setSelectionRange(0, 99999);
+            
+            try {
+                navigator.clipboard.writeText(referralLink.value).then(() => {
+                    showCopyStatus('✅ Link copied to clipboard!', 'text-green-600');
+                });
+            } catch (err) {
+                // Fallback for older browsers
+                document.execCommand('copy');
+                showCopyStatus('✅ Link copied to clipboard!', 'text-green-600');
+            }
+        }
+
+        function shareOnWhatsApp() {
+            const referralLink = document.getElementById('referralLink').value;
+            const message = `Join Biluxe10 using my referral link and earn amazing rewards! 🚀\n\nGet started: ${referralLink}\n\n• 65% Total Commission\n• Multiple Income Streams\n• Passive Earnings`;
+            window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
+        }
+
+        function shareOnTelegram() {
+            const referralLink = document.getElementById('referralLink').value;
+            const message = `Join Biluxe10 using my referral link! 🎯\n\n${referralLink}\n\nEarn 65% commission on referrals!`;
+            window.open(`https://t.me/share/url?url=${encodeURIComponent(referralLink)}&text=${encodeURIComponent(message)}`, '_blank');
+        }
+
+        function shareViaEmail() {
+            const referralLink = document.getElementById('referralLink').value;
+            const subject = 'Join Biluxe10 and Earn with Me!';
+            const body = `Hi! I wanted to invite you to join Biluxe10 using my referral link:\n\n${referralLink}\n\nWith Biluxe10, you can:\n• Earn 65% total commission on referrals\n• Build multiple income streams\n• Get passive earnings\n\nJoin now and let's earn together!`;
+            window.open(`mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`);
+        }
+
+        function showCopyStatus(message, colorClass) {
+            const statusElement = document.getElementById('copyStatus');
+            statusElement.textContent = message;
+            statusElement.className = `text-sm ${colorClass} mt-2`;
+            
+            setTimeout(() => {
+                statusElement.textContent = 'Click the button to copy your referral link';
+                statusElement.className = 'text-sm text-gray-500 mt-2';
+            }, 3000);
+        }
+
+        function calculateEarnings() {
+            let direct = 0, passive = 0, bonus = 0, total = 0;
+
+            transactions.forEach(transaction => {
+                total += transaction.amount;
+
+                if (transaction.source?.includes('Direct') || transaction.source?.includes('Level 1')) {
+                    direct += transaction.amount;
+                } else if (transaction.source?.includes('Passive') || transaction.source?.includes('Level 2')) {
+                    passive += transaction.amount;
+                } else if (transaction.source?.includes('Bonus') || transaction.source?.includes('Level 3')) {
+                    bonus += transaction.amount;
+                }
+            });
+
+            document.getElementById('directEarned').textContent = direct;
+            document.getElementById('passiveEarned').textContent = passive;
+            document.getElementById('bonusEarned').textContent = bonus;
+            document.getElementById('totalEarned').textContent = total;
+        }
+
+        function updateReferralStats() {
+            const totalReferrals = teamMembers.length;
+            const activeReferrals = teamMembers.filter(m => m.status === 'active').length;
+            const directReferrals = teamMembers.filter(m => m.level === 1).length;
+
+            document.getElementById('totalReferrals').textContent = totalReferrals;
+            document.getElementById('activeReferrals').textContent = activeReferrals;
+            document.getElementById('directReferrals').textContent = directReferrals;
+        }
+
+        function updateUserUI(userData) {
+            document.getElementById('userName').textContent = userData.name || 'User';
+            document.getElementById('headerUserName').textContent = userData.name || 'User';
+            document.getElementById('userRank').textContent = userData.rank || 'Affiliate';
+            document.getElementById('userBalance').textContent = userData.balance || 0;
+
+            if (userData.profilePic) {
+                document.getElementById('userProfilePic').src = userData.profilePic;
+                document.getElementById('headerProfilePic').src = userData.profilePic;
+            }
+        }
+    </script>
 </body>
-</html>
+                                  </html>
