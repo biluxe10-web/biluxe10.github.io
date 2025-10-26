@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Biluxe10 Dashboard</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+    <div id="root"></div>
+    
+    <script type="text/babel">
+        // SIMPLE DASHBOARD - You can replace this with your actual Dashboard.js content
+        function Dashboard() {
+            const [currentPage, setCurrentPage] = React.useState('dashboard');
+            
+            const pages = {
+                dashboard: React.createElement('div', {className: 'p-6'},
+                    React.createElement('h1', {className: 'text-3xl font-bold mb-4'}, 'Biluxe10 Dashboard'),
+                    React.createElement('div', {className: 'grid grid-cols-1 md:grid-cols-4 gap-4 mb-6'},
+                        ['Today Earnings', 'Weekly', 'Monthly', 'Balance'].map(item =>
+                            React.createElement('div', {
+                                key: item,
+                                className: 'bg-white p-4 rounded-lg shadow'
+                            },
+                                React.createElement('h3', {className: 'text-gray-600'}, item),
+                                React.createElement('p', {className: 'text-2xl font-bold text-green-600'}, '₹0')
+                            )
+                        )
+                    )
+                ),
+                earnings: React.createElement('div', {className: 'p-6'},
+                    React.createElement('h1', {className: 'text-3xl font-bold mb-4'}, 'Earnings'),
+                    React.createElement('p', {}, 'Your earnings: ₹0')
+                )
+            };
+            
+            return React.createElement('div', {className: 'min-h-screen bg-gray-100'},
+                // Navigation
+                React.createElement('div', {className: 'bg-white shadow-sm p-4'},
+                    React.createElement('div', {className: 'flex space-x-4'},
+                        ['Dashboard', 'Earnings', 'Team', 'Profile'].map(page =>
+                            React.createElement('button', {
+                                key: page,
+                                onClick: () => setCurrentPage(page.toLowerCase()),
+                                className: `px-4 py-2 rounded-lg ${
+                                    currentPage === page.toLowerCase() 
+                                        ? 'bg-blue-600 text-white' 
+                                        : 'bg-gray-200 text-gray-700'
+                                }`
+                            }, page)
+                        )
+                    )
+                ),
+                
+                // Page Content
+                pages[currentPage] || pages.dashboard
+            );
+        }
+        
+        // Render immediately
+        ReactDOM.render(React.createElement(Dashboard), document.getElementById('root'));
+    </script>
+</body>
+</html>
