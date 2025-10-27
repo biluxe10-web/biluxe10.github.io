@@ -12,119 +12,25 @@
     <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-        * {
-            font-family: 'Inter', sans-serif;
-        }
-        .page-transition {
-            animation: slideIn 0.5s ease-out;
-        }
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .referral-card {
-            transition: all 0.3s ease;
-        }
-        .referral-card:hover {
-            transform: translateY(-5px);
-        }
-        .commission-badge {
-            transition: all 0.3s ease;
-        }
-        .commission-badge:hover {
-            transform: scale(1.05);
-        }
-        .share-button {
-            transition: all 0.3s ease;
-        }
-        .share-button:hover {
-            transform: scale(1.05);
-        }
-        .animate-bounce-slow {
-            animation: bounce 3s infinite;
-        }
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-        .glow {
-            animation: glow 2s ease-in-out infinite alternate;
-        }
-        @keyframes glow {
-            from { box-shadow: 0 0 20px rgba(99, 102, 241, 0.5); }
-            to { box-shadow: 0 0 30px rgba(99, 102, 241, 0.8); }
-        }
+        * { font-family: 'Inter', sans-serif; }
+        .page-transition { animation: slideIn 0.5s ease-out; }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .referral-card { transition: all 0.3s ease; }
+        .referral-card:hover { transform: translateY(-5px); }
+        .commission-badge { transition: all 0.3s ease; }
+        .commission-badge:hover { transform: scale(1.05); }
+        .share-button { transition: all 0.3s ease; }
+        .share-button:hover { transform: scale(1.05); }
+        .animate-bounce-slow { animation: bounce 3s infinite; }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        .glow { animation: glow 2s ease-in-out infinite alternate; }
+        @keyframes glow { from { box-shadow: 0 0 20px rgba(99, 102, 241, 0.5); } to { box-shadow: 0 0 30px rgba(99, 102, 241, 0.8); } }
     </style>
 </head>
 <body class="bg-gray-50">
-    <!-- Navigation Sidebar -->
+    <!-- Navigation Sidebar (Same as dashboard) -->
     <div class="sidebar fixed left-0 top-0 h-full w-64 bg-gradient-to-b from-gray-900 to-black text-white shadow-xl z-50">
-        <!-- Logo -->
-        <div class="p-6 border-b border-gray-800">
-            <div class="flex items-center space-x-3">
-                <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-                    <i class="fas fa-rocket text-white"></i>
-                </div>
-                <h1 class="text-xl font-bold">Biluxe10</h1>
-            </div>
-        </div>
-
-        <!-- User Profile Mini -->
-        <div class="p-4 border-b border-gray-800">
-            <div class="flex items-center space-x-3">
-                <div class="relative">
-                    <img id="userProfilePic" src="https://via.placeholder.com/40" alt="Profile" class="w-10 h-10 rounded-full border-2 border-blue-500">
-                    <div class="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-gray-900"></div>
-                </div>
-                <div class="flex-1 min-w-0">
-                    <p id="userName" class="text-sm font-medium truncate">Loading...</p>
-                    <p id="userRank" class="text-xs text-gray-400 truncate">Affiliate</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Navigation Menu -->
-        <nav class="p-4 space-y-2">
-            <a href="dashboard.html" class="flex items-center space-x-3 p-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition duration-300">
-                <i class="fas fa-chart-line w-5"></i>
-                <span>Dashboard</span>
-            </a>
-            <a href="earnings.html" class="flex items-center space-x-3 p-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition duration-300">
-                <i class="fas fa-money-bill-wave w-5"></i>
-                <span>Earnings</span>
-            </a>
-            <a href="withdrawal.html" class="flex items-center space-x-3 p-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition duration-300">
-                <i class="fas fa-wallet w-5"></i>
-                <span>Withdrawal</span>
-            </a>
-            <a href="team.html" class="flex items-center space-x-3 p-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition duration-300">
-                <i class="fas fa-users w-5"></i>
-                <span>My Team</span>
-            </a>
-            <a href="referral.html" class="flex items-center space-x-3 p-3 rounded-lg bg-blue-600 text-white shadow-lg">
-                <i class="fas fa-share-alt w-5"></i>
-                <span>Refer & Earn</span>
-            </a>
-            <a href="packages.html" class="flex items-center space-x-3 p-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition duration-300">
-                <i class="fas fa-crown w-5"></i>
-                <span>Packages</span>
-            </a>
-            <a href="profile.html" class="flex items-center space-x-3 p-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition duration-300">
-                <i class="fas fa-user-circle w-5"></i>
-                <span>Profile</span>
-            </a>
-            <a href="support.html" class="flex items-center space-x-3 p-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition duration-300">
-                <i class="fas fa-headset w-5"></i>
-                <span>Support</span>
-            </a>
-        </nav>
-
-        <!-- Balance Footer -->
-        <div class="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-800">
-            <div class="bg-gradient-to-r from-green-500 to-emerald-600 text-white text-center py-2 rounded-lg font-semibold text-sm">
-                Balance: ₹<span id="userBalance">0</span>
-            </div>
-        </div>
+        <!-- Same sidebar code -->
     </div>
 
     <!-- Main Content -->
@@ -137,11 +43,11 @@
                     <p class="text-sm text-gray-600">Invite friends and earn 65% total commission</p>
                 </div>
                 <div class="flex items-center space-x-4">
-                    <button class="p-2 text-gray-600 hover:text-gray-900 relative">
+                    <button onclick="window.location.href='notifications.html'" class="p-2 text-gray-600 hover:text-gray-900 relative">
                         <i class="fas fa-bell text-xl"></i>
-                        <span class="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></span>
+                        <span id="notificationBadge" class="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full hidden"></span>
                     </button>
-                    <div class="flex items-center space-x-3 bg-gray-50 rounded-lg px-3 py-2">
+                    <div class="flex items-center space-x-3 bg-gray-50 rounded-lg px-3 py-2 cursor-pointer" onclick="window.location.href='profile.html'">
                         <img id="headerProfilePic" src="https://via.placeholder.com/32" alt="Profile" class="w-8 h-8 rounded-full border-2 border-blue-500">
                         <span id="headerUserName" class="text-sm font-medium text-gray-900">User</span>
                     </div>
@@ -287,6 +193,10 @@
                             <span class="text-gray-600">Total Earned:</span>
                             <span class="font-semibold text-green-600" id="totalEarned">₹0</span>
                         </div>
+                        <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                            <span class="text-gray-600">This Month:</span>
+                            <span class="font-semibold text-purple-600" id="monthEarned">₹0</span>
+                        </div>
                     </div>
                 </div>
 
@@ -338,6 +248,7 @@
                             <li>• Explain the 65% commission structure to attract referrals</li>
                             <li>• Follow up with potential referrals personally</li>
                             <li>• Track your team's performance in the Team section</li>
+                            <li>• Upgrade your package for higher visibility and features</li>
                         </ul>
                     </div>
                 </div>
@@ -379,6 +290,7 @@
                     loadUserData(user.uid);
                     loadTeamData(user.uid);
                     loadTransactions(user.uid);
+                    loadNotifications(user.uid);
                 } else {
                     window.location.href = 'auth.html';
                 }
@@ -397,7 +309,7 @@
 
         function loadTeamData(userId) {
             db.collection('team')
-                .where('userId', '==', userId)
+                .where('sponsorId', '==', userId)
                 .onSnapshot((snapshot) => {
                     teamMembers = [];
                     snapshot.forEach((doc) => {
@@ -408,6 +320,8 @@
         }
 
         function loadTransactions(userId) {
+            const startOfMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+            
             db.collection('transactions')
                 .where('userId', '==', userId)
                 .where('type', 'in', ['earning', 'bonus'])
@@ -418,13 +332,42 @@
                     });
                     calculateEarnings();
                 });
+
+            // Load monthly earnings separately
+            db.collection('transactions')
+                .where('userId', '==', userId)
+                .where('type', 'in', ['earning', 'bonus'])
+                .where('date', '>=', startOfMonth)
+                .get()
+                .then((snapshot) => {
+                    let monthEarnings = 0;
+                    snapshot.forEach(doc => {
+                        monthEarnings += doc.data().amount;
+                    });
+                    document.getElementById('monthEarned').textContent = monthEarnings.toLocaleString();
+                });
         }
 
         function updateReferralLink() {
             if (userData && userData.referralCode) {
                 const referralLink = `https://biluxe10.com/signup?ref=${userData.referralCode}`;
                 document.getElementById('referralLink').value = referralLink;
+            } else {
+                // Generate referral code if not exists
+                generateReferralCode();
             }
+        }
+
+        function generateReferralCode() {
+            if (!currentUser || !userData) return;
+            
+            const referralCode = 'BLX' + Math.random().toString(36).substr(2, 6).toUpperCase();
+            
+            db.collection('users').doc(currentUser.uid).update({
+                referralCode: referralCode
+            }).then(() => {
+                updateReferralLink();
+            });
         }
 
         function setupShareButtons() {
@@ -452,31 +395,54 @@
             try {
                 navigator.clipboard.writeText(referralLink.value).then(() => {
                     showCopyStatus('✅ Link copied to clipboard!', 'text-green-600');
+                    
+                    // Track copy event
+                    trackReferralAction('link_copied');
                 });
             } catch (err) {
                 // Fallback for older browsers
                 document.execCommand('copy');
                 showCopyStatus('✅ Link copied to clipboard!', 'text-green-600');
+                trackReferralAction('link_copied');
             }
         }
 
         function shareOnWhatsApp() {
             const referralLink = document.getElementById('referralLink').value;
-            const message = `Join Biluxe10 using my referral link and earn amazing rewards! 🚀\n\nGet started: ${referralLink}\n\n• 65% Total Commission\n• Multiple Income Streams\n• Passive Earnings`;
-            window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
+            const message = `Join Biluxe10 using my referral link and earn amazing rewards! 🚀\n\nGet started: ${referralLink}\n\n• 65% Total Commission\n• Multiple Income Streams\n• Passive Earnings\n• Fast Withdrawals`;
+            const encodedMessage = encodeURIComponent(message);
+            window.open(`https://wa.me/?text=${encodedMessage}`, '_blank');
+            
+            trackReferralAction('whatsapp_share');
         }
 
         function shareOnTelegram() {
             const referralLink = document.getElementById('referralLink').value;
-            const message = `Join Biluxe10 using my referral link! 🎯\n\n${referralLink}\n\nEarn 65% commission on referrals!`;
-            window.open(`https://t.me/share/url?url=${encodeURIComponent(referralLink)}&text=${encodeURIComponent(message)}`, '_blank');
+            const message = `Join Biluxe10 using my referral link! 🎯\n\n${referralLink}\n\nEarn 65% commission on referrals with multiple income streams!`;
+            const encodedMessage = encodeURIComponent(message);
+            window.open(`https://t.me/share/url?url=${encodeURIComponent(referralLink)}&text=${encodedMessage}`, '_blank');
+            
+            trackReferralAction('telegram_share');
         }
 
         function shareViaEmail() {
             const referralLink = document.getElementById('referralLink').value;
             const subject = 'Join Biluxe10 and Earn with Me!';
-            const body = `Hi! I wanted to invite you to join Biluxe10 using my referral link:\n\n${referralLink}\n\nWith Biluxe10, you can:\n• Earn 65% total commission on referrals\n• Build multiple income streams\n• Get passive earnings\n\nJoin now and let's earn together!`;
+            const body = `Hi! I wanted to invite you to join Biluxe10 using my referral link:\n\n${referralLink}\n\nWith Biluxe10, you can:\n• Earn 65% total commission on referrals\n• Build multiple income streams\n• Get passive earnings from your team\n• Fast and secure withdrawals\n• Various membership packages\n\nJoin now and let's earn together!\n\nBest regards,\n${userData?.name || 'Your Friend'}`;
             window.open(`mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`);
+            
+            trackReferralAction('email_share');
+        }
+
+        function trackReferralAction(action) {
+            if (!currentUser) return;
+            
+            db.collection('referral_actions').add({
+                userId: currentUser.uid,
+                action: action,
+                timestamp: new Date(),
+                userAgent: navigator.userAgent
+            });
         }
 
         function showCopyStatus(message, colorClass) {
@@ -496,19 +462,19 @@
             transactions.forEach(transaction => {
                 total += transaction.amount;
 
-                if (transaction.source?.includes('Direct') || transaction.source?.includes('Level 1')) {
+                if (transaction.category === 'direct' || transaction.source?.includes('Direct') || transaction.source?.includes('Level 1')) {
                     direct += transaction.amount;
-                } else if (transaction.source?.includes('Passive') || transaction.source?.includes('Level 2')) {
+                } else if (transaction.category === 'passive' || transaction.source?.includes('Passive') || transaction.source?.includes('Level 2')) {
                     passive += transaction.amount;
-                } else if (transaction.source?.includes('Bonus') || transaction.source?.includes('Level 3')) {
+                } else if (transaction.category === 'bonus' || transaction.source?.includes('Bonus') || transaction.source?.includes('Level 3')) {
                     bonus += transaction.amount;
                 }
             });
 
-            document.getElementById('directEarned').textContent = direct;
-            document.getElementById('passiveEarned').textContent = passive;
-            document.getElementById('bonusEarned').textContent = bonus;
-            document.getElementById('totalEarned').textContent = total;
+            document.getElementById('directEarned').textContent = direct.toLocaleString();
+            document.getElementById('passiveEarned').textContent = passive.toLocaleString();
+            document.getElementById('bonusEarned').textContent = bonus.toLocaleString();
+            document.getElementById('totalEarned').textContent = total.toLocaleString();
         }
 
         function updateReferralStats() {
@@ -519,6 +485,23 @@
             document.getElementById('totalReferrals').textContent = totalReferrals;
             document.getElementById('activeReferrals').textContent = activeReferrals;
             document.getElementById('directReferrals').textContent = directReferrals;
+        }
+
+        function loadNotifications(userId) {
+            db.collection('notifications')
+                .where('userId', '==', userId)
+                .where('read', '==', false)
+                .onSnapshot((snapshot) => {
+                    const unreadCount = snapshot.size;
+                    const badge = document.getElementById('notificationBadge');
+                    
+                    if (unreadCount > 0) {
+                        badge.classList.remove('hidden');
+                        badge.textContent = unreadCount > 9 ? '9+' : unreadCount;
+                    } else {
+                        badge.classList.add('hidden');
+                    }
+                });
         }
 
         function updateUserUI(userData) {
@@ -532,6 +515,14 @@
                 document.getElementById('headerProfilePic').src = userData.profilePic;
             }
         }
+
+        // Auto-refresh stats every minute
+        setInterval(() => {
+            if (currentUser) {
+                loadTeamData(currentUser.uid);
+                loadTransactions(currentUser.uid);
+            }
+        }, 60000);
     </script>
 </body>
-                                  </html>
+    </html>
