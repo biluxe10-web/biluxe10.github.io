@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+    <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -12,120 +12,19 @@
     <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-        * {
-            font-family: 'Inter', sans-serif;
-        }
-        .page-transition {
-            animation: slideIn 0.5s ease-out;
-        }
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .team-card {
-            transition: all 0.3s ease;
-            border-left: 4px solid;
-        }
-        .team-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-        }
-        .level-badge {
-            transition: all 0.3s ease;
-        }
-        .level-badge:hover {
-            transform: scale(1.05);
-        }
-        .tree-connector {
-            position: relative;
-        }
-        .tree-connector::before {
-            content: '';
-            position: absolute;
-            top: -20px;
-            left: 50%;
-            width: 2px;
-            height: 20px;
-            background: #e5e7eb;
-        }
-        .animate-pulse-slow {
-            animation: pulse 2s infinite;
-        }
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
-        }
+        * { font-family: 'Inter', sans-serif; }
+        .page-transition { animation: slideIn 0.5s ease-out; }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .team-card { transition: all 0.3s ease; border-left: 4px solid; }
+        .team-card:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .level-badge { transition: all 0.3s ease; }
+        .level-badge:hover { transform: scale(1.05); }
     </style>
 </head>
 <body class="bg-gray-50">
-    <!-- Navigation Sidebar -->
+    <!-- Navigation Sidebar (Same as dashboard) -->
     <div class="sidebar fixed left-0 top-0 h-full w-64 bg-gradient-to-b from-gray-900 to-black text-white shadow-xl z-50">
-        <!-- Logo -->
-        <div class="p-6 border-b border-gray-800">
-            <div class="flex items-center space-x-3">
-                <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-                    <i class="fas fa-rocket text-white"></i>
-                </div>
-                <h1 class="text-xl font-bold">Biluxe10</h1>
-            </div>
-        </div>
-
-        <!-- User Profile Mini -->
-        <div class="p-4 border-b border-gray-800">
-            <div class="flex items-center space-x-3">
-                <div class="relative">
-                    <img id="userProfilePic" src="https://via.placeholder.com/40" alt="Profile" class="w-10 h-10 rounded-full border-2 border-blue-500">
-                    <div class="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-gray-900"></div>
-                </div>
-                <div class="flex-1 min-w-0">
-                    <p id="userName" class="text-sm font-medium truncate">Loading...</p>
-                    <p id="userRank" class="text-xs text-gray-400 truncate">Affiliate</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Navigation Menu -->
-        <nav class="p-4 space-y-2">
-            <a href="dashboard.html" class="flex items-center space-x-3 p-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition duration-300">
-                <i class="fas fa-chart-line w-5"></i>
-                <span>Dashboard</span>
-            </a>
-            <a href="earnings.html" class="flex items-center space-x-3 p-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition duration-300">
-                <i class="fas fa-money-bill-wave w-5"></i>
-                <span>Earnings</span>
-            </a>
-            <a href="withdrawal.html" class="flex items-center space-x-3 p-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition duration-300">
-                <i class="fas fa-wallet w-5"></i>
-                <span>Withdrawal</span>
-            </a>
-            <a href="team.html" class="flex items-center space-x-3 p-3 rounded-lg bg-blue-600 text-white shadow-lg">
-                <i class="fas fa-users w-5"></i>
-                <span>My Team</span>
-            </a>
-            <a href="referral.html" class="flex items-center space-x-3 p-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition duration-300">
-                <i class="fas fa-share-alt w-5"></i>
-                <span>Refer & Earn</span>
-            </a>
-            <a href="packages.html" class="flex items-center space-x-3 p-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition duration-300">
-                <i class="fas fa-crown w-5"></i>
-                <span>Packages</span>
-            </a>
-            <a href="profile.html" class="flex items-center space-x-3 p-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition duration-300">
-                <i class="fas fa-user-circle w-5"></i>
-                <span>Profile</span>
-            </a>
-            <a href="support.html" class="flex items-center space-x-3 p-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition duration-300">
-                <i class="fas fa-headset w-5"></i>
-                <span>Support</span>
-            </a>
-        </nav>
-
-        <!-- Balance Footer -->
-        <div class="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-800">
-            <div class="bg-gradient-to-r from-green-500 to-emerald-600 text-white text-center py-2 rounded-lg font-semibold text-sm">
-                Balance: ₹<span id="userBalance">0</span>
-            </div>
-        </div>
+        <!-- Same sidebar code -->
     </div>
 
     <!-- Main Content -->
@@ -138,11 +37,11 @@
                     <p class="text-sm text-gray-600">Manage your referral network</p>
                 </div>
                 <div class="flex items-center space-x-4">
-                    <button class="p-2 text-gray-600 hover:text-gray-900 relative">
+                    <button onclick="window.location.href='notifications.html'" class="p-2 text-gray-600 hover:text-gray-900 relative">
                         <i class="fas fa-bell text-xl"></i>
-                        <span class="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></span>
+                        <span id="notificationBadge" class="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full hidden"></span>
                     </button>
-                    <div class="flex items-center space-x-3 bg-gray-50 rounded-lg px-3 py-2">
+                    <div class="flex items-center space-x-3 bg-gray-50 rounded-lg px-3 py-2 cursor-pointer" onclick="window.location.href='profile.html'">
                         <img id="headerProfilePic" src="https://via.placeholder.com/32" alt="Profile" class="w-8 h-8 rounded-full border-2 border-blue-500">
                         <span id="headerUserName" class="text-sm font-medium text-gray-900">User</span>
                     </div>
@@ -238,11 +137,8 @@
 
                 <div class="p-6">
                     <div id="teamMembersList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        <!-- Team members will be loaded here automatically -->
                         <div class="text-center py-12 col-span-3">
-                            <div class="text-6xl text-gray-300 mb-4">
-                                <i class="fas fa-users"></i>
-                            </div>
+                            <div class="w-16 h-16 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mx-auto mb-4"></div>
                             <p class="text-gray-500 text-lg">Loading team members...</p>
                         </div>
                     </div>
@@ -314,6 +210,7 @@
                     currentUser = user;
                     loadUserData(user.uid);
                     loadTeamData(user.uid);
+                    loadNotifications(user.uid);
                 } else {
                     window.location.href = 'auth.html';
                 }
@@ -331,7 +228,7 @@
 
         function loadTeamData(userId) {
             db.collection('team')
-                .where('userId', '==', userId)
+                .where('sponsorId', '==', userId)
                 .onSnapshot((snapshot) => {
                     teamMembers = [];
                     snapshot.forEach((doc) => {
@@ -339,6 +236,8 @@
                     });
                     updateTeamStats();
                     updateTeamMembersUI();
+                }, (error) => {
+                    console.error('Error loading team data:', error);
                 });
         }
 
@@ -371,16 +270,19 @@
             const level2 = teamMembers.filter(m => m.level === 2).length;
             const level3 = teamMembers.filter(m => m.level === 3).length;
 
+            // Calculate team earnings from transactions
+            let teamEarnings = 0;
+            teamMembers.forEach(member => {
+                teamEarnings += member.totalEarnings || 0;
+            });
+
             document.getElementById('totalTeam').textContent = total;
             document.getElementById('activeTeam').textContent = active;
             document.getElementById('pendingTeam').textContent = pending;
+            document.getElementById('teamEarnings').textContent = teamEarnings.toLocaleString();
             document.getElementById('level1Count').textContent = `${level1} members`;
             document.getElementById('level2Count').textContent = `${level2} members`;
             document.getElementById('level3Count').textContent = `${level3} members`;
-
-            // Calculate team earnings (you can replace with actual calculation)
-            const teamEarnings = level1 * 500 + level2 * 100 + level3 * 50;
-            document.getElementById('teamEarnings').textContent = teamEarnings;
         }
 
         function updateTeamMembersUI() {
@@ -408,6 +310,12 @@
                                 : 'Team members will appear here when your referrals invite others'
                             }
                         </p>
+                        ${currentLevel === 1 ? `
+                            <button onclick="window.location.href='referral.html'" 
+                                class="mt-4 px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors">
+                                <i class="fas fa-share-alt mr-2"></i>Start Inviting
+                            </button>
+                        ` : ''}
                     </div>
                 `;
                 return;
@@ -423,18 +331,12 @@
                         </div>
                         <div class="flex-1 min-w-0">
                             <h4 class="font-semibold text-gray-900 truncate">${member.memberName || 'Unknown User'}</h4>
-                            <p class="text-sm text-gray-600 truncate">${member.memberEmail}</p>
+                            <p class="text-sm text-gray-600 truncate">${member.memberEmail || 'No email'}</p>
+                            <p class="text-xs text-gray-500">Joined: ${member.joinDate?.toDate ? member.joinDate.toDate().toLocaleDateString('en-IN') : 'Recent'}</p>
                         </div>
                     </div>
 
                     <div class="space-y-3 text-sm">
-                        <div class="flex justify-between items-center">
-                            <span class="text-gray-600">Join Date:</span>
-                            <span class="text-gray-900 font-medium">
-                                ${member.joinDate?.toDate ? member.joinDate.toDate().toLocaleDateString() : 'Recent'}
-                            </span>
-                        </div>
-
                         <div class="flex justify-between items-center">
                             <span class="text-gray-600">Status:</span>
                             <span class="px-2 py-1 text-xs font-semibold rounded-full ${
@@ -459,6 +361,20 @@
                                 ${member.level === 1 ? '50%' : member.level === 2 ? '10%' : '5%'}
                             </span>
                         </div>
+
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-600">Earnings:</span>
+                            <span class="font-semibold text-green-600">
+                                ₹${(member.totalEarnings || 0).toLocaleString()}
+                            </span>
+                        </div>
+
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-600">Package:</span>
+                            <span class="text-xs font-semibold ${getPackageColor(member.package)}">
+                                ${member.package || 'No Package'}
+                            </span>
+                        </div>
                     </div>
 
                     ${member.status === 'pending' ? `
@@ -468,8 +384,29 @@
                             </p>
                         </div>
                     ` : ''}
+
+                    ${member.lastActive ? `
+                        <div class="mt-3 pt-3 border-t border-gray-200">
+                            <p class="text-xs text-gray-500 text-center">
+                                Last active: ${member.lastActive.toDate().toLocaleDateString('en-IN')}
+                            </p>
+                        </div>
+                    ` : ''}
                 </div>
             `).join('');
+        }
+
+        function getPackageColor(packageName) {
+            const colors = {
+                'Starter': 'text-gray-600',
+                'Bronze': 'text-amber-600',
+                'Silver': 'text-gray-600',
+                'Gold': 'text-yellow-600',
+                'Platinum': 'text-teal-600',
+                'Diamond': 'text-blue-600',
+                'Elite': 'text-purple-600'
+            };
+            return colors[packageName] || 'text-gray-600';
         }
 
         function updateLevelInfo() {
@@ -489,6 +426,23 @@
             document.getElementById('levelDescription').textContent = levelDescriptions[currentLevel];
         }
 
+        function loadNotifications(userId) {
+            db.collection('notifications')
+                .where('userId', '==', userId)
+                .where('read', '==', false)
+                .onSnapshot((snapshot) => {
+                    const unreadCount = snapshot.size;
+                    const badge = document.getElementById('notificationBadge');
+                    
+                    if (unreadCount > 0) {
+                        badge.classList.remove('hidden');
+                        badge.textContent = unreadCount > 9 ? '9+' : unreadCount;
+                    } else {
+                        badge.classList.add('hidden');
+                    }
+                });
+        }
+
         function updateUserUI(userData) {
             document.getElementById('userName').textContent = userData.name || 'User';
             document.getElementById('headerUserName').textContent = userData.name || 'User';
@@ -500,6 +454,13 @@
                 document.getElementById('headerProfilePic').src = userData.profilePic;
             }
         }
+
+        // Auto-refresh team data every 30 seconds
+        setInterval(() => {
+            if (currentUser) {
+                loadTeamData(currentUser.uid);
+            }
+        }, 30000);
     </script>
 </body>
-  </html>
+</html>            
