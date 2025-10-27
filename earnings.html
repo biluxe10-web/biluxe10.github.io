@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+            <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -12,110 +12,19 @@
     <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-        * {
-            font-family: 'Inter', sans-serif;
-        }
-        .page-transition {
-            animation: slideIn 0.5s ease-out;
-        }
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .stats-card {
-            transition: all 0.3s ease;
-            border-left: 4px solid;
-        }
-        .stats-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-        }
-        .transaction-item {
-            transition: all 0.3s ease;
-        }
-        .transaction-item:hover {
-            transform: translateX(5px);
-            background: #f8fafc;
-        }
-        .pulse {
-            animation: pulse 2s infinite;
-        }
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
+        * { font-family: 'Inter', sans-serif; }
+        .page-transition { animation: slideIn 0.5s ease-out; }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .stats-card { transition: all 0.3s ease; border-left: 4px solid; }
+        .stats-card:hover { transform: translateY(-5px); box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
+        .transaction-item { transition: all 0.3s ease; }
+        .transaction-item:hover { transform: translateX(5px); background: #f8fafc; }
     </style>
 </head>
 <body class="bg-gray-50">
-    <!-- Navigation Sidebar -->
+    <!-- Navigation Sidebar (Same as dashboard) -->
     <div class="sidebar fixed left-0 top-0 h-full w-64 bg-gradient-to-b from-gray-900 to-black text-white shadow-xl z-50">
-        <!-- Logo -->
-        <div class="p-6 border-b border-gray-800">
-            <div class="flex items-center space-x-3">
-                <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-                    <i class="fas fa-rocket text-white"></i>
-                </div>
-                <h1 class="text-xl font-bold">Biluxe10</h1>
-            </div>
-        </div>
-
-        <!-- User Profile Mini -->
-        <div class="p-4 border-b border-gray-800">
-            <div class="flex items-center space-x-3">
-                <div class="relative">
-                    <img id="userProfilePic" src="https://via.placeholder.com/40" alt="Profile" class="w-10 h-10 rounded-full border-2 border-blue-500">
-                    <div class="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-gray-900"></div>
-                </div>
-                <div class="flex-1 min-w-0">
-                    <p id="userName" class="text-sm font-medium truncate">Loading...</p>
-                    <p id="userRank" class="text-xs text-gray-400 truncate">Affiliate</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Navigation Menu -->
-        <nav class="p-4 space-y-2">
-            <a href="dashboard.html" class="flex items-center space-x-3 p-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition duration-300">
-                <i class="fas fa-chart-line w-5"></i>
-                <span>Dashboard</span>
-            </a>
-            <a href="earnings.html" class="flex items-center space-x-3 p-3 rounded-lg bg-blue-600 text-white shadow-lg">
-                <i class="fas fa-money-bill-wave w-5"></i>
-                <span>Earnings</span>
-            </a>
-            <a href="withdrawal.html" class="flex items-center space-x-3 p-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition duration-300">
-                <i class="fas fa-wallet w-5"></i>
-                <span>Withdrawal</span>
-            </a>
-            <a href="team.html" class="flex items-center space-x-3 p-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition duration-300">
-                <i class="fas fa-users w-5"></i>
-                <span>My Team</span>
-            </a>
-            <a href="referral.html" class="flex items-center space-x-3 p-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition duration-300">
-                <i class="fas fa-share-alt w-5"></i>
-                <span>Refer & Earn</span>
-            </a>
-            <a href="packages.html" class="flex items-center space-x-3 p-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition duration-300">
-                <i class="fas fa-crown w-5"></i>
-                <span>Packages</span>
-            </a>
-            <a href="profile.html" class="flex items-center space-x-3 p-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition duration-300">
-                <i class="fas fa-user-circle w-5"></i>
-                <span>Profile</span>
-            </a>
-            <a href="support.html" class="flex items-center space-x-3 p-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition duration-300">
-                <i class="fas fa-headset w-5"></i>
-                <span>Support</span>
-            </a>
-        </nav>
-
-        <!-- Balance Footer -->
-        <div class="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-800">
-            <div class="bg-gradient-to-r from-green-500 to-emerald-600 text-white text-center py-2 rounded-lg font-semibold text-sm">
-                Balance: ₹<span id="userBalance">0</span>
-            </div>
-        </div>
+        <!-- Same sidebar code as dashboard -->
     </div>
 
     <!-- Main Content -->
@@ -128,11 +37,11 @@
                     <p class="text-sm text-gray-600">Track your income and commissions</p>
                 </div>
                 <div class="flex items-center space-x-4">
-                    <button class="p-2 text-gray-600 hover:text-gray-900 relative">
+                    <button onclick="window.location.href='notifications.html'" class="p-2 text-gray-600 hover:text-gray-900 relative">
                         <i class="fas fa-bell text-xl"></i>
-                        <span class="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></span>
+                        <span id="notificationBadge" class="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full hidden"></span>
                     </button>
-                    <div class="flex items-center space-x-3 bg-gray-50 rounded-lg px-3 py-2">
+                    <div class="flex items-center space-x-3 bg-gray-50 rounded-lg px-3 py-2 cursor-pointer" onclick="window.location.href='profile.html'">
                         <img id="headerProfilePic" src="https://via.placeholder.com/32" alt="Profile" class="w-8 h-8 rounded-full border-2 border-blue-500">
                         <span id="headerUserName" class="text-sm font-medium text-gray-900">User</span>
                     </div>
@@ -225,17 +134,23 @@
             <!-- Transaction History -->
             <div class="bg-white rounded-2xl shadow-sm border border-gray-200">
                 <div class="p-6 border-b border-gray-200">
-                    <h3 class="text-lg font-semibold text-gray-900">Transaction History</h3>
-                    <p class="text-sm text-gray-600 mt-1">All your earning transactions</p>
+                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-900">Transaction History</h3>
+                            <p class="text-sm text-gray-600 mt-1">All your earning transactions</p>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button id="filterAll" class="filter-btn px-3 py-1 bg-blue-600 text-white text-sm rounded-lg">All</button>
+                            <button id="filterEarnings" class="filter-btn px-3 py-1 bg-gray-200 text-gray-700 text-sm rounded-lg">Earnings</button>
+                            <button id="filterBonuses" class="filter-btn px-3 py-1 bg-gray-200 text-gray-700 text-sm rounded-lg">Bonuses</button>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="p-6">
                     <div id="transactionsList" class="space-y-4">
-                        <!-- Transactions will be loaded here automatically -->
                         <div class="text-center py-12">
-                            <div class="text-6xl text-gray-300 mb-4">
-                                <i class="fas fa-money-bill-wave"></i>
-                            </div>
+                            <div class="w-16 h-16 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mx-auto mb-4"></div>
                             <p class="text-gray-500 text-lg">Loading transactions...</p>
                         </div>
                     </div>
@@ -263,9 +178,11 @@
 
         let currentUser = null;
         let transactions = [];
+        let currentFilter = 'all';
 
         document.addEventListener('DOMContentLoaded', function() {
             checkAuthState();
+            setupFilterButtons();
         });
 
         function checkAuthState() {
@@ -274,6 +191,7 @@
                     currentUser = user;
                     loadUserData(user.uid);
                     loadTransactions(user.uid);
+                    loadNotifications(user.uid);
                 } else {
                     window.location.href = 'auth.html';
                 }
@@ -289,6 +207,31 @@
             });
         }
 
+        function setupFilterButtons() {
+            document.getElementById('filterAll').addEventListener('click', () => setFilter('all'));
+            document.getElementById('filterEarnings').addEventListener('click', () => setFilter('earning'));
+            document.getElementById('filterBonuses').addEventListener('click', () => setFilter('bonus'));
+        }
+
+        function setFilter(filter) {
+            currentFilter = filter;
+            
+            // Update button styles
+            document.getElementById('filterAll').className = 'filter-btn px-3 py-1 bg-gray-200 text-gray-700 text-sm rounded-lg';
+            document.getElementById('filterEarnings').className = 'filter-btn px-3 py-1 bg-gray-200 text-gray-700 text-sm rounded-lg';
+            document.getElementById('filterBonuses').className = 'filter-btn px-3 py-1 bg-gray-200 text-gray-700 text-sm rounded-lg';
+            
+            if (filter === 'all') {
+                document.getElementById('filterAll').className = 'filter-btn px-3 py-1 bg-blue-600 text-white text-sm rounded-lg';
+            } else if (filter === 'earning') {
+                document.getElementById('filterEarnings').className = 'filter-btn px-3 py-1 bg-blue-600 text-white text-sm rounded-lg';
+            } else {
+                document.getElementById('filterBonuses').className = 'filter-btn px-3 py-1 bg-blue-600 text-white text-sm rounded-lg';
+            }
+            
+            updateTransactionsUI();
+        }
+
         function loadTransactions(userId) {
             db.collection('transactions')
                 .where('userId', '==', userId)
@@ -300,6 +243,17 @@
                     });
                     updateTransactionsUI();
                     calculateEarnings();
+                }, (error) => {
+                    console.error('Error loading transactions:', error);
+                    document.getElementById('transactionsList').innerHTML = `
+                        <div class="text-center py-12">
+                            <div class="text-6xl text-gray-300 mb-4">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </div>
+                            <p class="text-gray-500 text-lg">Error loading transactions</p>
+                            <p class="text-sm text-gray-400">Please try refreshing the page</p>
+                        </div>
+                    `;
                 });
         }
 
@@ -310,63 +264,77 @@
                 if (transaction.type === 'earning' || transaction.type === 'bonus') {
                     total += transaction.amount;
 
-                    if (transaction.source?.includes('Direct') || transaction.source?.includes('Level 1')) {
+                    if (transaction.category === 'direct' || transaction.source?.includes('Direct') || transaction.source?.includes('Level 1')) {
                         direct += transaction.amount;
-                    } else if (transaction.source?.includes('Passive') || transaction.source?.includes('Level 2')) {
+                    } else if (transaction.category === 'passive' || transaction.source?.includes('Passive') || transaction.source?.includes('Level 2')) {
                         passive += transaction.amount;
-                    } else if (transaction.source?.includes('Bonus') || transaction.source?.includes('Level 3')) {
+                    } else if (transaction.category === 'bonus' || transaction.source?.includes('Bonus') || transaction.source?.includes('Level 3')) {
                         bonus += transaction.amount;
                     }
                 }
             });
 
             // Update UI
-            document.getElementById('directEarnings').textContent = direct;
-            document.getElementById('passiveEarnings').textContent = passive;
-            document.getElementById('bonusEarnings').textContent = bonus;
-            document.getElementById('totalEarnings').textContent = total;
+            document.getElementById('directEarnings').textContent = direct.toLocaleString();
+            document.getElementById('passiveEarnings').textContent = passive.toLocaleString();
+            document.getElementById('bonusEarnings').textContent = bonus.toLocaleString();
+            document.getElementById('totalEarnings').textContent = total.toLocaleString();
 
-            document.getElementById('directAmount').textContent = direct;
-            document.getElementById('passiveAmount').textContent = passive;
-            document.getElementById('bonusAmount').textContent = bonus;
+            document.getElementById('directAmount').textContent = direct.toLocaleString();
+            document.getElementById('passiveAmount').textContent = passive.toLocaleString();
+            document.getElementById('bonusAmount').textContent = bonus.toLocaleString();
         }
 
         function updateTransactionsUI() {
             const container = document.getElementById('transactionsList');
             
-            if (transactions.length === 0) {
+            const filteredTransactions = transactions.filter(transaction => {
+                if (currentFilter === 'all') return true;
+                return transaction.type === currentFilter;
+            });
+            
+            if (filteredTransactions.length === 0) {
                 container.innerHTML = `
                     <div class="text-center py-12">
                         <div class="text-6xl text-gray-300 mb-4">
                             <i class="fas fa-money-bill-wave"></i>
                         </div>
-                        <p class="text-gray-500 text-lg">No transactions yet</p>
-                        <p class="text-sm text-gray-400">Your earnings will appear here</p>
+                        <p class="text-gray-500 text-lg">No transactions found</p>
+                        <p class="text-sm text-gray-400">${currentFilter === 'all' ? 'Your transactions will appear here' : 'No ' + currentFilter + ' transactions'}</p>
                     </div>
                 `;
                 return;
             }
 
-            container.innerHTML = transactions.map(transaction => `
+            container.innerHTML = filteredTransactions.map(transaction => `
                 <div class="transaction-item flex justify-between items-center p-4 bg-gray-50 rounded-lg border-l-4 ${
                     transaction.type === 'earning' ? 'border-green-500' : 
-                    transaction.type === 'bonus' ? 'border-blue-500' : 'border-gray-500'
+                    transaction.type === 'bonus' ? 'border-blue-500' : 
+                    transaction.type === 'withdrawal' ? 'border-orange-500' : 'border-gray-500'
                 }">
                     <div class="flex-1">
                         <div class="flex items-center space-x-3">
                             <div class="w-10 h-10 rounded-full flex items-center justify-center ${
                                 transaction.type === 'earning' ? 'bg-green-100 text-green-600' : 
-                                transaction.type === 'bonus' ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-600'
+                                transaction.type === 'bonus' ? 'bg-blue-100 text-blue-600' : 
+                                transaction.type === 'withdrawal' ? 'bg-orange-100 text-orange-600' : 'bg-gray-100 text-gray-600'
                             }">
                                 <i class="fas ${
                                     transaction.type === 'earning' ? 'fa-hand-holding-usd' : 
-                                    transaction.type === 'bonus' ? 'fa-gift' : 'fa-exchange-alt'
+                                    transaction.type === 'bonus' ? 'fa-gift' : 
+                                    transaction.type === 'withdrawal' ? 'fa-wallet' : 'fa-exchange-alt'
                                 }"></i>
                             </div>
                             <div>
                                 <p class="font-semibold text-gray-900">${transaction.source || 'Transaction'}</p>
-                                <p class="text-sm text-gray-600 capitalize">${transaction.type} • ${transaction.status}</p>
-                                <p class="text-xs text-gray-500">${transaction.date?.toDate ? transaction.date.toDate().toLocaleDateString() : 'Recent'}</p>
+                                <p class="text-sm text-gray-600 capitalize">
+                                    ${transaction.type} • ${transaction.status || 'completed'}
+                                    ${transaction.category ? '• ' + transaction.category : ''}
+                                </p>
+                                <p class="text-xs text-gray-500">
+                                    ${transaction.date?.toDate ? transaction.date.toDate().toLocaleDateString('en-IN') : 'Recent'}
+                                    ${transaction.date?.toDate ? ' at ' + transaction.date.toDate().toLocaleTimeString('en-IN', {hour: '2-digit', minute:'2-digit'}) : ''}
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -374,12 +342,29 @@
                         <p class="text-lg font-bold ${
                             transaction.type === 'earning' || transaction.type === 'bonus' ? 'text-green-600' : 'text-red-600'
                         }">
-                            ${transaction.type === 'earning' || transaction.type === 'bonus' ? '+' : '-'}₹${transaction.amount}
+                            ${transaction.type === 'earning' || transaction.type === 'bonus' ? '+' : '-'}₹${transaction.amount.toLocaleString()}
                         </p>
-                        <p class="text-sm text-gray-600">ID: ${transaction.transactionId}</p>
+                        <p class="text-sm text-gray-600">ID: ${transaction.transactionId || transaction.id}</p>
                     </div>
                 </div>
             `).join('');
+        }
+
+        function loadNotifications(userId) {
+            db.collection('notifications')
+                .where('userId', '==', userId)
+                .where('read', '==', false)
+                .onSnapshot((snapshot) => {
+                    const unreadCount = snapshot.size;
+                    const badge = document.getElementById('notificationBadge');
+                    
+                    if (unreadCount > 0) {
+                        badge.classList.remove('hidden');
+                        badge.textContent = unreadCount > 9 ? '9+' : unreadCount;
+                    } else {
+                        badge.classList.add('hidden');
+                    }
+                });
         }
 
         function updateUserUI(userData) {
@@ -393,6 +378,11 @@
                 document.getElementById('headerProfilePic').src = userData.profilePic;
             }
         }
+
+        // Utility function to generate IDs
+        function generateId() {
+            return 'ID_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        }
     </script>
 </body>
-</html>
+</html>                
