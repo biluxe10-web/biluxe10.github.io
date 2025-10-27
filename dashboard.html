@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Biluxe10 - Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js"></script>
@@ -14,47 +14,13 @@
     <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-storage.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-        * {
-            font-family: 'Inter', sans-serif;
-        }
-        .gradient-bg {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
-        .glass-effect {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-        .stats-card {
-            transition: all 0.3s ease;
-            border-left: 4px solid;
-        }
-        .stats-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-        }
-        .animate-float {
-            animation: float 3s ease-in-out infinite;
-        }
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-        }
-        .page-transition {
-            animation: slideIn 0.5s ease-out;
-        }
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .pulse-ring {
-            animation: pulse 2s infinite;
-        }
-        @keyframes pulse {
-            0% { transform: scale(0.8); opacity: 1; }
-            70% { transform: scale(1.2); opacity: 0.7; }
-            100% { transform: scale(0.8); opacity: 1; }
-        }
+        * { font-family: 'Inter', sans-serif; }
+        .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .glass-effect { background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); }
+        .stats-card { transition: all 0.3s ease; border-left: 4px solid; }
+        .stats-card:hover { transform: translateY(-5px); box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
+        .page-transition { animation: slideIn 0.5s ease-out; }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body class="bg-gray-50">
@@ -87,36 +53,34 @@
         <!-- Navigation Menu -->
         <nav class="p-4 space-y-2">
             <a href="dashboard.html" class="flex items-center space-x-3 p-3 rounded-lg bg-blue-600 text-white shadow-lg">
-                <i class="fas fa-chart-line w-5"></i>
-                <span>Dashboard</span>
+                <i class="fas fa-chart-line w-5"></i><span>Dashboard</span>
             </a>
             <a href="earnings.html" class="flex items-center space-x-3 p-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition duration-300">
-                <i class="fas fa-money-bill-wave w-5"></i>
-                <span>Earnings</span>
+                <i class="fas fa-money-bill-wave w-5"></i><span>Earnings</span>
             </a>
             <a href="withdrawal.html" class="flex items-center space-x-3 p-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition duration-300">
-                <i class="fas fa-wallet w-5"></i>
-                <span>Withdrawal</span>
+                <i class="fas fa-wallet w-5"></i><span>Withdrawal</span>
             </a>
             <a href="team.html" class="flex items-center space-x-3 p-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition duration-300">
-                <i class="fas fa-users w-5"></i>
-                <span>My Team</span>
+                <i class="fas fa-users w-5"></i><span>My Team</span>
             </a>
             <a href="referral.html" class="flex items-center space-x-3 p-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition duration-300">
-                <i class="fas fa-share-alt w-5"></i>
-                <span>Refer & Earn</span>
+                <i class="fas fa-share-alt w-5"></i><span>Refer & Earn</span>
             </a>
             <a href="packages.html" class="flex items-center space-x-3 p-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition duration-300">
-                <i class="fas fa-crown w-5"></i>
-                <span>Packages</span>
+                <i class="fas fa-crown w-5"></i><span>Packages</span>
             </a>
             <a href="profile.html" class="flex items-center space-x-3 p-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition duration-300">
-                <i class="fas fa-user-circle w-5"></i>
-                <span>Profile</span>
+                <i class="fas fa-user-circle w-5"></i><span>Profile</span>
             </a>
             <a href="support.html" class="flex items-center space-x-3 p-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition duration-300">
-                <i class="fas fa-headset w-5"></i>
-                <span>Support</span>
+                <i class="fas fa-headset w-5"></i><span>Support</span>
+            </a>
+            <a href="notifications.html" class="flex items-center space-x-3 p-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition duration-300">
+                <i class="fas fa-bell w-5"></i><span>Notifications</span>
+            </a>
+            <a href="transactions.html" class="flex items-center space-x-3 p-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition duration-300">
+                <i class="fas fa-exchange-alt w-5"></i><span>Transactions</span>
             </a>
         </nav>
 
@@ -137,11 +101,11 @@
                     <h2 class="text-xl font-semibold text-gray-900">Welcome to Biluxe10 Dashboard</h2>
                 </div>
                 <div class="flex items-center space-x-4">
-                    <button class="p-2 text-gray-600 hover:text-gray-900 relative">
+                    <button onclick="window.location.href='notifications.html'" class="p-2 text-gray-600 hover:text-gray-900 relative">
                         <i class="fas fa-bell text-xl"></i>
-                        <span class="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></span>
+                        <span id="notificationBadge" class="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full hidden"></span>
                     </button>
-                    <div class="flex items-center space-x-3 bg-gray-50 rounded-lg px-3 py-2">
+                    <div class="flex items-center space-x-3 bg-gray-50 rounded-lg px-3 py-2 cursor-pointer" onclick="window.location.href='profile.html'">
                         <img id="headerProfilePic" src="https://via.placeholder.com/32" alt="Profile" class="w-8 h-8 rounded-full border-2 border-blue-500">
                         <span id="headerUserName" class="text-sm font-medium text-gray-900">User</span>
                     </div>
@@ -170,7 +134,7 @@
             <!-- Stats Grid -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                 <!-- Today's Earnings -->
-                <div class="stats-card bg-white rounded-xl shadow-sm p-6 border-l-4 border-green-500 hover:shadow-lg">
+                <div class="stats-card bg-white rounded-xl shadow-sm p-6 border-l-4 border-green-500">
                     <div class="flex items-center">
                         <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mr-4">
                             <i class="fas fa-rupee-sign text-green-600 text-xl"></i>
@@ -188,7 +152,7 @@
                 </div>
 
                 <!-- Weekly Earnings -->
-                <div class="stats-card bg-white rounded-xl shadow-sm p-6 border-l-4 border-blue-500 hover:shadow-lg">
+                <div class="stats-card bg-white rounded-xl shadow-sm p-6 border-l-4 border-blue-500">
                     <div class="flex items-center">
                         <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mr-4">
                             <i class="fas fa-chart-line text-blue-600 text-xl"></i>
@@ -206,7 +170,7 @@
                 </div>
 
                 <!-- Monthly Earnings -->
-                <div class="stats-card bg-white rounded-xl shadow-sm p-6 border-l-4 border-purple-500 hover:shadow-lg">
+                <div class="stats-card bg-white rounded-xl shadow-sm p-6 border-l-4 border-purple-500">
                     <div class="flex items-center">
                         <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mr-4">
                             <i class="fas fa-calendar-alt text-purple-600 text-xl"></i>
@@ -224,7 +188,7 @@
                 </div>
 
                 <!-- Total Balance -->
-                <div class="stats-card bg-white rounded-xl shadow-sm p-6 border-l-4 border-orange-500 hover:shadow-lg">
+                <div class="stats-card bg-white rounded-xl shadow-sm p-6 border-l-4 border-orange-500">
                     <div class="flex items-center">
                         <div class="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center mr-4">
                             <i class="fas fa-wallet text-orange-600 text-xl"></i>
@@ -247,12 +211,8 @@
                 <!-- Earnings Chart -->
                 <div class="bg-white rounded-2xl shadow-sm p-6">
                     <h3 class="text-lg font-semibold text-gray-900 mb-4">Earnings Overview</h3>
-                    <div class="h-64 bg-gradient-to-br from-blue-50 to-indigo-100 rounded-lg flex items-center justify-center">
-                        <div class="text-center">
-                            <i class="fas fa-chart-bar text-4xl text-blue-500 mb-3"></i>
-                            <p class="text-gray-600">Earnings chart will be displayed here</p>
-                            <p class="text-sm text-gray-500">Real-time data from your transactions</p>
-                        </div>
+                    <div class="h-64">
+                        <canvas id="earningsChart"></canvas>
                     </div>
                 </div>
 
@@ -315,9 +275,10 @@
         const auth = firebase.auth();
         const storage = firebase.storage();
 
-        // Current User Data
+        // Global variables
         let currentUser = null;
         let userData = null;
+        let earningsChart = null;
 
         // Initialize Dashboard
         document.addEventListener('DOMContentLoaded', function() {
@@ -332,8 +293,9 @@
                     currentUser = user;
                     loadUserData(user.uid);
                     loadTeamData(user.uid);
+                    loadEarningsData(user.uid);
+                    loadNotifications(user.uid);
                 } else {
-                    // Redirect to login if not authenticated
                     window.location.href = 'auth.html';
                 }
             });
@@ -345,20 +307,153 @@
                 if (doc.exists) {
                     userData = doc.data();
                     updateUIWithUserData();
+                } else {
+                    // Create user document if doesn't exist
+                    createUserDocument(userId);
                 }
+            }, (error) => {
+                console.error('Error loading user data:', error);
             });
+        }
+
+        // Create user document if not exists
+        function createUserDocument(userId) {
+            const userData = {
+                name: currentUser.displayName || 'User',
+                email: currentUser.email,
+                profilePic: currentUser.photoURL || 'https://via.placeholder.com/150',
+                balance: 0,
+                earnings_today: 0,
+                earnings_week: 0,
+                earnings_month: 0,
+                membership: 'Starter',
+                rank: 'Affiliate',
+                referralCode: generateReferralCode(),
+                joinDate: new Date(),
+                lastLogin: new Date()
+            };
+
+            db.collection('users').doc(userId).set(userData)
+                .then(() => {
+                    console.log('User document created');
+                })
+                .catch((error) => {
+                    console.error('Error creating user document:', error);
+                });
+        }
+
+        // Generate unique referral code
+        function generateReferralCode() {
+            return 'BLX' + Math.random().toString(36).substr(2, 6).toUpperCase();
         }
 
         // Load Team Data
         function loadTeamData(userId) {
-            db.collection('team').where('userId', '==', userId)
+            db.collection('team').where('sponsorId', '==', userId)
                 .onSnapshot((snapshot) => {
                     const directMembers = snapshot.docs.filter(doc => doc.data().level === 1).length;
                     const totalMembers = snapshot.docs.length;
+                    const activeMembers = snapshot.docs.filter(doc => doc.data().status === 'active').length;
                     
                     document.getElementById('directTeam').textContent = directMembers;
                     document.getElementById('totalTeam').textContent = totalMembers;
-                    document.getElementById('teamEarnings').textContent = snapshot.docs.filter(doc => doc.data().status === 'active').length;
+                    document.getElementById('teamEarnings').textContent = activeMembers;
+                });
+        }
+
+        // Load Earnings Data for Chart
+        function loadEarningsData(userId) {
+            const today = new Date();
+            const startOfWeek = new Date(today.setDate(today.getDate() - today.getDay()));
+            const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+
+            // Load transactions for the current week
+            db.collection('transactions')
+                .where('userId', '==', userId)
+                .where('type', 'in', ['earning', 'bonus'])
+                .where('date', '>=', startOfWeek)
+                .orderBy('date', 'asc')
+                .get()
+                .then((snapshot) => {
+                    const earningsByDay = {};
+                    snapshot.forEach(doc => {
+                        const data = doc.data();
+                        const day = data.date.toDate().toLocaleDateString();
+                        earningsByDay[day] = (earningsByDay[day] || 0) + data.amount;
+                    });
+
+                    updateEarningsChart(earningsByDay);
+                })
+                .catch((error) => {
+                    console.error('Error loading earnings data:', error);
+                });
+        }
+
+        // Update Earnings Chart
+        function updateEarningsChart(earningsData) {
+            const ctx = document.getElementById('earningsChart').getContext('2d');
+            
+            if (earningsChart) {
+                earningsChart.destroy();
+            }
+
+            const labels = Object.keys(earningsData);
+            const data = Object.values(earningsData);
+
+            earningsChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Daily Earnings (₹)',
+                        data: data,
+                        borderColor: '#3b82f6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Load Notifications
+        function loadNotifications(userId) {
+            db.collection('notifications')
+                .where('userId', '==', userId)
+                .where('read', '==', false)
+                .onSnapshot((snapshot) => {
+                    const unreadCount = snapshot.size;
+                    const badge = document.getElementById('notificationBadge');
+                    
+                    if (unreadCount > 0) {
+                        badge.classList.remove('hidden');
+                        badge.textContent = unreadCount > 9 ? '9+' : unreadCount;
+                    } else {
+                        badge.classList.add('hidden');
+                    }
                 });
         }
 
@@ -370,7 +465,7 @@
             document.getElementById('userName').textContent = userData.name || 'User';
             document.getElementById('headerUserName').textContent = userData.name || 'User';
             document.getElementById('userRank').textContent = userData.rank || 'Affiliate';
-            document.getElementById('userMembership').textContent = userData.membership || 'Silver' + ' Member';
+            document.getElementById('userMembership').textContent = (userData.membership || 'Silver') + ' Member';
             document.getElementById('welcomeMessage').textContent = `Welcome back, ${userData.name?.split(' ')[0] || 'User'}!`;
 
             // Update Profile Pictures
@@ -387,9 +482,9 @@
             document.getElementById('userBalance').textContent = userData.balance || 0;
 
             // Calculate growth percentages (you can replace with actual calculations)
-            document.getElementById('todayGrowth').textContent = '+12%';
-            document.getElementById('weekGrowth').textContent = '+25%';
-            document.getElementById('monthGrowth').textContent = '+42%';
+            document.getElementById('todayGrowth').textContent = userData.earnings_today > 0 ? '+12%' : '+0%';
+            document.getElementById('weekGrowth').textContent = userData.earnings_week > 0 ? '+25%' : '+0%';
+            document.getElementById('monthGrowth').textContent = userData.earnings_month > 0 ? '+42%' : '+0%';
         }
 
         // Update Current Date
@@ -405,6 +500,12 @@
                 window.location.href = 'auth.html';
             });
         }
+
+        // Utility function to generate IDs
+        function generateId() {
+            return 'ID_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        }
     </script>
 </body>
-</html>
+                    </html>
+        
