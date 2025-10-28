@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Referral - Biluxe10 Affiliate</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+    <style>
+        :root {
+            --primary: #10B981; --accent: #F59E0B; --purple: #8B5CF6; --blue: #3B82F6;
+            --light: #F8FAFC; --dark: #1E293B; --gray: #64748B;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%); min-height: 100vh; }
+        
+        .navbar {
+            background: rgba(255, 255, 255, 0.95); padding: 1rem 2rem; box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .logo { font-size: 1.8rem; font-weight: 800; color: var(--primary); display: flex; align-items: center; gap: 0.5rem; }
+        .nav-links { display: flex; gap: 0.5rem; }
+        .nav-links a {
+            text-decoration: none; color: var(--dark); font-weight: 500; padding: 0.75rem 1.25rem; border-radius: 10px;
+            display: flex; align-items: center; gap: 0.5rem;
+        }
+        .nav-links a:hover, .nav-links a.active { background: var(--primary); color: white; }
+        .user-section { display: flex; align-items: center; gap: 1rem; }
+        .user-balance {
+            background: linear-gradient(135deg, var(--primary), #047857); color: white; padding: 0.75rem 1.5rem;
+            border-radius: 25px; font-weight: 700; display: flex; align-items: center; gap: 0.5rem;
+        }
+        
+        .container { max-width: 1200px; margin: 2rem auto; padding: 0 1.5rem; }
+        .page-header {
+            background: linear-gradient(135deg, var(--primary), #047857); color: white; padding: 2rem;
+            border-radius: 20px; margin-bottom: 2rem;
+        }
+        
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
+        .stat-card { background: white; padding: 1.5rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); text-align: center; }
+        
+        .commission-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+        .commission-card { background: white; padding: 1.5rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); text-align: center; border-top: 4px solid; }
+        .commission-card.direct { border-color: var(--primary); }
+        .commission-card.passive { border-color: var(--accent); }
+        .commission-card.total { border-color: var(--purple); }
+        .commission-card.team { border-color: var(--blue); }
+        
+        .referral-box { background: white; border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); padding: 2rem; margin-bottom: 2rem; }
+        .link-container { display: flex; gap: 1rem; margin: 1.5rem 0; }
+        .link-container input { flex: 1; padding: 1rem 1.5rem; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 1rem; }
+        .btn { padding: 1rem 2rem; border: none; border-radius: 12px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: #059669; }
+        
+        .social-share { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 1rem; }
+        .social-btn {
+            padding: 0.75rem 1.25rem; border: none; border-radius: 10px; color: white; cursor: pointer;
+            display: flex; align-items: center; gap: 0.5rem; font-weight: 600;
+        }
+        .whatsapp { background: #25D366; } .facebook { background: #1877F2; } .telegram { background: #0088CC; }
+        
+        .referral-table { background: white; border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); overflow: hidden; margin-bottom: 2rem; }
+        .table-header {
+            background: var(--primary); color: white; padding: 1.5rem; display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr 1fr; font-weight: 600;
+        }
+        .table-row {
+            display: grid; grid-template-columns: 1fr 1fr 1fr 1fr 1fr; padding: 1.5rem;
+            border-bottom: 1px solid #f1f5f9; align-items: center;
+        }
+        
+        .commission-info {
+            background: #f0fdf4; border-radius: 16px; padding: 2rem; margin-bottom: 2rem; border-left: 4px solid var(--primary);
+        }
+        .commission-tier {
+            display: flex; justify-content: space-between; align-items: center; padding: 1rem; border-bottom: 1px solid #d1fae5;
+        }
+        .commission-tier:last-child { border-bottom: none; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo"><i class="fas fa-rocket"></i>Biluxe10 Affiliate</div>
+        <div class="nav-links">
+            <a href="dashboard.html"><i class="fas fa-home"></i> Dashboard</a>
+            <a href="earnings.html"><i class="fas fa-chart-line"></i> Earnings</a>
+            <a href="packages.html"><i class="fas fa-cube"></i> Packages</a>
+            <a href="referral.html" class="active"><i class="fas fa-users"></i> Referral</a>
+            <a href="myteam.html"><i class="fas fa-network-wired"></i> My Team</a>
+            <a href="withdrawal.html"><i class="fas fa-wallet"></i> Withdrawal</a>
+            <a href="transactions.html"><i class="fas fa-exchange-alt"></i> Transactions</a>
+            <a href="profile.html"><i class="fas fa-user"></i> Profile</a>
+            <a href="support.html"><i class="fas fa-headset"></i> Support</a>
+        </div>
+        <div class="user-section">
+            <div class="user-balance"><i class="fas fa-wallet"></i>₹<span id="currentBalance">0.00</span></div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="page-header">
+            <h1 style="font-size: 2.2rem; margin-bottom: 0.5rem;">Referral Program 👥</h1>
+            <p>Invite friends and earn unlimited commissions</p>
+        </div>
+
+        <!-- Commission Stats -->
+        <div class="commission-grid">
+            <div class="commission-card direct">
+                <h4>Direct Commission</h4>
+                <div style="font-size: 1.8rem; font-weight: 800; color: var(--primary); margin: 0.5rem 0;">
+                    ₹<span id="directCommission">0.00</span>
+                </div>
+                <small>50% from direct referrals</small>
+            </div>
+            <div class="commission-card passive">
+                <h4>Passive Commission</h4>
+                <div style="font-size: 1.8rem; font-weight: 800; color: var(--accent); margin: 0.5rem 0;">
+                    ₹<span id="passiveCommission">0.00</span>
+                </div>
+                <small>15% from team sales</small>
+            </div>
+            <div class="commission-card total">
+                <h4>Total Commission</h4>
+                <div style="font-size: 1.8rem; font-weight: 800; color: var(--purple); margin: 0.5rem 0;">
+                    ₹<span id="totalCommission">0.00</span>
+                </div>
+                <small>All time earnings</small>
+            </div>
+            <div class="commission-card team">
+                <h4>Team Size</h4>
+                <div style="font-size: 1.8rem; font-weight: 800; color: var(--blue); margin: 0.5rem 0;">
+                    <span id="teamSize">0</span>
+                </div>
+                <small>Active members</small>
+            </div>
+        </div>
+        
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>Total Referrals</h3>
+                <div style="font-size: 2rem; font-weight: 800; color: var(--dark);" id="totalReferrals">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>Active Referrals</h3>
+                <div style="font-size: 2rem; font-weight: 800; color: var(--dark);" id="activeReferrals">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>Referral Earnings</h3>
+                <div style="font-size: 2rem; font-weight: 800; color: var(--dark);">₹<span id="referralEarnings">0.00</span></div>
+            </div>
+            <div class="stat-card">
+                <h3>This Month</h3>
+                <div style="font-size: 2rem; font-weight: 800; color: var(--dark);" id="monthReferrals">0</div>
+            </div>
+        </div>
+
+        <!-- Commission Structure -->
+        <div class="commission-info">
+            <h3 style="margin-bottom: 1rem; color: var(--dark);">💰 Commission Structure</h3>
+            <div class="commission-tier">
+                <div><strong>Level 1 - Direct Referrals</strong><p style="color: var(--gray); font-size: 0.9rem;">Earn 50% commission when your direct referrals purchase packages</p></div>
+                <div style="color: var(--primary); font-weight: bold; font-size: 1.2rem;">50%</div>
+            </div>
+            <div class="commission-tier">
+                <div><strong>Level 2 - Team's Referrals</strong><p style="color: var(--gray); font-size: 0.9rem;">Earn 15% commission when your team's referrals purchase packages</p></div>
+                <div style="color: var(--primary); font-weight: bold; font-size: 1.2rem;">15%</div>
+            </div>
+        </div>
+
+        <!-- Referral Link Box -->
+        <div class="referral-box">
+            <h3 style="margin-bottom: 1rem;">🎯 Your Referral Link</h3>
+            <p style="color: var(--gray); margin-bottom: 1rem;">Share this link with friends and earn commissions on their purchases</p>
+            
+            <div class="link-container">
+                <input type="text" id="referralLink" readonly value="Loading your referral link...">
+                <button class="btn btn-primary" onclick="copyReferralLink()"><i class="fas fa-copy"></i> Copy</button>
+            </div>
+            
+            <div class="social-share">
+                <button class="social-btn whatsapp" onclick="shareOnWhatsApp()"><i class="fab fa-whatsapp"></i> WhatsApp</button>
+                <button class="social-btn facebook" onclick="shareOnFacebook()"><i class="fab fa-facebook"></i> Facebook</button>
+                <button class="social-btn telegram" onclick="shareOnTelegram()"><i class="fab fa-telegram"></i> Telegram</button>
+            </div>
+        </div>
+
+        <!-- Referrals List -->
+        <div class="referral-table">
+            <div class="table-header">
+                <div>Name</div>
+                <div>Join Date</div>
+                <div>Status</div>
+                <div>Level</div>
+                <div>Commission Earned</div>
+            </div>
+            <div id="referralsList">
+                <div class="table-row" style="text-align: center; grid-template-columns: 1fr;">
+                    <div><i class="fas fa-spinner fa-spin"></i> Loading referrals...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyDxxkC9iD1V1w-53Kf4oBrHEXlBLvCc7sE",
+            authDomain: "biluxe10-3e894.firebaseapp.com",
+            projectId: "biluxe10-3e894",
+            storageBucket: "biluxe10-3e894.firebasestorage.app",
+            messagingSenderId: "804749588233",
+            appId: "1:804749588233:web:7777648c0c7834733c05d8"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const auth = firebase.auth();
+
+        let currentUserId = null;
+
+        // AUTO FIELD GENERATION
+        async function ensureUserFields(userId) {
+            try {
+                const userDoc = await db.collection('user_collections').doc(userId).get();
+                const updates = {};
+                
+                if (userDoc.exists) {
+                    const userData = userDoc.data();
+                    const referralFields = {
+                        referralCode: userData.referralCode || generateReferralCode(),
+                        referralCount: userData.referralCount || 0,
+                        teamCount: userData.teamCount || 0,
+                        directCommission: userData.directCommission || 0,
+                        passiveCommission: userData.passiveCommission || 0,
+                        totalCommission: userData.totalCommission || 0
+                    };
+                    
+                    Object.keys(referralFields).forEach(field => {
+                        if (!(field in userData)) updates[field] = referralFields[field];
+                    });
+                    
+                    if (Object.keys(updates).length > 0) {
+                        await db.collection('user_collections').doc(userId).update(updates);
+                    }
+                }
+            } catch (error) {
+                console.error("Error ensuring user fields:", error);
+            }
+        }
+
+        // REAL DATA
+        auth.onAuthStateChanged(async (user) => {
+            if (user) {
+                currentUserId = user.uid;
+                await ensureUserFields(user.uid);
+                loadReferralData(user.uid);
+                
+                db.collection('user_collections').doc(user.uid).onSnapshot((doc) => {
+                    if (doc.exists) updateReferralStats(doc.data());
+                });
+            } else {
+                window.location.href = 'auth.html';
+            }
+        });
+
+        // LOAD REFERRAL DATA
+        async function loadReferralData(userId) {
+            try {
+                const userDoc = await db.collection('user_collections').doc(userId).get();
+                if (userDoc.exists) {
+                    const userData = userDoc.data();
+                    const referralCode = userData.referralCode;
+                    
+                    if (referralCode) {
+                        const referralLink = `https://biluxe10-affiliate.com/auth.html?ref=${referralCode}`;
+                        document.getElementById('referralLink').value = referralLink;
+                        updateReferralStats(userData);
+                        await loadReferralsList(userId);
+                    }
+                }
+            } catch (error) {
+                console.error("Error loading referral data:", error);
+            }
+        }
+
+        // UPDATE STATS
+        function updateReferralStats(userData) {
+            document.getElementById('directCommission').textContent = (userData.directCommission || 0).toFixed(2);
+            document.getElementById('passiveCommission').textContent = (userData.passiveCommission || 0).toFixed(2);
+            document.getElementById('totalCommission').textContent = ((userData.directCommission || 0) + (userData.passiveCommission || 0)).toFixed(2);
+            document.getElementById('totalReferrals').textContent = userData.referralCount || 0;
+            document.getElementById('activeReferrals').textContent = userData.referralCount || 0;
+            document.getElementById('teamSize').textContent = userData.teamCount || 0;
+            document.getElementById('monthReferrals').textContent = userData.referralCount || 0;
+            document.getElementById('referralEarnings').textContent = ((userData.directCommission || 0) + (userData.passiveCommission || 0)).toFixed(2);
+            document.getElementById('currentBalance').textContent = (userData.balance || 0).toFixed(2);
+        }
+
+        // LOAD REFERRALS LIST
+        async function loadReferralsList(userId) {
+            try {
+                const referralsSnapshot = await db.collection('referrals').where('referrerId', '==', userId).get();
+                const referralsList = document.getElementById('referralsList');
+                referralsList.innerHTML = '';
+
+                if (referralsSnapshot.empty) {
+                    referralsList.innerHTML = '<div class="table-row" style="text-align: center; grid-template-columns: 1fr;"><div>No referrals yet</div></div>';
+                    return;
+                }
+
+                for (const doc of referralsSnapshot.docs) {
+                    const referral = doc.data();
+                    const referredUser = await db.collection('user_collections').doc(referral.referredId).get();
+                    
+                    if (referredUser.exists) {
+                        const userData = referredUser.data();
+                        const row = document.createElement('div');
+                        row.className = 'table-row';
+                        row.innerHTML = `
+                            <div>${userData.username || userData.email}</div>
+                            <div>${referral.joinDate?.toDate().toLocaleDateString()}</div>
+                            <div style="color: var(--primary); font-weight: 600;">Active</div>
+                            <div>Level ${referral.level || 1}</div>
+                            <div>₹${(referral.earnedCommission || 0).toFixed(2)}</div>
+                        `;
+                        referralsList.appendChild(row);
+                    }
+                }
+            } catch (error) {
+                console.error("Error loading referrals list:", error);
+            }
+        }
+
+        // GENERATE REFERRAL CODE
+        function generateReferralCode() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let result = 'BLX10';
+            for (let i = 0; i < 6; i++) {
+                result += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return result;
+        }
+
+        // REFERRAL FUNCTIONS
+        function copyReferralLink() {
+            const linkInput = document.getElementById('referralLink');
+            linkInput.select();
+            document.execCommand('copy');
+            alert('✅ Referral link copied!');
+        }
+
+        function shareOnWhatsApp() {
+            const link = document.getElementById('referralLink').value;
+            const message = `Join me on Biluxe10 Affiliate and start earning! 💰\n\nUse my referral link: ${link}\n\n✅ Earn 50% commission\n✅ Passive income\n✅ Withdraw anytime`;
+            window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
+        }
+
+        function shareOnFacebook() {
+            const link = document.getElementById('referralLink').value;
+            window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(link)}`, '_blank');
+        }
+
+        function shareOnTelegram() {
+            const link = document.getElementById('referralLink').value;
+            const message = `Join Biluxe10 Affiliate and earn! 💰 ${link}`;
+            window.open(`https://t.me/share/url?url=${encodeURIComponent(link)}&text=${encodeURIComponent(message)}`, '_blank');
+        }
+    </script>
+</body>
+</html>
