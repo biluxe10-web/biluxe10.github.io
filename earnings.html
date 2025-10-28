@@ -3,165 +3,114 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Biluxe10 - Earnings</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Earnings - Biluxe Affiliate</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-        * { font-family: 'Inter', sans-serif; }
-        .page-transition { animation: slideIn 0.5s ease-out; }
-        @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        .stats-card { transition: all 0.3s ease; border-left: 4px solid; }
-        .stats-card:hover { transform: translateY(-5px); box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
-        .transaction-item { transition: all 0.3s ease; }
-        .transaction-item:hover { transform: translateX(5px); background: #f8fafc; }
+        :root {
+            --primary: #10B981;
+            --primary-dark: #059669;
+            --light: #f8fafc;
+            --dark: #1e293b;
+            --gray: #64748b;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%); min-height: 100vh; }
+        
+        .navbar {
+            background: white; padding: 1rem 2rem; box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .logo { font-size: 1.8rem; font-weight: bold; color: var(--primary); }
+        .nav-links { display: flex; gap: 2rem; }
+        .nav-links a {
+            text-decoration: none; color: var(--dark); font-weight: 500; padding: 0.5rem 1rem; border-radius: 8px; transition: all 0.3s ease;
+        }
+        .nav-links a:hover, .nav-links a.active { background: var(--primary); color: white; }
+        
+        .container { max-width: 1200px; margin: 2rem auto; padding: 0 1rem; }
+        
+        .earnings-summary {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;
+        }
+        .summary-card {
+            background: white; padding: 1.5rem; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            text-align: center; border-top: 4px solid var(--primary);
+        }
+        .summary-card h3 { color: var(--gray); font-size: 0.9rem; margin-bottom: 0.5rem; }
+        .summary-card .amount { font-size: 1.8rem; font-weight: bold; color: var(--dark); }
+        
+        .earnings-table {
+            background: white; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); overflow: hidden;
+        }
+        .table-header {
+            background: var(--primary); color: white; padding: 1rem; display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr; font-weight: 600;
+        }
+        .table-row {
+            display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; padding: 1rem;
+            border-bottom: 1px solid #e2e8f0; align-items: center;
+        }
+        .table-row:last-child { border-bottom: none; }
+        
+        .status-completed { color: var(--primary); font-weight: 600; }
+        .status-pending { color: #f59e0b; font-weight: 600; }
     </style>
 </head>
-<body class="bg-gray-50">
-    <!-- Navigation Sidebar (Same as dashboard) -->
-    <div class="sidebar fixed left-0 top-0 h-full w-64 bg-gradient-to-b from-gray-900 to-black text-white shadow-xl z-50">
-        <!-- Same sidebar code as dashboard -->
+<body>
+    <nav class="navbar">
+        <div class="logo">Biluxe Affiliate</div>
+        <div class="nav-links">
+            <a href="dashboard.html"><i class="fas fa-home"></i> Dashboard</a>
+            <a href="earnings.html" class="active"><i class="fas fa-chart-line"></i> Earnings</a>
+            <a href="packages.html"><i class="fas fa-cube"></i> Packages</a>
+            <a href="referral.html"><i class="fas fa-users"></i> Referral</a>
+            <a href="myteam.html"><i class="fas fa-network-wired"></i> My Team</a>
+            <a href="withdrawal.html"><i class="fas fa-wallet"></i> Withdrawal</a>
+            <a href="transactions.html"><i class="fas fa-exchange-alt"></i> Transactions</a>
+            <a href="notifications.html"><i class="fas fa-bell"></i> Notifications</a>
+            <a href="profile.html"><i class="fas fa-user"></i> Profile</a>
+            <a href="support.html"><i class="fas fa-headset"></i> Support</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1 style="margin-bottom: 2rem; color: var(--dark);">Earnings Overview</h1>
+        
+        <div class="earnings-summary">
+            <div class="summary-card">
+                <h3>Today's Earnings</h3>
+                <div class="amount">$<span id="todayEarnings">0.00</span></div>
+            </div>
+            <div class="summary-card">
+                <h3>This Week</h3>
+                <div class="amount">$<span id="weekEarnings">0.00</span></div>
+            </div>
+            <div class="summary-card">
+                <h3>This Month</h3>
+                <div class="amount">$<span id="monthEarnings">0.00</span></div>
+            </div>
+            <div class="summary-card">
+                <h3>Total Earnings</h3>
+                <div class="amount">$<span id="totalEarnings">0.00</span></div>
+            </div>
+        </div>
+
+        <div class="earnings-table">
+            <div class="table-header">
+                <div>Date</div>
+                <div>Source</div>
+                <div>Amount</div>
+                <div>Status</div>
+            </div>
+            <div id="earningsList">
+                <!-- Earnings data will be loaded here -->
+            </div>
+        </div>
     </div>
 
-    <!-- Main Content -->
-    <div class="ml-64 min-h-screen">
-        <!-- Header -->
-        <header class="bg-white shadow-sm border-b border-gray-200">
-            <div class="flex items-center justify-between h-16 px-8">
-                <div>
-                    <h2 class="text-xl font-semibold text-gray-900">Earnings Overview</h2>
-                    <p class="text-sm text-gray-600">Track your income and commissions</p>
-                </div>
-                <div class="flex items-center space-x-4">
-                    <button onclick="window.location.href='notifications.html'" class="p-2 text-gray-600 hover:text-gray-900 relative">
-                        <i class="fas fa-bell text-xl"></i>
-                        <span id="notificationBadge" class="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full hidden"></span>
-                    </button>
-                    <div class="flex items-center space-x-3 bg-gray-50 rounded-lg px-3 py-2 cursor-pointer" onclick="window.location.href='profile.html'">
-                        <img id="headerProfilePic" src="https://via.placeholder.com/32" alt="Profile" class="w-8 h-8 rounded-full border-2 border-blue-500">
-                        <span id="headerUserName" class="text-sm font-medium text-gray-900">User</span>
-                    </div>
-                </div>
-            </div>
-        </header>
-
-        <!-- Earnings Content -->
-        <main class="p-6 page-transition">
-            <!-- Stats Cards -->
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-                <div class="stats-card bg-white rounded-xl shadow-sm p-6 border-l-4 border-green-500">
-                    <div class="text-center">
-                        <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                            <i class="fas fa-hand-holding-usd text-green-600 text-xl"></i>
-                        </div>
-                        <p class="text-sm text-gray-600">Direct (50%)</p>
-                        <p class="text-2xl font-bold text-gray-900">₹<span id="directEarnings">0</span></p>
-                        <p class="text-xs text-gray-500 mt-1">From direct referrals</p>
-                    </div>
-                </div>
-
-                <div class="stats-card bg-white rounded-xl shadow-sm p-6 border-l-4 border-blue-500">
-                    <div class="text-center">
-                        <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                            <i class="fas fa-users text-blue-600 text-xl"></i>
-                        </div>
-                        <p class="text-sm text-gray-600">Passive (10%)</p>
-                        <p class="text-2xl font-bold text-gray-900">₹<span id="passiveEarnings">0</span></p>
-                        <p class="text-xs text-gray-500 mt-1">From team referrals</p>
-                    </div>
-                </div>
-
-                <div class="stats-card bg-white rounded-xl shadow-sm p-6 border-l-4 border-purple-500">
-                    <div class="text-center">
-                        <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                            <i class="fas fa-gift text-purple-600 text-xl"></i>
-                        </div>
-                        <p class="text-sm text-gray-600">Ads Bonus (5%)</p>
-                        <p class="text-2xl font-bold text-gray-900">₹<span id="bonusEarnings">0</span></p>
-                        <p class="text-xs text-gray-500 mt-1">Bonus earnings</p>
-                    </div>
-                </div>
-
-                <div class="stats-card bg-white rounded-xl shadow-sm p-6 border-l-4 border-orange-500">
-                    <div class="text-center">
-                        <div class="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                            <i class="fas fa-chart-pie text-orange-600 text-xl"></i>
-                        </div>
-                        <p class="text-sm text-gray-600">Total Earned</p>
-                        <p class="text-2xl font-bold text-gray-900">₹<span id="totalEarnings">0</span></p>
-                        <p class="text-xs text-gray-500 mt-1">Lifetime earnings</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Commission Breakdown -->
-            <div class="bg-white rounded-2xl shadow-sm p-6 mb-8">
-                <h3 class="text-lg font-semibold text-gray-900 mb-6">Commission Breakdown</h3>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div class="text-center p-6 bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl border border-green-200">
-                        <div class="text-4xl font-bold text-green-600 mb-2">50%</div>
-                        <h4 class="font-semibold text-gray-900 mb-2">Direct Commission</h4>
-                        <p class="text-sm text-gray-600">From your direct referrals</p>
-                        <div class="mt-4 p-3 bg-green-100 rounded-lg">
-                            <p class="text-sm text-green-800 font-semibold">Earned: ₹<span id="directAmount">0</span></p>
-                        </div>
-                    </div>
-
-                    <div class="text-center p-6 bg-gradient-to-br from-blue-50 to-cyan-50 rounded-xl border border-blue-200">
-                        <div class="text-4xl font-bold text-blue-600 mb-2">10%</div>
-                        <h4 class="font-semibold text-gray-900 mb-2">Passive Income</h4>
-                        <p class="text-sm text-gray-600">From your team's referrals</p>
-                        <div class="mt-4 p-3 bg-blue-100 rounded-lg">
-                            <p class="text-sm text-blue-800 font-semibold">Earned: ₹<span id="passiveAmount">0</span></p>
-                        </div>
-                    </div>
-
-                    <div class="text-center p-6 bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl border border-purple-200">
-                        <div class="text-4xl font-bold text-purple-600 mb-2">5%</div>
-                        <h4 class="font-semibold text-gray-900 mb-2">Ads Bonus</h4>
-                        <p class="text-sm text-gray-600">Extended network bonus</p>
-                        <div class="mt-4 p-3 bg-purple-100 rounded-lg">
-                            <p class="text-sm text-purple-800 font-semibold">Earned: ₹<span id="bonusAmount">0</span></p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Transaction History -->
-            <div class="bg-white rounded-2xl shadow-sm border border-gray-200">
-                <div class="p-6 border-b border-gray-200">
-                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                        <div>
-                            <h3 class="text-lg font-semibold text-gray-900">Transaction History</h3>
-                            <p class="text-sm text-gray-600 mt-1">All your earning transactions</p>
-                        </div>
-                        <div class="flex space-x-2">
-                            <button id="filterAll" class="filter-btn px-3 py-1 bg-blue-600 text-white text-sm rounded-lg">All</button>
-                            <button id="filterEarnings" class="filter-btn px-3 py-1 bg-gray-200 text-gray-700 text-sm rounded-lg">Earnings</button>
-                            <button id="filterBonuses" class="filter-btn px-3 py-1 bg-gray-200 text-gray-700 text-sm rounded-lg">Bonuses</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="p-6">
-                    <div id="transactionsList" class="space-y-4">
-                        <div class="text-center py-12">
-                            <div class="w-16 h-16 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mx-auto mb-4"></div>
-                            <p class="text-gray-500 text-lg">Loading transactions...</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </main>
-    </div>
-
-    <!-- Firebase & Earnings Script -->
     <script>
-        // Firebase Configuration
         const firebaseConfig = {
             apiKey: "AIzaSyDxxkC9iD1V1w-53Kf4oBrHEXlBLvCc7sE",
             authDomain: "biluxe10-3e894.firebaseapp.com",
@@ -171,218 +120,61 @@
             appId: "1:804749588233:web:7777648c0c7834733c05d8"
         };
 
-        // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
         const auth = firebase.auth();
 
-        let currentUser = null;
-        let transactions = [];
-        let currentFilter = 'all';
-
-        document.addEventListener('DOMContentLoaded', function() {
-            checkAuthState();
-            setupFilterButtons();
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                loadEarningsData(user.uid);
+            }
         });
 
-        function checkAuthState() {
-            auth.onAuthStateChanged((user) => {
-                if (user) {
-                    currentUser = user;
-                    loadUserData(user.uid);
-                    loadTransactions(user.uid);
-                    loadNotifications(user.uid);
-                } else {
-                    window.location.href = 'auth.html';
-                }
-            });
-        }
-
-        function loadUserData(userId) {
-            db.collection('users').doc(userId).onSnapshot((doc) => {
-                if (doc.exists) {
-                    const userData = doc.data();
-                    updateUserUI(userData);
-                }
-            });
-        }
-
-        function setupFilterButtons() {
-            document.getElementById('filterAll').addEventListener('click', () => setFilter('all'));
-            document.getElementById('filterEarnings').addEventListener('click', () => setFilter('earning'));
-            document.getElementById('filterBonuses').addEventListener('click', () => setFilter('bonus'));
-        }
-
-        function setFilter(filter) {
-            currentFilter = filter;
-            
-            // Update button styles
-            document.getElementById('filterAll').className = 'filter-btn px-3 py-1 bg-gray-200 text-gray-700 text-sm rounded-lg';
-            document.getElementById('filterEarnings').className = 'filter-btn px-3 py-1 bg-gray-200 text-gray-700 text-sm rounded-lg';
-            document.getElementById('filterBonuses').className = 'filter-btn px-3 py-1 bg-gray-200 text-gray-700 text-sm rounded-lg';
-            
-            if (filter === 'all') {
-                document.getElementById('filterAll').className = 'filter-btn px-3 py-1 bg-blue-600 text-white text-sm rounded-lg';
-            } else if (filter === 'earning') {
-                document.getElementById('filterEarnings').className = 'filter-btn px-3 py-1 bg-blue-600 text-white text-sm rounded-lg';
-            } else {
-                document.getElementById('filterBonuses').className = 'filter-btn px-3 py-1 bg-blue-600 text-white text-sm rounded-lg';
-            }
-            
-            updateTransactionsUI();
-        }
-
-        function loadTransactions(userId) {
-            db.collection('transactions')
+        async function loadEarningsData(userId) {
+            // Load from transactions collection where type = 'earning'
+            const earningsSnapshot = await db.collection('transactions')
                 .where('userId', '==', userId)
-                .orderBy('date', 'desc')
-                .onSnapshot((snapshot) => {
-                    transactions = [];
-                    snapshot.forEach((doc) => {
-                        transactions.push({ id: doc.id, ...doc.data() });
-                    });
-                    updateTransactionsUI();
-                    calculateEarnings();
-                }, (error) => {
-                    console.error('Error loading transactions:', error);
-                    document.getElementById('transactionsList').innerHTML = `
-                        <div class="text-center py-12">
-                            <div class="text-6xl text-gray-300 mb-4">
-                                <i class="fas fa-exclamation-triangle"></i>
-                            </div>
-                            <p class="text-gray-500 text-lg">Error loading transactions</p>
-                            <p class="text-sm text-gray-400">Please try refreshing the page</p>
-                        </div>
-                    `;
-                });
-        }
+                .where('type', '==', 'earning')
+                .orderBy('timestamp', 'desc')
+                .get();
 
-        function calculateEarnings() {
-            let direct = 0, passive = 0, bonus = 0, total = 0;
+            const earningsList = document.getElementById('earningsList');
+            earningsList.innerHTML = '';
 
-            transactions.forEach(transaction => {
-                if (transaction.type === 'earning' || transaction.type === 'bonus') {
-                    total += transaction.amount;
+            let todayTotal = 0;
+            let weekTotal = 0;
+            let monthTotal = 0;
+            let totalEarnings = 0;
 
-                    if (transaction.category === 'direct' || transaction.source?.includes('Direct') || transaction.source?.includes('Level 1')) {
-                        direct += transaction.amount;
-                    } else if (transaction.category === 'passive' || transaction.source?.includes('Passive') || transaction.source?.includes('Level 2')) {
-                        passive += transaction.amount;
-                    } else if (transaction.category === 'bonus' || transaction.source?.includes('Bonus') || transaction.source?.includes('Level 3')) {
-                        bonus += transaction.amount;
-                    }
-                }
-            });
+            const today = new Date();
+            const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+            const monthAgo = new Date(today.getFullYear(), today.getMonth() - 1, today.getDate());
 
-            // Update UI
-            document.getElementById('directEarnings').textContent = direct.toLocaleString();
-            document.getElementById('passiveEarnings').textContent = passive.toLocaleString();
-            document.getElementById('bonusEarnings').textContent = bonus.toLocaleString();
-            document.getElementById('totalEarnings').textContent = total.toLocaleString();
+            earningsSnapshot.forEach(doc => {
+                const earning = doc.data();
+                const earningDate = earning.timestamp.toDate();
+                
+                totalEarnings += earning.amount;
+                if (earningDate.toDateString() === today.toDateString()) todayTotal += earning.amount;
+                if (earningDate >= weekAgo) weekTotal += earning.amount;
+                if (earningDate >= monthAgo) monthTotal += earning.amount;
 
-            document.getElementById('directAmount').textContent = direct.toLocaleString();
-            document.getElementById('passiveAmount').textContent = passive.toLocaleString();
-            document.getElementById('bonusAmount').textContent = bonus.toLocaleString();
-        }
-
-        function updateTransactionsUI() {
-            const container = document.getElementById('transactionsList');
-            
-            const filteredTransactions = transactions.filter(transaction => {
-                if (currentFilter === 'all') return true;
-                return transaction.type === currentFilter;
-            });
-            
-            if (filteredTransactions.length === 0) {
-                container.innerHTML = `
-                    <div class="text-center py-12">
-                        <div class="text-6xl text-gray-300 mb-4">
-                            <i class="fas fa-money-bill-wave"></i>
-                        </div>
-                        <p class="text-gray-500 text-lg">No transactions found</p>
-                        <p class="text-sm text-gray-400">${currentFilter === 'all' ? 'Your transactions will appear here' : 'No ' + currentFilter + ' transactions'}</p>
-                    </div>
+                const row = document.createElement('div');
+                row.className = 'table-row';
+                row.innerHTML = `
+                    <div>${earningDate.toLocaleDateString()}</div>
+                    <div>${earning.description}</div>
+                    <div>$${earning.amount.toFixed(2)}</div>
+                    <div class="status-completed">Completed</div>
                 `;
-                return;
-            }
+                earningsList.appendChild(row);
+            });
 
-            container.innerHTML = filteredTransactions.map(transaction => `
-                <div class="transaction-item flex justify-between items-center p-4 bg-gray-50 rounded-lg border-l-4 ${
-                    transaction.type === 'earning' ? 'border-green-500' : 
-                    transaction.type === 'bonus' ? 'border-blue-500' : 
-                    transaction.type === 'withdrawal' ? 'border-orange-500' : 'border-gray-500'
-                }">
-                    <div class="flex-1">
-                        <div class="flex items-center space-x-3">
-                            <div class="w-10 h-10 rounded-full flex items-center justify-center ${
-                                transaction.type === 'earning' ? 'bg-green-100 text-green-600' : 
-                                transaction.type === 'bonus' ? 'bg-blue-100 text-blue-600' : 
-                                transaction.type === 'withdrawal' ? 'bg-orange-100 text-orange-600' : 'bg-gray-100 text-gray-600'
-                            }">
-                                <i class="fas ${
-                                    transaction.type === 'earning' ? 'fa-hand-holding-usd' : 
-                                    transaction.type === 'bonus' ? 'fa-gift' : 
-                                    transaction.type === 'withdrawal' ? 'fa-wallet' : 'fa-exchange-alt'
-                                }"></i>
-                            </div>
-                            <div>
-                                <p class="font-semibold text-gray-900">${transaction.source || 'Transaction'}</p>
-                                <p class="text-sm text-gray-600 capitalize">
-                                    ${transaction.type} • ${transaction.status || 'completed'}
-                                    ${transaction.category ? '• ' + transaction.category : ''}
-                                </p>
-                                <p class="text-xs text-gray-500">
-                                    ${transaction.date?.toDate ? transaction.date.toDate().toLocaleDateString('en-IN') : 'Recent'}
-                                    ${transaction.date?.toDate ? ' at ' + transaction.date.toDate().toLocaleTimeString('en-IN', {hour: '2-digit', minute:'2-digit'}) : ''}
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="text-right">
-                        <p class="text-lg font-bold ${
-                            transaction.type === 'earning' || transaction.type === 'bonus' ? 'text-green-600' : 'text-red-600'
-                        }">
-                            ${transaction.type === 'earning' || transaction.type === 'bonus' ? '+' : '-'}₹${transaction.amount.toLocaleString()}
-                        </p>
-                        <p class="text-sm text-gray-600">ID: ${transaction.transactionId || transaction.id}</p>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function loadNotifications(userId) {
-            db.collection('notifications')
-                .where('userId', '==', userId)
-                .where('read', '==', false)
-                .onSnapshot((snapshot) => {
-                    const unreadCount = snapshot.size;
-                    const badge = document.getElementById('notificationBadge');
-                    
-                    if (unreadCount > 0) {
-                        badge.classList.remove('hidden');
-                        badge.textContent = unreadCount > 9 ? '9+' : unreadCount;
-                    } else {
-                        badge.classList.add('hidden');
-                    }
-                });
-        }
-
-        function updateUserUI(userData) {
-            document.getElementById('userName').textContent = userData.name || 'User';
-            document.getElementById('headerUserName').textContent = userData.name || 'User';
-            document.getElementById('userRank').textContent = userData.rank || 'Affiliate';
-            document.getElementById('userBalance').textContent = userData.balance || 0;
-
-            if (userData.profilePic) {
-                document.getElementById('userProfilePic').src = userData.profilePic;
-                document.getElementById('headerProfilePic').src = userData.profilePic;
-            }
-        }
-
-        // Utility function to generate IDs
-        function generateId() {
-            return 'ID_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+            document.getElementById('todayEarnings').textContent = todayTotal.toFixed(2);
+            document.getElementById('weekEarnings').textContent = weekTotal.toFixed(2);
+            document.getElementById('monthEarnings').textContent = monthTotal.toFixed(2);
+            document.getElementById('totalEarnings').textContent = totalEarnings.toFixed(2);
         }
     </script>
 </body>
-</html>                
+</html>     
