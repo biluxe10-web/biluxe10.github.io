@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Team - Biluxe Affiliate</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+    <style>
+        :root {
+            --primary: #10B981;
+            --primary-dark: #059669;
+            --light: #f8fafc;
+            --dark: #1e293b;
+            --gray: #64748b;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%); min-height: 100vh; }
+        
+        .navbar {
+            background: white; padding: 1rem 2rem; box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .logo { font-size: 1.8rem; font-weight: bold; color: var(--primary); }
+        .nav-links { display: flex; gap: 2rem; }
+        .nav-links a {
+            text-decoration: none; color: var(--dark); font-weight: 500; padding: 0.5rem 1rem; border-radius: 8px; transition: all 0.3s ease;
+        }
+        .nav-links a:hover, .nav-links a.active { background: var(--primary); color: white; }
+        
+        .container { max-width: 1200px; margin: 2rem auto; padding: 0 1rem; }
+        
+        .team-stats {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;
+        }
+        .stat-card {
+            background: white; padding: 1.5rem; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;
+        }
+        .stat-card h3 { color: var(--gray); font-size: 0.9rem; margin-bottom: 0.5rem; }
+        .stat-card .value { font-size: 1.8rem; font-weight: bold; color: var(--dark); }
+        
+        .team-tree {
+            background: white; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); padding: 2rem; margin-bottom: 2rem;
+        }
+        .tree-level { margin-bottom: 2rem; }
+        .tree-level h3 { color: var(--dark); margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--primary); }
+        .members-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem;
+        }
+        .member-card {
+            background: var(--light); padding: 1rem; border-radius: 8px; border-left: 4px solid var(--primary);
+        }
+        .member-name { font-weight: 600; color: var(--dark); }
+        .member-details { font-size: 0.8rem; color: var(--gray); margin-top: 0.5rem; }
+        
+        .team-table {
+            background: white; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); overflow: hidden;
+        }
+        .table-header {
+            background: var(--primary); color: white; padding: 1rem; display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr 1fr; font-weight: 600;
+        }
+        .table-row {
+            display: grid; grid-template-columns: 1fr 1fr 1fr 1fr 1fr; padding: 1rem;
+            border-bottom: 1px solid #e2e8f0; align-items: center;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">Biluxe Affiliate</div>
+        <div class="nav-links">
+            <a href="dashboard.html"><i class="fas fa-home"></i> Dashboard</a>
+            <a href="earnings.html"><i class="fas fa-chart-line"></i> Earnings</a>
+            <a href="packages.html"><i class="fas fa-cube"></i> Packages</a>
+            <a href="referral.html"><i class="fas fa-users"></i> Referral</a>
+            <a href="myteam.html" class="active"><i class="fas fa-network-wired"></i> My Team</a>
+            <a href="withdrawal.html"><i class="fas fa-wallet"></i> Withdrawal</a>
+            <a href="transactions.html"><i class="fas fa-exchange-alt"></i> Transactions</a>
+            <a href="notifications.html"><i class="fas fa-bell"></i> Notifications</a>
+            <a href="profile.html"><i class="fas fa-user"></i> Profile</a>
+            <a href="support.html"><i class="fas fa-headset"></i> Support</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1 style="margin-bottom: 2rem; color: var(--dark);">My Team Network</h1>
+        
+        <div class="team-stats">
+            <div class="stat-card">
+                <h3>Direct Team</h3>
+                <div class="value" id="directTeam">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>Level 2 Team</h3>
+                <div class="value" id="level2Team">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>Level 3 Team</h3>
+                <div class="value" id="level3Team">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>Total Team</h3>
+                <div class="value" id="totalTeam">0</div>
+            </div>
+        </div>
+
+        <div class="team-tree">
+            <h2>Team Structure</h2>
+            <div class="tree-level">
+                <h3>Level 1 - Direct Referrals</h3>
+                <div class="members-grid" id="level1Members">
+                    <!-- Level 1 members -->
+                </div>
+            </div>
+            <div class="tree-level">
+                <h3>Level 2 - Team's Referrals</h3>
+                <div class="members-grid" id="level2Members">
+                    <!-- Level 2 members -->
+                </div>
+            </div>
+        </div>
+
+        <div class="team-table">
+            <div class="table-header">
+                <div>Member</div>
+                <div>Join Date</div>
+                <div>Level</div>
+                <div>Status</div>
+                <div>Earnings</div>
+            </div>
+            <div id="teamList">
+                <!-- Team members will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyDxxkC9iD1V1w-53Kf4oBrHEXlBLvCc7sE",
+            authDomain: "biluxe10-3e894.firebaseapp.com",
+            projectId: "biluxe10-3e894",
+            storageBucket: "biluxe10-3e894.firebasestorage.app",
+            messagingSenderId: "804749588233",
+            appId: "1:804749588233:web:7777648c0c7834733c05d8"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const auth = firebase.auth();
+
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                loadTeamData(user.uid);
+            }
+        });
+
+        async function loadTeamData(userId) {
+            // Load direct referrals (Level 1)
+            const directRefs = await db.collection('referrals')
+                .where('referrerId', '==', userId)
+                .where('level', '==', 1)
+                .get();
+
+            document.getElementById('directTeam').textContent = directRefs.size;
+            
+            // Load Level 2 team
+            let level2Count = 0;
+            for (const doc of directRefs.docs) {
+                const referral = doc.data();
+                const level2Refs = await db.collection('referrals')
+                    .where('referrerId', '==', referral.referredId)
+                    .where('level', '==', 2)
+                    .get();
+                level2Count += level2Refs.size;
+            }
+            document.getElementById('level2Team').textContent = level2Count;
+            
+            const totalTeam = directRefs.size + level2Count;
+            document.getElementById('totalTeam').textContent = totalTeam;
+
+            // Load team members for display
+            loadTeamMembers(userId);
+        }
+
+        async function loadTeamMembers(userId) {
+            const teamList = document.getElementById('teamList');
+            const level1Members = document.getElementById('level1Members');
+            teamList.innerHTML = '';
+            level1Members.innerHTML = '';
+
+            // Load direct referrals
+            const directRefs = await db.collection('referrals')
+                .where('referrerId', '==', userId)
+                .get();
+
+            if (directRefs.empty) {
+                teamList.innerHTML = '<div class="table-row" style="text-align: center; grid-template-columns: 1fr;"><div>No team members yet</div></div>';
+                level1Members.innerHTML = '<div style="text-align: center; color: var(--gray);">No direct referrals</div>';
+                return;
+            }
+
+            for (const doc of directRefs.docs) {
+                const referral = doc.data();
+                const userDoc = await db.collection('users').doc(referral.referredId).get();
+                const userData = userDoc.data();
+
+                // Add to level 1 members grid
+                const memberCard = document.createElement('div');
+                memberCard.className = 'member-card';
+                memberCard.innerHTML = `
+                    <div class="member-name">${userData?.username || 'User'}</div>
+                    <div class="member-details">
+                        Joined: ${referral.joinDate?.toDate().toLocaleDateString()}
+                    </div>
+                `;
+                level1Members.appendChild(memberCard);
+
+                // Add to team table
+                const row = document.createElement('div');
+                row.className = 'table-row';
+                row.innerHTML = `
+                    <div>${userData?.username || 'User'}</div>
+                    <div>${referral.joinDate?.toDate().toLocaleDateString()}</div>
+                    <div>Level ${referral.level}</div>
+                    <div style="color: var(--primary); font-weight: 600;">Active</div>
+                    <div>$${(Math.random() * 100).toFixed(2)}</div>
+                `;
+                teamList.appendChild(row);
+            }
+        }
+    </script>
+</body>
+</html>
