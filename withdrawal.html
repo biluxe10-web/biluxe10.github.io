@@ -90,19 +90,19 @@
         <div class="withdrawal-stats">
             <div class="stat-card">
                 <h3>Available Balance</h3>
-                <div class="value">$<span id="availableBalance">0.00</span></div>
+                <div class="value">₹<span id="availableBalance">0.00</span></div>
             </div>
             <div class="stat-card">
                 <h3>Min. Withdrawal</h3>
-                <div class="value">$20.00</div>
+                <div class="value">₹100.00</div>
             </div>
             <div class="stat-card">
                 <h3>Total Withdrawn</h3>
-                <div class="value">$<span id="totalWithdrawn">0.00</span></div>
+                <div class="value">₹<span id="totalWithdrawn">0.00</span></div>
             </div>
             <div class="stat-card">
                 <h3>Pending</h3>
-                <div class="value">$<span id="pendingWithdrawals">0.00</span></div>
+                <div class="value">₹<span id="pendingWithdrawals">0.00</span></div>
             </div>
         </div>
 
@@ -110,14 +110,15 @@
             <h3 style="margin-bottom: 1.5rem;">Request Withdrawal</h3>
             <form id="withdrawalForm">
                 <div class="form-group">
-                    <label for="amount">Amount ($)</label>
-                    <input type="number" id="amount" min="20" step="0.01" required>
+                    <label for="amount">Amount (₹)</label>
+                    <input type="number" id="amount" min="100" step="0.01" required>
                 </div>
                 <div class="form-group">
                     <label for="method">Withdrawal Method</label>
                     <select id="method" required>
                         <option value="">Select Method</option>
                         <option value="paypal">PayPal</option>
+..                       <option value="upi">upi</option>
                         <option value="bank">Bank Transfer</option>
                         <option value="crypto">Cryptocurrency</option>
                     </select>
