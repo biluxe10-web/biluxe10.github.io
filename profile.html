@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - Biluxe10 Affiliate</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-storage-compat.js"></script>
+    <style>
+        :root {
+            --primary: #10B981; --accent: #F59E0B; --purple: #8B5CF6; --blue: #3B82F6;
+            --light: #F8FAFC; --dark: #1E293B; --gray: #64748B;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%); min-height: 100vh; }
+        
+        .navbar {
+            background: rgba(255, 255, 255, 0.95); padding: 1rem 2rem; box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .logo { font-size: 1.8rem; font-weight: 800; color: var(--primary); display: flex; align-items: center; gap: 0.5rem; }
+        .nav-links { display: flex; gap: 0.5rem; }
+        .nav-links a {
+            text-decoration: none; color: var(--dark); font-weight: 500; padding: 0.75rem 1.25rem; border-radius: 10px;
+            display: flex; align-items: center; gap: 0.5rem;
+        }
+        .nav-links a:hover, .nav-links a.active { background: var(--primary); color: white; }
+        .user-section { display: flex; align-items: center; gap: 1rem; }
+        .user-balance {
+            background: linear-gradient(135deg, var(--primary), #047857); color: white; padding: 0.75rem 1.5rem;
+            border-radius: 25px; font-weight: 700; display: flex; align-items: center; gap: 0.5rem;
+        }
+        
+        .container { max-width: 1000px; margin: 2rem auto; padding: 0 1.5rem; }
+        .page-header {
+            background: linear-gradient(135deg, var(--primary), #047857); color: white; padding: 2rem;
+            border-radius: 20px; margin-bottom: 2rem;
+        }
+        
+        .profile-header {
+            background: white; border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); padding: 2rem; margin-bottom: 2rem;
+            display: flex; align-items: center; gap: 2rem;
+        }
+        .profile-picture {
+            width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 4px solid var(--primary);
+        }
+        
+        .profile-form {
+            background: white; border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); padding: 2rem;
+        }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem; }
+        .form-group { margin-bottom: 1.5rem; }
+        .form-group label { display: block; margin-bottom: 0.5rem; color: var(--dark); font-weight: 600; }
+        .form-group input, .form-group select {
+            width: 100%; padding: 1rem; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 1rem;
+        }
+        .btn {
+            padding: 1rem 2rem; border: none; border-radius: 12px; font-weight: 600; cursor: pointer; transition: all 0.3s ease;
+        }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: #059669; }
+        .btn-secondary { background: var(--light); color: var(--dark); border: 2px solid var(--primary); }
+        
+        .photo-upload { text-align: center; margin-bottom: 2rem; }
+        .upload-btn {
+            display: inline-block; background: var(--primary); color: white; padding: 1rem 2rem;
+            border-radius: 12px; cursor: pointer; margin-top: 1rem; font-weight: 600;
+        }
+        #profileImageInput { display: none; }
+        
+        .alert {
+            padding: 1rem; border-radius: 12px; margin-bottom: 1rem; display: none;
+        }
+        .alert-success { background: #D1FAE5; color: #065F46; border: 1px solid #A7F3D0; }
+        .alert-error { background: #FEE2E2; color: #991B1B; border: 1px solid #FECACA; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo"><i class="fas fa-rocket"></i>Biluxe10 Affiliate</div>
+        <div class="nav-links">
+            <a href="dashboard.html"><i class="fas fa-home"></i> Dashboard</a>
+            <a href="earnings.html"><i class="fas fa-chart-line"></i> Earnings</a>
+            <a href="packages.html"><i class="fas fa-cube"></i> Packages</a>
+            <a href="referral.html"><i class="fas fa-users"></i> Referral</a>
+            <a href="myteam.html"><i class="fas fa-network-wired"></i> My Team</a>
+            <a href="withdrawal.html"><i class="fas fa-wallet"></i> Withdrawal</a>
+            <a href="transactions.html"><i class="fas fa-exchange-alt"></i> Transactions</a>
+            <a href="profile.html" class="active"><i class="fas fa-user"></i> Profile</a>
+            <a href="support.html"><i class="fas fa-headset"></i> Support</a>
+        </div>
+        <div class="user-section">
+            <div class="user-balance"><i class="fas fa-wallet"></i>₹<span id="currentBalance">0.00</span></div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="page-header">
+            <h1 style="font-size: 2.2rem; margin-bottom: 0.5rem;">Profile Settings 👤</h1>
+            <p>Manage your account information and preferences</p>
+        </div>
+
+        <div id="alertMessage" class="alert"></div>
+
+        <div class="profile-header">
+            <img id="profilePicture" src="https://via.placeholder.com/120" alt="Profile" class="profile-picture">
+            <div class="profile-info">
+                <h1 id="userFullName" style="color: var(--dark); margin-bottom: 0.5rem;">Loading...</h1>
+                <p id="userEmail" style="color: var(--gray);">Loading...</p>
+                <p>Member since: <span id="memberSince">Loading...</span></p>
+            </div>
+        </div>
+
+        <div class="profile-form">
+            <div class="photo-upload">
+                <h3 style="margin-bottom: 1rem;">Profile Picture</h3>
+                <input type="file" id="profileImageInput" accept="image/*">
+                <label for="profileImageInput" class="upload-btn">
+                    <i class="fas fa-camera"></i> Change Profile Picture
+                </label>
+            </div>
+
+            <form id="profileForm">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="username">Username *</label>
+                        <input type="text" id="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="fullName">Full Name *</label>
+                        <input type="text" id="fullName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phoneNumber">Phone Number *</label>
+                        <input type="tel" id="phoneNumber" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" disabled style="background: #f8fafc;">
+                    </div>
+                    <div class="form-group">
+                        <label for="country">Country</label>
+                        <input type="text" id="country">
+                    </div>
+                    <div class="form-group">
+                        <label for="city">City</label>
+                        <input type="text" id="city">
+                    </div>
+                    <div class="form-group">
+                        <label for="dateOfBirth">Date of Birth</label>
+                        <input type="date" id="dateOfBirth">
+                    </div>
+                    <div class="form-group">
+                        <label for="gender">Gender</label>
+                        <select id="gender">
+                            <option value="">Select Gender</option>
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="address">Address</label>
+                    <input type="text" id="address">
+                </div>
+                
+                <div class="form-group">
+                    <label for="zipCode">ZIP Code</label>
+                    <input type="text" id="zipCode">
+                </div>
+
+                <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Update Profile
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="resetPassword()">
+                        <i class="fas fa-key"></i> Change Password
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyDxxkC9iD1V1w-53Kf4oBrHEXlBLvCc7sE",
+            authDomain: "biluxe10-3e894.firebaseapp.com",
+            projectId: "biluxe10-3e894",
+            storageBucket: "biluxe10-3e894.firebasestorage.app",
+            messagingSenderId: "804749588233",
+            appId: "1:804749588233:web:7777648c0c7834733c05d8"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const auth = firebase.auth();
+        const storage = firebase.storage();
+
+        let currentUser = null;
+
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                currentUser = user;
+                loadUserProfile(user);
+                setupRealTimeBalance(user.uid);
+            } else {
+                window.location.href = 'auth.html';
+            }
+        });
+
+        function setupRealTimeBalance(userId) {
+            db.collection('user_collections').doc(userId).onSnapshot((doc) => {
+                if (doc.exists) {
+                    const userData = doc.data();
+                    document.getElementById('currentBalance').textContent = (userData.balance || 0).toFixed(2);
+                }
+            });
+        }
+
+        // Load profile data
+        async function loadUserProfile(user) {
+            try {
+                const userDoc = await db.collection('user_collections').doc(user.uid).get();
+                
+                if (userDoc.exists) {
+                    const userData = userDoc.data();
+                    
+                    // Fill form with existing data
+                    document.getElementById('username').value = userData.username || '';
+                    document.getElementById('fullName').value = userData.fullName || '';
+                    document.getElementById('phoneNumber').value = userData.phoneNumber || '';
+                    document.getElementById('country').value = userData.country || '';
+                    document.getElementById('city').value = userData.city || '';
+                    document.getElementById('address').value = userData.address || '';
+                    document.getElementById('zipCode').value = userData.zipCode || '';
+                    document.getElementById('gender').value = userData.gender || '';
+                    
+                    if (userData.dateOfBirth) {
+                        const dob = userData.dateOfBirth.toDate();
+                        document.getElementById('dateOfBirth').value = dob.toISOString().split('T')[0];
+                    }
+                    
+                    // Update profile picture
+                    if (userData.profilePicture) {
+                        document.getElementById('profilePicture').src = userData.profilePicture;
+                    } else {
+                        const defaultAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(userData.username || 'User')}&background=10B981&color=fff&size=128`;
+                        document.getElementById('profilePicture').src = defaultAvatar;
+                    }
+                    
+                    // Update header
+                    document.getElementById('userFullName').textContent = userData.fullName || userData.username || 'User';
+                    document.getElementById('userEmail').textContent = user.email;
+                    document.getElementById('email').value = user.email;
+                    
+                    if (userData.joinDate) {
+                        document.getElementById('memberSince').textContent = userData.joinDate.toDate().toLocaleDateString();
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading profile:', error);
+                showAlert('Error loading profile data', 'error');
+            }
+        }
+
+        // Profile image upload
+        document.getElementById('profileImageInput').addEventListener('change', async function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                try {
+                    showAlert('Uploading profile picture...', 'success');
+                    
+                    // Upload to Firebase Storage
+                    const storageRef = storage.ref();
+                    const imageRef = storageRef.child(`profile_pictures/${currentUser.uid}/${Date.now()}_${file.name}`);
+                    const snapshot = await imageRef.put(file);
+                    const downloadURL = await snapshot.ref.getDownloadURL();
+
+                    // Update profile in Firestore
+                    await db.collection('user_collections').doc(currentUser.uid).update({
+                        profilePicture: downloadURL,
+                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+
+                    // Update image display
+                    document.getElementById('profilePicture').src = downloadURL;
+                    showAlert('Profile picture updated successfully!', 'success');
+                } catch (error) {
+                    console.error('Error uploading image:', error);
+                    showAlert('Error uploading profile picture', 'error');
+                }
+            }
+        });
+
+        // Update profile form
+        document.getElementById('profileForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const profileData = {
+                username: document.getElementById('username').value,
+                fullName: document.getElementById('fullName').value,
+                phoneNumber: document.getElementById('phoneNumber').value,
+                country: document.getElementById('country').value,
+                city: document.getElementById('city').value,
+                address: document.getElementById('address').value,
+                zipCode: document.getElementById('zipCode').value,
+                gender: document.getElementById('gender').value,
+                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+            };
+
+            // Add date of birth if provided
+            const dob = document.getElementById('dateOfBirth').value;
+            if (dob) {
+                profileData.dateOfBirth = new Date(dob);
+            }
+
+            try {
+                await db.collection('user_collections').doc(currentUser.uid).update(profileData);
+                
+                // Update header
+                document.getElementById('userFullName').textContent = profileData.fullName;
+                
+                showAlert('Profile updated successfully!', 'success');
+            } catch (error) {
+                console.error('Error updating profile:', error);
+                showAlert('Error updating profile', 'error');
+            }
+        });
+
+        // Reset password function
+        function resetPassword() {
+            const email = currentUser.email;
+            auth.sendPasswordResetEmail(email)
+                .then(() => {
+                    showAlert('Password reset email sent! Check your inbox.', 'success');
+                })
+                .catch((error) => {
+                    console.error('Error sending reset email:', error);
+                    showAlert('Error sending reset email', 'error');
+                });
+        }
+
+        function showAlert(message, type) {
+            const alertDiv = document.getElementById('alertMessage');
+            alertDiv.textContent = message;
+            alertDiv.className = `alert alert-${type}`;
+            alertDiv.style.display = 'block';
+            
+            setTimeout(() => {
+                alertDiv.style.display = 'none';
+            }, 5000);
+        }
+    </script>
+</body>
+</html>
