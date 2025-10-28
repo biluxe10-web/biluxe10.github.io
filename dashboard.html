@@ -1,265 +1,292 @@
-<!DOCTYPE html>
+                <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Biluxe10 - Dashboard</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>Dashboard - Biluxe Affiliate</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-storage.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-        * { font-family: 'Inter', sans-serif; }
-        .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
-        .glass-effect { background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); }
-        .stats-card { transition: all 0.3s ease; border-left: 4px solid; }
-        .stats-card:hover { transform: translateY(-5px); box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
-        .page-transition { animation: slideIn 0.5s ease-out; }
-        @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        :root {
+            --primary: #10B981;
+            --primary-dark: #059669;
+            --secondary: #047857;
+            --light: #f8fafc;
+            --dark: #1e293b;
+            --gray: #64748b;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+            min-height: 100vh;
+        }
+        
+        .navbar {
+            background: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+        
+        .nav-links a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-links a:hover, .nav-links a.active {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .user-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .user-balance {
+            background: var(--primary);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border-left: 4px solid var(--primary);
+        }
+        
+        .stat-card h3 {
+            color: var(--gray);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-card .value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--dark);
+        }
+        
+        .stat-card .trend {
+            color: var(--primary);
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+        }
+        
+        .main-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+        }
+        
+        .chart-section, .quick-actions {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        
+        .quick-actions h3, .chart-section h3 {
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+        
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .btn {
+            padding: 1rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            text-decoration: none;
+            display: block;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+        
+        .btn-secondary {
+            background: var(--light);
+            color: var(--dark);
+            border: 2px solid var(--primary);
+        }
+        
+        .btn-secondary:hover {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .recent-activity {
+            margin-top: 2rem;
+        }
+        
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+        
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+        }
     </style>
 </head>
-<body class="bg-gray-50">
-    <!-- Navigation Sidebar -->
-    <div class="sidebar fixed left-0 top-0 h-full w-64 bg-gradient-to-b from-gray-900 to-black text-white shadow-xl z-50">
-        <!-- Logo -->
-        <div class="p-6 border-b border-gray-800">
-            <div class="flex items-center space-x-3">
-                <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center animate-float">
-                    <i class="fas fa-rocket text-white"></i>
-                </div>
-                <h1 class="text-xl font-bold">Biluxe10</h1>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="logo">Biluxe Affiliate</div>
+        <div class="nav-links">
+            <a href="dashboard.html" class="active"><i class="fas fa-home"></i> Dashboard</a>
+            <a href="earnings.html"><i class="fas fa-chart-line"></i> Earnings</a>
+            <a href="packages.html"><i class="fas fa-cube"></i> Packages</a>
+            <a href="referral.html"><i class="fas fa-users"></i> Referral</a>
+            <a href="myteam.html"><i class="fas fa-network-wired"></i> My Team</a>
+            <a href="withdrawal.html"><i class="fas fa-wallet"></i> Withdrawal</a>
+            <a href="transactions.html"><i class="fas fa-exchange-alt"></i> Transactions</a>
+            <a href="notifications.html"><i class="fas fa-bell"></i> Notifications</a>
+            <a href="profile.html"><i class="fas fa-user"></i> Profile</a>
+            <a href="support.html"><i class="fas fa-headset"></i> Support</a>
+        </div>
+        <div class="user-section">
+            <div class="user-balance">$<span id="currentBalance">0.00</span></div>
+            <div class="user-avatar">
+                <i class="fas fa-user-circle" style="font-size: 2rem; color: var(--primary);"></i>
             </div>
         </div>
-
-        <!-- User Profile Mini -->
-        <div class="p-4 border-b border-gray-800">
-            <div class="flex items-center space-x-3">
-                <div class="relative">
-                    <img id="userProfilePic" src="https://via.placeholder.com/40" alt="Profile" class="w-10 h-10 rounded-full border-2 border-blue-500">
-                    <div class="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-gray-900"></div>
-                </div>
-                <div class="flex-1 min-w-0">
-                    <p id="userName" class="text-sm font-medium truncate">Loading...</p>
-                    <p id="userRank" class="text-xs text-gray-400 truncate">Affiliate</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Navigation Menu -->
-        <nav class="p-4 space-y-2">
-            <a href="dashboard.html" class="flex items-center space-x-3 p-3 rounded-lg bg-blue-600 text-white shadow-lg">
-                <i class="fas fa-chart-line w-5"></i><span>Dashboard</span>
-            </a>
-            <a href="earnings.html" class="flex items-center space-x-3 p-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition duration-300">
-                <i class="fas fa-money-bill-wave w-5"></i><span>Earnings</span>
-            </a>
-            <a href="withdrawal.html" class="flex items-center space-x-3 p-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition duration-300">
-                <i class="fas fa-wallet w-5"></i><span>Withdrawal</span>
-            </a>
-            <a href="team.html" class="flex items-center space-x-3 p-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition duration-300">
-                <i class="fas fa-users w-5"></i><span>My Team</span>
-            </a>
-            <a href="referral.html" class="flex items-center space-x-3 p-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition duration-300">
-                <i class="fas fa-share-alt w-5"></i><span>Refer & Earn</span>
-            </a>
-            <a href="packages.html" class="flex items-center space-x-3 p-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition duration-300">
-                <i class="fas fa-crown w-5"></i><span>Packages</span>
-            </a>
-            <a href="profile.html" class="flex items-center space-x-3 p-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition duration-300">
-                <i class="fas fa-user-circle w-5"></i><span>Profile</span>
-            </a>
-            <a href="support.html" class="flex items-center space-x-3 p-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition duration-300">
-                <i class="fas fa-headset w-5"></i><span>Support</span>
-            </a>
-            <a href="notifications.html" class="flex items-center space-x-3 p-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition duration-300">
-                <i class="fas fa-bell w-5"></i><span>Notifications</span>
-            </a>
-            <a href="transactions.html" class="flex items-center space-x-3 p-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition duration-300">
-                <i class="fas fa-exchange-alt w-5"></i><span>Transactions</span>
-            </a>
-        </nav>
-
-        <!-- Balance Footer -->
-        <div class="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-800">
-            <div class="bg-gradient-to-r from-green-500 to-emerald-600 text-white text-center py-2 rounded-lg font-semibold text-sm">
-                Balance: ₹<span id="userBalance">0</span>
-            </div>
-        </div>
-    </div>
+    </nav>
 
     <!-- Main Content -->
-    <div class="ml-64 min-h-screen">
-        <!-- Header -->
-        <header class="bg-white shadow-sm border-b border-gray-200">
-            <div class="flex items-center justify-between h-16 px-8">
-                <div>
-                    <h2 class="text-xl font-semibold text-gray-900">Welcome to Biluxe10 Dashboard</h2>
+    <div class="container">
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>Total Earnings</h3>
+                <div class="value">$<span id="totalEarnings">0.00</span></div>
+                <div class="trend"><i class="fas fa-arrow-up"></i> +12% this month</div>
+            </div>
+            <div class="stat-card">
+                <h3>Available Balance</h3>
+                <div class="value">$<span id="availableBalance">0.00</span></div>
+                <div class="trend">Ready to withdraw</div>
+            </div>
+            <div class="stat-card">
+                <h3>Total Referrals</h3>
+                <div class="value"><span id="totalReferrals">0</span></div>
+                <div class="trend"><i class="fas fa-arrow-up"></i> +5 new this week</div>
+            </div>
+            <div class="stat-card">
+                <h3>Team Members</h3>
+                <div class="value"><span id="teamMembers">0</span></div>
+                <div class="trend">Active: <span id="activeMembers">0</span></div>
+            </div>
+        </div>
+
+        <div class="main-grid">
+            <div class="chart-section">
+                <h3>Earnings Overview</h3>
+                <div id="earningsChart" style="height: 300px; background: #f8fafc; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--gray);">
+                    Loading real earnings data...
                 </div>
-                <div class="flex items-center space-x-4">
-                    <button onclick="window.location.href='notifications.html'" class="p-2 text-gray-600 hover:text-gray-900 relative">
-                        <i class="fas fa-bell text-xl"></i>
-                        <span id="notificationBadge" class="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full hidden"></span>
-                    </button>
-                    <div class="flex items-center space-x-3 bg-gray-50 rounded-lg px-3 py-2 cursor-pointer" onclick="window.location.href='profile.html'">
-                        <img id="headerProfilePic" src="https://via.placeholder.com/32" alt="Profile" class="w-8 h-8 rounded-full border-2 border-blue-500">
-                        <span id="headerUserName" class="text-sm font-medium text-gray-900">User</span>
+            </div>
+            
+            <div class="quick-actions">
+                <h3>Quick Actions</h3>
+                <div class="action-buttons">
+                    <a href="referral.html" class="btn btn-primary">
+                        <i class="fas fa-share-alt"></i> Share Referral Link
+                    </a>
+                    <a href="packages.html" class="btn btn-secondary">
+                        <i class="fas fa-cube"></i> Buy Packages
+                    </a>
+                    <a href="withdrawal.html" class="btn btn-secondary">
+                        <i class="fas fa-wallet"></i> Withdraw Funds
+                    </a>
+                    <a href="myteam.html" class="btn btn-secondary">
+                        <i class="fas fa-users"></i> View My Team
+                    </a>
+                </div>
+                
+                <div class="recent-activity">
+                    <h3 style="margin-top: 2rem;">Recent Activity</h3>
+                    <div id="recentActivity">
+                        <!-- Real activity data will be loaded here -->
                     </div>
                 </div>
             </div>
-        </header>
-
-        <!-- Dashboard Content -->
-        <main class="p-6 page-transition">
-            <!-- Welcome Header -->
-            <div class="bg-gradient-to-r from-blue-600 to-purple-700 rounded-2xl p-8 text-white mb-8 shadow-xl">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <h1 class="text-4xl font-bold mb-2" id="welcomeMessage">Welcome back, User!</h1>
-                        <p class="text-blue-100 text-lg">Here's your earnings overview and performance metrics</p>
-                    </div>
-                    <div class="text-right">
-                        <div class="bg-white bg-opacity-20 rounded-lg px-4 py-2 inline-block">
-                            <span class="font-semibold" id="userMembership">Silver Member</span>
-                        </div>
-                        <p class="text-blue-100 mt-2" id="currentDate">Loading date...</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Stats Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                <!-- Today's Earnings -->
-                <div class="stats-card bg-white rounded-xl shadow-sm p-6 border-l-4 border-green-500">
-                    <div class="flex items-center">
-                        <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mr-4">
-                            <i class="fas fa-rupee-sign text-green-600 text-xl"></i>
-                        </div>
-                        <div>
-                            <p class="text-sm text-gray-600">Today's Earnings</p>
-                            <p class="text-2xl font-bold text-gray-900">₹<span id="earningsToday">0</span></p>
-                        </div>
-                    </div>
-                    <div class="mt-4 flex items-center text-sm">
-                        <i class="fas fa-arrow-up text-green-500 mr-1"></i>
-                        <span class="text-green-600 font-semibold" id="todayGrowth">+0%</span>
-                        <span class="text-gray-500 ml-2">from yesterday</span>
-                    </div>
-                </div>
-
-                <!-- Weekly Earnings -->
-                <div class="stats-card bg-white rounded-xl shadow-sm p-6 border-l-4 border-blue-500">
-                    <div class="flex items-center">
-                        <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mr-4">
-                            <i class="fas fa-chart-line text-blue-600 text-xl"></i>
-                        </div>
-                        <div>
-                            <p class="text-sm text-gray-600">Weekly Earnings</p>
-                            <p class="text-2xl font-bold text-gray-900">₹<span id="earningsWeek">0</span></p>
-                        </div>
-                    </div>
-                    <div class="mt-4 flex items-center text-sm">
-                        <i class="fas fa-arrow-up text-blue-500 mr-1"></i>
-                        <span class="text-blue-600 font-semibold" id="weekGrowth">+0%</span>
-                        <span class="text-gray-500 ml-2">from last week</span>
-                    </div>
-                </div>
-
-                <!-- Monthly Earnings -->
-                <div class="stats-card bg-white rounded-xl shadow-sm p-6 border-l-4 border-purple-500">
-                    <div class="flex items-center">
-                        <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mr-4">
-                            <i class="fas fa-calendar-alt text-purple-600 text-xl"></i>
-                        </div>
-                        <div>
-                            <p class="text-sm text-gray-600">Monthly Earnings</p>
-                            <p class="text-2xl font-bold text-gray-900">₹<span id="earningsMonth">0</span></p>
-                        </div>
-                    </div>
-                    <div class="mt-4 flex items-center text-sm">
-                        <i class="fas fa-arrow-up text-purple-500 mr-1"></i>
-                        <span class="text-purple-600 font-semibold" id="monthGrowth">+0%</span>
-                        <span class="text-gray-500 ml-2">from last month</span>
-                    </div>
-                </div>
-
-                <!-- Total Balance -->
-                <div class="stats-card bg-white rounded-xl shadow-sm p-6 border-l-4 border-orange-500">
-                    <div class="flex items-center">
-                        <div class="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center mr-4">
-                            <i class="fas fa-wallet text-orange-600 text-xl"></i>
-                        </div>
-                        <div>
-                            <p class="text-sm text-gray-600">Total Balance</p>
-                            <p class="text-2xl font-bold text-gray-900">₹<span id="totalBalance">0</span></p>
-                        </div>
-                    </div>
-                    <div class="mt-4">
-                        <button onclick="window.location.href='withdrawal.html'" class="text-sm bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition duration-300">
-                            Withdraw
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Charts & Team Stats -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-                <!-- Earnings Chart -->
-                <div class="bg-white rounded-2xl shadow-sm p-6">
-                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Earnings Overview</h3>
-                    <div class="h-64">
-                        <canvas id="earningsChart"></canvas>
-                    </div>
-                </div>
-
-                <!-- Team Overview -->
-                <div class="bg-white rounded-2xl shadow-sm p-6">
-                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Team Overview</h3>
-                    <div class="grid grid-cols-3 gap-4 mb-4">
-                        <div class="text-center p-4 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl text-white">
-                            <div class="text-2xl font-bold" id="directTeam">0</div>
-                            <div class="text-sm">Direct</div>
-                        </div>
-                        <div class="text-center p-4 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-xl text-white">
-                            <div class="text-2xl font-bold" id="totalTeam">0</div>
-                            <div class="text-sm">Total Team</div>
-                        </div>
-                        <div class="text-center p-4 bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl text-white">
-                            <div class="text-2xl font-bold" id="teamEarnings">0</div>
-                            <div class="text-sm">Active</div>
-                        </div>
-                    </div>
-                    <button onclick="window.location.href='team.html'" class="w-full bg-gray-100 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-200 transition duration-300">
-                        <i class="fas fa-users mr-2"></i>View Full Team
-                    </button>
-                </div>
-            </div>
-
-            <!-- Quick Actions -->
-            <div class="bg-gradient-to-r from-indigo-600 to-purple-700 rounded-2xl p-8 text-white">
-                <h3 class="text-xl font-semibold mb-6 text-center">Quick Actions</h3>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <button onclick="window.location.href='referral.html'" class="bg-white bg-opacity-20 hover:bg-opacity-30 text-white py-4 px-6 rounded-xl font-semibold text-lg transition duration-300 backdrop-blur-sm">
-                        <i class="fas fa-share-alt mr-2"></i>Invite & Earn 65%
-                    </button>
-                    <button onclick="window.location.href='packages.html'" class="bg-white bg-opacity-20 hover:bg-opacity-30 text-white py-4 px-6 rounded-xl font-semibold text-lg transition duration-300 backdrop-blur-sm">
-                        <i class="fas fa-crown mr-2"></i>Upgrade Package
-                    </button>
-                    <button onclick="window.location.href='withdrawal.html'" class="bg-white bg-opacity-20 hover:bg-opacity-30 text-white py-4 px-6 rounded-xl font-semibold text-lg transition duration-300 backdrop-blur-sm">
-                        <i class="fas fa-wallet mr-2"></i>Withdraw Earnings
-                    </button>
-                </div>
-            </div>
-        </main>
+        </div>
     </div>
 
-    <!-- Firebase & Dashboard Script -->
     <script>
-        // Firebase Configuration
+        // Firebase Configuration with YOUR REAL KEYS
         const firebaseConfig = {
             apiKey: "AIzaSyDxxkC9iD1V1w-53Kf4oBrHEXlBLvCc7sE",
             authDomain: "biluxe10-3e894.firebaseapp.com",
@@ -273,239 +300,111 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
         const auth = firebase.auth();
-        const storage = firebase.storage();
 
-        // Global variables
-        let currentUser = null;
-        let userData = null;
-        let earningsChart = null;
-
-        // Initialize Dashboard
+        // REAL DATA FETCHING
         document.addEventListener('DOMContentLoaded', function() {
-            checkAuthState();
-            updateCurrentDate();
-        });
-
-        // Check Authentication
-        function checkAuthState() {
+            // Check authentication
             auth.onAuthStateChanged((user) => {
                 if (user) {
-                    currentUser = user;
                     loadUserData(user.uid);
-                    loadTeamData(user.uid);
-                    loadEarningsData(user.uid);
-                    loadNotifications(user.uid);
+                    loadRealTimeData(user.uid);
                 } else {
-                    window.location.href = 'auth.html';
+                    // Redirect to login if not authenticated
+                    window.location.href = 'login.html';
                 }
             });
+        });
+
+        // LOAD REAL USER DATA FROM FIRESTORE
+        async function loadUserData(userId) {
+            try {
+                const userDoc = await db.collection('users').doc(userId).get();
+                if (userDoc.exists) {
+                    const userData = userDoc.data();
+                    
+                    // Update dashboard with REAL data
+                    document.getElementById('currentBalance').textContent = userData.balance?.toFixed(2) || '0.00';
+                    document.getElementById('totalEarnings').textContent = userData.totalEarnings?.toFixed(2) || '0.00';
+                    document.getElementById('availableBalance').textContent = userData.availableBalance?.toFixed(2) || '0.00';
+                    document.getElementById('totalReferrals').textContent = userData.referralCount || '0';
+                    document.getElementById('teamMembers').textContent = userData.teamCount || '0';
+                    document.getElementById('activeMembers').textContent = userData.activeTeamCount || '0';
+                }
+            } catch (error) {
+                console.error('Error loading user data:', error);
+            }
         }
 
-        // Load User Data from Firestore
-        function loadUserData(userId) {
+        // LOAD REAL-TIME UPDATES
+        function loadRealTimeData(userId) {
+            // Real-time listener for user data
             db.collection('users').doc(userId).onSnapshot((doc) => {
                 if (doc.exists) {
-                    userData = doc.data();
-                    updateUIWithUserData();
-                } else {
-                    // Create user document if doesn't exist
-                    createUserDocument(userId);
-                }
-            }, (error) => {
-                console.error('Error loading user data:', error);
-            });
-        }
-
-        // Create user document if not exists
-        function createUserDocument(userId) {
-            const userData = {
-                name: currentUser.displayName || 'User',
-                email: currentUser.email,
-                profilePic: currentUser.photoURL || 'https://via.placeholder.com/150',
-                balance: 0,
-                earnings_today: 0,
-                earnings_week: 0,
-                earnings_month: 0,
-                membership: 'Starter',
-                rank: 'Affiliate',
-                referralCode: generateReferralCode(),
-                joinDate: new Date(),
-                lastLogin: new Date()
-            };
-
-            db.collection('users').doc(userId).set(userData)
-                .then(() => {
-                    console.log('User document created');
-                })
-                .catch((error) => {
-                    console.error('Error creating user document:', error);
-                });
-        }
-
-        // Generate unique referral code
-        function generateReferralCode() {
-            return 'BLX' + Math.random().toString(36).substr(2, 6).toUpperCase();
-        }
-
-        // Load Team Data
-        function loadTeamData(userId) {
-            db.collection('team').where('sponsorId', '==', userId)
-                .onSnapshot((snapshot) => {
-                    const directMembers = snapshot.docs.filter(doc => doc.data().level === 1).length;
-                    const totalMembers = snapshot.docs.length;
-                    const activeMembers = snapshot.docs.filter(doc => doc.data().status === 'active').length;
-                    
-                    document.getElementById('directTeam').textContent = directMembers;
-                    document.getElementById('totalTeam').textContent = totalMembers;
-                    document.getElementById('teamEarnings').textContent = activeMembers;
-                });
-        }
-
-        // Load Earnings Data for Chart
-        function loadEarningsData(userId) {
-            const today = new Date();
-            const startOfWeek = new Date(today.setDate(today.getDate() - today.getDay()));
-            const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
-
-            // Load transactions for the current week
-            db.collection('transactions')
-                .where('userId', '==', userId)
-                .where('type', 'in', ['earning', 'bonus'])
-                .where('date', '>=', startOfWeek)
-                .orderBy('date', 'asc')
-                .get()
-                .then((snapshot) => {
-                    const earningsByDay = {};
-                    snapshot.forEach(doc => {
-                        const data = doc.data();
-                        const day = data.date.toDate().toLocaleDateString();
-                        earningsByDay[day] = (earningsByDay[day] || 0) + data.amount;
-                    });
-
-                    updateEarningsChart(earningsByDay);
-                })
-                .catch((error) => {
-                    console.error('Error loading earnings data:', error);
-                });
-        }
-
-        // Update Earnings Chart
-        function updateEarningsChart(earningsData) {
-            const ctx = document.getElementById('earningsChart').getContext('2d');
-            
-            if (earningsChart) {
-                earningsChart.destroy();
-            }
-
-            const labels = Object.keys(earningsData);
-            const data = Object.values(earningsData);
-
-            earningsChart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'Daily Earnings (₹)',
-                        data: data,
-                        borderColor: '#3b82f6',
-                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
-                        borderWidth: 2,
-                        fill: true,
-                        tension: 0.4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: false
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            grid: {
-                                color: 'rgba(0, 0, 0, 0.1)'
-                            }
-                        },
-                        x: {
-                            grid: {
-                                display: false
-                            }
-                        }
-                    }
+                    const userData = doc.data();
+                    updateDashboard(userData);
                 }
             });
+
+            // Load recent activity
+            loadRecentActivity(userId);
         }
 
-        // Load Notifications
-        function loadNotifications(userId) {
-            db.collection('notifications')
-                .where('userId', '==', userId)
-                .where('read', '==', false)
-                .onSnapshot((snapshot) => {
-                    const unreadCount = snapshot.size;
-                    const badge = document.getElementById('notificationBadge');
+        function updateDashboard(userData) {
+            // Update all dashboard elements with live data
+            document.getElementById('currentBalance').textContent = userData.balance?.toFixed(2) || '0.00';
+            document.getElementById('totalEarnings').textContent = userData.totalEarnings?.toFixed(2) || '0.00';
+            document.getElementById('availableBalance').textContent = userData.availableBalance?.toFixed(2) || '0.00';
+            document.getElementById('totalReferrals').textContent = userData.referralCount || '0';
+            document.getElementById('teamMembers').textContent = userData.teamCount || '0';
+            document.getElementById('activeMembers').textContent = userData.activeTeamCount || '0';
+        }
+
+        // LOAD RECENT ACTIVITY
+        async function loadRecentActivity(userId) {
+            try {
+                const activitySnapshot = await db.collection('transactions')
+                    .where('userId', '==', userId)
+                    .orderBy('timestamp', 'desc')
+                    .limit(5)
+                    .get();
+
+                const activityContainer = document.getElementById('recentActivity');
+                activityContainer.innerHTML = '';
+
+                if (activitySnapshot.empty) {
+                    activityContainer.innerHTML = '<p>No recent activity</p>';
+                    return;
+                }
+
+                activitySnapshot.forEach(doc => {
+                    const activity = doc.data();
+                    const activityItem = document.createElement('div');
+                    activityItem.className = 'activity-item';
                     
-                    if (unreadCount > 0) {
-                        badge.classList.remove('hidden');
-                        badge.textContent = unreadCount > 9 ? '9+' : unreadCount;
-                    } else {
-                        badge.classList.add('hidden');
-                    }
+                    const icon = activity.type === 'earning' ? 'fa-arrow-up' : 
+                                activity.type === 'withdrawal' ? 'fa-arrow-down' : 'fa-exchange-alt';
+                    const color = activity.type === 'earning' ? 'var(--primary)' : '#ef4444';
+                    
+                    activityItem.innerHTML = `
+                        <div class="activity-icon">
+                            <i class="fas ${icon}" style="color: ${color};"></i>
+                        </div>
+                        <div>
+                            <div style="font-weight: 600;">${activity.description}</div>
+                            <div style="color: var(--gray); font-size: 0.8rem;">
+                                $${activity.amount} • ${new Date(activity.timestamp?.toDate()).toLocaleDateString()}
+                            </div>
+                        </div>
+                    `;
+                    
+                    activityContainer.appendChild(activityItem);
                 });
-        }
-
-        // Update UI with User Data
-        function updateUIWithUserData() {
-            if (!userData) return;
-
-            // Update Profile Information
-            document.getElementById('userName').textContent = userData.name || 'User';
-            document.getElementById('headerUserName').textContent = userData.name || 'User';
-            document.getElementById('userRank').textContent = userData.rank || 'Affiliate';
-            document.getElementById('userMembership').textContent = (userData.membership || 'Silver') + ' Member';
-            document.getElementById('welcomeMessage').textContent = `Welcome back, ${userData.name?.split(' ')[0] || 'User'}!`;
-
-            // Update Profile Pictures
-            if (userData.profilePic) {
-                document.getElementById('userProfilePic').src = userData.profilePic;
-                document.getElementById('headerProfilePic').src = userData.profilePic;
+            } catch (error) {
+                console.error('Error loading activity:', error);
             }
-
-            // Update Earnings and Balance
-            document.getElementById('earningsToday').textContent = userData.earnings_today || 0;
-            document.getElementById('earningsWeek').textContent = userData.earnings_week || 0;
-            document.getElementById('earningsMonth').textContent = userData.earnings_month || 0;
-            document.getElementById('totalBalance').textContent = userData.balance || 0;
-            document.getElementById('userBalance').textContent = userData.balance || 0;
-
-            // Calculate growth percentages (you can replace with actual calculations)
-            document.getElementById('todayGrowth').textContent = userData.earnings_today > 0 ? '+12%' : '+0%';
-            document.getElementById('weekGrowth').textContent = userData.earnings_week > 0 ? '+25%' : '+0%';
-            document.getElementById('monthGrowth').textContent = userData.earnings_month > 0 ? '+42%' : '+0%';
-        }
-
-        // Update Current Date
-        function updateCurrentDate() {
-            const now = new Date();
-            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            document.getElementById('currentDate').textContent = now.toLocaleDateString('en-US', options);
-        }
-
-        // Logout Function
-        function logout() {
-            auth.signOut().then(() => {
-                window.location.href = 'auth.html';
-            });
-        }
-
-        // Utility function to generate IDs
-        function generateId() {
-            return 'ID_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
         }
     </script>
 </body>
-                    </html>
-        
+</html>
+                
+                            
