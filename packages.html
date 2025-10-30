@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Packages - Biluxe10 Affiliate</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+    <style>
+        :root {
+            --primary: #10B981;
+            --primary-dark: #059669;
+            --accent: #F59E0B;
+            --purple: #8B5CF6;
+            --blue: #3B82F6;
+            --light: #F8FAFC;
+            --dark: #1E293B;
+            --gray: #64748B;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+            min-height: 100vh;
+        }
+        
+        .navbar {
+            background: linear-gradient(135deg, var(--primary), #047857);
+            padding: 1rem 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .nav-links a {
+            text-decoration: none;
+            color: white;
+            font-weight: 500;
+            padding: 0.75rem 1.25rem;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .nav-links a:hover, .nav-links a.active {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .user-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .user-balance {
+            background: linear-gradient(135deg, #F59E0B, #D97706);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 25px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+        
+        .page-header {
+            background: linear-gradient(135deg, var(--primary), #047857);
+            color: white;
+            padding: 2rem;
+            border-radius: 20px;
+            margin-bottom: 2rem;
+        }
+        
+        .packages-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+        
+        .packages-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .package-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            border: 3px solid transparent;
+        }
+        
+        .package-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            border-color: var(--primary);
+        }
+        
+        .package-header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        .package-body {
+            padding: 2rem;
+        }
+        
+        .package-price {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--dark);
+            margin: 1rem 0;
+            text-align: center;
+        }
+        
+        .package-features {
+            list-style: none;
+            margin: 1.5rem 0;
+        }
+        
+        .package-features li {
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #f1f5f9;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .package-features li:last-child {
+            border-bottom: none;
+        }
+        
+        .btn-buy {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            padding: 1.25rem 2rem;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-buy:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
+        }
+        
+        .my-packages {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .package-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+        
+        .package-table th, .package-table td {
+            padding: 1.25rem;
+            text-align: left;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        
+        .package-table th {
+            background: var(--light);
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        .status-active {
+            color: var(--primary);
+            font-weight: 600;
+            background: #D1FAE5;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            display: inline-block;
+        }
+        
+        .status-expired {
+            color: var(--gray);
+            font-weight: 600;
+            background: #F1F5F9;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            display: inline-block;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: var(--gray);
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--gray);
+        }
+        
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">
+            <i class="fas fa-rocket"></i>
+            Biluxe10 Affiliate
+        </div>
+        <div class="nav-links">
+            <a href="dashboard.html"><i class="fas fa-home"></i> Dashboard</a>
+            <a href="earnings.html"><i class="fas fa-chart-line"></i> Earnings</a>
+            <a href="packages.html" class="active"><i class="fas fa-cube"></i> Packages</a>
+            <a href="referral.html"><i class="fas fa-users"></i> Referral</a>
+            <a href="myteam.html"><i class="fas fa-network-wired"></i> My Team</a>
+            <a href="withdrawal.html"><i class="fas fa-wallet"></i> Withdrawal</a>
+            <a href="transactions.html"><i class="fas fa-exchange-alt"></i> Transactions</a>
+            <a href="profile.html"><i class="fas fa-user"></i> Profile</a>
+            <a href="support.html"><i class="fas fa-headset"></i> Support</a>
+        </div>
+        <div class="user-section">
+            <div class="user-balance">
+                <i class="fas fa-wallet"></i>
+                ₹<span id="currentBalance">0.00</span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="page-header">
+            <h1 style="font-size: 2.2rem; margin-bottom: 0.5rem;">My Packages 📦</h1>
+            <p>Track your enrolled packages and earnings</p>
+        </div>
+
+        <!-- Packages Stats -->
+        <div class="packages-stats">
+            <div class="stat-card">
+                <h3>Active Packages</h3>
+                <div style="font-size: 2rem; font-weight: 800; color: var(--dark);" id="activePackages">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>Total Invested</h3>
+                <div style="font-size: 2rem; font-weight: 800; color: var(--dark);">₹<span id="totalInvested">0.00</span></div>
+            </div>
+            <div class="stat-card">
+                <h3>Package Earnings</h3>
+                <div style="font-size: 2rem; font-weight: 800; color: var(--dark);">₹<span id="packageEarnings">0.00</span></div>
+            </div>
+            <div class="stat-card">
+                <h3>Daily Income</h3>
+                <div style="font-size: 2rem; font-weight: 800; color: var(--dark);">₹<span id="dailyIncome">0.00</span></div>
+            </div>
+        </div>
+
+        <!-- My Active Packages -->
+        <div class="my-packages">
+            <h2 style="margin-bottom: 1.5rem; color: var(--dark); display: flex; align-items: center; gap: 0.5rem;">
+                <i class="fas fa-cube"></i> My Enrolled Packages
+            </h2>
+            <table class="package-table">
+                <thead>
+                    <tr>
+                        <th>Package</th>
+                        <th>Invested</th>
+                        <th>Earned</th>
+                        <th>Start Date</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="myPackagesList">
+                    <tr>
+                        <td colspan="6" style="text-align: center; padding: 2rem;">
+                            <div class="loading">
+                                <i class="fas fa-spinner fa-spin"></i>
+                                <p>Loading your packages...</p>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Available Packages to Buy -->
+        <div class="my-packages">
+            <h2 style="margin-bottom: 1.5rem; color: var(--dark); display: flex; align-items: center; gap: 0.5rem;">
+                <i class="fas fa-bolt"></i> Available Packages
+            </h2>
+            <div class="packages-grid" id="availablePackages">
+                <div class="loading">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <p>Loading available packages...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDxxkC9iD1V1w-53Kf4oBrHEXlBLvCc7sE",
+            authDomain: "biluxe10-3e894.firebaseapp.com",
+            projectId: "biluxe10-3e894",
+            storageBucket: "biluxe10-3e894.firebasestorage.app",
+            messagingSenderId: "804749588233",
+            appId: "1:804749588233:web:7777648c0c7834733c05d8"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const auth = firebase.auth();
+
+        let currentUser = null;
+
+        // Package Data from products.html
+        const packagesData = [
+            {
+                id: "starter_pack",
+                name: "Starter Success Pack",
+                price: 999,
+                image: "https://via.placeholder.com/300x200/10B981/white?text=Starter+Pack",
+                description: "Perfect for beginners. Earn up to ₹1 Lakh without investment.",
+                dailyEarnings: 50,
+                duration: 30
+            },
+            {
+                id: "advanced_pack", 
+                name: "Advance Success Pack",
+                price: 2499,
+                image: "https://via.placeholder.com/300x200/F59E0B/white?text=Advanced+Pack",
+                description: "Scale faster. Earn up to ₹10 Lakhs without investment.",
+                dailyEarnings: 150,
+                duration: 60
+            },
+            {
+                id: "digital_empire",
+                name: "Digital Empire System",
+                price: 3499,
+                image: "https://via.placeholder.com/300x200/8B5CF6/white?text=Digital+Empire",
+                description: "Build wealth at scale. Aim for ₹1 Crore.",
+                dailyEarnings: 250,
+                duration: 90
+            },
+            {
+                id: "editing_mastery",
+                name: "Editing Mastery",
+                price: 4999,
+                image: "https://via.placeholder.com/300x200/EC4899/white?text=Editing+Mastery",
+                description: "Learn video and content editing skills.",
+                dailyEarnings: 350,
+                duration: 60
+            },
+            {
+                id: "dropshipping_system",
+                name: "Ultimate Dropshipping System",
+                price: 9999,
+                image: "https://via.placeholder.com/300x200/3B82F6/white?text=Dropshipping",
+                description: "Set up e-commerce business from scratch.",
+                dailyEarnings: 700,
+                duration: 90
+            },
+            {
+                id: "crypto_mastery",
+                name: "Crypto Trading Mastery",
+                price: 15999,
+                image: "https://via.placeholder.com/300x200/1E293B/white?text=Crypto+Mastery",
+                description: "Complete guide to cryptocurrency trading.",
+                dailyEarnings: 1200,
+                duration: 120
+            },
+            {
+                id: "future_ai",
+                name: "Future AI System",
+                price: 23999,
+                image: "https://via.placeholder.com/300x200/7C3AED/white?text=Future+AI",
+                description: "Master artificial intelligence tools.",
+                dailyEarnings: 1800,
+                duration: 180
+            }
+        ];
+
+        // REAL DATA FETCHING
+        document.addEventListener('DOMContentLoaded', function() {
+            auth.onAuthStateChanged(async (user) => {
+                if (user) {
+                    currentUser = user;
+                    console.log("✅ User logged in:", user.uid);
+                    
+                    // Load data
+                    loadMyPackages(user.uid);
+                    loadAvailablePackages();
+                    setupRealTimeBalance(user.uid);
+                } else {
+                    window.location.href = 'auth.html';
+                }
+            });
+        });
+
+        // SETUP REAL-TIME BALANCE
+        function setupRealTimeBalance(userId) {
+            db.collection('user_collections').doc(userId).onSnapshot((doc) => {
+                if (doc.exists) {
+                    const userData = doc.data();
+                    document.getElementById('currentBalance').textContent = (userData.balance || 0).toFixed(2);
+                }
+            });
+        }
+
+        // LOAD USER'S PACKAGES
+        async function loadMyPackages(userId) {
+            try {
+                const myPackagesSnapshot = await db.collection('user_packages')
+                    .where('userId', '==', userId)
+                    .orderBy('purchaseDate', 'desc')
+                    .get();
+
+                const myPackagesList = document.getElementById('myPackagesList');
+                myPackagesList.innerHTML = '';
+
+                let activeCount = 0;
+                let totalInvested = 0;
+                let totalEarned = 0;
+                let dailyIncome = 0;
+
+                if (myPackagesSnapshot.empty) {
+                    myPackagesList.innerHTML = `
+                        <tr>
+                            <td colspan="6" style="text-align: center; padding: 2rem; color: var(--gray);">
+                                <div class="empty-state">
+                                    <i class="fas fa-cube"></i>
+                                    <h3>No packages enrolled yet</h3>
+                                    <p>Buy your first package to start earning!</p>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                } else {
+                    for (const doc of myPackagesSnapshot.docs) {
+                        const userPackage = doc.data();
+                        
+                        if (userPackage.status === 'active') {
+                            activeCount++;
+                            totalInvested += userPackage.investedAmount;
+                            totalEarned += userPackage.totalEarned;
+                            dailyIncome += userPackage.dailyEarnings;
+                        }
+
+                        const packageData = packagesData.find(p => p.id === userPackage.packageId);
+                        const row = document.createElement('tr');
+                        
+                        row.innerHTML = `
+                            <td style="font-weight: 600;">${packageData ? packageData.name : userPackage.packageName}</td>
+                            <td>₹${userPackage.investedAmount.toFixed(2)}</td>
+                            <td style="color: var(--primary); font-weight: 600;">₹${userPackage.totalEarned.toFixed(2)}</td>
+                            <td>${userPackage.purchaseDate.toDate().toLocaleDateString()}</td>
+                            <td>
+                                <span class="status-${userPackage.status}">
+                                    ${userPackage.status.charAt(0).toUpperCase() + userPackage.status.slice(1)}
+                                </span>
+                            </td>
+                            <td>
+                                <button class="btn-buy" style="padding: 0.5rem 1rem; font-size: 0.9rem;" 
+                                        onclick="viewPackageDetails('${doc.id}')">
+                                    <i class="fas fa-eye"></i> View
+                                </button>
+                            </td>
+                        `;
+                        myPackagesList.appendChild(row);
+                    }
+                }
+
+                // Update stats
+                document.getElementById('activePackages').textContent = activeCount;
+                document.getElementById('totalInvested').textContent = totalInvested.toFixed(2);
+                document.getElementById('packageEarnings').textContent = totalEarned.toFixed(2);
+                document.getElementById('dailyIncome').textContent = dailyIncome.toFixed(2);
+            } catch (error) {
+                console.error('❌ Error loading user packages:', error);
+            }
+        }
+
+        // LOAD AVAILABLE PACKAGES
+        function loadAvailablePackages() {
+            const availablePackages = document.getElementById('availablePackages');
+            availablePackages.innerHTML = '';
+
+            packagesData.forEach(package => {
+                const packageCard = document.createElement('div');
+                packageCard.className = 'package-card';
+                packageCard.innerHTML = `
+                    <div class="package-header">
+                        <h3 style="font-size: 1.5rem; font-weight: 700;">${package.name}</h3>
+                        <p style="opacity: 0.9;">Perfect for growth</p>
+                    </div>
+                    <div class="package-body">
+                        <div class="package-price">₹${package.price}</div>
+                        <ul class="package-features">
+                            <li><i class="fas fa-check" style="color: var(--primary);"></i> Daily Earnings: ₹${package.dailyEarnings}</li>
+                            <li><i class="fas fa-check" style="color: var(--primary);"></i> Duration: ${package.duration} days</li>
+                            <li><i class="fas fa-check" style="color: var(--primary);"></i> Total Return: ₹${package.dailyEarnings * package.duration}</li>
+                            <li><i class="fas fa-check" style="color: var(--primary);"></i> ${package.description}</li>
+                        </ul>
+                        <button class="btn-buy" onclick="buyPackage('${package.id}', ${package.price}, '${package.name}')">
+                            <i class="fas fa-shopping-cart"></i> Buy Now - ₹${package.price}
+                        </button>
+                    </div>
+                `;
+                availablePackages.appendChild(packageCard);
+            });
+        }
+
+        // BUY PACKAGE FUNCTION
+        async function buyPackage(packageId, price, packageName) {
+            if (!currentUser) {
+                alert('Please login first');
+                return;
+            }
+
+            // Check user balance
+            const userDoc = await db.collection('user_collections').doc(currentUser.uid).get();
+            const userData = userDoc.data();
+            
+            if (userData.balance < price) {
+                alert('Insufficient balance! Please add funds first.');
+                return;
+            }
+
+            if (confirm(`Confirm purchase of ${packageName} for ₹${price}?`)) {
+                try {
+                    const packageData = packagesData.find(p => p.id === packageId);
+                    
+                    // Start transaction
+                    const batch = db.batch();
+                    
+                    // 1. Update user balance
+                    const userRef = db.collection('user_collections').doc(currentUser.uid);
+                    batch.update(userRef, {
+                        balance: firebase.firestore.FieldValue.increment(-price),
+                        totalInvested: firebase.firestore.FieldValue.increment(price),
+                        activePackages: firebase.firestore.FieldValue.increment(1)
+                    });
+                    
+                    // 2. Create user_package document
+                    const userPackageRef = db.collection('user_packages').doc();
+                    batch.set(userPackageRef, {
+                        userId: currentUser.uid,
+                        packageId: packageId,
+                        packageName: packageName,
+                        investedAmount: price,
+                        dailyEarnings: packageData.dailyEarnings,
+                        totalEarned: 0,
+                        purchaseDate: firebase.firestore.FieldValue.serverTimestamp(),
+                        expiryDate: new Date(Date.now() + packageData.duration * 24 * 60 * 60 * 1000),
+                        status: 'active',
+                        lastEarningDate: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                    
+                    // 3. Record transaction
+                    const transactionRef = db.collection('transactions').doc();
+                    batch.set(transactionRef, {
+                        userId: currentUser.uid,
+                        type: 'package_purchase',
+                        amount: price,
+                        description: `Purchased ${packageName} package`,
+                        status: 'completed',
+                        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+
+                    // 4. Handle referral commission if referred by someone
+                    if (userData.referredBy) {
+                        const referrerId = userData.referredBy;
+                        const commissionAmount = price * 0.50; // 50% commission
+                        
+                        // Update referrer's balance and commission
+                        const referrerRef = db.collection('user_collections').doc(referrerId);
+                        batch.update(referrerRef, {
+                            balance: firebase.firestore.FieldValue.increment(commissionAmount),
+                            availableBalance: firebase.firestore.FieldValue.increment(commissionAmount),
+                            directCommission: firebase.firestore.FieldValue.increment(commissionAmount),
+                            totalEarnings: firebase.firestore.FieldValue.increment(commissionAmount)
+                        });
+                        
+                        // Record commission transaction for referrer
+                        const commissionRef = db.collection('transactions').doc();
+                        batch.set(commissionRef, {
+                            userId: referrerId,
+                            type: 'commission',
+                            amount: commissionAmount,
+                            description: `50% commission from ${userData.username}'s ${packageName} purchase`,
+                            status: 'completed',
+                            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                        });
+                    }
+                    
+                    // Commit batch
+                    await batch.commit();
+                    
+                    alert('🎉 Package purchased successfully! Daily earnings will start from tomorrow.');
+                    
+                    // Reload data
+                    loadMyPackages(currentUser.uid);
+                    
+                } catch (error) {
+                    console.error('❌ Error purchasing package:', error);
+                    alert('Error purchasing package. Please try again.');
+                }
+            }
+        }
+
+        // VIEW PACKAGE DETAILS
+        function viewPackageDetails(packageId) {
+            alert('Package details feature coming soon!');
+        }
+
+        // FIREBASE RULES SETUP
+        console.log(`
+        🔥 FIREBASE RULES - COPY TO FIREBASE CONSOLE:
+
+        📋 FIRESTORE RULES:
+        rules_version = '2';
+        service cloud.firestore {
+          match /databases/{database}/documents {
+            match /user_collections/{userId} {
+              allow read, write: if request.auth != null && request.auth.uid == userId;
+              allow create: if request.auth != null;
+            }
+            match /user_packages/{userPackageId} {
+              allow read, write: if request.auth != null;
+            }
+            match /transactions/{transactionId} {
+              allow read, write: if request.auth != null;
+            }
+            match /{document=**} {
+              allow read, write: if request.auth != null;
+            }
+          }
+        }
+        `);
+    </script>
+</body>
+</html>
