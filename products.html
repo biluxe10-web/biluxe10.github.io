@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Biluxe10 Packages</title>
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-7404G2V978"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-7404G2V978');
+  </script>
+
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="Explore Biluxe10's products and packages designed to help you succeed in affiliate marketing and online business.">
+  <meta name="keywords" content="Biluxe10 products, affiliate packages, online business tools, earning plans, digital marketing products">
+  <meta name="robots" content="index, follow">
+  <meta name="author" content="Biluxe10">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #0fa968 0%, #1e7e34 50%, #0d6e2c 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    nav {
+      background: rgba(0, 0, 0, 0.85);
+      padding: 18px;
+      text-align: center;
+      border-radius: 12px;
+      margin-bottom: 30px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin: 0 25px;
+      font-weight: 600;
+      font-size: 17px;
+      transition: all 0.3s ease;
+      padding: 8px 16px;
+      border-radius: 8px;
+    }
+
+    nav a:hover {
+      color: #4cd964;
+      background: rgba(255,255,255,0.1);
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+
+    h1 {
+      font-size: 3.2rem;
+      color: white;
+      margin-bottom: 15px;
+      text-shadow: 3px 3px 6px rgba(0,0,0,0.3);
+      font-weight: 700;
+    }
+
+    .subtitle {
+      font-size: 1.3rem;
+      color: #e8f5e8;
+      max-width: 700px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    .products {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+      gap: 35px;
+    }
+
+    .card {
+      background: linear-gradient(145deg, #ffffff, #f8f9fa);
+      border-radius: 20px;
+      padding: 0;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+      transition: all 0.4s ease;
+      border: none;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 6px;
+    }
+
+    /* Different colors for each card */
+    .card:nth-child(1)::before { background: linear-gradient(90deg, #ff6b6b, #ee5a24); }
+    .card:nth-child(2)::before { background: linear-gradient(90deg, #4cd964, #1e7e34); }
+    .card:nth-child(3)::before { background: linear-gradient(90deg, #3498db, #2980b9); }
+    .card:nth-child(4)::before { background: linear-gradient(90deg, #9b59b6, #8e44ad); }
+    .card:nth-child(5)::before { background: linear-gradient(90deg, #e74c3c, #c0392b); }
+    .card:nth-child(6)::before { background: linear-gradient(90deg, #f39c12, #e67e22); }
+    .card:nth-child(7)::before { background: linear-gradient(90deg, #1abc9c, #16a085); }
+    .card:nth-child(8)::before { background: linear-gradient(90deg, #34495e, #2c3e50); }
+
+    .card:hover {
+      transform: translateY(-15px);
+      box-shadow: 0 25px 50px rgba(0,0,0,0.25);
+    }
+
+    .card-content {
+      padding: 30px;
+    }
+
+    .card img {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 0;
+      margin: 0;
+      border-bottom: 3px solid #f1f1f1;
+    }
+
+    .registration-card .card-content {
+      padding-top: 40px;
+    }
+
+    .card h2 {
+      margin: 20px 0 15px;
+      color: #2c3e50;
+      font-size: 1.6rem;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .price {
+      font-weight: 800;
+      color: #e74c3c;
+      margin: 15px 0;
+      display: block;
+      font-size: 2rem;
+      text-align: center;
+      background: linear-gradient(45deg, #e74c3c, #c0392b);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .card p {
+      font-size: 14px;
+      color: #555;
+      line-height: 1.6;
+      text-align: left;
+      margin-bottom: 20px;
+    }
+
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #1e7e34, #0d6e2c);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 16px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 15px;
+    }
+
+    .btn:hover {
+      background: linear-gradient(135deg, #0d6e2c, #1e7e34);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(30, 126, 52, 0.3);
+    }
+
+    /* Different button colors matching card headers */
+    .card:nth-child(1) .btn { background: linear-gradient(135deg, #ff6b6b, #ee5a24); }
+    .card:nth-child(1) .btn:hover { background: linear-gradient(135deg, #ee5a24, #ff6b6b); }
+
+    .card:nth-child(3) .btn { background: linear-gradient(135deg, #3498db, #2980b9); }
+    .card:nth-child(3) .btn:hover { background: linear-gradient(135deg, #2980b9, #3498db); }
+
+    .card:nth-child(4) .btn { background: linear-gradient(135deg, #9b59b6, #8e44ad); }
+    .card:nth-child(4) .btn:hover { background: linear-gradient(135deg, #8e44ad, #9b59b6); }
+
+    .card:nth-child(5) .btn { background: linear-gradient(135deg, #e74c3c, #c0392b); }
+    .card:nth-child(5) .btn:hover { background: linear-gradient(135deg, #c0392b, #e74c3c); }
+
+    .card:nth-child(6) .btn { background: linear-gradient(135deg, #f39c12, #e67e22); }
+    .card:nth-child(6) .btn:hover { background: linear-gradient(135deg, #e67e22, #f39c12); }
+
+    .card:nth-child(7) .btn { background: linear-gradient(135deg, #1abc9c, #16a085); }
+    .card:nth-child(7) .btn:hover { background: linear-gradient(135deg, #16a085, #1abc9c); }
+
+    .card:nth-child(8) .btn { background: linear-gradient(135deg, #34495e, #2c3e50); }
+    .card:nth-child(8) .btn:hover { background: linear-gradient(135deg, #2c3e50, #34495e); }
+
+    @media (max-width: 768px) {
+      .products {
+        grid-template-columns: 1fr;
+        gap: 25px;
+      }
+      
+      h1 {
+        font-size: 2.5rem;
+      }
+      
+      nav a {
+        margin: 0 10px;
+        font-size: 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="products.html">Packages</a>
+  </nav>
+
+  <div class="container">
+    <div class="header">
+      <h1>Our Exclusive Packages</h1>
+      <p class="subtitle">Choose your path to success with our carefully crafted packages designed for every level of ambition</p>
+    </div>
+    
+    <div class="products">
+
+      <!-- Registration Card -->
+      <div class="card registration-card">
+        <div class="card-content">
+          <h2>Basic Registration</h2>
+          <span class="price">₹250</span>
+          <p><strong>Start your journey with Biluxe10!</strong> Basic registration gives you access to our community and introductory resources. Perfect for those who want to explore before committing to full packages. Join our network and get started today!</p>
+          <a href="payments.html?amount=250&package=Basic Registration" class="btn">Register Now - ₹250</a>
+        </div>
+      </div>
+
+      <!-- Package 1 -->
+      <div class="card">
+        <img src="file_00000000049461f7920d19bc75bf27d7.png" alt="Starter Success Pack">
+        <div class="card-content">
+          <h2>Starter Success Pack</h2>
+          <span class="price">₹999</span>
+          <p><strong>Beginner-friendly package</strong> to start earning up to ₹1 Lakh. Perfect for students and newcomers. Learn online income basics with step-by-step guidance. No prior experience needed. Build your foundation in digital business.</p>
+          <a href="payments.html?amount=999&package=Starter Success Pack" class="btn">Get It Now - ₹999</a>
+        </div>
+      </div>
+
+      <!-- Package 2 -->
+      <div class="card">
+        <img src="file_00000000ed7861f7940aaa12396a8cf7.png" alt="Advanced Success Pack">
+        <div class="card-content">
+          <h2>Advance Success Pack</h2>
+          <span class="price">₹2499</span>
+          <p><strong>Scale faster</strong> and aim for ₹10 Lakhs earnings. Advanced tools and growth strategies. Master high-income skills and replicate proven success models. Bridge the gap between beginner and pro level.</p>
+          <a href="payments.html?amount=2499&package=Advance Success Pack" class="btn">Get It Now - ₹2499</a>
+        </div>
+      </div>
+
+      <!-- Package 3 -->
+      <div class="card">
+        <img src="file_0000000086e4622fb63ce9f3956bbcb1.png" alt="Digital empire system">
+        <div class="card-content">
+          <h2>Digital Empire System</h2>
+          <span class="price">₹3499</span>
+          <p><strong>Build wealth at scale</strong> targeting ₹1 Crore earnings. Complete business roadmap with multiple income streams. Learn automation, scaling, and advanced digital strategies. Your path to financial freedom.</p>
+          <a href="payments.html?amount=3499&package=Digital Empire System" class="btn">Get It Now - ₹3499</a>
+        </div>
+      </div>
+
+      <!-- Package 4 -->
+      <div class="card">
+        <img src="file_00000000b8d861f4930644f5a6d8054d.png" alt="Editing mastery">
+        <div class="card-content">
+          <h2>Editing Mastery</h2>
+          <span class="price">₹4999</span>
+          <p><strong>Master video editing</strong> from basics to advanced. Learn professional workflows for YouTube, social media, and business content. Start freelancing with in-demand editing skills. Easy-to-follow for all levels.</p>
+          <a href="payments.html?amount=4999&package=Editing Mastery" class="btn">Get It Now - ₹4999</a>
+        </div>
+      </div>
+
+      <!-- Package 5 -->
+      <div class="card">
+        <img src="file_00000000832461faafd5a3755e5fae00.png" alt="Ultimate dropshipping system">
+        <div class="card-content">
+          <h2>Ultimate Dropshipping System</h2>
+          <span class="price">₹9999</span>
+          <p><strong>Build e-commerce business</strong> without inventory. Learn product research, supplier finding, and automated systems. Marketing strategies for consistent sales. Scale to international markets.</p>
+          <a href="payments.html?amount=9999&package=Ultimate Dropshipping System" class="btn">Get It Now - ₹9999</a>
+        </div>
+      </div>
+
+      <!-- Package 6 -->
+      <div class="card">
+        <img src="file_00000000bf04620a8d4a21838cb258f3.png" alt="Crypto trading mastery">
+        <div class="card-content">
+          <h2>Crypto Trading Mastery</h2>
+          <span class="price">₹15999</span>
+          <p><strong>Complete crypto trading guide</strong> from basics to pro level. Learn market analysis, chart reading, and risk management. Strategies for day trading and long-term investing. Maximize profits in cryptocurrency markets.</p>
+          <a href="payments.html?amount=15999&package=Crypto Trading Mastery" class="btn">Get It Now - ₹15999</a>
+        </div>
+      </div>
+
+      <!-- Package 7 -->
+      <div class="card">
+        <img src="file_000000008bbc61fabe3b760d241a3ce4.png" alt="Future ai">
+        <div class="card-content">
+          <h2>Future AI System</h2>
+          <span class="price">₹23999</span>
+          <p><strong>Master AI technologies</strong> and create new income streams. Learn automation, AI content creation, and business growth hacks. Use top AI platforms effectively. Stay ahead in the AI-dominated future.</p>
+          <a href="payments.html?amount=23999&package=Future AI System" class="btn">Get It Now - ₹23999</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</body>
+</html>
