@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Biluxe10 Affiliate</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-storage-compat.js"></script>
+    <style>
+        :root {
+            --primary: #10B981;
+            --primary-dark: #059669;
+            --primary-light: #D1FAE5;
+            --secondary: #047857;
+            --accent: #F59E0B;
+            --accent-dark: #D97706;
+            --purple: #8B5CF6;
+            --pink: #EC4899;
+            --blue: #3B82F6;
+            --red: #EF4444;
+            --light: #F8FAFC;
+            --dark: #1E293B;
+            --gray: #64748B;
+            --gradient-primary: linear-gradient(135deg, #10B981 0%, #047857 100%);
+            --gradient-accent: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+            --gradient-purple: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%);
+            --gradient-blue: linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 50%, #f0f9ff 100%);
+            min-height: 100vh;
+            color: var(--dark);
+            overflow-x: hidden;
+        }
+
+        /* Animated Background Elements */
+        .floating-shapes {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .shape {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.1;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .shape-1 {
+            width: 200px;
+            height: 200px;
+            background: var(--primary);
+            top: 10%;
+            left: 5%;
+            animation-delay: 0s;
+        }
+
+        .shape-2 {
+            width: 150px;
+            height: 150px;
+            background: var(--accent);
+            top: 60%;
+            right: 10%;
+            animation-delay: 2s;
+        }
+
+        .shape-3 {
+            width: 100px;
+            height: 100px;
+            background: var(--purple);
+            bottom: 20%;
+            left: 20%;
+            animation-delay: 4s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+
+        /* Glass Morphism Effect */
+        .glass {
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Enhanced Navbar */
+        .navbar {
+            background: var(--gradient-primary);
+            padding: 1rem 2rem;
+            box-shadow: 0 8px 30px rgba(16, 185, 129, 0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-radius: 0 0 25px 25px;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo-badge {
+            background: var(--accent);
+            color: white;
+            padding: 0.2rem 0.6rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            margin-left: 0.5rem;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .nav-links a {
+            text-decoration: none;
+            color: white;
+            font-weight: 500;
+            padding: 0.75rem 1.25rem;
+            border-radius: 15px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .nav-links a::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .nav-links a:hover::before {
+            left: 100%;
+        }
+        
+        .nav-links a:hover, .nav-links a.active {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255,255,255,0.2);
+        }
+        
+        .user-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.3);
+            transition: all 0.3s ease;
+        }
+
+        .user-profile:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255,255,255,0.2);
+        }
+        
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid white;
+            transition: all 0.3s ease;
+        }
+
+        .user-profile:hover .user-avatar {
+            transform: scale(1.1);
+        }
+        
+        .user-balance {
+            background: var(--gradient-accent);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 25px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            box-shadow: 0 8px 25px rgba(245, 158, 11, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .user-balance:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(245, 158, 11, 0.4);
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+        
+        /* Enhanced Welcome Banner */
+        .welcome-banner {
+            background: var(--gradient-primary);
+            color: white;
+            padding: 3rem;
+            border-radius: 30px;
+            margin-bottom: 2rem;
+            box-shadow: 0 20px 50px rgba(16, 185, 129, 0.4);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .welcome-banner::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+            transform: rotate(45deg);
+            animation: shine 3s infinite;
+        }
+        
+        @keyframes shine {
+            0% { transform: translateX(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) rotate(45deg); }
+        }
+        
+        .welcome-content h1 {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            background: linear-gradient(45deg, #fff, #f0fdf4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .achievement-badges {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .badge {
+            background: rgba(255,255,255,0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.3);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .profile-display {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            background: rgba(255,255,255,0.2);
+            padding: 1.5rem;
+            border-radius: 25px;
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255,255,255,0.3);
+            transition: all 0.3s ease;
+        }
+
+        .profile-display:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(255,255,255,0.2);
+        }
+        
+        .profile-display img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid white;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+
+        /* Enhanced Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 25px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid transparent;
+        }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+        }
+        
+        .stat-card.earnings::before { 
+            background: var(--gradient-primary);
+        }
+        .stat-card.balance::before { 
+            background: var(--gradient-accent);
+        }
+        .stat-card.weekly::before { 
+            background: var(--gradient-purple);
+        }
+        .stat-card.daily::before { 
+            background: var(--gradient-blue);
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-15px) scale(1.03);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+            border-color: var(--primary);
+        }
+
+        /* Enhanced Commission Cards */
+        .commission-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .commission-card {
+            background: white;
+            padding: 2.5rem 2rem;
+            border-radius: 25px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid;
+        }
+        
+        .commission-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, transparent, rgba(255,255,255,0.1), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .commission-card:hover::before {
+            opacity: 1;
+        }
+        
+        .commission-card.direct { 
+            border-color: #10B981;
+            background: linear-gradient(135deg, #D1FAE5, #A7F3D0);
+        }
+        .commission-card.passive { 
+            border-color: #F59E0B;
+            background: linear-gradient(135deg, #FEF3C7, #FDE68A);
+        }
+        .commission-card.total { 
+            border-color: #8B5CF6;
+            background: linear-gradient(135deg, #EDE9FE, #DDD6FE);
+        }
+        .commission-card.team { 
+            border-color: #3B82F6;
+            background: linear-gradient(135deg, #DBEAFE, #BFDBFE);
+        }
+        
+        .commission-card:hover {
+            transform: translateY(-12px) rotate(1deg);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.2);
+        }
+
+        /* Main Grid Layout */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+        }
+        
+        .chart-section, .quick-actions {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 30px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            border: 2px solid #f1f5f9;
+            transition: all 0.3s ease;
+        }
+
+        .chart-section:hover, .quick-actions:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+        
+        /* Enhanced Buttons */
+        .btn {
+            padding: 1.25rem 2rem;
+            border: none;
+            border-radius: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            font-size: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+        
+        .btn:hover::before {
+            left: 100%;
+        }
+        
+        .btn-primary {
+            background: var(--gradient-primary);
+            color: white;
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(16, 185, 129, 0.4);
+        }
+
+        /* Enhanced Referral Box */
+        .referral-box {
+            background: linear-gradient(135deg, #f8fafc, #f0fdf4);
+            padding: 2.5rem;
+            border-radius: 25px;
+            margin-bottom: 2rem;
+            border: 2px solid rgba(16, 185, 129, 0.3);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .referral-box::before {
+            content: '🚀';
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            font-size: 3rem;
+            opacity: 0.1;
+        }
+        
+        .link-container {
+            display: flex;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        
+        .link-container input {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 15px;
+            font-size: 1rem;
+            background: white;
+            transition: all 0.3s ease;
+        }
+
+        .link-container input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+            outline: none;
+        }
+        
+        .social-share {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+        
+        .social-btn {
+            padding: 1rem 1.5rem;
+            border: none;
+            border-radius: 12px;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            flex: 1;
+            min-width: 120px;
+            justify-content: center;
+        }
+        
+        .social-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+        
+        .whatsapp { background: var(--gradient-primary); }
+        .facebook { background: var(--gradient-blue); }
+        .telegram { background: var(--gradient-purple); }
+
+        /* Enhanced Activity Section */
+        .recent-activity {
+            margin-top: 2rem;
+        }
+        
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.5rem;
+            border-bottom: 1px solid #f1f5f9;
+            transition: all 0.3s ease;
+            border-radius: 15px;
+            margin-bottom: 0.5rem;
+        }
+        
+        .activity-item:hover {
+            background: #f8fafc;
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .activity-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--primary-light);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .activity-item:hover .activity-icon {
+            transform: scale(1.1);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        /* New Features */
+        .progress-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 25px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 12px;
+            background: #e2e8f0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--gradient-primary);
+            border-radius: 10px;
+            transition: width 1s ease-in-out;
+        }
+
+        .level-badges {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1rem;
+        }
+
+        .level-badge {
+            text-align: center;
+            padding: 1rem;
+            border-radius: 15px;
+            background: #f8fafc;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .level-badge.active {
+            background: var(--gradient-primary);
+            color: white;
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+        }
+
+        .level-badge:hover:not(.active) {
+            background: var(--primary-light);
+            transform: translateY(-2px);
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .welcome-banner {
+                flex-direction: column;
+                text-align: center;
+                gap: 1rem;
+            }
+            
+            .link-container {
+                flex-direction: column;
+            }
+
+            .social-btn {
+                min-width: 100%;
+            }
+
+            .achievement-badges {
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+        }
+
+        /* Loading Animation */
+        .loading-pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        /* Notification Bell */
+        .notification-bell {
+            position: relative;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .notification-bell:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .notification-count {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--red);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 0.7rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="floating-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="logo">
+            <i class="fas fa-rocket"></i>
+            Biluxe10 Affiliate
+            <span class="logo-badge">PRO</span>
+        </div>
+        <div class="nav-links">
+            <a href="dashboard.html" class="active"><i class="fas fa-home"></i> Dashboard</a>
+            <a href="earnings.html"><i class="fas fa-chart-line"></i> Earnings</a>
+            <a href="products.html"><i class="fas fa-cube"></i> Packages</a>
+            <a href="referral.html"><i class="fas fa-users"></i> Referral</a>
+            <a href="myteam.html"><i class="fas fa-network-wired"></i> My Team</a>
+            <a href="withdrawal.html"><i class="fas fa-wallet"></i> Withdrawal</a>
+            <a href="transactions.html"><i class="fas fa-exchange-alt"></i> Transactions</a>
+            <a href="profile.html"><i class="fas fa-user"></i> Profile</a>
+            <a href="support.html"><i class="fas fa-headset"></i> Support</a>
+        </div>
+        <div class="user-section">
+            <div class="notification-bell">
+                <i class="fas fa-bell" style="color: white; font-size: 1.2rem;"></i>
+                <span class="notification-count">3</span>
+            </div>
+            <div class="user-balance">
+                <i class="fas fa-wallet"></i>
+                ₹<span id="currentBalance">0.00</span>
+            </div>
+            <div class="user-profile">
+                <img id="headerProfilePic" src="https://ui-avatars.com/api/?name=User&background=10B981&color=fff&size=128" alt="Profile" class="user-avatar">
+                <div>
+                    <div id="headerUserName" style="font-weight: 600; color: white;">User</div>
+                    <div style="font-size: 0.8rem; color: rgba(255,255,255,0.8);">Premium Member</div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Enhanced Welcome Banner -->
+        <div class="welcome-banner">
+            <div class="welcome-content">
+                <h1>Welcome back, Superstar! 🚀</h1>
+                <p style="font-size: 1.2rem; opacity: 0.9; margin-bottom: 1rem;">Your financial journey is looking amazing today!</p>
+                <div class="achievement-badges">
+                    <div class="badge"><i class="fas fa-trophy"></i> Top Performer</div>
+                    <div class="badge"><i class="fas fa-bolt"></i> Fast Riser</div>
+                    <div class="badge"><i class="fas fa-star"></i> Elite Member</div>
+                </div>
+            </div>
+            <div class="profile-display">
+                <img id="bannerProfilePic" src="https://ui-avatars.com/api/?name=User&background=10B981&color=fff&size=128" alt="Profile">
+                <div>
+                    <div id="bannerUserName" style="font-weight: 600; font-size: 1.5rem;">User Name</div>
+                    <div style="font-size: 1rem; opacity: 0.9; display: flex; align-items: center; gap: 0.5rem;">
+                        <i class="fas fa-shield-alt"></i> Verified Account
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Level Progress Section -->
+        <div class="progress-section">
+            <h3 style="margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                <i class="fas fa-trophy"></i> Your Progress Journey
+            </h3>
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 65%;"></div>
+            </div>
+            <div class="level-badges">
+                <div class="level-badge">🥉 Starter</div>
+                <div class="level-badge active">🥈 Pro</div>
+                <div class="level-badge">🥇 Expert</div>
+                <div class="level-badge">💎 Master</div>
+                <div class="level-badge">👑 Legend</div>
+            </div>
+        </div>
+
+        <!-- Commission Cards -->
+        <div class="commission-grid">
+            <div class="commission-card direct">
+                <h4>💰 Direct Commission</h4>
+                <div class="amount" style="font-size: 2.5rem; font-weight: 800; color: #059669; margin: 1rem 0;">
+                    ₹<span id="directCommission">0.00</span>
+                </div>
+                <small>🎯 50% from direct referrals</small>
+                <div style="margin-top: 1rem; font-size: 0.9rem; color: #059669;">
+                    <i class="fas fa-arrow-up"></i> +12% this week
+                </div>
+            </div>
+            <div class="commission-card passive">
+                <h4>🌐 Passive Commission</h4>
+                <div class="amount" style="font-size: 2.5rem; font-weight: 800; color: #D97706; margin: 1rem 0;">
+                    ₹<span id="passiveCommission">0.00</span>
+                </div>
+                <small>👥 15% from team sales</small>
+                <div style="margin-top: 1rem; font-size: 0.9rem; color: #D97706;">
+                    <i class="fas fa-users"></i> 5 active members
+                </div>
+            </div>
+            <div class="commission-card total">
+                <h4>💎 Total Commission</h4>
+                <div class="amount" style="font-size: 2.5rem; font-weight: 800; color: #7C3AED; margin: 1rem 0;">
+                    ₹<span id="totalCommission">0.00</span>
+                </div>
+                <small>📊 All time earnings</small>
+                <div style="margin-top: 1rem; font-size: 0.9rem; color: #7C3AED;">
+                    <i class="fas fa-chart-line"></i> Consistent growth
+                </div>
+            </div>
+            <div class="commission-card team">
+                <h4>👨‍👩‍👧‍👦 Team Size</h4>
+                <div class="amount" style="font-size: 2.5rem; font-weight: 800; color: #1D4ED8; margin: 1rem 0;">
+                    <span id="teamSize">0</span>
+                </div>
+                <small>🔥 Active members</small>
+                <div style="margin-top: 1rem;
