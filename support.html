@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support - Biluxe10 Affiliate</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+    <style>
+        :root {
+            --primary: #10B981; --accent: #F59E0B; --purple: #8B5CF6; --blue: #3B82F6;
+            --light: #F8FAFC; --dark: #1E293B; --gray: #64748B;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%); min-height: 100vh; }
+        
+        .navbar {
+            background: linear-gradient(135deg, var(--primary), #047857); padding: 1rem 2rem; box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .logo { font-size: 1.8rem; font-weight: 800; color: white; display: flex; align-items: center; gap: 0.5rem; }
+        .nav-links { display: flex; gap: 0.5rem; }
+        .nav-links a {
+            text-decoration: none; color: white; font-weight: 500; padding: 0.75rem 1.25rem; border-radius: 10px;
+            display: flex; align-items: center; gap: 0.5rem;
+        }
+        .nav-links a:hover, .nav-links a.active { background: rgba(255, 255, 255, 0.2); }
+        .user-section { display: flex; align-items: center; gap: 1rem; }
+        .user-balance {
+            background: linear-gradient(135deg, var(--primary), #047857); color: white; padding: 0.75rem 1.5rem;
+            border-radius: 25px; font-weight: 700; display: flex; align-items: center; gap: 0.5rem;
+        }
+        
+        .container { max-width: 1000px; margin: 2rem auto; padding: 0 1.5rem; }
+        .page-header {
+            background: linear-gradient(135deg, var(--primary), #047857); color: white; padding: 2rem;
+            border-radius: 20px; margin-bottom: 2rem;
+        }
+        
+        .support-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
+        .stat-card { background: white; padding: 1.5rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); text-align: center; }
+        
+        .new-ticket { background: white; border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); padding: 2rem; margin-bottom: 2rem; }
+        .form-group { margin-bottom: 1.5rem; }
+        .form-group label { display: block; margin-bottom: 0.5rem; color: var(--dark); font-weight: 600; }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%; padding: 1rem; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 1rem;
+        }
+        .form-group textarea { height: 120px; resize: vertical; }
+        .btn { padding: 1rem 2rem; border: none; border-radius: 12px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: #059669; }
+        .btn-primary:disabled { background: var(--gray); cursor: not-allowed; }
+        
+        .tickets-list { background: white; border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); padding: 2rem; }
+        .ticket-item {
+            padding: 1.5rem; border: 1px solid #e2e8f0; border-radius: 12px; margin-bottom: 1rem; cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .ticket-item:hover { border-color: var(--primary); box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .ticket-header {
+            display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;
+        }
+        .ticket-title { font-weight: 600; color: var(--dark); font-size: 1.1rem; }
+        .ticket-meta { display: flex; gap: 1rem; color: var(--gray); font-size: 0.8rem; }
+        .ticket-preview { color: var(--gray); line-height: 1.5; }
+        
+        .status-open { color: var(--primary); font-weight: 600; background: #D1FAE5; padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.8rem; }
+        .status-in_progress { color: var(--accent); font-weight: 600; background: #FEF3C7; padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.8rem; }
+        .status-resolved { color: var(--gray); font-weight: 600; background: #F1F5F9; padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.8rem; }
+        
+        .priority-high { color: #EF4444; font-weight: 600; background: #FEE2E2; padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.8rem; }
+        .priority-medium { color: var(--accent); font-weight: 600; background: #FEF3C7; padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.8rem; }
+        .priority-low { color: var(--primary); font-weight: 600; background: #D1FAE5; padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.8rem; }
+        
+        .ticket-modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5);
+            align-items: center; justify-content: center; z-index: 1000;
+        }
+        .modal-content {
+            background: white; border-radius: 20px; padding: 2rem; max-width: 800px; width: 90%; max-height: 90vh; overflow-y: auto;
+        }
+        .modal-header {
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; padding-bottom: 1rem;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        .close-modal {
+            background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--gray);
+        }
+        .conversation { margin-bottom: 2rem; }
+        .message { margin-bottom: 1.5rem; padding: 1rem; border-radius: 12px; }
+        .message.user { background: #f0fdf4; border-left: 4px solid var(--primary); }
+        .message.admin { background: #f8fafc; border-left: 4px solid var(--gray); }
+        .message-header {
+            display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-size: 0.8rem; color: var(--gray);
+        }
+        .reply-form { margin-top: 2rem; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo"><i class="fas fa-rocket"></i>Biluxe10 Affiliate</div>
+        <div class="nav-links">
+            <a href="dashboard.html"><i class="fas fa-home"></i> Dashboard</a>
+            <a href="earnings.html"><i class="fas fa-chart-line"></i> Earnings</a>
+            <a href="packages.html"><i class="fas fa-cube"></i> Packages</a>
+            <a href="referral.html"><i class="fas fa-users"></i> Referral</a>
+            <a href="myteam.html"><i class="fas fa-network-wired"></i> My Team</a>
+            <a href="withdrawal.html"><i class="fas fa-wallet"></i> Withdrawal</a>
+            <a href="transactions.html"><i class="fas fa-exchange-alt"></i> Transactions</a>
+            <a href="profile.html"><i class="fas fa-user"></i> Profile</a>
+            <a href="support.html" class="active"><i class="fas fa-headset"></i> Support</a>
+        </div>
+        <div class="user-section">
+            <div class="user-balance"><i class="fas fa-wallet"></i>₹<span id="currentBalance">0.00</span></div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="page-header">
+            <h1 style="font-size: 2.2rem; margin-bottom: 0.5rem;">Customer Support 🛟</h1>
+            <p>Get help with your account and earnings</p>
+        </div>
+        
+        <div class="support-stats">
+            <div class="stat-card">
+                <h3>📩 Open Tickets</h3>
+                <div style="font-size: 2rem; font-weight: 800; color: var(--dark);" id="openTickets">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>🔄 In Progress</h3>
+                <div style="font-size: 2rem; font-weight: 800; color: var(--dark);" id="progressTickets">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>✅ Resolved</h3>
+                <div style="font-size: 2rem; font-weight: 800; color: var(--dark);" id="resolvedTickets">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>⏱️ Response Time</h3>
+                <div style="font-size: 2rem; font-weight: 800; color: var(--dark);" id="responseTime">2h</div>
+            </div>
+        </div>
+
+        <div class="new-ticket">
+            <h3 style="margin-bottom: 1.5rem;">Create New Support Ticket</h3>
+            <form id="ticketForm">
+                <div class="form-group">
+                    <label for="subject">Subject *</label>
+                    <input type="text" id="subject" required placeholder="Brief description of your issue">
+                </div>
+                <div class="form-group">
+                    <label for="priority">Priority *</label>
+                    <select id="priority" required>
+                        <option value="">Select Priority</option>
+                        <option value="low">Low</option>
+                        <option value="medium">Medium</option>
+                        <option value="high">High</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="message">Message *</label>
+                    <textarea id="message" required placeholder="Describe your issue in detail..."></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary" id="submitTicket">
+                    <i class="fas fa-paper-plane"></i> Submit Ticket
+                </button>
+            </form>
+        </div>
+
+        <div class="tickets-list">
+            <h3 style="margin-bottom: 1.5rem;">Your Support Tickets</h3>
+            <div id="ticketsList">
+                <div style="text-align: center; padding: 2rem; color: var(--gray);">
+                    <i class="fas fa-spinner fa-spin"></i> Loading your tickets...
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ticket Detail Modal -->
+    <div class="ticket-modal" id="ticketModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Ticket Details</h2>
+                <button class="close-modal" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="conversation" id="ticketConversation">
+                <!-- Conversation will be loaded here -->
+            </div>
+            <div class="reply-form">
+                <h4 style="margin-bottom: 1rem;">Add Reply</h4>
+                <form id="replyForm">
+                    <div class="form-group">
+                        <textarea id="replyMessage" placeholder="Type your reply..." required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-reply"></i> Send Reply
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyDxxkC9iD1V1w-53Kf4oBrHEXlBLvCc7sE",
+            authDomain: "biluxe10-3e894.firebaseapp.com",
+            projectId: "biluxe10-3e894",
+            storageBucket: "biluxe10-3e894.firebasestorage.app",
+            messagingSenderId: "804749588233",
+            appId: "1:804749588233:web:7777648c0c7834733c05d8"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const auth = firebase.auth();
+
+        let currentUser = null;
+        let currentTicketId = null;
+
+        // 🔥 AUTO CREATE COLLECTIONS WITH SAMPLE DATA
+        async function initializeCollections() {
+            try {
+                // Check if collections exist and create sample data
+                const ticketsSnapshot = await db.collection('support_tickets').limit(1).get();
+                
+                if (ticketsSnapshot.empty) {
+                    console.log('🔄 Creating support_tickets collection with sample data...');
+                    
+                    // Create sample tickets for current user if logged in
+                    if (currentUser) {
+                        const sampleTickets = [
+                            {
+                                userId: currentUser.uid,
+                                subject: 'Welcome to Biluxe10 Support',
+                                message: 'Thank you for joining Biluxe10! How can we help you today?',
+                                priority: 'low',
+                                status: 'resolved',
+                                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                                updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                                replies: [
+                                    {
+                                        message: 'Your account has been successfully activated. Welcome to our platform!',
+                                        isAdmin: true,
+                                        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                                    }
+                                ]
+                            },
+                            {
+                                userId: currentUser.uid,
+                                subject: 'Commission Calculation Help',
+                                message: 'I need help understanding how commissions are calculated for my referrals.',
+                                priority: 'medium',
+                                status: 'in_progress',
+                                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                                updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                                replies: []
+                            }
+                        ];
+
+                        for (const ticket of sampleTickets) {
+                            await db.collection('support_tickets').add(ticket);
+                        }
+                        console.log('✅ Sample support tickets created');
+                    }
+                }
+            } catch (error) {
+                console.log('Support collection initialization completed');
+            }
+        }
+
+        auth.onAuthStateChanged(async (user) => {
+            if (user) {
+                currentUser = user;
+                await initializeCollections(); // Wait for collections to be ready
+                loadSupportTickets(user.uid);
+                setupRealTimeBalance(user.uid);
+                
+                // Real-time listener for new tickets
+                db.collection('support_tickets')
+                    .where('userId', '==', user.uid)
+                    .orderBy('createdAt', 'desc')
+                    .onSnapshot((snapshot) => {
+                        loadSupportTickets(user.uid);
+                    });
+            } else {
+                window.location.href = 'auth.html';
+            }
+        });
+
+        function setupRealTimeBalance(userId) {
+            db.collection('user_collections').doc(userId).onSnapshot((doc) => {
+                if (doc.exists) {
+                    const userData = doc.data();
+                    document.getElementById('currentBalance').textContent = (userData.balance || 0).toFixed(2);
+                }
+            });
+        }
+
+        async function loadSupportTickets(userId) {
+            try {
+                const ticketsSnapshot = await db.collection('support_tickets')
+                    .where('userId', '==', userId)
+                    .orderBy('createdAt', 'desc')
+                    .get();
+
+                const ticketsList = document.getElementById('ticketsList');
+                ticketsList.innerHTML = '';
+
+                let openCount = 0;
+                let progressCount = 0;
+                let resolvedCount = 0;
+
+                if (ticketsSnapshot.empty) {
+                    ticketsList.innerHTML = '<div style="text-align: center; padding: 2rem; color: var(--gray);">No support tickets yet. Create your first ticket above!</div>';
+                } else {
+                    ticketsSnapshot.forEach(doc => {
+                        const ticket = doc.data();
+                        const ticketId = doc.id;
+                        
+                        // ✅ FIXED: COUNT TICKETS PROPERLY
+                        if (ticket.status === 'open') openCount++;
+                        else if (ticket.status === 'in_progress') progressCount++;
+                        else if (ticket.status === 'resolved') resolvedCount++;
+
+                        const ticketItem = document.createElement('div');
+                        ticketItem.className = 'ticket-item';
+                        ticketItem.onclick = () => openTicketModal(ticketId, ticket);
+                        
+                        const statusClass = `status-${ticket.status}`;
+                        const priorityClass = `priority-${ticket.priority}`;
+                        
+                        ticketItem.innerHTML = `
+                            <div class="ticket-header">
+                                <div class="ticket-title">${ticket.subject}</div>
+                                <div class="ticket-meta">
+                                    <span class="${statusClass}">${ticket.status.replace('_', ' ').toUpperCase()}</span>
+                                    <span class="${priorityClass}">${ticket.priority.toUpperCase()}</span>
+                                </div>
+                            </div>
+                            <div class="ticket-preview">${ticket.message.substring(0, 150)}${ticket.message.length > 150 ? '...' : ''}</div>
+                            <div class="ticket-meta">
+                                <span><i class="far fa-calendar"></i> ${ticket.createdAt?.toDate().toLocaleDateString()}</span>
+                                <span><i class="far fa-comment"></i> ${ticket.replies ? ticket.replies.length + 1 : 1} messages</span>
+                            </div>
+                        `;
+                        ticketsList.appendChild(ticketItem);
+                    });
+                }
+
+                // ✅ FIXED: UPDATE STATS NUMBERS
+                document.getElementById('openTickets').textContent = openCount;
+                document.getElementById('progressTickets').textContent = progressCount;
+                document.getElementById('resolvedTickets').textContent = resolvedCount;
+                
+                // Update response time based on open tickets
+                document.getElementById('responseTime').textContent = openCount > 0 ? '2-4h' : '1-2h';
+            } catch (error) {
+                console.error('Error loading support tickets:', error);
+                document.getElementById('ticketsList').innerHTML = '<div style="text-align: center; padding: 2rem; color: #EF4444;">Error loading tickets. Please refresh the page.</div>';
+            }
+        }
+
+        // Create new ticket
+        document.getElementById('ticketForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const subject = document.getElementById('subject').value;
+            const priority = document.getElementById('priority').value;
+            const message = document.getElementById('message').value;
+
+            if (!currentUser) {
+                alert('Please login first');
+                return;
+            }
+
+            const submitBtn = document.getElementById('submitTicket');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating...';
+
+            try {
+                // Create ticket in Firebase
+                await db.collection('support_tickets').add({
+                    userId: currentUser.uid,
+                    subject: subject,
+                    message: message,
+                    priority: priority,
+                    status: 'open',
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    replies: []
+                });
+
+                alert('✅ Support ticket created successfully! Our team will respond within 2-4 hours.');
+                document.getElementById('ticketForm').reset();
+                
+            } catch (error) {
+                console.error('Error creating ticket:', error);
+                alert('❌ Error creating support ticket. Please try again.');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Submit Ticket';
+            }
+        });
+
+        // Open ticket modal
+        async function openTicketModal(ticketId, ticketData) {
+            currentTicketId = ticketId;
+            const modal = document.getElementById('ticketModal');
+            const conversation = document.getElementById('ticketConversation');
+            
+            document.getElementById('modalTitle').textContent = ticketData.subject;
+            conversation.innerHTML = '';
+
+            // Add original message
+            const originalMessage = document.createElement('div');
+            originalMessage.className = 'message user';
+            originalMessage.innerHTML = `
+                <div class="message-header">
+                    <strong><i class="fas fa-user"></i> You</strong>
+                    <span>${ticketData.createdAt?.toDate().toLocaleString()}</span>
+                </div>
+                <div>${ticketData.message}</div>
+            `;
+            conversation.appendChild(originalMessage);
+
+            // Add replies
+            if (ticketData.replies && ticketData.replies.length > 0) {
+                ticketData.replies.forEach(reply => {
+                    const replyMessage = document.createElement('div');
+                    replyMessage.className = `message ${reply.isAdmin ? 'admin' : 'user'}`;
+                    replyMessage.innerHTML = `
+                        <div class="message-header">
+                            <strong><i class="fas ${reply.isAdmin ? 'fa-headset' : 'fa-user'}"></i> ${reply.isAdmin ? 'Support Team' : 'You'}</strong>
+                            <span>${reply.timestamp?.toDate().toLocaleString()}</span>
+                        </div>
+                        <div>${reply.message}</div>
+                    `;
+                    conversation.appendChild(replyMessage);
+                });
+            } else {
+                // Show waiting message if no replies
+                const waitingMessage = document.createElement('div');
+                waitingMessage.className = 'message admin';
+                waitingMessage.innerHTML = `
+                    <div class="message-header">
+                        <strong><i class="fas fa-headset"></i> Support Team</strong>
+                        <span>Waiting for response</span>
+                    </div>
+                    <div>Our support team will respond to your ticket shortly. Thank you for your patience.</div>
+                `;
+                conversation.appendChild(waitingMessage);
+            }
+
+            modal.style.display = 'flex';
+        }
+
+        // Close modal
+        function closeModal() {
+            document.getElementById('ticketModal').style.display = 'none';
+            currentTicketId = null;
+        }
+
+        // Send reply
+        document.getElementById('replyForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            if (!currentTicketId || !currentUser) return;
+
+            const message = document.getElementById('replyMessage').value;
+
+            try {
+                const ticketRef = db.collection('support_tickets').doc(currentTicketId);
+                const ticketDoc = await ticketRef.get();
+                const ticketData = ticketDoc.data();
+
+                const replies = ticketData.replies || [];
+                replies.push({
+                    message: message,
+                    isAdmin: false,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                await ticketRef.update({
+                    replies: replies,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    status: 'in_progress' // Change status when user replies
+                });
+
+                document.getElementById('replyMessage').value = '';
+                openTicketModal(currentTicketId, { ...ticketData, replies: replies });
+                
+                // Show success message
+                alert('✅ Reply sent successfully!');
+                
+            } catch (error) {
+                console.error('Error sending reply:', error);
+                alert('❌ Error sending reply. Please try again.');
+            }
+        });
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('ticketModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+    </script>
+</body>
+</html>
