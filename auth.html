@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Biluxe10 | Login & Signup</title>
+
+    <!-- Tailwind for quick styling (you already used it before) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        * { font-family: 'Inter', sans-serif; }
+
+        /* Page background gradient */
+        body {
+            min-height: 100vh;
+            margin: 0;
+            background: radial-gradient(1200px 600px at 10% 10%, rgba(255,255,255,0.06), transparent),
+                        linear-gradient(135deg, #057a5f 0%, #10b981 60%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            -webkit-font-smoothing:antialiased;
+            -moz-osx-font-smoothing:grayscale;
+        }
+
+        /* Floating glass card (3D feel) */
+        .auth-wrapper {
+            width: 100%;
+            max-width: 920px;
+            display: grid;
+            grid-template-columns: 420px 1fr;
+            gap: 28px;
+            align-items: center;
+            perspective: 1200px;
+        }
+
+        .left-panel {
+            transform-style: preserve-3d;
+            animation: floatCard 6s ease-in-out infinite;
+            will-change: transform;
+        }
+
+        @keyframes floatCard {
+            0%,100% { transform: translateY(0) rotateY(0deg); }
+            50% { transform: translateY(-12px) rotateY(3deg); }
+        }
+
+        .card {
+            background: rgba(255,255,255,0.08);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.12);
+            box-shadow: 0 20px 50px rgba(2,6,23,0.45);
+            border-radius: 20px;
+            padding: 28px;
+        }
+
+        .logo-circle {
+            width:72px; height:72px; border-radius:16px;
+            background: #ffffff; display:flex; align-items:center; justify-content:center;
+            box-shadow: 0 10px 25px rgba(2,6,23,0.35);
+        }
+
+        .brand {
+            color: #fff; font-weight:700; font-size:22px;
+            text-shadow: 0 6px 20px rgba(2,6,23,0.25);
+        }
+
+        /* small bouncing logo text on top */
+        .brand-float {
+            position: absolute; top:36px; left:50%;
+            transform: translateX(-50%);
+            color: #ffffff; font-size:26px; font-weight:800;
+            text-shadow: 0 10px 30px rgba(0,0,0,0.35);
+            animation: floatLogo 3s ease-in-out infinite;
+            pointer-events: none;
+        }
+        @keyframes floatLogo {
+            0%,100% { transform: translate(-50%, 0); }
+            50% { transform: translate(-50%, -12px); }
+        }
+
+        /* Animated toggle card area */
+        .form-wrap {
+            position: relative;
+            min-height: 380px;
+        }
+
+        .panel-form {
+            width:100%;
+            transition: transform 450ms cubic-bezier(.2,.9,.3,1), opacity 300ms ease;
+            transform-origin: center top;
+        }
+
+        .hidden-el { display:none; }
+
+        .referral-badge {
+            background: linear-gradient(135deg,#F59E0B,#D97706);
+        }
+
+        /* small helper for mobile */
+        @media (max-width: 900px) {
+            .auth-wrapper { grid-template-columns: 1fr; padding-top: 48px; gap: 18px; }
+            .brand-float { top: 18px; font-size:20px; }
+            .left-panel { order: 2; }
+        }
+
+        input, textarea {
+            transition: box-shadow .25s ease, transform .25s ease;
+        }
+
+        input:focus {
+            transform: translateY(-2px);
+        }
+
+        /* subtle 3D active effect on the card when hovering */
+        .card:hover { transform: translateY(-6px) scale(1.01); box-shadow: 0 30px 60px rgba(2,6,23,0.5); }
+    </style>
+</head>
+<body>
+
+    <div class="brand-float">Biluxe10</div>
+
+    <div class="auth-wrapper">
+        <!-- LEFT: Branding + Info -->
+        <div class="left-panel">
+            <div class="card">
+                <div class="flex items-center gap-4 mb-4">
+                    <div class="logo-circle">
+                        <i class="fas fa-rocket text-2xl text-green-600"></i>
+                    </div>
+                    <div>
+                        <div class="text-white font-bold text-lg">Biluxe10 Affiliate</div>
+                        <div class="text-green-100 text-sm">Premium Earning Platform</div>
+                    </div>
+                </div>
+
+                <div id="referralBanner" class="hidden referral-badge text-white p-4 rounded-lg mb-4 text-center">
+                    <i class="fas fa-gift text-xl mb-1"></i>
+                    <div class="font-bold">🎉 Joining with Referral!</div>
+                    <div class="text-sm mt-1">You'll get special welcome bonus of ₹100</div>
+                    <div class="text-xs mt-1">Referral Code: <strong id="referralCodeDisplay"></strong></div>
+                </div>
+
+                <div id="commissionInfo" class="hidden text-white p-4 rounded-lg mb-2" style="background: rgba(255,255,255,0.06)">
+                    <h4 class="font-bold text-center mb-2">💰 Commission Structure</h4>
+                    <div class="text-xs space-y-1">
+                        <div class="flex justify-between"><span>Level 1 (Direct):</span><span class="font-bold">50%</span></div>
+                        <div class="flex justify-between"><span>Level 2 (Team):</span><span class="font-bold">15%</span></div>
+                        <div class="flex justify-between"><span>Welcome Bonus:</span><span class="font-bold">₹100</span></div>
+                    </div>
+                </div>
+
+                <div class="mt-4 text-white text-sm">
+                    <p class="mb-2">Quick features:</p>
+                    <ul class="list-disc list-inside text-green-100">
+                        <li>Signup with referral bonus</li>
+                        <li>Referrers earn commission</li>
+                        <li>Users must complete payment to access dashboard</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT: Auth forms (floating) -->
+        <div>
+            <div class="card form-wrap px-6 py-6">
+                <!-- Signup Form -->
+                <div id="signupForm" class="panel-form">
+                    <h2 class="text-2xl font-bold text-white text-center mb-4">Create Account</h2>
+
+                    <div class="space-y-3">
+                        <input type="text" id="signupName" placeholder="Full Name"
+                               class="w-full px-4 py-3 rounded-lg bg-white/90 border border-gray-300 focus:ring-2 focus:ring-green-500" />
+
+                        <input type="email" id="signupEmail" placeholder="Email Address"
+                               class="w-full px-4 py-3 rounded-lg bg-white/90 border border-gray-300 focus:ring-2 focus:ring-green-500" />
+
+                        <input type="password" id="signupPassword" placeholder="Password"
+                               class="w-full px-4 py-3 rounded-lg bg-white/90 border border-gray-300 focus:ring-2 focus:ring-green-500" />
+
+                        <input type="tel" id="signupPhone" placeholder="Phone Number"
+                               class="w-full px-4 py-3 rounded-lg bg-white/90 border border-gray-300 focus:ring-2 focus:ring-green-500" />
+
+                        <input type="text" id="signupReferral" placeholder="Referral Code (Optional)"
+                               class="w-full px-4 py-3 rounded-lg bg-white/90 border border-gray-300 focus:ring-2 focus:ring-green-500" />
+
+                        <button id="signupBtn" class="w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white py-3 rounded-lg font-semibold hover:from-green-600 hover:to-emerald-700 transition-all duration-300 shadow-lg">
+                            <i class="fas fa-user-plus mr-2"></i>Create Account
+                        </button>
+                    </div>
+
+                    <p class="text-center text-green-100 mt-4">
+                        Already have an account?
+                        <button id="showLogin" class="text-white font-semibold hover:underline ml-1">Login</button>
+                    </p>
+                </div>
+
+                <!-- Login Form -->
+                <div id="loginForm" class="panel-form hidden-el hidden">
+                    <h2 class="text-2xl font-bold text-white text-center mb-4">Welcome Back</h2>
+
+                    <div class="space-y-3">
+                        <input type="email" id="loginEmail" placeholder="Email Address"
+                               class="w-full px-4 py-3 rounded-lg bg-white/90 border border-gray-300 focus:ring-2 focus:ring-green-500" />
+
+                        <input type="password" id="loginPassword" placeholder="Password"
+                               class="w-full px-4 py-3 rounded-lg bg-white/90 border border-gray-300 focus:ring-2 focus:ring-green-500" />
+
+                        <button id="loginBtn" class="w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white py-3 rounded-lg font-semibold hover:from-green-600 hover:to-emerald-700 transition-all duration-300 shadow-lg">
+                            <i class="fas fa-sign-in-alt mr-2"></i>Login to Dashboard
+                        </button>
+                    </div>
+
+                    <p class="text-center text-green-100 mt-4">
+                        Don't have an account?
+                        <button id="showSignup" class="text-white font-semibold hover:underline ml-1">Sign Up</button>
+                    </p>
+                </div>
+
+                <!-- Loading -->
+                <div id="loadingState" class="hidden text-center py-4">
+                    <div class="w-10 h-10 border-4 border-white border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
+                    <p class="text-white text-sm">Processing...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase + Logic (UNCHANGED logics adapted from your original file) -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc, updateDoc, arrayUnion, increment, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
+
+        // ==== KEEP YOUR ORIGINAL FIREBASE CONFIG (UNCHANGED) ====
+        const firebaseConfig = {
+            apiKey: "AIzaSyDxxkC9iD1V1w-53Kf4oBrHEXlBLvCc7sE",
+            authDomain: "biluxe10-3e894.firebaseapp.com",
+            projectId: "biluxe10-3e894",
+            storageBucket: "biluxe10-3e894.firebasestorage.app",
+            messagingSenderId: "804749588233",
+            appId: "1:804749588233:web:7777648c0c7834733c05d8"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // DOM Elements (same IDs you used)
+        const signupForm = document.getElementById('signupForm');
+        const loginForm = document.getElementById('loginForm');
+        const loadingState = document.getElementById('loadingState');
+        const referralBanner = document.getElementById('referralBanner');
+        const commissionInfo = document.getElementById('commissionInfo');
+        const referralCodeDisplay = document.getElementById('referralCodeDisplay');
+
+        // Check for referral code in URL - AUTO SWITCH TO SIGNUP
+        const urlParams = new URLSearchParams(window.location.search);
+        const referralCodeFromURL = urlParams.get('ref');
+
+        if (referralCodeFromURL) {
+            loginForm.classList.add('hidden');
+            signupForm.classList.remove('hidden');
+            referralBanner.classList.remove('hidden');
+            commissionInfo.classList.remove('hidden');
+            document.getElementById('signupReferral').value = referralCodeFromURL;
+            referralCodeDisplay.textContent = referralCodeFromURL;
+            console.log("🎯 Referral link detected, auto-showing signup form");
+        }
+
+        // Toggle Forms (same IDs)
+        document.getElementById('showLogin').addEventListener('click', () => {
+            signupForm.classList.add('hidden');
+            loginForm.classList.remove('hidden');
+            signupForm.classList.add('hidden-el');
+            loginForm.classList.remove('hidden-el');
+        });
+
+        document.getElementById('showSignup').addEventListener('click', () => {
+            loginForm.classList.add('hidden');
+            signupForm.classList.remove('hidden');
+            loginForm.classList.add('hidden-el');
+            signupForm.classList.remove('hidden-el');
+        });
+
+        // Show Loading
+        function showLoading() {
+            loadingState.classList.remove('hidden');
+            document.getElementById('signupBtn').disabled = true;
+            document.getElementById('loginBtn').disabled = true;
+            signupForm.style.opacity = '0.6';
+            loginForm.style.opacity = '0.6';
+        }
+
+        // Hide Loading
+        function hideLoading() {
+            loadingState.classList.add('hidden');
+            document.getElementById('signupBtn').disabled = false;
+            document.getElementById('loginBtn').disabled = false;
+            signupForm.style.opacity = '1';
+            loginForm.style.opacity = '1';
+        }
+
+        // Show Message (simple alert; you can change to custom toast later)
+        function showMessage(message, type = 'success') {
+            // use browser alert for now (keeps your original behavior)
+            alert(message);
+        }
+
+        // Generate Referral Code
+        function generateReferralCode() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let result = 'BLX10';
+            for (let i = 0; i < 6; i++) {
+                result += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return result;
+        }
+
+        // Handle Referral System (kept same as your original function)
+        async function handleReferralSystem(newUserId, referralCode, userData) {
+            try {
+                const usersSnapshot = await getDocs(collection(db, "user_collections"));
+                let referrerId = null;
+                let referrerData = null;
+
+                usersSnapshot.forEach((docSnap) => {
+                    const user = docSnap.data();
+                    if (user.referralCode === referralCode) {
+                        referrerId = docSnap.id;
+                        referrerData = user;
+                    }
+                });
+
+                if (referrerId && referrerData) {
+                    console.log("🎯 Referral found:", referrerData.email);
+
+                    // Add referredBy to new user locally (we'll update Firestore later)
+                    userData.referredBy = referrerId;
+
+                    // Create referral relationship
+                    await setDoc(doc(db, "referrals", `${referrerId}_${newUserId}`), {
+                        referrerId: referrerId,
+                        referredId: newUserId,
+                        referralCode: referralCode,
+                        joinDate: new Date(),
+                        status: 'active',
+                        level: 1,
+                        earnedCommission: 0
+                    });
+
+                    // Update referrer's counts and give direct commission/bonus
+                    await updateDoc(doc(db, "user_collections", referrerId), {
+                        referralCount: increment(1),
+                        teamCount: increment(1),
+                        activeTeamCount: increment(1),
+                        directCommission: increment(100) // Give bonus to referrer too
+                    });
+
+                    // Give welcome bonus to new user
+                    await updateDoc(doc(db, "user_collections", newUserId), {
+                        balance: increment(100),
+                        availableBalance: increment(100),
+                        totalEarnings: increment(100),
+                        bonusEarnings: increment(100)
+                    });
+
+                    // Record welcome bonus transaction for new user
+                    await setDoc(doc(db, "transactions", `${newUserId}_${Date.now()}`), {
+                        userId: newUserId,
+                        type: 'bonus',
+                        amount: 100,
+                        description: 'Welcome bonus for joining with referral',
+                        status: 'completed',
+                        timestamp: new Date()
+                    });
+
+                    // Record commission for referrer
+                    await setDoc(doc(db, "transactions", `${referrerId}_${Date.now()}`), {
+                        userId: referrerId,
+                        type: 'commission',
+                        amount: 100,
+                        description: `Referral commission from ${userData.username}`,
+                        status: 'completed',
+                        timestamp: new Date()
+                    });
+
+                    console.log("✅ Referral system processed successfully");
+                    return true;
+                } else {
+                    console.log("❌ Referral code not found:", referralCode);
+                    return false;
+                }
+            } catch (error) {
+                console.error("❌ Error in referral system:", error);
+                return false;
+            }
+        }
+
+        // SIGNUP - With Your Exact Fields & Flow (kept intact)
+        document.getElementById('signupBtn').addEventListener('click', async () => {
+            const name = document.getElementById('signupName').value.trim();
+            const email = document.getElementById('signupEmail').value.trim();
+            const password = document.getElementById('signupPassword').value.trim();
+            const phone = document.getElementById('signupPhone').value.trim();
+            const referral = document.getElementById('signupReferral').value.trim();
+
+            if (!name || !email || !password || !phone) {
+                showMessage('Please fill in all fields', 'error');
+                return;
+            }
+
+            if (password.length < 6) {
+                showMessage('Password must be at least 6 characters', 'error');
+                return;
+            }
+
+            showLoading();
+
+            try {
+                // Create user in Firebase Auth
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+
+                // Get referral code (from URL or input)
+                const referralCode = referralCodeFromURL || referral;
+                const username = email.split('@')[0];
+
+                // Create user data with YOUR EXACT FIELDS
+                const userData = {
+                    // BASIC INFO
+                    userId: user.uid,
+                    email: email,
+                    username: username,
+                    fullName: name,
+                    phoneNumber: phone,
+
+                    // CURRENT BALANCES - START WITH 0
+                    balance: 0,
+                    availableBalance: 0,
+                    totalEarnings: 0,
+
+                    // REFERRAL SYSTEM
+                    referralCode: generateReferralCode(),
+                    referredBy: "", // Will be updated if referral exists
+                    referralCount: 0,
+                    teamCount: 0,
+                    activeTeamCount: 0,
+
+                    // COMMISSION EARNINGS - START WITH 0
+                    directCommission: 0,
+                    passiveCommission: 0,
+                    totalCommission: 0,
+                    bonusEarnings: 0,
+
+                    // PACKAGE EARNINGS - START WITH 0
+                    packageEarnings: 0,
+
+                    // TIME-BASED EARNINGS - START WITH 0
+                    weeklyEarnings: 0,
+                    monthlyEarnings: 0,
+                    dailyEarnings: 0,
+
+                    // USER STATUS
+                    packageLevel: "basic",
+                    paymentStatus: "pending", // Payment not done yet
+                    joinDate: new Date(),
+                    lastLogin: new Date()
+                };
+
+                // Save user data to Firestore - YOUR EXACT COLLECTION
+                await setDoc(doc(db, "user_collections", user.uid), userData);
+
+                // Handle referral system if referral code exists (this may update user collection with bonus)
+                let referralSuccess = false;
+                if (referralCode) {
+                    referralSuccess = await handleReferralSystem(user.uid, referralCode, userData);
+                    if (referralSuccess) {
+                        // If referral success, update local object (and some updates already done inside handleReferralSystem)
+                        userData.balance = 100;
+                        userData.availableBalance = 100;
+                        userData.totalEarnings = 100;
+                        userData.bonusEarnings = 100;
+                    }
+                }
+
+                if (referralSuccess) {
+                    showMessage('🎉 Account created successfully! You received ₹100 welcome bonus! Redirecting to payment page...');
+                } else {
+                    showMessage('Account created successfully! Redirecting to payment page...');
+                }
+
+                // REDIRECT TO products.html (Payment Page)
+                setTimeout(() => {
+                    window.location.href = 'products.html';
+                }, 1200);
+
+            } catch (error) {
+                console.error('Signup error:', error);
+                if (error.code === 'auth/email-already-in-use') {
+                    showMessage('Email already exists. Please use different email.', 'error');
+                } else if (error.code === 'auth/weak-password') {
+                    showMessage('Password should be at least 6 characters', 'error');
+                } else if (error.code === 'auth/invalid-email') {
+                    showMessage('Invalid email address', 'error');
+                } else {
+                    showMessage('Error creating account: ' + error.message, 'error');
+                }
+            } finally {
+                hideLoading();
+            }
+        });
+
+        // LOGIN - Check Payment Status (kept exact flow)
+        document.getElementById('loginBtn').addEventListener('click', async () => {
+            const email = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value.trim();
+
+            if (!email || !password) {
+                showMessage('Please enter email and password', 'error');
+                return;
+            }
+
+            showLoading();
+
+            try {
+                // Login user
+                const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+
+                // Check user data from YOUR EXACT COLLECTION
+                const userDoc = await getDoc(doc(db, "user_collections", user.uid));
+
+                if (!userDoc.exists()) {
+                    showMessage('User data not found! Please sign up first.', 'error');
+                    hideLoading();
+                    return;
+                }
+
+                const userData = userDoc.data();
+                const paymentStatus = userData.paymentStatus;
+
+                // CHECK PAYMENT STATUS - YOUR EXACT FLOW
+                if (paymentStatus === "approved") {
+                    showMessage('Login successful! Redirecting to dashboard...');
+                    // Update last login
+                    await updateDoc(doc(db, "user_collections", user.uid), {
+                        lastLogin: new Date()
+                    });
+                    // REDIRECT TO dashboard.html
+                    setTimeout(() => {
+                        window.location.href = 'dashboard.html';
+                    }, 800);
+                } else {
+                    showMessage('Payment not approved yet! Please complete payment first.', 'error');
+                    // REDIRECT TO products.html to complete payment
+                    setTimeout(() => {
+                        window.location.href = 'products.html';
+                    }, 1200);
+                }
+
+            } catch (error) {
+                console.error('Login error:', error);
+                if (error.code === 'auth/user-not-found') {
+                    showMessage('No account found with this email', 'error');
+                } else if (error.code === 'auth/wrong-password') {
+                    showMessage('Incorrect password', 'error');
+                } else if (error.code === 'auth/invalid-email') {
+                    showMessage('Invalid email address', 'error');
+                } else {
+                    showMessage('Login failed: ' + error.message, 'error');
+                }
+            } finally {
+                hideLoading();
+            }
+        });
+
+        // Enter key support
+        document.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                if (!signupForm.classList.contains('hidden')) {
+                    document.getElementById('signupBtn').click();
+                } else {
+                    document.getElementById('loginBtn').click();
+                }
+            }
+        });
+    </script>
+</body>
+</html>
