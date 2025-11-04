@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Biluxe10 | Login & Signup</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
+
+    * {
+      font-family: "Inter", sans-serif;
+      transition: all 0.4s ease;
+    }
+
+    body {
+      background: linear-gradient(135deg, #059669, #10b981);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .auth-card {
+      background: rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(15px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+      transform-style: preserve-3d;
+      transform: perspective(1000px) translateY(20px);
+      animation: floatIn 0.9s ease forwards;
+    }
+
+    @keyframes floatIn {
+      0% {
+        opacity: 0;
+        transform: translateY(50px) scale(0.9);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .auth-card:hover {
+      transform: perspective(1000px) rotateY(3deg) scale(1.02);
+    }
+
+    .floating-btn:hover {
+      transform: translateY(-3px);
+    }
+
+    input {
+      background: rgba(255, 255, 255, 0.9);
+      transition: 0.3s;
+    }
+
+    input:focus {
+      transform: scale(1.03);
+    }
+
+    .fade-enter {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+
+    .fade-active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .referral-badge {
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+    }
+  </style>
+</head>
+<body>
+  <div class="auth-card rounded-2xl p-8 w-full max-w-md text-white relative">
+    <div class="text-center mb-8 animate-bounce">
+      <div class="w-16 h-16 bg-white rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+        <i class="fas fa-rocket text-2xl text-green-600"></i>
+      </div>
+      <h1 class="text-3xl font-bold">Biluxe10 Affiliate</h1>
+      <p class="text-green-100 mt-2">Premium Earning Platform</p>
+    </div>
+
+    <div id="referralBanner" class="hidden referral-badge text-white p-4 rounded-lg mb-6 text-center shadow-lg">
+      <i class="fas fa-gift text-xl mb-2"></i>
+      <h3 class="font-bold">🎉 Joining with Referral!</h3>
+      <p class="text-sm mt-1">You’ll get ₹100 welcome bonus</p>
+      <p class="text-xs mt-1">Referral Code: <strong id="referralCodeDisplay"></strong></p>
+    </div>
+
+    <!-- Signup -->
+    <div id="signupForm" class="fade-enter">
+      <h2 class="text-2xl font-bold text-center mb-6">Create Account</h2>
+      <div class="space-y-4">
+        <input id="signupName" type="text" placeholder="Full Name" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500" />
+        <input id="signupEmail" type="email" placeholder="Email Address" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500" />
+        <input id="signupPassword" type="password" placeholder="Password" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500" />
+        <input id="signupPhone" type="tel" placeholder="Phone Number" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500" />
+        <input id="signupReferral" type="text" placeholder="Referral Code (Optional)" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500" />
+        <button id="signupBtn" class="floating-btn w-full bg-gradient-to-r from-green-500 to-emerald-600 py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl">
+          <i class="fas fa-user-plus mr-2"></i> Create Account
+        </button>
+      </div>
+      <p class="text-center text-green-100 mt-6">
+        Already have an account?
+        <button id="showLogin" class="font-semibold hover:underline">Login</button>
+      </p>
+    </div>
+
+    <!-- Login -->
+    <div id="loginForm" class="hidden fade-enter">
+      <h2 class="text-2xl font-bold text-center mb-6">Welcome Back</h2>
+      <div class="space-y-4">
+        <input id="loginEmail" type="email" placeholder="Email Address" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500" />
+        <input id="loginPassword" type="password" placeholder="Password" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500" />
+        <button id="loginBtn" class="floating-btn w-full bg-gradient-to-r from-green-500 to-emerald-600 py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl">
+          <i class="fas fa-sign-in-alt mr-2"></i> Login
+        </button>
+      </div>
+      <p class="text-center text-green-100 mt-6">
+        Don’t have an account?
+        <button id="showSignup" class="font-semibold hover:underline">Sign Up</button>
+      </p>
+    </div>
+
+    <div id="loadingState" class="hidden text-center py-4">
+      <div class="w-8 h-8 border-4 border-white border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
+      <p class="text-sm">Processing...</p>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js";
+    import { getFirestore, doc, setDoc, getDoc, updateDoc, arrayUnion, increment, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDxxkC9iD1V1w-53Kf4oBrHEXlBLvCc7sE",
+      authDomain: "biluxe10-3e894.firebaseapp.com",
+      projectId: "biluxe10-3e894",
+      storageBucket: "biluxe10-3e894.firebasestorage.app",
+      messagingSenderId: "804749588233",
+      appId: "1:804749588233:web:7777648c0c7834733c05d8"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const signupForm = document.getElementById("signupForm");
+    const loginForm = document.getElementById("loginForm");
+    const showSignup = document.getElementById("showSignup");
+    const showLogin = document.getElementById("showLogin");
+
+    showLogin.addEventListener("click", () => {
+      signupForm.classList.add("hidden");
+      loginForm.classList.remove("hidden");
+      loginForm.classList.add("fade-active");
+    });
+
+    showSignup.addEventListener("click", () => {
+      loginForm.classList.add("hidden");
+      signupForm.classList.remove("hidden");
+      signupForm.classList.add("fade-active");
+    });
+  </script>
+</body>
+</html>
