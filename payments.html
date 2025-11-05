@@ -208,6 +208,9 @@ document.getElementById("paidBtn").addEventListener("click", async () => {
     const paymentRef = doc(db, "payments", utr);
     await setDoc(paymentRef, {
       utrNumber: utr,
+      name : name, 
+      email : email, 
+      uid : uid, 
       packageName: packageName,
       amount: amount,
       screenshotName: screenshot.name,
