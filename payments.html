@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biluxe10 Payment</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #0fa968 0%, #1e7e34 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: #fff;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            width: 90%;
+            max-width: 500px;
+            text-align: center;
+            border: none;
+        }
+        
+        h2 { 
+            color: #1e7e34; 
+            margin-bottom: 25px; 
+            font-weight: 700;
+            font-size: 2rem;
+        }
+        
+        .package-info {
+            background: linear-gradient(135deg, #1e7e34, #0d6e2c);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            font-weight: 600;
+            font-size: 18px;
+            box-shadow: 0 5px 15px rgba(30, 126, 52, 0.3);
+        }
+        
+        .amount {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #ffdd59;
+            margin: 10px 0;
+        }
+        
+        .upi {
+            background: #f8f9fa;
+            padding: 18px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            font-weight: 600;
+            font-size: 17px;
+            border: 2px solid #e9ecef;
+            color: #333;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        input[type="text"], input[type="file"] {
+            width: 100%;
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid #e9ecef;
+            font-size: 15px;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s ease;
+        }
+        
+        input[type="text"]:focus, input[type="file"]:focus {
+            border-color: #1e7e34;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(30, 126, 52, 0.1);
+        }
+        
+        button {
+            background: linear-gradient(135deg, #1e7e34, #0d6e2c);
+            color: white;
+            border: none;
+            padding: 16px 30px;
+            border-radius: 12px;
+            font-size: 17px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 10px;
+        }
+        
+        button:hover { 
+            background: linear-gradient(135deg, #0d6e2c, #1e7e34);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(30, 126, 52, 0.3);
+        }
+        
+        button:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .alert {
+            margin: 20px 0;
+            font-weight: 600;
+            font-size: 15px;
+            padding: 12px;
+            border-radius: 8px;
+        }
+        
+        .success {
+            color: #1e7e34;
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .error {
+            color: #721c24;
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .note {
+            font-size: 13px;
+            color: #666;
+            margin-top: 15px;
+            text-align: center;
+        }
+
+        .loading {
+            display: none;
+            color: #1e7e34;
+            font-weight: 600;
+            margin: 10px 0;
+        }
+
+        .rules-section {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            text-align: left;
+            display: none; /* Hidden by default */
+        }
+
+        .rules-section h3 {
+            color: #1e7e34;
+            margin-bottom: 15px;
+        }
+
+        .rules-section pre {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-size: 12px;
+            margin-bottom: 15px;
+        }
+
+        .copy-btn {
+            background: #4a5568;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            font-size: 12px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .copy-btn:hover {
+            background: #2d3748;
+        }
+        
+        .toggle-rules {
+            background: transparent;
+            color: #1e7e34;
+            border: 2px solid #1e7e34;
+            padding: 8px 15px;
+            border-radius: 5px;
+            font-size: 12px;
+            cursor: pointer;
+            margin-top: 15px;
+            width: auto;
+        }
+        
+        .toggle-rules:hover {
+            background: #1e7e34;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>Complete Your Payment</h2>
+    
+    <div class="package-info">
+        <div id="selectedPackage">Package: Loading...</div>
+        <div class="amount" id="paymentAmount">₹0</div>
+        <div>Pay now and get instant dashboard access!</div>
+    </div>
+    
+    <div class="upi">
+        Pay to UPI ID: <strong>9019254743@axl</strong>
+    </div>
+    
+    <p style="color: #555; margin-bottom: 20px; font-size: 15px;">
+        After payment, please provide your details and upload the payment screenshot.
+    </p>
+    
+    <div class="form-group">
+        <label for="name">Full Name</label>
+        <input type="text" id="name" placeholder="Enter your full name" required>
+    </div>
+    
+    <div class="form-group">
+        <label for="email">Email Address</label>
+        <input type="text" id="email" placeholder="Enter your email address" required>
+    </div>
+    
+    <div class="form-group">
+        <label for="utr">UTR Number</label>
+        <input type="text" id="utr" placeholder="Enter UTR Number from payment receipt" required>
+    </div>
+    
+    <div class="form-group">
+        <label for="screenshot">Payment Screenshot</label>
+        <input type="file" id="screenshot" accept="image/*" required>
+    </div>
+    
+    <div class="loading" id="loading">Uploading screenshot and processing payment...</div>
+    
+    <button id="paidBtn">✅ I Have Paid - Complete Payment</button>
+    
+    <div class="alert" id="msg"></div>
+    
+    <p class="note">
+        After verification, you'll receive dashboard access within 24 hours.
+    </p>
+
+    <button class="toggle-rules" id="toggleRules">Show Firebase Setup Instructions</button>
+
+    <div class="rules-section" id="rulesSection">
+        <h3>Firebase Security Rules Setup</h3>
+        <p>Copy and deploy these rules to your Firebase project:</p>
+        
+        <h4>Firestore Rules:</h4>
+        <pre id="firestoreRules">
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Payments collection - allow read/write for now
+    match /payments/{utr} {
+      allow read, write: if true;
+    }
+  }
+}</pre>
+        <button class="copy-btn" onclick="copyToClipboard('firestoreRules')">Copy Firestore Rules</button>
+        
+        <h4>Storage Rules:</h4>
+        <pre id="storageRules">
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /payment-screenshots/{allPaths=**} {
+      allow read, write: if true;
+    }
+  }
+}</pre>
+        <button class="copy-btn" onclick="copyToClipboard('storageRules')">Copy Storage Rules</button>
+        
+        <p style="margin-top: 15px; font-size: 12px;">
+            <strong>Deployment Commands:</strong><br>
+            <code>firebase deploy --only firestore:rules</code><br>
+            <code>firebase deploy --only storage</code>
+        </p>
+    </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
+import { 
+    getFirestore, 
+    doc, 
+    setDoc, 
+    serverTimestamp 
+} from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
+import { 
+    getStorage, 
+    ref, 
+    uploadBytes, 
+    getDownloadURL 
+} from "https://www.gstatic.com/firebasejs/10.12.3/firebase-storage.js";
+
+// Firebase Config
+const firebaseConfig = {
+    apiKey: "AIzaSyDxxkC9iD1V1w-53Kf4oBrHEXlBLvCc7sE",
+    authDomain: "biluxe10-3e894.firebaseapp.com",
+    projectId: "biluxe10-3e894",
+    storageBucket: "biluxe10-3e894.firebasestorage.app",
+    messagingSenderId: "804749588233",
+    appId: "1:804749588233:web:7777648c0c7834733c05d8"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const storage = getStorage(app);
+
+// Get package and amount from URL parameters
+const urlParams = new URLSearchParams(window.location.search);
+const amount = urlParams.get('amount') || '999';
+const packageName = urlParams.get('package') || 'Premium Package';
+const uid = generateUniqueId();
+
+// Generate unique ID if not provided
+function generateUniqueId() {
+    return 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+}
+
+// Update the display with package info
+document.getElementById('paymentAmount').textContent = `₹${amount}`;
+document.getElementById('selectedPackage').textContent = `Package: ${packageName}`;
+
+// Toggle rules section visibility
+document.getElementById('toggleRules').addEventListener('click', function() {
+    const rulesSection = document.getElementById('rulesSection');
+    if (rulesSection.style.display === 'block') {
+        rulesSection.style.display = 'none';
+        this.textContent = 'Show Firebase Setup Instructions';
+    } else {
+        rulesSection.style.display = 'block';
+        this.textContent = 'Hide Firebase Setup Instructions';
+    }
+});
+
+document.getElementById("paidBtn").addEventListener("click", async () => {
+    const name = document.getElementById("name").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const utr = document.getElementById("utr").value.trim();
+    const screenshotFile = document.getElementById("screenshot").files[0];
+    const msg = document.getElementById("msg");
+    const loading = document.getElementById("loading");
+    const paidBtn = document.getElementById("paidBtn");
+
+    if (!name || !email || !utr || !screenshotFile) {
+        msg.className = "alert error";
+        msg.innerHTML = "⚠️ Please fill in all fields and upload screenshot!";
+        return;
+    }
+
+    // Validate name
+    if (name.length < 2) {
+        msg.className = "alert error";
+        msg.innerHTML = "⚠️ Please enter a valid name!";
+        return;
+    }
+
+    // Validate email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+        msg.className = "alert error";
+        msg.innerHTML = "⚠️ Please enter a valid email address!";
+        return;
+    }
+
+    // Validate UTR format (basic validation)
+    if (utr.length < 10 || utr.length > 30) {
+        msg.className = "alert error";
+        msg.innerHTML = "⚠️ Please enter a valid UTR number (10-30 characters)!";
+        return;
+    }
+
+    try {
+        // Show loading state
+        loading.style.display = 'block';
+        paidBtn.disabled = true;
+        paidBtn.textContent = 'Processing Payment...';
+        msg.className = '';
+        msg.innerHTML = '';
+
+        // 1. Upload screenshot to Firebase Storage
+        const screenshotPath = `payment-screenshots/${utr}_${Date.now()}_${screenshotFile.name}`;
+        const screenshotRef = ref(storage, screenshotPath);
+        
+        const uploadResult = await uploadBytes(screenshotRef, screenshotFile);
+        const screenshotUrl = await getDownloadURL(uploadResult.ref);
+
+        // 2. Save payment record to Firestore
+        const paymentRef = doc(db, "payments", utr);
+        await setDoc(paymentRef, {
+            utrNumber: utr,
+            name: name,
+            email: email,
+            uid: uid,
+            packageName: packageName,
+            amount: parseFloat(amount),
+            screenshotUrl: screenshotUrl,
+            screenshotName: screenshotFile.name,
+            paymentStatus: "pending",
+            timestamp: serverTimestamp(),
+            adminVerified: false
+        });
+
+        // Success message
+        msg.className = "alert success";
+        msg.innerHTML = "✅ Payment completed! Waiting for admin approval...";
+        
+        // Hide loading
+        loading.style.display = 'none';
+        paidBtn.textContent = 'Payment Submitted Successfully';
+        
+        // Redirect after 3 seconds
+        setTimeout(() => {
+            window.location.href = "auth.html";
+        }, 3000);
+        
+    } catch (err) {
+        console.error("Payment submission error:", err);
+        
+        // Hide loading
+        loading.style.display = 'none';
+        
+        // Reset button state
+        paidBtn.disabled = false;
+        paidBtn.textContent = '✅ I Have Paid - Complete Payment';
+        
+        // Show appropriate error message
+        msg.className = "alert error";
+        
+        if (err.code === 'permission-denied') {
+            msg.innerHTML = "❌ Firebase permission denied. Please deploy the security rules (click 'Show Firebase Setup Instructions').";
+        } else if (err.code === 'storage/unauthorized') {
+            msg.innerHTML = "❌ Storage unauthorized. Please deploy the storage rules (click 'Show Firebase Setup Instructions').";
+        } else {
+            msg.innerHTML = "❌ Something went wrong. Please try again.";
+        }
+    }
+});
+
+// Copy to clipboard function
+function copyToClipboard(elementId) {
+    const element = document.getElementById(elementId);
+    const textArea = document.createElement('textarea');
+    textArea.value = element.textContent;
+    document.body.appendChild(textArea);
+    textArea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textArea);
+    
+    // Show copied message
+    const btn = event.target;
+    const originalText = btn.textContent;
+    btn.textContent = 'Copied!';
+    setTimeout(() => {
+        btn.textContent = originalText;
+    }, 2000);
+}
+</script>
+</body>
+</html>
