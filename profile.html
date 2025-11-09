@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - Biluxe10 Affiliate</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-storage-compat.js"></script>
+    <style>
+        :root {
+            --primary: #10B981;
+            --primary-dark: #059669;
+            --accent: #F59E0B;
+            --purple: #8B5CF6;
+            --pink: #EC4899;
+            --blue: #3B82F6;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+            min-height: 100vh;
+            color: white;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        /* Animated Background */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+        
+        .bg-circle {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(16, 185, 129, 0.2) 0%, rgba(16, 185, 129, 0) 70%);
+            animation: float 15s infinite ease-in-out;
+        }
+        
+        .bg-circle:nth-child(1) {
+            width: 300px;
+            height: 300px;
+            top: 10%;
+            left: 5%;
+            animation-delay: 0s;
+        }
+        
+        .bg-circle:nth-child(2) {
+            width: 200px;
+            height: 200px;
+            top: 60%;
+            left: 80%;
+            animation-delay: 2s;
+            background: radial-gradient(circle, rgba(245, 158, 11, 0.2) 0%, rgba(245, 158, 11, 0) 70%);
+        }
+        
+        .bg-circle:nth-child(3) {
+            width: 400px;
+            height: 400px;
+            top: 30%;
+            left: 60%;
+            animation-delay: 4s;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.2) 0%, rgba(139, 92, 246, 0) 70%);
+        }
+        
+        .bg-circle:nth-child(4) {
+            width: 250px;
+            height: 250px;
+            top: 70%;
+            left: 10%;
+            animation-delay: 6s;
+            background: radial-gradient(circle, rgba(236, 72, 153, 0.2) 0%, rgba(236, 72, 153, 0) 70%);
+        }
+        
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) scale(1);
+                opacity: 0.5;
+            }
+            50% {
+                transform: translateY(-20px) scale(1.05);
+                opacity: 0.8;
+            }
+        }
+        
+        /* Mobile Menu */
+        .mobile-menu-btn {
+            display: none;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: 10px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            z-index: 1001;
+        }
+        
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: 80px;
+            left: 0;
+            right: 0;
+            background: rgba(30, 41, 59, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            border-radius: 0 0 20px 20px;
+            z-index: 1000;
+            padding: 1rem;
+        }
+        
+        .mobile-menu.active {
+            display: block;
+        }
+        
+        .mobile-menu a {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            text-decoration: none;
+            color: white;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .mobile-menu a:hover {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--primary);
+            border-radius: 10px;
+        }
+        
+        .navbar {
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 1rem 1.5rem;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 999;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .logo-img {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            object-fit: cover;
+        }
+        
+        .user-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .user-avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--primary);
+        }
+        
+        .logout-btn {
+            background: rgba(239, 68, 68, 0.2);
+            color: #EF4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .logout-btn:hover {
+            background: rgba(239, 68, 68, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 1.5rem auto;
+            padding: 0 1rem;
+        }
+        
+        .page-header {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.8), rgba(5, 150, 105, 0.8), rgba(245, 158, 11, 0.8));
+            color: white;
+            padding: 1.5rem;
+            border-radius: 20px;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 8px 30px rgba(16, 185, 129, 0.4);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+            transform: rotate(45deg);
+            animation: shine 3s infinite;
+        }
+        
+        @keyframes shine {
+            0% { transform: translateX(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) rotate(45deg); }
+        }
+        
+        .page-header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        /* Profile Section */
+        .profile-section {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .profile-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1.5rem;
+            border-radius: 20px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            border: 1px solid rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+        }
+        
+        .profile-card h3 {
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: white;
+        }
+        
+        /* Profile Photo Section */
+        .profile-photo-section {
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        .profile-avatar {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid var(--primary);
+            margin: 0 auto 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .profile-avatar:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+        }
+        
+        .photo-upload-btn {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .photo-upload-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        }
+        
+        .photo-upload-input {
+            display: none;
+        }
+        
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: rgba(255,255,255,0.8);
+            font-weight: 500;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 12px;
+            background: rgba(255,255,255,0.1);
+            color: white;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: rgba(255,255,255,0.15);
+        }
+        
+        .form-input::placeholder {
+            color: rgba(255,255,255,0.5);
+        }
+        
+        .btn {
+            padding: 1rem 1.5rem;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+        }
+        
+        .btn-secondary {
+            background: rgba(255,255,255,0.1);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-2px);
+        }
+        
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .stat-label {
+            color: rgba(255,255,255,0.7);
+            font-size: 0.9rem;
+        }
+        
+        .stat-value {
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+        
+        /* Mobile Responsive */
+        @media (min-width: 768px) {
+            .navbar {
+                padding: 1rem 2rem;
+            }
+            
+            .logo {
+                font-size: 1.8rem;
+            }
+            
+            .container {
+                padding: 0 1.5rem;
+            }
+            
+            .page-header {
+                padding: 2rem;
+                border-radius: 25px;
+            }
+            
+            .page-header h1 {
+                font-size: 2.2rem;
+            }
+            
+            .profile-section {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        
+        @media (min-width: 1024px) {
+            .mobile-menu-btn {
+                display: none;
+            }
+            
+            .nav-links {
+                display: flex;
+                gap: 0.5rem;
+            }
+            
+            .nav-links a {
+                text-decoration: none;
+                color: white;
+                font-weight: 500;
+                padding: 0.75rem 1.25rem;
+                border-radius: 12px;
+                transition: all 0.3s ease;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+            
+            .nav-links a:hover, .nav-links a.active {
+                background: rgba(16, 185, 129, 0.2);
+                transform: translateY(-2px);
+                box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+            }
+        }
+        
+        @media (max-width: 1023px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="bg-animation">
+        <div class="bg-circle"></div>
+        <div class="bg-circle"></div>
+        <div class="bg-circle"></div>
+        <div class="bg-circle"></div>
+    </div>
+
+    <!-- Mobile Menu Button -->
+    <button class="mobile-menu-btn" id="mobileMenuBtn">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="dashboard.html"><i class="fas fa-home"></i> Dashboard</a>
+        <a href="earnings.html"><i class="fas fa-chart-line"></i> Earnings</a>
+        <a href="products.html"><i class="fas fa-cube"></i> Packages</a>
+        <a href="referral.html"><i class="fas fa-users"></i> Referral</a>
+        <a href="myteam.html"><i class="fas fa-network-wired"></i> My Team</a>
+        <a href="withdrawal.html"><i class="fas fa-wallet"></i> Withdrawal</a>
+        <a href="transactions.html"><i class="fas fa-exchange-alt"></i> Transactions</a>
+        <a href="profile.html" class="active"><i class="fas fa-user"></i> Profile</a>
+        <a href="support.html"><i class="fas fa-headset"></i> Support</a>
+    </div>
+
+    <nav class="navbar">
+        <div class="logo">
+            <img src="Screenshot_2025-10-30-19-48-01-770_com.google.android.apps.maps (1).jpg" alt="Biluxe10 Logo" class="logo-img">
+            Biluxe10 Affiliate
+        </div>
+        <div class="nav-links">
+            <a href="dashboard.html"><i class="fas fa-home"></i> Dashboard</a>
+            <a href="earnings.html"><i class="fas fa-chart-line"></i> Earnings</a>
+            <a href="products.html"><i class="fas fa-cube"></i> Packages</a>
+            <a href="referral.html"><i class="fas fa-users"></i> Referral</a>
+            <a href="myteam.html"><i class="fas fa-network-wired"></i> My Team</a>
+            <a href="withdrawal.html"><i class="fas fa-wallet"></i> Withdrawal</a>
+            <a href="transactions.html"><i class="fas fa-exchange-alt"></i> Transactions</a>
+            <a href="profile.html" class="active"><i class="fas fa-user"></i> Profile</a>
+        </div>
+        <div class="user-section">
+            <button class="logout-btn" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+            <div class="user-profile">
+                <img id="headerProfilePic" src="https://ui-avatars.com/api/?name=User&background=10B981&color=fff&size=128" alt="Profile" class="user-avatar">
+                <div>
+                    <div id="headerUserName" style="font-weight: 600; color: white;">User</div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="page-header">
+            <h1><i class="fas fa-user"></i> My Profile</h1>
+            <p style="font-size: 1.1rem; opacity: 0.9;">Manage your account information and settings</p>
+        </div>
+
+        <div class="profile-section">
+            <!-- Profile Photo & Basic Info -->
+            <div class="profile-card">
+                <h3><i class="fas fa-id-card"></i> Profile Information</h3>
+                
+                <div class="profile-photo-section">
+                    <img id="profileAvatar" src="https://ui-avatars.com/api/?name=User&background=10B981&color=fff&size=150" alt="Profile" class="profile-avatar" onclick="document.getElementById('photoInput').click()">
+                    <input type="file" id="photoInput" class="photo-upload-input" accept="image/*" onchange="uploadProfilePhoto()">
+                    <button class="photo-upload-btn" onclick="document.getElementById('photoInput').click()">
+                        <i class="fas fa-camera"></i> Change Photo
+                    </button>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Full Name</label>
+                    <input type="text" id="fullName" class="form-input" placeholder="Enter your full name">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Email Address</label>
+                    <input type="email" id="email" class="form-input" placeholder="Enter your email" readonly>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Phone Number</label>
+                    <input type="tel" id="phone" class="form-input" placeholder="Enter your phone number">
+                </div>
+
+                <button class="btn btn-primary" onclick="updateProfile()" style="width: 100%;">
+                    <i class="fas fa-save"></i> Update Profile
+                </button>
+            </div>
+
+            <!-- Account Stats & Info -->
+            <div class="profile-card">
+                <h3><i class="fas fa-chart-bar"></i> Account Statistics</h3>
+                
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <span class="stat-label">Member Since</span>
+                        <span class="stat-value" id="joinDate">-</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Account Status</span>
+                        <span class="stat-value" style="color: #10B981;">Active</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Package Level</span>
+                        <span class="stat-value" id="packageLevel">Basic</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Referral Code</span>
+                        <span class="stat-value" id="referralCode">-</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Total Team</span>
+                        <span class="stat-value" id="teamCount">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Direct Referrals</span>
+                        <span class="stat-value" id="directReferrals">0</span>
+                    </div>
+                </div>
+
+                <h3 style="margin-top: 2rem; margin-bottom: 1rem;"><i class="fas fa-shield-alt"></i> Security</h3>
+                
+                <div class="form-group">
+                    <label class="form-label">Current Password</label>
+                    <input type="password" id="currentPassword" class="form-input" placeholder="Enter current password">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">New Password</label>
+                    <input type="password" id="newPassword" class="form-input" placeholder="Enter new password">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Confirm New Password</label>
+                    <input type="password" id="confirmPassword" class="form-input" placeholder="Confirm new password">
+                </div>
+
+                <button class="btn btn-secondary" onclick="changePassword()" style="width: 100%;">
+                    <i class="fas fa-key"></i> Change Password
+                </button>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-bottom: 2rem;">
+            <a href="dashboard.html" class="btn btn-primary">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </a>
+            <a href="referral.html" class="btn btn-primary">
+                <i class="fas fa-share-alt"></i> Share Referral
+            </a>
+            <button class="btn btn-secondary" onclick="exportData()">
+                <i class="fas fa-download"></i> Export Data
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDxxkC9iD1V1w-53Kf4oBrHEXlBLvCc7sE",
+            authDomain: "biluxe10-3e894.firebaseapp.com",
+            projectId: "biluxe10-3e894",
+            storageBucket: "biluxe10-3e894.firebasestorage.app",
+            messagingSenderId: "804749588233",
+            appId: "1:804749588233:web:7777648c0c7834733c05d8"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const auth = firebase.auth();
+        const storage = firebase.storage();
+
+        let currentUser = null;
+
+        // Mobile Menu Toggle
+        document.getElementById('mobileMenuBtn').addEventListener('click', function() {
+            document.getElementById('mobileMenu').classList.toggle('active');
+        });
+
+        // REAL DATA FETCHING
+        document.addEventListener('DOMContentLoaded', function() {
+            auth.onAuthStateChanged((user) => {
+                if (user) {
+                    currentUser = user;
+                    console.log("✅ User logged in:", user.uid);
+                    setupRealTimeListeners(user.uid);
+                } else {
+                    console.log("❌ No user logged in");
+                    window.location.href = 'auth.html';
+                }
+            });
+        });
+
+        // SETUP REAL-TIME LISTENERS
+        function setupRealTimeListeners(userId) {
+            console.log("🔄 Setting up real-time listeners for:", userId);
+            
+            // Main user data from user_collections
+            db.collection('user_collections').doc(userId).onSnapshot((doc) => {
+                if (doc.exists) {
+                    const userData = doc.data();
+                    console.log("📊 User data received:", userData);
+                    updateProfileForm(userData);
+                    updateHeaderProfile(userData);
+                } else {
+                    console.log("❌ No user document found");
+                }
+            }, (error) => {
+                console.error("❌ Error in user listener:", error);
+            });
+        }
+
+        // UPDATE PROFILE FORM
+        function updateProfileForm(userData) {
+            // Basic Information
+            document.getElementById('fullName').value = userData.fullName || '';
+            document.getElementById('email').value = userData.email || currentUser?.email || '';
+            document.getElementById('phone').value = userData.phoneNumber || '';
+            
+            // Account Statistics
+            document.getElementById('joinDate').textContent = userData.joinDate?.toDate ? 
+                userData.joinDate.toDate().toLocaleDateString() : 'Recently';
+            document.getElementById('packageLevel').textContent = userData.packageLevel || 'Basic';
+            document.getElementById('referralCode').textContent = userData.referralCode || '-';
+            document.getElementById('teamCount').textContent = userData.teamCount || 0;
+            document.getElementById('directReferrals').textContent = userData.directReferrals || 0;
+            
+            // Profile Picture
+            if (userData.profilePicture) {
+                document.getElementById('profileAvatar').src = userData.profilePicture;
+            } else {
+                const defaultAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(userData.fullName || userData.username || 'User')}&background=10B981&color=fff&size=150`;
+                document.getElementById('profileAvatar').src = defaultAvatar;
+            }
+        }
+
+        // UPDATE HEADER PROFILE (SYNC WITH DASHBOARD)
+        function updateHeaderProfile(userData) {
+            // Update header user name
+            document.getElementById('headerUserName').textContent = userData.fullName || userData.username || 'User';
+            
+            // Update header profile picture
+            if (userData.profilePicture) {
+                document.getElementById('headerProfilePic').src = userData.profilePicture;
+            } else {
+                const defaultAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(userData.fullName || userData.username || 'User')}&background=10B981&color=fff&size=128`;
+                document.getElementById('headerProfilePic').src = defaultAvatar;
+            }
+        }
+
+        // UPLOAD PROFILE PHOTO
+        async function uploadProfilePhoto() {
+            const fileInput = document.getElementById('photoInput');
+            const file = fileInput.files[0];
+            
+            if (!file) return;
+            
+            if (!file.type.startsWith('image/')) {
+                alert('Please select a valid image file');
+                return;
+            }
+            
+            if (file.size > 5 * 1024 * 1024) { // 5MB limit
+                alert('Image size should be less than 5MB');
+                return;
+            }
+            
+            try {
+                // Show loading state
+                const avatar = document.getElementById('profileAvatar');
+                avatar.style.opacity = '0.5';
+                
+                // Upload to Firebase Storage
+                const storageRef = storage.ref();
+                const fileRef = storageRef.child(`profile_pictures/${currentUser.uid}/${Date.now()}_${file.name}`);
+                const snapshot = await fileRef.put(file);
+                const downloadURL = await snapshot.ref.getDownloadURL();
+                
+                // Update user document with new photo URL
+                await db.collection('user_collections').doc(currentUser.uid).update({
+                    profilePicture: downloadURL,
+                    lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                
+                // Update UI immediately
+                avatar.src = downloadURL;
+                avatar.style.opacity = '1';
+                
+                console.log("✅ Profile photo updated successfully");
+                
+                // The header profile picture will update automatically via real-time listener
+                
+            } catch (error) {
+                console.error("❌ Error uploading profile photo:", error);
+                alert('Error uploading photo. Please try again.');
+                document.getElementById('profileAvatar').style.opacity = '1';
+            }
+        }
+
+        // UPDATE PROFILE
+        async function updateProfile() {
+            const fullName = document.getElementById('fullName').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            
+            if (!fullName) {
+                alert('Please enter your full name');
+                return;
+            }
+            
+            try {
+                await db.collection('user_collections').doc(currentUser.uid).update({
+                    fullName: fullName,
+                    phoneNumber: phone,
+                    lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                
+                console.log("✅ Profile updated successfully");
+                alert('Profile updated successfully!');
+                
+            } catch (error) {
+                console.error("❌ Error updating profile:", error);
+                alert('Error updating profile. Please try again.');
+            }
+        }
+
+        // CHANGE PASSWORD
+        async function changePassword() {
+            const currentPassword = document.getElementById('currentPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            if (!currentPassword || !newPassword || !confirmPassword) {
+                alert('Please fill in all password fields');
+                return;
+            }
+            
+            if (newPassword !== confirmPassword) {
+                alert('New passwords do not match');
+                return;
+            }
+            
+            if (newPassword.length < 6) {
+                alert('New password must be at least 6 characters long');
+                return;
+            }
+            
+            try {
+                // Reauthenticate user
+                const credential = firebase.auth.EmailAuthProvider.credential(
+                    currentUser.email, 
+                    currentPassword
+                );
+                await currentUser.reauthenticateWithCredential(credential);
+                
+                // Update password
+                await currentUser.updatePassword(newPassword);
+                
+                // Clear password fields
+                document.getElementById('currentPassword').value = '';
+                document.getElementById('newPassword').value = '';
+                document.getElementById('confirmPassword').value = '';
+                
+                console.log("✅ Password changed successfully");
+                alert('Password changed successfully!');
+                
+            } catch (error) {
+                console.error("❌ Error changing password:", error);
+                
+                if (error.code === 'auth/wrong-password') {
+                    alert('Current password is incorrect');
+                } else if (error.code === 'auth/weak-password') {
+                    alert('New password is too weak');
+                } else {
+                    alert('Error changing password. Please try again.');
+                }
+            }
+        }
+
+        // EXPORT DATA
+        function exportData() {
+            alert('Data export feature coming soon!');
+        }
+
+        // LOGOUT FUNCTION
+        function logout() {
+            auth.signOut().then(() => {
+                console.log("✅ User logged out");
+                window.location.href = 'auth.html';
+            }).catch((error) => {
+                console.error("❌ Error logging out:", error);
+            });
+        }
+
+        // FIREBASE COMMANDS FOR PROFILE SYSTEM
+        console.log(`
+        🔥 FIREBASE STORAGE RULES FOR PROFILE PICTURES:
+
+        rules_version = '2';
+        service firebase.storage {
+          match /b/{bucket}/o {
+            match /profile_pictures/{userId}/{allPaths=**} {
+              allow read, write: if request.auth != null && request.auth.uid == userId;
+            }
+          }
+        }
+
+        🔥 FIREBASE FIRESTORE RULES FOR PROFILE:
+
+        rules_version = '2';
+        service cloud.firestore {
+          match /databases/{database}/documents {
+            match /user_collections/{userId} {
+              allow read, write: if request.auth != null && request.auth.uid == userId;
+            }
+          }
+        }
+        `);
+    </script>
+</body>
+</html>
