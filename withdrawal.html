@@ -1,0 +1,1208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Withdrawal - Biluxe10 Affiliate</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+    <style>
+        :root {
+            --primary: #10B981;
+            --primary-dark: #059669;
+            --accent: #F59E0B;
+            --purple: #8B5CF6;
+            --pink: #EC4899;
+            --blue: #3B82F6;
+            --red: #EF4444;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+            min-height: 100vh;
+            color: white;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        /* Animated Background */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+        
+        .bg-circle {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(16, 185, 129, 0.2) 0%, rgba(16, 185, 129, 0) 70%);
+            animation: float 15s infinite ease-in-out;
+        }
+        
+        .bg-circle:nth-child(1) {
+            width: 300px;
+            height: 300px;
+            top: 10%;
+            left: 5%;
+            animation-delay: 0s;
+        }
+        
+        .bg-circle:nth-child(2) {
+            width: 200px;
+            height: 200px;
+            top: 60%;
+            left: 80%;
+            animation-delay: 2s;
+            background: radial-gradient(circle, rgba(245, 158, 11, 0.2) 0%, rgba(245, 158, 11, 0) 70%);
+        }
+        
+        .bg-circle:nth-child(3) {
+            width: 400px;
+            height: 400px;
+            top: 30%;
+            left: 60%;
+            animation-delay: 4s;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.2) 0%, rgba(139, 92, 246, 0) 70%);
+        }
+        
+        .bg-circle:nth-child(4) {
+            width: 250px;
+            height: 250px;
+            top: 70%;
+            left: 10%;
+            animation-delay: 6s;
+            background: radial-gradient(circle, rgba(236, 72, 153, 0.2) 0%, rgba(236, 72, 153, 0) 70%);
+        }
+        
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) scale(1);
+                opacity: 0.5;
+            }
+            50% {
+                transform: translateY(-20px) scale(1.05);
+                opacity: 0.8;
+            }
+        }
+        
+        /* Mobile Menu */
+        .mobile-menu-btn {
+            display: none;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: 10px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            z-index: 1001;
+        }
+        
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: 80px;
+            left: 0;
+            right: 0;
+            background: rgba(30, 41, 59, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            border-radius: 0 0 20px 20px;
+            z-index: 1000;
+            padding: 1rem;
+        }
+        
+        .mobile-menu.active {
+            display: block;
+        }
+        
+        .mobile-menu a {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            text-decoration: none;
+            color: white;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .mobile-menu a:hover {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--primary);
+            border-radius: 10px;
+        }
+        
+        .navbar {
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 1rem 1.5rem;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 999;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .logo-img {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            object-fit: cover;
+        }
+        
+        .user-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .user-avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--primary);
+        }
+        
+        .user-balance {
+            background: linear-gradient(135deg, #F59E0B, #D97706);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .logout-btn {
+            background: rgba(239, 68, 68, 0.2);
+            color: #EF4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .logout-btn:hover {
+            background: rgba(239, 68, 68, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 1.5rem auto;
+            padding: 0 1rem;
+        }
+        
+        .page-header {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.8), rgba(5, 150, 105, 0.8), rgba(245, 158, 11, 0.8));
+            color: white;
+            padding: 1.5rem;
+            border-radius: 20px;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 8px 30px rgba(16, 185, 129, 0.4);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+            transform: rotate(45deg);
+            animation: shine 3s infinite;
+        }
+        
+        @keyframes shine {
+            0% { transform: translateX(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) rotate(45deg); }
+        }
+        
+        .page-header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        /* Withdrawal Section */
+        .withdrawal-section {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .withdrawal-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1.5rem;
+            border-radius: 20px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            border: 1px solid rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+        }
+        
+        .withdrawal-card h3 {
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: white;
+        }
+        
+        /* Balance Info */
+        .balance-info {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .balance-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            border-left: 4px solid;
+        }
+        
+        .balance-item.available {
+            border-left-color: #10B981;
+        }
+        
+        .balance-item.pending {
+            border-left-color: #F59E0B;
+        }
+        
+        .balance-item.total {
+            border-left-color: #8B5CF6;
+        }
+        
+        .balance-label {
+            color: rgba(255,255,255,0.7);
+            font-size: 0.9rem;
+        }
+        
+        .balance-amount {
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+        
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: rgba(255,255,255,0.8);
+            font-weight: 500;
+        }
+        
+        .form-input, .form-select {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 12px;
+            background: rgba(255,255,255,0.1);
+            color: white;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: rgba(255,255,255,0.15);
+        }
+        
+        .form-input::placeholder {
+            color: rgba(255,255,255,0.5);
+        }
+        
+        .amount-input-container {
+            position: relative;
+        }
+        
+        .amount-prefix {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255,255,255,0.7);
+            font-weight: 600;
+        }
+        
+        .amount-input {
+            padding-left: 3rem !important;
+        }
+        
+        .btn {
+            padding: 1rem 1.5rem;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+        }
+        
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .btn-secondary {
+            background: rgba(255,255,255,0.1);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-2px);
+        }
+        
+        /* Withdrawal History */
+        .withdrawal-history {
+            margin-top: 1.5rem;
+        }
+        
+        .withdrawal-item {
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border-left: 4px solid;
+            transition: all 0.3s ease;
+        }
+        
+        .withdrawal-item:hover {
+            background: rgba(255,255,255,0.08);
+            transform: translateY(-2px);
+        }
+        
+        .withdrawal-item.pending {
+            border-left-color: #F59E0B;
+        }
+        
+        .withdrawal-item.approved {
+            border-left-color: #10B981;
+        }
+        
+        .withdrawal-item.rejected {
+            border-left-color: #EF4444;
+        }
+        
+        .withdrawal-item.processing {
+            border-left-color: #3B82F6;
+        }
+        
+        .withdrawal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+        
+        .withdrawal-amount {
+            font-weight: 700;
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .withdrawal-meta {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.7);
+        }
+        
+        .withdrawal-method {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10B981;
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .withdrawal-status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .status-pending { background: rgba(245, 158, 11, 0.2); color: #F59E0B; }
+        .status-approved { background: rgba(16, 185, 129, 0.2); color: #10B981; }
+        .status-rejected { background: rgba(239, 68, 68, 0.2); color: #EF4444; }
+        .status-processing { background: rgba(59, 130, 246, 0.2); color: #3B82F6; }
+        
+        .withdrawal-details {
+            color: rgba(255,255,255,0.8);
+            line-height: 1.5;
+        }
+        
+        /* Quick Actions */
+        .quick-amounts {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .quick-amount-btn {
+            padding: 0.75rem;
+            border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.1);
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        .quick-amount-btn:hover {
+            background: rgba(16, 185, 129, 0.2);
+            border-color: var(--primary);
+        }
+        
+        /* Mobile Responsive */
+        @media (min-width: 768px) {
+            .navbar {
+                padding: 1rem 2rem;
+            }
+            
+            .logo {
+                font-size: 1.8rem;
+            }
+            
+            .container {
+                padding: 0 1.5rem;
+            }
+            
+            .page-header {
+                padding: 2rem;
+                border-radius: 25px;
+            }
+            
+            .page-header h1 {
+                font-size: 2.2rem;
+            }
+            
+            .withdrawal-section {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .balance-info {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .quick-amounts {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+        
+        @media (min-width: 1024px) {
+            .mobile-menu-btn {
+                display: none;
+            }
+            
+            .nav-links {
+                display: flex;
+                gap: 0.5rem;
+            }
+            
+            .nav-links a {
+                text-decoration: none;
+                color: white;
+                font-weight: 500;
+                padding: 0.75rem 1.25rem;
+                border-radius: 12px;
+                transition: all 0.3s ease;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+            
+            .nav-links a:hover, .nav-links a.active {
+                background: rgba(16, 185, 129, 0.2);
+                transform: translateY(-2px);
+                box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+            }
+        }
+        
+        @media (max-width: 1023px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            .withdrawal-header {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .withdrawal-meta {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="bg-animation">
+        <div class="bg-circle"></div>
+        <div class="bg-circle"></div>
+        <div class="bg-circle"></div>
+        <div class="bg-circle"></div>
+    </div>
+
+    <!-- Mobile Menu Button -->
+    <button class="mobile-menu-btn" id="mobileMenuBtn">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="dashboard.html"><i class="fas fa-home"></i> Dashboard</a>
+        <a href="earnings.html"><i class="fas fa-chart-line"></i> Earnings</a>
+        <a href="products.html"><i class="fas fa-cube"></i> Packages</a>
+        <a href="referral.html"><i class="fas fa-users"></i> Referral</a>
+        <a href="myteam.html"><i class="fas fa-network-wired"></i> My Team</a>
+        <a href="withdrawal.html" class="active"><i class="fas fa-wallet"></i> Withdrawal</a>
+        <a href="transactions.html"><i class="fas fa-exchange-alt"></i> Transactions</a>
+        <a href="profile.html"><i class="fas fa-user"></i> Profile</a>
+        <a href="support.html"><i class="fas fa-headset"></i> Support</a>
+    </div>
+
+    <nav class="navbar">
+        <div class="logo">
+            <img src="Screenshot_2025-10-30-19-48-01-770_com.google.android.apps.maps (1).jpg" alt="Biluxe10 Logo" class="logo-img">
+            Biluxe10 Affiliate
+        </div>
+        <div class="nav-links">
+            <a href="dashboard.html"><i class="fas fa-home"></i> Dashboard</a>
+            <a href="earnings.html"><i class="fas fa-chart-line"></i> Earnings</a>
+            <a href="products.html"><i class="fas fa-cube"></i> Packages</a>
+            <a href="referral.html"><i class="fas fa-users"></i> Referral</a>
+            <a href="myteam.html"><i class="fas fa-network-wired"></i> My Team</a>
+            <a href="withdrawal.html" class="active"><i class="fas fa-wallet"></i> Withdrawal</a>
+            <a href="transactions.html"><i class="fas fa-exchange-alt"></i> Transactions</a>
+            <a href="profile.html"><i class="fas fa-user"></i> Profile</a>
+            <a href="support.html"><i class="fas fa-headset"></i> Support</a>
+        </div>
+        <div class="user-section">
+            <div class="user-balance">
+                <i class="fas fa-wallet"></i>
+                ₹<span id="currentBalance">0.00</span>
+            </div>
+            <button class="logout-btn" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+            <div class="user-profile">
+                <img id="headerProfilePic" src="https://ui-avatars.com/api/?name=User&background=10B981&color=fff&size=128" alt="Profile" class="user-avatar">
+                <div>
+                    <div id="headerUserName" style="font-weight: 600; color: white;">User</div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="page-header">
+            <h1><i class="fas fa-wallet"></i> Withdrawal</h1>
+            <p style="font-size: 1.1rem; opacity: 0.9;">Withdraw your earnings to your preferred payment method</p>
+        </div>
+
+        <div class="withdrawal-section">
+            <!-- Withdrawal Form -->
+            <div class="withdrawal-card">
+                <h3><i class="fas fa-money-bill-wave"></i> Request Withdrawal</h3>
+                
+                <!-- Balance Information -->
+                <div class="balance-info">
+                    <div class="balance-item available">
+                        <div>
+                            <div class="balance-label">Available Balance</div>
+                            <div class="balance-amount">₹<span id="availableBalance">0.00</span></div>
+                        </div>
+                        <i class="fas fa-wallet" style="color: #10B981; font-size: 1.5rem;"></i>
+                    </div>
+                    <div class="balance-item pending">
+                        <div>
+                            <div class="balance-label">Pending Withdrawals</div>
+                            <div class="balance-amount">₹<span id="pendingWithdrawals">0.00</span></div>
+                        </div>
+                        <i class="fas fa-clock" style="color: #F59E0B; font-size: 1.5rem;"></i>
+                    </div>
+                    <div class="balance-item total">
+                        <div>
+                            <div class="balance-label">Total Withdrawn</div>
+                            <div class="balance-amount">₹<span id="totalWithdrawn">0.00</span></div>
+                        </div>
+                        <i class="fas fa-chart-line" style="color: #8B5CF6; font-size: 1.5rem;"></i>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Payment Method</label>
+                    <select id="paymentMethod" class="form-select">
+                        <option value="">Select payment method</option>
+                        <option value="bank">Bank Transfer</option>
+                        <option value="upi">UPI</option>
+                        <option value="paytm">PayTM</option>
+                        <option value="phonepe">PhonePe</option>
+                        <option value="googlepay">Google Pay</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Account Details</label>
+                    <input type="text" id="accountDetails" class="form-input" placeholder="Enter account number, UPI ID, etc.">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Withdrawal Amount</label>
+                    
+                    <!-- Quick Amount Buttons -->
+                    <div class="quick-amounts">
+                        <button class="quick-amount-btn" onclick="setAmount(500)">₹500</button>
+                        <button class="quick-amount-btn" onclick="setAmount(1000)">₹1,000</button>
+                        <button class="quick-amount-btn" onclick="setAmount(2000)">₹2,000</button>
+                        <button class="quick-amount-btn" onclick="setAmount(5000)">₹5,000</button>
+                    </div>
+                    
+                    <div class="amount-input-container">
+                        <span class="amount-prefix">₹</span>
+                        <input type="number" id="withdrawalAmount" class="form-input amount-input" placeholder="Enter amount" min="100" max="50000">
+                    </div>
+                    <div style="font-size: 0.8rem; color: rgba(255,255,255,0.6); margin-top: 0.5rem;">
+                        Minimum: ₹100 | Maximum: ₹50,000
+                    </div>
+                </div>
+
+                <button class="btn btn-primary" onclick="requestWithdrawal()" style="width: 100%;" id="withdrawBtn">
+                    <i class="fas fa-paper-plane"></i> Request Withdrawal
+                </button>
+
+                <div style="margin-top: 1rem; padding: 1rem; background: rgba(245, 158, 11, 0.1); border-radius: 10px; border-left: 4px solid #F59E0B;">
+                    <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                        <i class="fas fa-info-circle" style="color: #F59E0B;"></i>
+                        <strong>Processing Time</strong>
+                    </div>
+                    <p style="font-size: 0.9rem; color: rgba(255,255,255,0.8); margin: 0;">
+                        Withdrawals are processed within 24-48 hours. You'll receive a confirmation once completed.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Withdrawal History -->
+            <div class="withdrawal-card">
+                <h3><i class="fas fa-history"></i> Withdrawal History</h3>
+                <p style="color: rgba(255,255,255,0.7); margin-bottom: 1rem;">Track your withdrawal requests and status</p>
+                
+                <div class="withdrawal-history" id="withdrawalHistory">
+                    <div style="text-align: center; padding: 2rem; color: rgba(255,255,255,0.7);">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <p>Loading withdrawal history...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-bottom: 2rem;">
+            <a href="dashboard.html" class="btn btn-primary">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </a>
+            <a href="transactions.html" class="btn btn-secondary">
+                <i class="fas fa-exchange-alt"></i> View Transactions
+            </a>
+            <button class="btn btn-secondary" onclick="loadWithdrawalHistory()">
+                <i class="fas fa-sync-alt"></i> Refresh History
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDxxkC9iD1V1w-53Kf4oBrHEXlBLvCc7sE",
+            authDomain: "biluxe10-3e894.firebaseapp.com",
+            projectId: "biluxe10-3e894",
+            storageBucket: "biluxe10-3e894.firebasestorage.app",
+            messagingSenderId: "804749588233",
+            appId: "1:804749588233:web:7777648c0c7834733c05d8"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const auth = firebase.auth();
+
+        let currentUser = null;
+
+        // Mobile Menu Toggle
+        document.getElementById('mobileMenuBtn').addEventListener('click', function() {
+            document.getElementById('mobileMenu').classList.toggle('active');
+        });
+
+        // REAL DATA FETCHING
+        document.addEventListener('DOMContentLoaded', function() {
+            auth.onAuthStateChanged((user) => {
+                if (user) {
+                    currentUser = user;
+                    console.log("✅ User logged in:", user.uid);
+                    setupRealTimeListeners(user.uid);
+                } else {
+                    console.log("❌ No user logged in");
+                    window.location.href = 'auth.html';
+                }
+            });
+        });
+
+        // SETUP REAL-TIME LISTENERS
+        function setupRealTimeListeners(userId) {
+            console.log("🔄 Setting up real-time listeners for:", userId);
+            
+            // Load user data for balance
+            db.collection('user_collections').doc(userId).onSnapshot((doc) => {
+                if (doc.exists) {
+                    const userData = doc.data();
+                    updateBalanceInfo(userData);
+                    loadUserProfile(userData);
+                }
+            });
+
+            // Load withdrawal history
+            loadWithdrawalHistory();
+        }
+
+        // UPDATE BALANCE INFO
+        function updateBalanceInfo(userData) {
+            document.getElementById('currentBalance').textContent = (userData.balance || 0).toFixed(2);
+            document.getElementById('availableBalance').textContent = (userData.balance || 0).toFixed(2);
+            document.getElementById('pendingWithdrawals').textContent = (userData.pendingWithdrawals || 0).toFixed(2);
+            document.getElementById('totalWithdrawn').textContent = (userData.totalWithdrawn || 0).toFixed(2);
+        }
+
+        // LOAD USER PROFILE
+        function loadUserProfile(userData) {
+            // Update user name
+            document.getElementById('headerUserName').textContent = userData.fullName || userData.username || 'User';
+            
+            // Load profile picture
+            if (userData.profilePicture) {
+                document.getElementById('headerProfilePic').src = userData.profilePicture;
+            } else {
+                const defaultAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(userData.fullName || userData.username || 'User')}&background=10B981&color=fff&size=128`;
+                document.getElementById('headerProfilePic').src = defaultAvatar;
+            }
+        }
+
+        // SET QUICK AMOUNT
+        function setAmount(amount) {
+            document.getElementById('withdrawalAmount').value = amount;
+        }
+
+        // REQUEST WITHDRAWAL
+        async function requestWithdrawal() {
+            const paymentMethod = document.getElementById('paymentMethod').value;
+            const accountDetails = document.getElementById('accountDetails').value.trim();
+            const amount = parseFloat(document.getElementById('withdrawalAmount').value);
+
+            // Validation
+            if (!paymentMethod) {
+                alert('Please select a payment method');
+                return;
+            }
+
+            if (!accountDetails) {
+                alert('Please enter your account details');
+                return;
+            }
+
+            if (!amount || amount < 100 || amount > 50000) {
+                alert('Please enter a valid amount between ₹100 and ₹50,000');
+                return;
+            }
+
+            try {
+                // Get current user data
+                const userDoc = await db.collection('user_collections').doc(currentUser.uid).get();
+                const userData = userDoc.data();
+                const currentBalance = userData.balance || 0;
+
+                // Check sufficient balance
+                if (amount > currentBalance) {
+                    alert('Insufficient balance for this withdrawal');
+                    return;
+                }
+
+                // Disable button to prevent multiple requests
+                const withdrawBtn = document.getElementById('withdrawBtn');
+                withdrawBtn.disabled = true;
+                withdrawBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+
+                // Create withdrawal data
+                const withdrawalData = {
+                    userId: currentUser.uid,
+                    userName: userData.fullName || userData.username,
+                    userEmail: userData.email,
+                    amount: amount,
+                    paymentMethod: paymentMethod,
+                    accountDetails: accountDetails,
+                    status: 'pending',
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                };
+
+                // Add withdrawal to withdrawals collection
+                const withdrawalRef = await db.collection('withdrawals').add(withdrawalData);
+                const withdrawalId = withdrawalRef.id;
+
+                // Update user balance and withdrawal stats
+                await db.collection('user_collections').doc(currentUser.uid).update({
+                    balance: firebase.firestore.FieldValue.increment(-amount),
+                    pendingWithdrawals: firebase.firestore.FieldValue.increment(amount),
+                    lastWithdrawal: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                // Add transaction record
+                await addTransaction(currentUser.uid, {
+                    type: 'withdrawal',
+                    amount: amount,
+                    description: `Withdrawal request to ${paymentMethod}`,
+                    status: 'pending',
+                    withdrawalId: withdrawalId
+                });
+
+                // Clear form
+                document.getElementById('paymentMethod').value = '';
+                document.getElementById('accountDetails').value = '';
+                document.getElementById('withdrawalAmount').value = '';
+
+                console.log("✅ Withdrawal request submitted successfully");
+                alert('Withdrawal request submitted successfully! It will be processed within 24-48 hours.');
+
+                // Re-enable button
+                withdrawBtn.disabled = false;
+                withdrawBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Request Withdrawal';
+
+            } catch (error) {
+                console.error("❌ Error processing withdrawal:", error);
+                alert('Error processing withdrawal. Please try again.');
+                
+                // Re-enable button on error
+                const withdrawBtn = document.getElementById('withdrawBtn');
+                withdrawBtn.disabled = false;
+                withdrawBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Request Withdrawal';
+            }
+        }
+
+        // ADD TRANSACTION FUNCTION
+        async function addTransaction(userId, transactionData) {
+            try {
+                const transaction = {
+                    userId: userId,
+                    type: transactionData.type,
+                    amount: transactionData.amount,
+                    description: transactionData.description,
+                    status: transactionData.status,
+                    withdrawalId: transactionData.withdrawalId,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                };
+                
+                await db.collection('transactions').add(transaction);
+                console.log("✅ Transaction added for withdrawal");
+            } catch (error) {
+                console.error("❌ Error adding transaction:", error);
+            }
+        }
+
+        // LOAD WITHDRAWAL HISTORY
+        function loadWithdrawalHistory() {
+            console.log("🔄 Loading withdrawal history for:", currentUser.uid);
+            
+            // Real-time listener for withdrawals
+            db.collection('withdrawals')
+                .where('userId', '==', currentUser.uid)
+                .orderBy('createdAt', 'desc')
+                .onSnapshot((snapshot) => {
+                    const withdrawalHistory = document.getElementById('withdrawalHistory');
+                    withdrawalHistory.innerHTML = '';
+
+                    if (snapshot.empty) {
+                        withdrawalHistory.innerHTML = `
+                            <div style="text-align: center; padding: 2rem; color: rgba(255,255,255,0.7);">
+                                <i class="fas fa-wallet" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.5;"></i>
+                                <h4>No Withdrawal History</h4>
+                                <p>You haven't made any withdrawal requests yet.</p>
+                            </div>
+                        `;
+                        return;
+                    }
+
+                    snapshot.forEach(doc => {
+                        const withdrawal = doc.data();
+                        const withdrawalId = doc.id;
+                        
+                        const withdrawalItem = document.createElement('div');
+                        withdrawalItem.className = `withdrawal-item ${withdrawal.status}`;
+                        
+                        // Format date
+                        const createdDate = withdrawal.createdAt?.toDate ? 
+                            withdrawal.createdAt.toDate().toLocaleDateString('en-IN', {
+                                day: '2-digit',
+                                month: '2-digit',
+                                year: 'numeric',
+                                hour: '2-digit',
+                                minute: '2-digit'
+                            }) : 'Recently';
+
+                        // Get payment method display name
+                        const methodNames = {
+                            'bank': 'Bank Transfer',
+                            'upi': 'UPI',
+                            'paytm': 'PayTM',
+                            'phonepe': 'PhonePe',
+                            'googlepay': 'Google Pay'
+                        };
+
+                        withdrawalItem.innerHTML = `
+                            <div class="withdrawal-header">
+                                <div>
+                                    <div class="withdrawal-amount">₹${withdrawal.amount}</div>
+                                    <div class="withdrawal-meta">
+                                        <span>Date: ${createdDate}</span>
+                                        <span class="withdrawal-method">${methodNames[withdrawal.paymentMethod] || withdrawal.paymentMethod}</span>
+                                    </div>
+                                </div>
+                                <span class="withdrawal-status status-${withdrawal.status}">
+                                    ${withdrawal.status.charAt(0).toUpperCase() + withdrawal.status.slice(1)}
+                                </span>
+                            </div>
+                            
+                            <div class="withdrawal-details">
+                                <strong>Account:</strong> ${withdrawal.accountDetails}<br>
+                                ${withdrawal.processedAt ? `
+                                    <strong>Processed:</strong> ${withdrawal.processedAt.toDate().toLocaleDateString('en-IN', {
+                                        day: '2-digit',
+                                        month: '2-digit',
+                                        year: 'numeric',
+                                        hour: '2-digit',
+                                        minute: '2-digit'
+                                    })}
+                                ` : ''}
+                                ${withdrawal.adminNote ? `<br><strong>Note:</strong> ${withdrawal.adminNote}` : ''}
+                            </div>
+                        `;
+                        
+                        withdrawalHistory.appendChild(withdrawalItem);
+                    });
+
+                }, (error) => {
+                    console.error('❌ Error loading withdrawal history:', error);
+                    document.getElementById('withdrawalHistory').innerHTML = `
+                        <div style="text-align: center; padding: 2rem; color: #EF4444;">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <h4>Error Loading History</h4>
+                            <p>Please try refreshing the page</p>
+                        </div>
+                    `;
+                });
+        }
+
+        // LOGOUT FUNCTION
+        function logout() {
+            auth.signOut().then(() => {
+                console.log("✅ User logged out");
+                window.location.href = 'auth.html';
+            }).catch((error) => {
+                console.error("❌ Error logging out:", error);
+            });
+        }
+
+        // FIREBASE COMMANDS FOR WITHDRAWAL SYSTEM
+        console.log(`
+        🔥 FIREBASE FIRESTORE RULES FOR WITHDRAWALS:
+
+        rules_version = '2';
+        service cloud.firestore {
+          match /databases/{database}/documents {
+            // Users can read their own withdrawals
+            match /withdrawals/{withdrawalId} {
+              allow read: if request.auth != null && resource.data.userId == request.auth.uid;
+              allow create: if request.auth != null && request.auth.uid == resource.data.userId;
+              allow update: if request.auth != null && request.auth.token.admin == true;
+            }
+            
+            // Admin can read all withdrawals and update status
+            match /withdrawals/{withdrawalId} {
+              allow read, write: if request.auth != null && request.auth.token.admin == true;
+            }
+          }
+        }
+
+        🔥 ADD THESE FIELDS TO USER_COLLECTION:
+
+        const updateUserWithdrawalFields = async (userId) => {
+            await db.collection('user_collections').doc(userId).update({
+                balance: 0,           // Available balance
+                pendingWithdrawals: 0, // Total pending withdrawal amount
+                totalWithdrawn: 0,     // Total withdrawn amount
+                lastWithdrawal: null   // Last withdrawal timestamp
+            });
+        };
+
+        🔥 ADMIN FUNCTION TO UPDATE WITHDRAWAL STATUS:
+
+        const updateWithdrawalStatus = async (withdrawalId, newStatus, adminNote = '') => {
+            try {
+                const withdrawalRef = db.collection('withdrawals').doc(withdrawalId);
+                const withdrawalDoc = await withdrawalRef.get();
+                const withdrawal = withdrawalDoc.data();
+                
+                const updateData = {
+                    status: newStatus,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    processedAt: firebase.firestore.FieldValue.serverTimestamp()
+                };
+                
+                if (adminNote) {
+                    updateData.adminNote = adminNote;
+                }
+                
+                await withdrawalRef.update(updateData);
+                
+                // Update user's withdrawal stats
+                const userRef = db.collection('user_collections').doc(withdrawal.userId);
+                
+                if (newStatus === 'approved') {
+                    await userRef.update({
+                        pendingWithdrawals: firebase.firestore.FieldValue.increment(-withdrawal.amount),
+                        totalWithdrawn: firebase.firestore.FieldValue.increment(withdrawal.amount)
+                    });
+                    
+                    // Update transaction status
+                    await updateTransactionStatus(withdrawalId, 'completed');
+                    
+                } else if (newStatus === 'rejected') {
+                    await userRef.update({
+                        balance: firebase.firestore.FieldValue.increment(withdrawal.amount),
+                        pendingWithdrawals: firebase.firestore.FieldValue.increment(-withdrawal.amount)
+                    });
+                    
+                    // Update transaction status
+                    await updateTransactionStatus(withdrawalId, 'failed');
+                }
+                
+                console.log("✅ Withdrawal status updated to:", newStatus);
+            } catch (error) {
+                console.error("❌ Error updating withdrawal status:", error);
+            }
+        };
+
+        🔥 FUNCTION TO UPDATE TRANSACTION STATUS:
+
+        const updateTransactionStatus = async (withdrawalId, newStatus) => {
+            try {
+                const transactionsSnapshot = await db.collection('transactions')
+                    .where('withdrawalId', '==', withdrawalId)
+                    .get();
+                    
+                transactionsSnapshot.forEach(async (doc) => {
+                    await doc.ref.update({
+                        status: newStatus,
+                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                });
+                
+                console.log("✅ Transaction status updated for withdrawal:", withdrawalId);
+            } catch (error) {
+                console.error("❌ Error updating transaction status:", error);
+            }
+        };
+        `);
+    </script>
+</body>
+</html>
