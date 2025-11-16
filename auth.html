@@ -776,7 +776,7 @@
                         teamCount: firebase.firestore.FieldValue.increment(1),
                         activeTeamCount: firebase.firestore.FieldValue.increment(1),
                         directCommission: firebase.firestore.FieldValue.increment(100)
-                    });
+                    }); 
 
                     // Give welcome bonus to new user
                     await db.collection("user_collections").doc(newUserId).update({
@@ -860,7 +860,7 @@
                     username: username,
                     fullName: name,
                     phoneNumber: phone,
-                    
+                    password : password , 
                     // CURRENT BALANCES - START WITH 0
                     balance: 0,
                     availableBalance: 0,
