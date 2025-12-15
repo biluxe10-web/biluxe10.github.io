@@ -1,0 +1,1115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Earnings - Biluxe10 Affiliate</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+    <style>
+        :root {
+            --primary: #10B981;
+            --primary-dark: #059669;
+            --accent: #F59E0B;
+            --purple: #8B5CF6;
+            --pink: #EC4899;
+            --blue: #3B82F6;
+            --cyan: #06B6D4;
+            --red: #EF4444;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+            min-height: 100vh;
+            color: white;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        /* Animated Background */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+        
+        .bg-circle {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(16, 185, 129, 0.2) 0%, rgba(16, 185, 129, 0) 70%);
+            animation: float 15s infinite ease-in-out;
+        }
+        
+        .bg-circle:nth-child(1) {
+            width: 300px;
+            height: 300px;
+            top: 10%;
+            left: 5%;
+            animation-delay: 0s;
+        }
+        
+        .bg-circle:nth-child(2) {
+            width: 200px;
+            height: 200px;
+            top: 60%;
+            left: 80%;
+            animation-delay: 2s;
+            background: radial-gradient(circle, rgba(245, 158, 11, 0.2) 0%, rgba(245, 158, 11, 0) 70%);
+        }
+        
+        .bg-circle:nth-child(3) {
+            width: 400px;
+            height: 400px;
+            top: 30%;
+            left: 60%;
+            animation-delay: 4s;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.2) 0%, rgba(139, 92, 246, 0) 70%);
+        }
+        
+        .bg-circle:nth-child(4) {
+            width: 250px;
+            height: 250px;
+            top: 70%;
+            left: 10%;
+            animation-delay: 6s;
+            background: radial-gradient(circle, rgba(236, 72, 153, 0.2) 0%, rgba(236, 72, 153, 0) 70%);
+        }
+        
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) scale(1);
+                opacity: 0.5;
+            }
+            50% {
+                transform: translateY(-20px) scale(1.05);
+                opacity: 0.8;
+            }
+        }
+        
+        /* Mobile Menu */
+        .mobile-menu-btn {
+            display: none;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: 10px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            z-index: 1001;
+        }
+        
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: 80px;
+            left: 0;
+            right: 0;
+            background: rgba(30, 41, 59, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            border-radius: 0 0 20px 20px;
+            z-index: 1000;
+            padding: 1rem;
+        }
+        
+        .mobile-menu.active {
+            display: block;
+        }
+        
+        .mobile-menu a {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            text-decoration: none;
+            color: white;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .mobile-menu a:hover {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--primary);
+            border-radius: 10px;
+        }
+        
+        .navbar {
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 1rem 1.5rem;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 999;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .logo-img {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            object-fit: cover;
+        }
+        
+        .user-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .user-avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--primary);
+        }
+        
+        .logout-btn {
+            background: rgba(239, 68, 68, 0.2);
+            color: #EF4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .logout-btn:hover {
+            background: rgba(239, 68, 68, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 1.5rem auto;
+            padding: 0 1rem;
+        }
+        
+        .page-header {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.8), rgba(5, 150, 105, 0.8), rgba(245, 158, 11, 0.8));
+            color: white;
+            padding: 1.5rem;
+            border-radius: 20px;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 8px 30px rgba(16, 185, 129, 0.4);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+            transform: rotate(45deg);
+            animation: shine 3s infinite;
+        }
+        
+        @keyframes shine {
+            0% { transform: translateX(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) rotate(45deg); }
+        }
+        
+        .page-header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        /* Earnings Cards Grid */
+        .earnings-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .earnings-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1.5rem;
+            border-radius: 20px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+        }
+        
+        .earnings-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+        }
+        
+        .earnings-card.daily::before { 
+            background: linear-gradient(90deg, #EC4899, #DB2777, #BE185D);
+        }
+        .earnings-card.weekly::before { 
+            background: linear-gradient(90deg, #8B5CF6, #7C3AED, #6D28D9);
+        }
+        .earnings-card.monthly::before { 
+            background: linear-gradient(90deg, #10B981, #059669, #047857);
+        }
+        .earnings-card.total::before { 
+            background: linear-gradient(90deg, #F59E0B, #D97706, #B45309);
+        }
+        .earnings-card.bonus::before { 
+            background: linear-gradient(90deg, #06B6D4, #0891B2, #0E7490);
+        }
+        .earnings-card.balance::before { 
+            background: linear-gradient(90deg, #3B82F6, #2563EB, #1D4ED8);
+        }
+        .earnings-card.withdrawn::before { 
+            background: linear-gradient(90deg, #EF4444, #DC2626, #B91C1C);
+        }
+        .earnings-card.pending::before { 
+            background: linear-gradient(90deg, #8B5CF6, #7C3AED, #6D28D9);
+        }
+        
+        .earnings-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+        
+        .earnings-card h3 {
+            color: rgba(255,255,255,0.8);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .earnings-card .amount {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+        
+        .earnings-card .info {
+            color: rgba(255,255,255,0.7);
+            font-size: 0.85rem;
+        }
+        
+        /* Commission Breakdown */
+        .commission-breakdown {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1.5rem;
+            border-radius: 20px;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            backdrop-filter: blur(10px);
+        }
+        
+        .commission-breakdown h3 {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            color: white;
+        }
+        
+        .breakdown-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+        
+        .breakdown-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            border-left: 4px solid;
+        }
+        
+        .breakdown-item.direct {
+            border-left-color: #10B981;
+        }
+        
+        .breakdown-item.indirect {
+            border-left-color: #F59E0B;
+        }
+        
+        .breakdown-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+        
+        .breakdown-item.direct .breakdown-icon {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10B981;
+        }
+        
+        .breakdown-item.indirect .breakdown-icon {
+            background: rgba(245, 158, 11, 0.2);
+            color: #F59E0B;
+        }
+        
+        /* Charts Section */
+        .charts-section {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .chart-container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1.5rem;
+            border-radius: 20px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            border: 1px solid rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+        }
+        
+        .chart-container h3 {
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: white;
+        }
+        
+        .btn {
+            padding: 1rem 1.5rem;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+        }
+        
+        /* Stats Summary */
+        .stats-summary {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .stat-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1rem;
+            border-radius: 12px;
+            border-left: 4px solid;
+        }
+        
+        .stat-item h4 {
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.7);
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-item .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        
+        /* Mobile Responsive */
+        @media (min-width: 768px) {
+            .navbar {
+                padding: 1rem 2rem;
+            }
+            
+            .logo {
+                font-size: 1.8rem;
+            }
+            
+            .container {
+                padding: 0 1.5rem;
+            }
+            
+            .page-header {
+                padding: 2rem;
+                border-radius: 25px;
+            }
+            
+            .page-header h1 {
+                font-size: 2.2rem;
+            }
+            
+            .earnings-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .breakdown-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .charts-section {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .stats-summary {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (min-width: 1024px) {
+            .earnings-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+            
+            .mobile-menu-btn {
+                display: none;
+            }
+            
+            .nav-links {
+                display: flex;
+                gap: 0.5rem;
+            }
+            
+            .nav-links a {
+                text-decoration: none;
+                color: white;
+                font-weight: 500;
+                padding: 0.75rem 1.25rem;
+                border-radius: 12px;
+                transition: all 0.3s ease;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+            
+            .nav-links a:hover, .nav-links a.active {
+                background: rgba(16, 185, 129, 0.2);
+                transform: translateY(-2px);
+                box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+            }
+            
+            .stats-summary {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+        
+        @media (max-width: 1023px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="bg-animation">
+        <div class="bg-circle"></div>
+        <div class="bg-circle"></div>
+        <div class="bg-circle"></div>
+        <div class="bg-circle"></div>
+    </div>
+
+    <!-- Mobile Menu Button -->
+    <button class="mobile-menu-btn" id="mobileMenuBtn">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="dashboard.html"><i class="fas fa-home"></i> Dashboard</a>
+        <a href="earnings.html" class="active"><i class="fas fa-chart-line"></i> Earnings</a>
+        <a href="products.html"><i class="fas fa-cube"></i> Packages</a>
+        <a href="referral.html"><i class="fas fa-users"></i> Referral</a>
+        <a href="myteam.html"><i class="fas fa-network-wired"></i> My Team</a>
+        <a href="withdrawal.html"><i class="fas fa-wallet"></i> Withdrawal</a>
+        <a href="transactions.html"><i class="fas fa-exchange-alt"></i> Transactions</a>
+        <a href="profile.html"><i class="fas fa-user"></i> Profile</a>
+        <a href="support.html"><i class="fas fa-headset"></i> Support</a>
+    </div>
+
+    <nav class="navbar">
+        <div class="logo">
+            <img src="Screenshot_2025-10-30-19-48-01-770_com.google.android.apps.maps (1).jpg" alt="Biluxe10 Logo" class="logo-img">
+            Biluxe10 Affiliate
+        </div>
+        <div class="nav-links">
+            <a href="dashboard.html"><i class="fas fa-home"></i> Dashboard</a>
+            <a href="earnings.html" class="active"><i class="fas fa-chart-line"></i> Earnings</a>
+            <a href="products.html"><i class="fas fa-cube"></i> Packages</a>
+            <a href="referral.html"><i class="fas fa-users"></i> Referral</a>
+            <a href="myteam.html"><i class="fas fa-network-wired"></i> My Team</a>
+            <a href="withdrawal.html"><i class="fas fa-wallet"></i> Withdrawal</a>
+            <a href="transactions.html"><i class="fas fa-exchange-alt"></i> Transactions</a>
+        </div>
+        <div class="user-section">
+            <button class="logout-btn" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+            <div class="user-profile">
+                <img id="headerProfilePic" src="https://ui-avatars.com/api/?name=User&background=10B981&color=fff&size=128" alt="Profile" class="user-avatar">
+                <div>
+                    <div id="headerUserName" style="font-weight: 600; color: white;">User</div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="page-header">
+            <h1><i class="fas fa-chart-line"></i> Earnings Overview</h1>
+            <p style="font-size: 1.1rem; opacity: 0.9;">Track your earnings and commission performance</p>
+        </div>
+
+        <!-- Earnings Cards -->
+        <div class="earnings-grid">
+            <div class="earnings-card daily">
+                <h3><i class="fas fa-calendar-day"></i> Today Earnings</h3>
+                <div class="amount">₹<span id="dailyEarnings">0.00</span></div>
+                <div class="info">Updated just now</div>
+            </div>
+            <div class="earnings-card weekly">
+                <h3><i class="fas fa-calendar-week"></i> Last 7 Days Earnings</h3>
+                <div class="amount">₹<span id="weeklyEarnings">0.00</span></div>
+                <div class="info">This week's income</div>
+            </div>
+            <div class="earnings-card monthly">
+                <h3><i class="fas fa-calendar-alt"></i> Last 30 Days Earnings</h3>
+                <div class="amount">₹<span id="monthlyEarnings">0.00</span></div>
+                <div class="info">This month's income</div>
+            </div>
+            <div class="earnings-card total">
+                <h3><i class="fas fa-chart-line"></i> Total Earnings</h3>
+                <div class="amount">₹<span id="totalEarnings">0.00</span></div>
+                <div class="info">All time earnings</div>
+            </div>
+            <!-- MISSING CARDS ADDED -->
+            <div class="earnings-card bonus">
+                <h3><i class="fas fa-gift"></i> Bonus Earnings</h3>
+                <div class="amount">₹<span id="bonusEarnings">0.00</span></div>
+                <div class="info">Referral & special bonuses</div>
+            </div>
+            <div class="earnings-card balance">
+                <h3><i class="fas fa-wallet"></i> Available Balance</h3>
+                <div class="amount">₹<span id="availableBalance">0.00</span></div>
+                <div class="info">Ready to withdraw</div>
+            </div>
+            <div class="earnings-card withdrawn">
+                <h3><i class="fas fa-money-check-alt"></i> Total Withdrawn</h3>
+                <div class="amount">₹<span id="totalWithdrawn">0.00</span></div>
+                <div class="info">Amount withdrawn</div>
+            </div>
+            <div class="earnings-card pending">
+                <h3><i class="fas fa-clock"></i> Pending Earnings</h3>
+                <div class="amount">₹<span id="pendingEarnings">0.00</span></div>
+                <div class="info">Processing payments</div>
+            </div>
+        </div>
+
+        <!-- Stats Summary -->
+        <div class="stats-summary">
+            <div class="stat-item" style="border-left-color: #10B981;">
+                <h4><i class="fas fa-user-plus"></i> Total Referrals</h4>
+                <div class="stat-value" id="totalReferrals">0</div>
+            </div>
+            <div class="stat-item" style="border-left-color: #F59E0B;">
+                <h4><i class="fas fa-users"></i> Team Members</h4>
+                <div class="stat-value" id="teamMembers">0</div>
+            </div>
+            <div class="stat-item" style="border-left-color: #8B5CF6;">
+                <h4><i class="fas fa-percentage"></i> Commission Rate</h4>
+                <div class="stat-value" id="commissionRate">50%</div>
+            </div>
+            <div class="stat-item" style="border-left-color: #3B82F6;">
+                <h4><i class="fas fa-crown"></i> Package Level</h4>
+                <div class="stat-value" id="packageLevel">Basic</div>
+            </div>
+        </div>
+
+        <!-- Commission Breakdown -->
+        <div class="commission-breakdown">
+            <h3><i class="fas fa-sitemap"></i> Commission Breakdown</h3>
+            <div class="breakdown-grid">
+                <div class="breakdown-item direct">
+                    <div class="breakdown-icon">
+                        <i class="fas fa-user-check"></i>
+                    </div>
+                    <div>
+                        <h4 style="color: #10B981; margin-bottom: 0.25rem;">Direct Commission - 50%</h4>
+                        <div class="amount" style="font-size: 1.5rem; font-weight: 700;">₹<span id="directCommission">0.00</span></div>
+                        <p style="color: rgba(255,255,255,0.7); font-size: 0.9rem;">From direct referrals</p>
+                    </div>
+                </div>
+                <div class="breakdown-item indirect">
+                    <div class="breakdown-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div>
+                        <h4 style="color: #F59E0B; margin-bottom: 0.25rem;">Passive Income - 15%</h4>
+                        <div class="amount" style="font-size: 1.5rem; font-weight: 700;">₹<span id="indirectCommission">0.00</span></div>
+                        <p style="color: rgba(255,255,255,0.7); font-size: 0.9rem;">From team sales</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Section -->
+        <div class="charts-section">
+            <div class="chart-container">
+                <h3><i class="fas fa-chart-bar"></i> Weekly Earnings Trend</h3>
+                <canvas id="weeklyChart" height="300"></canvas>
+            </div>
+            <div class="chart-container">
+                <h3><i class="fas fa-chart-pie"></i> Earnings Distribution</h3>
+                <canvas id="distributionChart" height="300"></canvas>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-bottom: 2rem;">
+            <a href="withdrawal.html" class="btn btn-primary">
+                <i class="fas fa-wallet"></i> Request Withdrawal
+            </a>
+            <a href="transactions.html" class="btn btn-primary">
+                <i class="fas fa-list"></i> View Transactions
+            </a>
+            <a href="referral.html" class="btn btn-primary">
+                <i class="fas fa-share-alt"></i> Share Referral
+            </a>
+            <a href="dashboard.html" class="btn btn-primary">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDxxkC9iD1V1w-53Kf4oBrHEXlBLvCc7sE",
+            authDomain: "biluxe10-3e894.firebaseapp.com",
+            projectId: "biluxe10-3e894",
+            storageBucket: "biluxe10-3e894.firebasestorage.app",
+            messagingSenderId: "804749588233",
+            appId: "1:804749588233:web:7777648c0c7834733c05d8"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const auth = firebase.auth();
+
+        let weeklyChart = null;
+        let distributionChart = null;
+        let currentUser = null;
+
+        // Mobile Menu Toggle
+        document.getElementById('mobileMenuBtn').addEventListener('click', function() {
+            document.getElementById('mobileMenu').classList.toggle('active');
+        });
+
+        // REAL DATA FETCHING
+        document.addEventListener('DOMContentLoaded', function() {
+            auth.onAuthStateChanged((user) => {
+                if (user) {
+                    currentUser = user;
+                    console.log("✅ User logged in:", user.uid);
+                    setupRealTimeListeners(user.uid);
+                } else {
+                    console.log("❌ No user logged in");
+                    window.location.href = 'auth.html';
+                }
+            });
+        });
+
+        // SETUP REAL-TIME LISTENERS
+        function setupRealTimeListeners(userId) {
+            console.log("🔄 Setting up real-time listeners for:", userId);
+            
+            // Main user data from user_collections
+            db.collection('user_collections').doc(userId).onSnapshot((doc) => {
+                if (doc.exists) {
+                    const userData = doc.data();
+                    console.log("📊 User data received:", userData);
+                    updateEarningsData(userData);
+                    updateUserStats(userData);
+                    updateCharts(userData);
+                    loadUserProfile(userData);
+                } else {
+                    console.log("❌ No user document found");
+                }
+            }, (error) => {
+                console.error("❌ Error in user listener:", error);
+            });
+
+            // Load commission breakdown from transactions
+            loadCommissionBreakdown(userId);
+            // Load withdrawal data
+            loadWithdrawalData(userId);
+        }
+
+        // UPDATE EARNINGS DATA
+        function updateEarningsData(userData) {
+            console.log("🔄 Updating earnings data");
+            
+            // EARNINGS DATA
+            document.getElementById('dailyEarnings').textContent = (userData.dailyEarnings || 0).toFixed(2);
+            document.getElementById('weeklyEarnings').textContent = (userData.weeklyEarnings || 0).toFixed(2);
+            document.getElementById('monthlyEarnings').textContent = (userData.monthlyEarnings || 0).toFixed(2);
+            document.getElementById('totalEarnings').textContent = (userData.totalEarnings || 0).toFixed(2);
+            
+            // NEW CARDS DATA
+            document.getElementById('bonusEarnings').textContent = (userData.bonusEarnings || 0).toFixed(2);
+            document.getElementById('availableBalance').textContent = (userData.balance || 0).toFixed(2);
+        }
+
+        // UPDATE USER STATS
+        function updateUserStats(userData) {
+            document.getElementById('totalReferrals').textContent = userData.referralCount || 0;
+            document.getElementById('teamMembers').textContent = userData.teamCount || 0;
+            document.getElementById('packageLevel').textContent = userData.packageLevel || 'Basic';
+            
+            // Set commission rate based on package level
+            const commissionRates = {
+                'basic': '50%',
+                'silver': '55%',
+                'gold': '60%',
+                'platinum': '65%',
+                'diamond': '70%'
+            };
+            document.getElementById('commissionRate').textContent = commissionRates[userData.packageLevel] || '50%';
+        }
+
+        // LOAD WITHDRAWAL DATA
+        async function loadWithdrawalData(userId) {
+            try {
+                // Get total withdrawn
+                const withdrawals = await db.collection('transactions')
+                    .where('userId', '==', userId)
+                    .where('type', '==', 'withdrawal')
+                    .where('status', '==', 'completed')
+                    .get();
+
+                let totalWithdrawn = 0;
+                withdrawals.forEach(doc => {
+                    totalWithdrawn += doc.data().amount || 0;
+                });
+
+                // Get pending withdrawals
+                const pendingWithdrawals = await db.collection('transactions')
+                    .where('userId', '==', userId)
+                    .where('type', '==', 'withdrawal')
+                    .where('status', '==', 'pending')
+                    .get();
+
+                let pendingTotal = 0;
+                pendingWithdrawals.forEach(doc => {
+                    pendingTotal += doc.data().amount || 0;
+                });
+
+                // Update UI
+                document.getElementById('totalWithdrawn').textContent = totalWithdrawn.toFixed(2);
+                document.getElementById('pendingEarnings').textContent = pendingTotal.toFixed(2);
+
+            } catch (error) {
+                console.error('❌ Error loading withdrawal data:', error);
+            }
+        }
+
+        // LOAD COMMISSION BREAKDOWN
+        async function loadCommissionBreakdown(userId) {
+            try {
+                // Get direct commissions
+                const directCommissions = await db.collection('transactions')
+                    .where('userId', '==', userId)
+                    .where('type', '==', 'commission')
+                    .where('level', '==', 'direct')
+                    .get();
+
+                let directTotal = 0;
+                directCommissions.forEach(doc => {
+                    directTotal += doc.data().amount || 0;
+                });
+
+                // Get indirect commissions
+                const indirectCommissions = await db.collection('transactions')
+                    .where('userId', '==', userId)
+                    .where('type', '==', 'commission')
+                    .where('level', '==', 'indirect')
+                    .get();
+
+                let indirectTotal = 0;
+                indirectCommissions.forEach(doc => {
+                    indirectTotal += doc.data().amount || 0;
+                });
+
+                // Update UI
+                document.getElementById('directCommission').textContent = directTotal.toFixed(2);
+                document.getElementById('indirectCommission').textContent = indirectTotal.toFixed(2);
+
+            } catch (error) {
+                console.error('❌ Error loading commission breakdown:', error);
+            }
+        }
+
+        // UPDATE CHARTS
+        function updateCharts(userData) {
+            // Weekly Earnings Chart
+            const weeklyCtx = document.getElementById('weeklyChart').getContext('2d');
+            if (weeklyChart) {
+                weeklyChart.destroy();
+            }
+
+            weeklyChart = new Chart(weeklyCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    datasets: [{
+                        label: 'Daily Earnings (₹)',
+                        data: [
+                            (userData.weeklyEarnings || 0) * 0.15,
+                            (userData.weeklyEarnings || 0) * 0.22,
+                            (userData.weeklyEarnings || 0) * 0.18,
+                            (userData.weeklyEarnings || 0) * 0.25,
+                            (userData.weeklyEarnings || 0) * 0.12,
+                            (userData.weeklyEarnings || 0) * 0.08,
+                            (userData.dailyEarnings || 0)
+                        ],
+                        borderColor: '#10B981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4,
+                        pointBackgroundColor: '#10B981',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2,
+                        pointRadius: 5
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: 'white'
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(255,255,255,0.1)'
+                            },
+                            ticks: {
+                                color: 'rgba(255,255,255,0.7)'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                color: 'rgba(255,255,255,0.1)'
+                            },
+                            ticks: {
+                                color: 'rgba(255,255,255,0.7)'
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Distribution Chart
+            const distributionCtx = document.getElementById('distributionChart').getContext('2d');
+            if (distributionChart) {
+                distributionChart.destroy();
+            }
+
+            // Calculate distribution from commission breakdown
+            const directAmount = parseFloat(document.getElementById('directCommission').textContent) || 0;
+            const indirectAmount = parseFloat(document.getElementById('indirectCommission').textContent) || 0;
+            const bonusAmount = parseFloat(document.getElementById('bonusEarnings').textContent) || 0;
+            const otherAmount = (userData.totalEarnings || 0) - directAmount - indirectAmount - bonusAmount;
+
+            distributionChart = new Chart(distributionCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Direct Commission', 'Passive Income', 'Bonus Earnings', 'Other Income'],
+                    datasets: [{
+                        data: [
+                            directAmount, 
+                            indirectAmount, 
+                            bonusAmount,
+                            Math.max(0, otherAmount)
+                        ],
+                        backgroundColor: [
+                            '#10B981',
+                            '#F59E0B',
+                            '#06B6D4',
+                            '#8B5CF6'
+                        ],
+                        borderWidth: 2,
+                        borderColor: 'rgba(30, 41, 59, 0.8)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: 'white',
+                                padding: 20
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // LOAD USER PROFILE
+        function loadUserProfile(userData) {
+            // Update user name
+            document.getElementById('headerUserName').textContent = userData.username || 'User';
+            
+            // Load profile picture
+            if (userData.profilePicture) {
+                document.getElementById('headerProfilePic').src = userData.profilePicture;
+            } else {
+                const defaultAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(userData.username || 'User')}&background=10B981&color=fff&size=128`;
+                document.getElementById('headerProfilePic').src = defaultAvatar;
+            }
+        }
+
+        // LOGOUT FUNCTION
+        function logout() {
+            auth.signOut().then(() => {
+                console.log("✅ User logged out");
+                window.location.href = 'auth.html';
+            }).catch((error) => {
+                console.error("❌ Error logging out:", error);
+            });
+        }
+
+        // FIREBASE FUNCTION FOR AUTO EARNINGS CALCULATION
+        async function calculateEarnings(userId, amount, type) {
+            try {
+                const userDoc = await db.collection('user_collections').doc(userId).get();
+                if (!userDoc.exists) return;
+
+                const userData = userDoc.data();
+                const today = new Date().toDateString();
+                
+                // Update earnings
+                await db.collection('user_collections').doc(userId).update({
+                    totalEarnings: firebase.firestore.FieldValue.increment(amount),
+                    dailyEarnings: firebase.firestore.FieldValue.increment(amount),
+                    weeklyEarnings: firebase.firestore.FieldValue.increment(amount),
+                    monthlyEarnings: firebase.firestore.FieldValue.increment(amount),
+                    balance: firebase.firestore.FieldValue.increment(amount),
+                    lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                console.log(`✅ Earnings updated for user: ${userId}, Amount: ₹${amount}`);
+
+            } catch (error) {
+                console.error("❌ Error calculating earnings:", error);
+            }
+        }
+
+        // TEST FUNCTION TO ADD SAMPLE EARNINGS
+        async function addSampleEarnings() {
+            if (!currentUser) {
+                alert("Please login first");
+                return;
+            }
+
+            const amount = parseFloat(prompt("Enter earnings amount (₹):") || "100");
+            
+            try {
+                await calculateEarnings(currentUser.uid, amount, 'commission');
+                alert(`✅ Added ₹${amount} to your earnings!`);
+                
+                // Refresh data
+                setupRealTimeListeners(currentUser.uid);
+            } catch (error) {
+                alert("❌ Error adding earnings: " + error.message);
+            }
+        }
+
+        // Add this button to your page if you want to test earnings
+        // <button class="btn btn-primary" onclick="addSampleEarnings()" style="margin: 10px;">
+        //     <i class="fas fa-plus"></i> Add Test Earnings
+        // </button>
+    </script>
+</body>
+          </html>
