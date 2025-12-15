@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Withdrawal - Biluxe10 Affiliate</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+    <style>
+        /* ... (Previous CSS code remains the same until .withdrawal-section) ... */
+        
+        /* Withdrawal Section */
+        .withdrawal-section {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .withdrawal-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1.5rem;
+            border-radius: 20px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            border: 1px solid rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+        }
+        
+        .withdrawal-card h3 {
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: white;
+        }
+        
+        /* Bonus Instructions Section */
+        .bonus-instructions {
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(92, 124, 250, 0.1));
+            border-radius: 12px;
+            border-left: 4px solid #8B5CF6;
+        }
+        
+        .bonus-instructions h4 {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+            color: white;
+        }
+        
+        .bonus-instructions ul {
+            list-style-type: none;
+            padding-left: 0;
+            margin: 0.5rem 0;
+        }
+        
+        .bonus-instructions li {
+            padding: 0.25rem 0;
+            color: rgba(255,255,255,0.9);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .bonus-instructions li i {
+            color: #8B5CF6;
+            font-size: 0.8rem;
+        }
+        
+        .package-bonus-info {
+            background: rgba(16, 185, 129, 0.1);
+            border-radius: 10px;
+            padding: 1rem;
+            margin-top: 1rem;
+            border-left: 4px solid #10B981;
+        }
+        
+        .package-bonus-info h5 {
+            color: #10B981;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .package-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+        
+        .package-item {
+            background: rgba(255,255,255,0.05);
+            border-radius: 8px;
+            padding: 0.75rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .package-name {
+            font-weight: 600;
+            color: white;
+        }
+        
+        .package-details {
+            text-align: right;
+        }
+        
+        .package-commission {
+            color: #10B981;
+            font-weight: 700;
+        }
+        
+        .package-bonus {
+            color: #F59E0B;
+            font-size: 0.9rem;
+        }
+        
+        /* Balance Info */
+        .balance-info {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .balance-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            border-left: 4px solid;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .balance-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.05), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.5s ease;
+        }
+        
+        .balance-item:hover::before {
+            transform: translateX(100%);
+        }
+        
+        .balance-item.available {
+            border-left-color: #10B981;
+        }
+        
+        .balance-item.bonus {
+            border-left-color: #F59E0B;
+        }
+        
+        .balance-item.pending {
+            border-left-color: #8B5CF6;
+        }
+        
+        .balance-item.total {
+            border-left-color: #3B82F6;
+        }
+        
+        .balance-label {
+            color: rgba(255,255,255,0.7);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .balance-amount {
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+        
+        .balance-subtext {
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.5);
+            margin-top: 0.25rem;
+        }
+        
+        /* ... (Rest of the CSS remains the same) ... */
+        
+        /* Mobile Responsive */
+        @media (min-width: 768px) {
+            /* ... (Previous responsive code remains the same) ... */
+            
+            .balance-info {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .package-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (min-width: 1024px) {
+            /* ... (Previous responsive code remains the same) ... */
+            
+            .balance-info {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- ... (Previous HTML code remains the same until the withdrawal card) ... -->
+
+    <div class="container">
+        <div class="page-header">
+            <h1><i class="fas fa-wallet"></i> Withdrawal</h1>
+            <p style="font-size: 1.1rem; opacity: 0.9;">Withdraw your earnings to your preferred payment method</p>
+        </div>
+
+        <div class="withdrawal-section">
+            <!-- Withdrawal Form -->
+            <div class="withdrawal-card">
+                <h3><i class="fas fa-money-bill-wave"></i> Request Withdrawal</h3>
+                
+                <!-- Bonus Instructions -->
+                <div class="bonus-instructions">
+                    <h4><i class="fas fa-info-circle"></i> Important Bonus Withdrawal Rules</h4>
+                    <ul>
+                        <li><i class="fas fa-check-circle"></i> Bonuses can be withdrawn maximum 10% of the package commission</li>
+                        <li><i class="fas fa-check-circle"></i> Example: ₹999 package gives ₹500 commission (50%) + ₹100 bonus (10%)</li>
+                        <li><i class="fas fa-check-circle"></i> Bonuses cannot be withdrawn at the same time as regular commissions</li>
+                        <li><i class="fas fa-check-circle"></i> Minimum 24 hours gap required between bonus withdrawals</li>
+                        <li><i class="fas fa-check-circle"></i> Bonus withdrawals processed separately from regular commissions</li>
+                    </ul>
+                    
+                    <div class="package-bonus-info">
+                        <h5><i class="fas fa-gift"></i> Package Bonus Breakdown</h5>
+                        <div class="package-grid">
+                            <div class="package-item">
+                                <div class="package-name">₹999 Package</div>
+                                <div class="package-details">
+                                    <div class="package-commission">50% = ₹500</div>
+                                    <div class="package-bonus">+10% Bonus = ₹100</div>
+                                </div>
+                            </div>
+                            <div class="package-item">
+                                <div class="package-name">₹2,999 Package</div>
+                                <div class="package-details">
+                                    <div class="package-commission">50% = ₹1,500</div>
+                                    <div class="package-bonus">+10% Bonus = ₹300</div>
+                                </div>
+                            </div>
+                            <div class="package-item">
+                                <div class="package-name">₹4,999 Package</div>
+                                <div class="package-details">
+                                    <div class="package-commission">50% = ₹2,500</div>
+                                    <div class="package-bonus">+10% Bonus = ₹500</div>
+                                </div>
+                            </div>
+                            <div class="package-item">
+                                <div class="package-name">₹9,999 Package</div>
+                                <div class="package-details">
+                                    <div class="package-commission">50% = ₹5,000</div>
+                                    <div class="package-bonus">+10% Bonus = ₹1,000</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Balance Information -->
+                <div class="balance-info">
+                    <div class="balance-item available">
+                        <div>
+                            <div class="balance-label"><i class="fas fa-wallet"></i> Available Balance</div>
+                            <div class="balance-amount">₹<span id="availableBalance">0.00</span></div>
+                            <div class="balance-subtext">Regular commissions</div>
+                        </div>
+                        <i class="fas fa-wallet" style="color: #10B981; font-size: 1.5rem;"></i>
+                    </div>
+                    
+                    <div class="balance-item bonus">
+                        <div>
+                            <div class="balance-label"><i class="fas fa-gift"></i> Bonus Balance</div>
+                            <div class="balance-amount">₹<span id="bonusBalance">0.00</span></div>
+                            <div class="balance-subtext">Max 10% withdrawal</div>
+                        </div>
+                        <i class="fas fa-gift" style="color: #F59E0B; font-size: 1.5rem;"></i>
+                    </div>
+                    
+                    <div class="balance-item pending">
+                        <div>
+                            <div class="balance-label"><i class="fas fa-clock"></i> Pending Withdrawals</div>
+                            <div class="balance-amount">₹<span id="pendingWithdrawals">0.00</span></div>
+                            <div class="balance-subtext">Under processing</div>
+                        </div>
+                        <i class="fas fa-clock" style="color: #8B5CF6; font-size: 1.5rem;"></i>
+                    </div>
+                    
+                    <div class="balance-item total">
+                        <div>
+                            <div class="balance-label"><i class="fas fa-chart-line"></i> Total Withdrawn</div>
+                            <div class="balance-amount">₹<span id="totalWithdrawn">0.00</span></div>
+                            <div class="balance-subtext">All time withdrawals</div>
+                        </div>
+                        <i class="fas fa-chart-line" style="color: #3B82F6; font-size: 1.5rem;"></i>
+                    </div>
+                </div>
+
+                <!-- Withdrawal Type Selector -->
+                <div class="form-group">
+                    <label class="form-label">Withdrawal Type</label>
+                    <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
+                        <button type="button" class="btn btn-primary" id="commissionWithdrawal" onclick="selectWithdrawalType('commission')">
+                            <i class="fas fa-money-bill"></i> Commission Withdrawal
+                        </button>
+                        <button type="button" class="btn btn-secondary" id="bonusWithdrawal" onclick="selectWithdrawalType('bonus')">
+                            <i class="fas fa-gift"></i> Bonus Withdrawal
+                        </button>
+                    </div>
+                    <div id="withdrawalTypeInfo" style="padding: 0.75rem; background: rgba(16, 185, 129, 0.1); border-radius: 8px; color: #10B981; font-size: 0.9rem;">
+                        <i class="fas fa-info-circle"></i> Selected: <strong>Commission Withdrawal</strong> - Regular earnings from referrals
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Payment Method</label>
+                    <select id="paymentMethod" class="form-select">
+                        <option value="">Select payment method</option>
+                        <option value="bank">Bank Transfer</option>
+                        <option value="upi">UPI</option>
+                        <option value="paytm">PayTM</option>
+                        <option value="phonepe">PhonePe</option>
+                        <option value="googlepay">Google Pay</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Account Details</label>
+                    <input type="text" id="accountDetails" class="form-input" placeholder="Enter account number, UPI ID, etc.">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Withdrawal Amount</label>
+                    
+                    <!-- Quick Amount Buttons -->
+                    <div class="quick-amounts">
+                        <button class="quick-amount-btn" onclick="setAmount(500)">₹500</button>
+                        <button class="quick-amount-btn" onclick="setAmount(1000)">₹1,000</button>
+                        <button class="quick-amount-btn" onclick="setAmount(2000)">₹2,000</button>
+                        <button class="quick-amount-btn" onclick="setAmount(5000)">₹5,000</button>
+                    </div>
+                    
+                    <div class="amount-input-container">
+                        <span class="amount-prefix">₹</span>
+                        <input type="number" id="withdrawalAmount" class="form-input amount-input" placeholder="Enter amount" min="100" max="50000">
+                    </div>
+                    <div style="font-size: 0.8rem; color: rgba(255,255,255,0.6); margin-top: 0.5rem;">
+                        Minimum: ₹100 | Maximum: ₹50,000
+                    </div>
+                    <div id="bonusLimitInfo" style="display: none; margin-top: 0.5rem; padding: 0.5rem; background: rgba(245, 158, 11, 0.1); border-radius: 6px; border-left: 3px solid #F59E0B;">
+                        <i class="fas fa-exclamation-triangle" style="color: #F59E0B;"></i>
+                        <span style="font-size: 0.85rem;">Bonus withdrawal limit: Maximum 10% of your package commission</span>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary" onclick="requestWithdrawal()" style="width: 100%;" id="withdrawBtn">
+                    <i class="fas fa-paper-plane"></i> Request Withdrawal
+                </button>
+
+                <div style="margin-top: 1rem; padding: 1rem; background: rgba(245, 158, 11, 0.1); border-radius: 10px; border-left: 4px solid #F59E0B;">
+                    <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                        <i class="fas fa-info-circle" style="color: #F59E0B;"></i>
+                        <strong>Processing Time</strong>
+                    </div>
+                    <p style="font-size: 0.9rem; color: rgba(255,255,255,0.8); margin: 0;">
+                        • Commission withdrawals: 24-48 hours<br>
+                        • Bonus withdrawals: 48-72 hours<br>
+                        • Separate processing for different withdrawal types
+                    </p>
+                </div>
+            </div>
+
+            <!-- Withdrawal History -->
+            <div class="withdrawal-card">
+                <h3><i class="fas fa-history"></i> Withdrawal History</h3>
+                <p style="color: rgba(255,255,255,0.7); margin-bottom: 1rem;">Track your withdrawal requests and status</p>
+                
+                <div class="withdrawal-history" id="withdrawalHistory">
+                    <div style="text-align: center; padding: 2rem; color: rgba(255,255,255,0.7);">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <p>Loading withdrawal history...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-bottom: 2rem;">
+            <a href="dashboard.html" class="btn btn-primary">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </a>
+            <a href="transactions.html" class="btn btn-secondary">
+                <i class="fas fa-exchange-alt"></i> View Transactions
+            </a>
+            <button class="btn btn-secondary" onclick="loadWithdrawalHistory()">
+                <i class="fas fa-sync-alt"></i> Refresh History
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // ... (Previous Firebase configuration remains the same) ...
+
+        let currentUser = null;
+        let currentWithdrawalType = 'commission'; // 'commission' or 'bonus'
+        let userPackageLevel = 'basic';
+
+        // ... (Previous event listeners remain the same) ...
+
+        // SETUP REAL-TIME LISTENERS
+        function setupRealTimeListeners(userId) {
+            console.log("🔄 Setting up real-time listeners for:", userId);
+            
+            // Load user data for balance
+            db.collection('user_collections').doc(userId).onSnapshot((doc) => {
+                if (doc.exists) {
+                    const userData = doc.data();
+                    updateBalanceInfo(userData);
+                    loadUserProfile(userData);
+                    userPackageLevel = userData.packageLevel || 'basic';
+                }
+            });
+
+            // Load withdrawal history
+            loadWithdrawalHistory();
+        }
+
+        // UPDATE BALANCE INFO
+        function updateBalanceInfo(userData) {
+            document.getElementById('currentBalance').textContent = (userData.balance || 0).toFixed(2);
+            document.getElementById('availableBalance').textContent = (userData.balance || 0).toFixed(2);
+            document.getElementById('bonusBalance').textContent = (userData.bonusEarnings || 0).toFixed(2);
+            document.getElementById('pendingWithdrawals').textContent = (userData.pendingWithdrawals || 0).toFixed(2);
+            document.getElementById('totalWithdrawn').textContent = (userData.totalWithdrawn || 0).toFixed(2);
+        }
+
+        // SELECT WITHDRAWAL TYPE
+        function selectWithdrawalType(type) {
+            currentWithdrawalType = type;
+            
+            const commissionBtn = document.getElementById('commissionWithdrawal');
+            const bonusBtn = document.getElementById('bonusWithdrawal');
+            const typeInfo = document.getElementById('withdrawalTypeInfo');
+            const bonusLimitInfo = document.getElementById('bonusLimitInfo');
+            
+            if (type === 'commission') {
+                commissionBtn.className = 'btn btn-primary';
+                bonusBtn.className = 'btn btn-secondary';
+                typeInfo.innerHTML = '<i class="fas fa-info-circle"></i> Selected: <strong>Commission Withdrawal</strong> - Regular earnings from referrals';
+                typeInfo.style.background = 'rgba(16, 185, 129, 0.1)';
+                typeInfo.style.color = '#10B981';
+                bonusLimitInfo.style.display = 'none';
+                
+                // Update amount limits
+                const amountInput = document.getElementById('withdrawalAmount');
+                amountInput.min = 100;
+                amountInput.max = 50000;
+            } else {
+                commissionBtn.className = 'btn btn-secondary';
+                bonusBtn.className = 'btn btn-primary';
+                typeInfo.innerHTML = '<i class="fas fa-info-circle"></i> Selected: <strong>Bonus Withdrawal</strong> - Special rewards & bonuses (Max 10%)';
+                typeInfo.style.background = 'rgba(245, 158, 11, 0.1)';
+                typeInfo.style.color = '#F59E0B';
+                bonusLimitInfo.style.display = 'block';
+                
+                // Update amount limits for bonus
+                const bonusBalance = parseFloat(document.getElementById('bonusBalance').textContent) || 0;
+                const maxBonusWithdrawal = calculateMaxBonusWithdrawal();
+                
+                const amountInput = document.getElementById('withdrawalAmount');
+                amountInput.min = 100;
+                amountInput.max = Math.min(maxBonusWithdrawal, 50000);
+                
+                // Update bonus limit info
+                bonusLimitInfo.innerHTML = `
+                    <i class="fas fa-exclamation-triangle" style="color: #F59E0B;"></i>
+                    <span style="font-size: 0.85rem;">
+                        Bonus withdrawal limit: Maximum ₹${maxBonusWithdrawal.toFixed(2)} (10% of package commission)
+                    </span>
+                `;
+            }
+        }
+
+        // CALCULATE MAX BONUS WITHDRAWAL
+        function calculateMaxBonusWithdrawal() {
+            const bonusBalance = parseFloat(document.getElementById('bonusBalance').textContent) || 0;
+            
+            // Based on package level, calculate max 10% of total commission
+            const packageLimits = {
+                'basic': 100,    // ₹999 package
+                'silver': 300,   // ₹2,999 package
+                'gold': 500,     // ₹4,999 package
+                'platinum': 1000, // ₹9,999 package
+                'diamond': 2000  // ₹19,999 package
+            };
+            
+            const packageLimit = packageLimits[userPackageLevel] || 100;
+            return Math.min(bonusBalance, packageLimit);
+        }
+
+        // SET QUICK AMOUNT
+        function setAmount(amount) {
+            if (currentWithdrawalType === 'bonus') {
+                const maxBonus = calculateMaxBonusWithdrawal();
+                if (amount > maxBonus) {
+                    alert(`Bonus withdrawal limit is ₹${maxBonus.toFixed(2)}. Please enter a smaller amount.`);
+                    return;
+                }
+            }
+            document.getElementById('withdrawalAmount').value = amount;
+        }
+
+        // REQUEST WITHDRAWAL
+        async function requestWithdrawal() {
+            const paymentMethod = document.getElementById('paymentMethod').value;
+            const accountDetails = document.getElementById('accountDetails').value.trim();
+            const amount = parseFloat(document.getElementById('withdrawalAmount').value);
+
+            // Validation
+            if (!paymentMethod) {
+                alert('Please select a payment method');
+                return;
+            }
+
+            if (!accountDetails) {
+                alert('Please enter your account details');
+                return;
+            }
+
+            if (!amount || amount < 100) {
+                alert('Minimum withdrawal amount is ₹100');
+                return;
+            }
+
+            try {
+                // Get current user data
+                const userDoc = await db.collection('user_collections').doc(currentUser.uid).get();
+                const userData = userDoc.data();
+                
+                let currentBalance, balanceField;
+                
+                if (currentWithdrawalType === 'commission') {
+                    currentBalance = userData.balance || 0;
+                    balanceField = 'balance';
+                } else {
+                    currentBalance = userData.bonusEarnings || 0;
+                    balanceField = 'bonusEarnings';
+                    
+                    // Check bonus withdrawal limit (10% of package commission)
+                    const maxBonusWithdrawal = calculateMaxBonusWithdrawal();
+                    if (amount > maxBonusWithdrawal) {
+                        alert(`Bonus withdrawal limit is ₹${maxBonusWithdrawal.toFixed(2)} (10% of your package commission).`);
+                        return;
+                    }
+                    
+                    // Check if bonus withdrawal is allowed (24 hours gap)
+                    const lastBonusWithdrawal = await checkLastBonusWithdrawal();
+                    if (!lastBonusWithdrawal) {
+                        alert('Bonus withdrawals require a minimum 24-hour gap from your last bonus withdrawal.');
+                        return;
+                    }
+                }
+
+                // Check sufficient balance
+                if (amount > currentBalance) {
+                    alert('Insufficient balance for this withdrawal');
+                    return;
+                }
+
+                // Disable button to prevent multiple requests
+                const withdrawBtn = document.getElementById('withdrawBtn');
+                withdrawBtn.disabled = true;
+                withdrawBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+
+                // Create withdrawal data
+                const withdrawalData = {
+                    userId: currentUser.uid,
+                    userName: userData.fullName || userData.username,
+                    userEmail: userData.email,
+                    amount: amount,
+                    withdrawalType: currentWithdrawalType,
+                    paymentMethod: paymentMethod,
+                    accountDetails: accountDetails,
+                    status: 'pending',
+                    packageLevel: userData.packageLevel || 'basic',
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                };
+
+                // Add withdrawal to withdrawals collection
+                const withdrawalRef = await db.collection('withdrawals').add(withdrawalData);
+                const withdrawalId = withdrawalRef.id;
+
+                // Update user balance and withdrawal stats
+                const updateData = {
+                    pendingWithdrawals: firebase.firestore.FieldValue.increment(amount),
+                    lastWithdrawal: firebase.firestore.FieldValue.serverTimestamp()
+                };
+                
+                // Deduct from appropriate balance field
+                updateData[balanceField] = firebase.firestore.FieldValue.increment(-amount);
+                
+                // For bonus withdrawals, track last bonus withdrawal time
+                if (currentWithdrawalType === 'bonus') {
+                    updateData.lastBonusWithdrawal = firebase.firestore.FieldValue.serverTimestamp();
+                }
+                
+                await db.collection('user_collections').doc(currentUser.uid).update(updateData);
+
+                // Add transaction record
+                await addTransaction(currentUser.uid, {
+                    type: 'withdrawal',
+                    amount: amount,
+                    description: `${currentWithdrawalType === 'bonus' ? 'Bonus' : 'Commission'} withdrawal to ${paymentMethod}`,
+                    withdrawalType: currentWithdrawalType,
+                    status: 'pending',
+                    withdrawalId: withdrawalId
+                });
+
+                // Clear form
+                document.getElementById('paymentMethod').value = '';
+                document.getElementById('accountDetails').value = '';
+                document.getElementById('withdrawalAmount').value = '';
+
+                console.log("✅ Withdrawal request submitted successfully");
+                alert(`${currentWithdrawalType === 'bonus' ? 'Bonus' : 'Commission'} withdrawal request submitted successfully! Processing time: ${currentWithdrawalType === 'bonus' ? '48-72 hours' : '24-48 hours'}.`);
+
+                // Re-enable button
+                withdrawBtn.disabled = false;
+                withdrawBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Request Withdrawal';
+
+            } catch (error) {
+                console.error("❌ Error processing withdrawal:", error);
+                alert('Error processing withdrawal. Please try again.');
+                
+                // Re-enable button on error
+                const withdrawBtn = document.getElementById('withdrawBtn');
+                withdrawBtn.disabled = false;
+                withdrawBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Request Withdrawal';
+            }
+        }
+
+        // CHECK LAST BONUS WITHDRAWAL
+        async function checkLastBonusWithdrawal() {
+            try {
+                // Get last bonus withdrawal time
+                const userDoc = await db.collection('user_collections').doc(currentUser.uid).get();
+                const userData = userDoc.data();
+                
+                if (!userData.lastBonusWithdrawal) {
+                    return true; // No previous bonus withdrawal
+                }
+                
+                const lastBonusTime = userData.lastBonusWithdrawal.toDate();
+                const currentTime = new Date();
+                const hoursDiff = (currentTime - lastBonusTime) / (1000 * 60 * 60);
+                
+                return hoursDiff >= 24; // Minimum 24 hours gap
+                
+            } catch (error) {
+                console.error("❌ Error checking last bonus withdrawal:", error);
+                return false;
+            }
+        }
+
+        // ... (Rest of the JavaScript functions remain the same) ...
+
+        // FIREBASE COMMANDS FOR BONUS WITHDRAWAL SYSTEM
+        console.log(`
+        🔥 UPDATED FIREBASE STRUCTURE FOR BONUS WITHDRAWALS:
+
+        // User collection fields for bonus system:
+        {
+          balance: 0,              // Regular commission balance
+          bonusEarnings: 0,        // Bonus earnings balance
+          pendingWithdrawals: 0,   // Total pending withdrawal amount
+          totalWithdrawn: 0,       // Total withdrawn amount
+          lastWithdrawal: null,    // Last withdrawal timestamp
+          lastBonusWithdrawal: null, // Last bonus withdrawal timestamp
+          packageLevel: 'basic',   // User's current package
+          bonusWithdrawalCount: 0, // Number of bonus withdrawals made
+          maxBonusPerDay: 1        // Max bonus withdrawals per day
+        }
+
+        🔥 UPDATED WITHDRAWALS COLLECTION:
+
+        {
+          userId: 'user123',
+          userName: 'John Doe',
+          amount: 100,
+          withdrawalType: 'bonus', // 'commission' or 'bonus'
+          paymentMethod: 'upi',
+          accountDetails: 'john@upi',
+          packageLevel: 'basic',
+          status: 'pending', // pending, processing, approved, rejected
+          bonusPercentage: 10, // Percentage of commission used for bonus
+          adminNote: '',
+          createdAt: timestamp,
+          updatedAt: timestamp,
+          processedAt: null
+        }
+
+        🔥 FUNCTION TO CALCULATE BONUS EARNINGS:
+
+        const calculateBonusEarnings = async (userId, commissionAmount) => {
+            try {
+                const userDoc = await db.collection('user_collections').doc(userId).get();
+                const userData = userDoc.data();
+                
+                // Bonus is 10% of commission
+                const bonusAmount = commissionAmount * 0.10;
+                
+                // Update user's bonus earnings
+                await db.collection('user_collections').doc(userId).update({
+                    bonusEarnings: firebase.firestore.FieldValue.increment(bonusAmount),
+                    totalBonusEarned: firebase.firestore.FieldValue.increment(bonusAmount)
+                });
+                
+                // Add bonus transaction
+                await addTransaction(userId, {
+                    type: 'bonus',
+                    amount: bonusAmount,
+                    description: '10% bonus on commission',
+                    status: 'completed'
+                });
+                
+                console.log("✅ Bonus earnings calculated:", bonusAmount);
+            } catch (error) {
+                console.error("❌ Error calculating bonus earnings:", error);
+            }
+        };
+
+        🔥 ADMIN FUNCTION TO VALIDATE BONUS WITHDRAWAL:
+
+        const validateBonusWithdrawal = async (withdrawalId) => {
+            try {
+                const withdrawalDoc = await db.collection('withdrawals').doc(withdrawalId).get();
+                const withdrawal = withdrawalDoc.data();
+                
+                if (withdrawal.withdrawalType !== 'bonus') return true;
+                
+                const userDoc = await db.collection('user_collections').doc(withdrawal.userId).get();
+                const userData = userDoc.data();
+                
+                // Check if user is within bonus limits
+                const packageLimits = {
+                    'basic': 100,
+                    'silver': 300,
+                    'gold': 500,
+                    'platinum': 1000,
+                    'diamond': 2000
+                };
+                
+                const maxBonus = packageLimits[userData.packageLevel] || 100;
+                
+                if (withdrawal.amount > maxBonus) {
+                    await updateWithdrawalStatus(withdrawalId, 'rejected', 
+                        `Bonus withdrawal exceeds 10% limit for ${userData.packageLevel} package. Max allowed: ₹${maxBonus}`);
+                    return false;
+                }
+                
+                return true;
+            } catch (error) {
+                console.error("❌ Error validating bonus withdrawal:", error);
+                return false;
+            }
+        };
+        `);
+    </script>
+</body>
+                          </html>
