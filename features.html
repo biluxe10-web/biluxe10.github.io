@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- ========== SEO META TAGS ========== -->
+    <title>Biluxe10 Features | 50% Commission | 90% Bonuses | Free Ads Setup</title>
+    <meta name="description" content="Biluxe10 offers 50% direct commission, 15% passive, 90% weekly/monthly bonuses, free ₹8000 guide, free ads setup, auto-upgrade packages, and much more.">
+    <meta name="keywords" content="Biluxe10 features, free ads setup, 90% weekly bonus, 15% passive income, free ₹8000 guide, auto-upgrade">
+    
+    <!-- ========== MOBILE-FIRST STYLES ========== -->
+    <style>
+        :root {
+            --primary: #1a365d;
+            --secondary: #2d3748;
+            --accent: #d69e2e;
+            --accent-light: #f6e05e;
+            --success: #38a169;
+            --success-light: #c6f6d5;
+            --white: #ffffff;
+            --light-bg: #f7fafc;
+            --gray: #718096;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: var(--white);
+        }
+
+        /* ========== MOBILE HEADER ========== */
+        .mobile-header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            padding: 1rem 5%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            text-decoration: none;
+        }
+
+        .logo img {
+            height: 45px;
+            border-radius: 8px;
+            border: 2px solid var(--accent);
+        }
+
+        .logo-text h1 {
+            font-size: 1.5rem;
+            color: white;
+            font-weight: 800;
+        }
+
+        .logo-text p {
+            font-size: 0.8rem;
+            color: var(--accent);
+            font-weight: 500;
+        }
+
+        /* Mobile Menu */
+        .menu-toggle {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        .nav-menu {
+            position: fixed;
+            top: 70px;
+            left: 0;
+            right: 0;
+            background: var(--primary);
+            padding: 1rem;
+            flex-direction: column;
+            gap: 0.5rem;
+            transform: translateY(-100%);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            z-index: 999;
+            display: flex;
+        }
+
+        .nav-menu.active {
+            transform: translateY(0);
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .nav-link {
+            color: white;
+            text-decoration: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            display: block;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            background: rgba(255,255,255,0.1);
+            color: var(--accent);
+        }
+
+        .nav-cta {
+            background: var(--accent);
+            color: var(--primary) !important;
+            font-weight: 600 !important;
+            margin-top: 0.5rem;
+        }
+
+        /* ========== HERO SECTION ========== */
+        .hero {
+            background: linear-gradient(rgba(26,54,93,0.95), rgba(26,54,93,0.95));
+            color: white;
+            padding: 7rem 5% 3rem;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            font-weight: 800;
+            line-height: 1.3;
+        }
+
+        .hero p {
+            font-size: 1rem;
+            opacity: 0.9;
+            margin-bottom: 1.5rem;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* ========== FEATURES OVERVIEW ========== */
+        .features-overview {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.8rem;
+            margin-top: 2rem;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .feature-badge {
+            background: rgba(255,255,255,0.1);
+            padding: 1rem;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .feature-badge .number {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--accent);
+            margin-bottom: 0.3rem;
+        }
+
+        .feature-badge p {
+            font-size: 0.8rem;
+            opacity: 0.9;
+        }
+
+        /* ========== FEATURES GRID ========== */
+        .features-section {
+            padding: 3rem 5%;
+            background: var(--light-bg);
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .section-title h2 {
+            font-size: 1.8rem;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            font-weight: 800;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            border-left: 4px solid var(--accent);
+        }
+
+        .feature-card.highlight {
+            border-left: 4px solid var(--success);
+            background: linear-gradient(to right, rgba(56,161,105,0.05), white);
+        }
+
+        .feature-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .feature-content h3 {
+            color: var(--primary);
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .feature-content p {
+            color: var(--gray);
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .feature-bonus {
+            display: inline-block;
+            background: var(--success-light);
+            color: var(--success);
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-top: 0.8rem;
+        }
+
+        /* ========== FREE BENEFITS ========== */
+        .free-section {
+            padding: 3rem 5%;
+            background: white;
+        }
+
+        .free-benefits {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .free-card {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .free-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.8rem;
+            color: var(--accent);
+        }
+
+        .free-card .value {
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+
+        /* ========== AUTO UPGRADE ========== */
+        .upgrade-section {
+            padding: 3rem 5%;
+            background: var(--light-bg);
+        }
+
+        .upgrade-steps {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .step {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+        }
+
+        .step-number {
+            width: 40px;
+            height: 40px;
+            background: var(--accent);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 800;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+
+        /* ========== ADDITIONAL FEATURES ========== */
+        .extra-features {
+            padding: 3rem 5%;
+            background: white;
+        }
+
+        .extra-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .extra-item {
+            background: var(--light-bg);
+            padding: 1.2rem;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid #e2e8f0;
+        }
+
+        .extra-item i {
+            color: var(--accent);
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* ========== CTA SECTION ========== */
+        .cta-section {
+            padding: 3rem 5%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            text-align: center;
+        }
+
+        .cta-section h2 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .cta-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-top: 2rem;
+            max-width: 300px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border-radius: 25px;
+            font-weight: 600;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: var(--primary);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid var(--accent);
+        }
+
+        /* ========== FOOTER ========== */
+        .footer {
+            background: var(--secondary);
+            color: white;
+            padding: 3rem 5% 2rem;
+        }
+
+        .footer-links {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-col h3 {
+            color: var(--accent);
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .footer-col ul {
+            list-style: none;
+        }
+
+        .footer-col ul li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-col a {
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .social-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-decoration: none;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            color: rgba(255,255,255,0.7);
+            font-size: 0.9rem;
+        }
+
+        /* ========== TABLET STYLES ========== */
+        @media (min-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .features-overview {
+                grid-template-columns: repeat(4, 1fr);
+            }
+            
+            .features-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .free-benefits {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .upgrade-steps {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .extra-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+            
+            .cta-buttons {
+                flex-direction: row;
+                max-width: 500px;
+            }
+            
+            .footer-links {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        /* ========== DESKTOP STYLES ========== */
+        @media (min-width: 1024px) {
+            .menu-toggle {
+                display: none;
+            }
+            
+            .nav-menu {
+                position: static;
+                flex-direction: row;
+                background: transparent;
+                padding: 0;
+                transform: none;
+                opacity: 1;
+                visibility: visible;
+                box-shadow: none;
+            }
+            
+            .hero {
+                padding: 8rem 5% 4rem;
+            }
+            
+            .hero h1 {
+                font-size: 3rem;
+            }
+            
+            .features-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .footer-links {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        /* ========== ANIMATIONS ========== */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate {
+            animation: fadeIn 0.6s ease forwards;
+        }
+    </style>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <!-- ========== MOBILE HEADER ========== -->
+    <header class="mobile-header">
+        <div class="header-container">
+            <a href="index.html" class="logo">
+                <img src="Screenshot_20260104-140226.jpg" alt="Biluxe10">
+                <div class="logo-text">
+                    <h1>Biluxe10</h1>
+                    <p>Complete Features</p>
+                </div>
+            </a>
+
+            <button class="menu-toggle" id="menuToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+
+            <nav class="nav-menu" id="navMenu">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="features.html" class="nav-link active">Features</a>
+                <a href="products.html" class="nav-link">Packages</a>
+                <a href="auth.html?open=login" class="nav-link">Login</a>
+                <a href="auth.html?open=signup" class="nav-link nav-cta">Join Now</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- ========== HERO SECTION ========== -->
+    <section class="hero">
+        <h1>Complete Biluxe10 Features</h1>
+        <p>Everything you get when you join India's #1 affiliate platform</p>
+        
+        <div class="features-overview">
+            <div class="feature-badge">
+                <div class="number">50%</div>
+                <p>Direct Commission</p>
+            </div>
+            <div class="feature-badge">
+                <div class="number">90%</div>
+                <p>Weekly Bonus</p>
+            </div>
+            <div class="feature-badge">
+                <div class="number">15%</div>
+                <p>Passive Income</p>
+            </div>
+            <div class="feature-badge">
+                <div class="number">Free</div>
+                <p>Ads Setup</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== MAIN FEATURES ========== -->
+    <section class="features-section">
+        <div class="section-title">
+            <h2>All Premium Features Included</h2>
+            <p>Join once, get access to everything</p>
+        </div>
+
+        <div class="features-grid">
+            <!-- Joining Bonus -->
+            <div class="feature-card highlight animate">
+                <div class="feature-header">
+                    <div class="feature-icon">
+                        <i class="fas fa-gift"></i>
+                    </div>
+                    <div class="feature-content">
+                        <h3>Instant Joining Bonus</h3>
+                        <p>Get bonus immediately when you register. Start earning from day one!</p>
+                        <span class="feature-bonus">Free Bonus</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 50% Direct Commission -->
+            <div class="feature-card animate">
+                <div class="feature-header">
+                    <div class="feature-icon">
+                        <i class="fas fa-money-bill-wave"></i>
+                    </div>
+                    <div class="feature-content">
+                        <h3>50% Direct Commission</h3>
+                        <p>Earn 50% on every direct sale. Highest commission rate in the industry.</p>
+                        <span class="feature-bonus">Maximum Earnings</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 15% Passive Commission -->
+            <div class="feature-card animate">
+                <div class="feature-header">
+                    <div class="feature-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="feature-content">
+                        <h3>15% Passive Commission</h3>
+                        <p>Build your team and earn 15% from their earnings. Create passive income.</p>
+                        <span class="feature-bonus">Team Earnings</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 90% Weekly Bonus -->
+            <div class="feature-card highlight animate">
+                <div class="feature-header">
+                    <div class="feature-icon">
+                        <i class="fas fa-calendar-week"></i>
+                    </div>
+                    <div class="feature-content">
+                        <h3>90% Weekly Bonus</h3>
+                        <p>Achieve weekly targets and get 90% bonus on your earnings.</p>
+                        <span class="feature-bonus">High Bonus</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 90% Monthly Bonus -->
+            <div class="feature-card animate">
+                <div class="feature-header">
+                    <div class="feature-icon">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <div class="feature-content">
+                        <h3>90% Monthly Bonus</h3>
+                        <p>Monthly performance bonus of 90% on total monthly earnings.</p>
+                        <span class="feature-bonus">Performance Reward</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 10% Content Creation -->
+            <div class="feature-card animate">
+                <div class="feature-header">
+                    <div class="feature-icon">
+                        <i class="fas fa-video"></i>
+                    </div>
+                    <div class="feature-content">
+                        <h3>10% Content Creation Bonus</h3>
+                        <p>Earn extra 10% for creating videos, posts, and promotional content.</p>
+                        <span class="feature-bonus">Extra Earnings</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Free ₹8000 Guide -->
+            <div class="feature-card highlight animate">
+                <div class="feature-header">
+                    <div class="feature-icon">
+                        <i class="fas fa-book"></i>
+                    </div>
+                    <div class="feature-content">
+                        <h3>Free ₹8000 Complete Guide</h3>
+                        <p>Get our complete success guide worth ₹8000 absolutely FREE.</p>
+                        <span class="feature-bonus">Value: ₹8000</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Free Ads Setup -->
+            <div class="feature-card animate">
+                <div class="feature-header">
+                    <div class="feature-icon">
+                        <i class="fas fa-ad"></i>
+                    </div>
+                    <div class="feature-content">
+                        <h3>Free Ads Setup</h3>
+                        <p>Professional ad campaigns setup for you. No extra charges.</p>
+                        <span class="feature-bonus">Free Service</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Auto-Upgrade Packages -->
+            <div class="feature-card highlight animate">
+                <div class="feature-header">
+                    <div class="feature-icon">
+                        <i class="fas fa-arrow-up"></i>
+                    </div>
+                    <div class="feature-content">
+                        <h3>Auto-Upgrade Packages</h3>
+                        <p>System automatically upgrades your package as you grow.</p>
+                        <span class="feature-bonus">Intelligent System</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== FREE BENEFITS ========== -->
+    <section class="free-section">
+        <div class="section-title">
+            <h2>Free Services Included</h2>
+            <p>No extra charges for these premium services</p>
+        </div>
+
+        <div class="free-benefits">
+            <div class="free-card animate">
+                <h3>Free Ads Setup</h3>
+                <p>Professional campaigns created for you</p>
+                <div class="value">₹5,000 Value</div>
+            </div>
+
+            <div class="free-card animate">
+                <h3>Free ₹8000 Guide</h3>
+                <p>Complete success guide included</p>
+                <div class="value">₹8,000 Value</div>
+            </div>
+
+            <div class="free-card animate">
+                <h3>Free Training</h3>
+                <p>Complete training from experts</p>
+                <div class="value">₹10,000+ Value</div>
+            </div>
+
+            <div class="free-card animate">
+                <h3>Free Support</h3>
+                <p>24/7 support & mentorship</p>
+                <div class="value">Priceless</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== AUTO UPGRADE ========== -->
+    <section class="upgrade-section">
+        <div class="section-title">
+            <h2>Auto-Upgrade System</h2>
+            <p>Grow automatically without extra payments</p>
+        </div>
+
+        <div class="upgrade-steps">
+            <div class="step animate">
+                <div class="step-number">₹250</div>
+                <div>
+                    <h4>Start Small</h4>
+                    <p>Begin with basic package</p>
+                </div>
+            </div>
+
+            <div class="step animate">
+                <div class="step-number">→</div>
+                <div>
+                    <h4>Auto Upgrade</h4>
+                    <p>System moves you up</p>
+                </div>
+            </div>
+
+            <div class="step animate">
+                <div class="step-number">₹23,999</div>
+                <div>
+                    <h4>Premium Level</h4>
+                    <p>Reach maximum benefits</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== ADDITIONAL FEATURES ========== -->
+    <section class="extra-features">
+        <div class="section-title">
+            <h2>And Much More...</h2>
+            <p>Additional benefits included in Biluxe10</p>
+        </div>
+
+        <div class="extra-grid">
+            <div class="extra-item animate">
+                <i class="fas fa-headset"></i>
+                <p>24/7 Support</p>
+            </div>
+            <div class="extra-item animate">
+                <i class="fas fa-graduation-cap"></i>
+                <p>Daily Training</p>
+            </div>
+            <div class="extra-item animate">
+                <i class="fas fa-chart-line"></i>
+                <p>Analytics Dashboard</p>
+            </div>
+            <div class="extra-item animate">
+                <i class="fas fa-mobile-alt"></i>
+                <p>Mobile App Access</p>
+            </div>
+            <div class="extra-item animate">
+                <i class="fas fa-bolt"></i>
+                <p>Instant Withdrawals</p>
+            </div>
+            <div class="extra-item animate">
+                <i class="fas fa-shield-alt"></i>
+                <p>Secure Platform</p>
+            </div>
+            <div class="extra-item animate">
+                <i class="fas fa-users"></i>
+                <p>Community Access</p>
+            </div>
+            <div class="extra-item animate">
+                <i class="fas fa-award"></i>
+                <p>Achievement Rewards</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== CTA SECTION ========== -->
+    <section class="cta-section">
+        <h2>Get All These Features Today!</h2>
+        <p>Join Biluxe10 and access everything mentioned above</p>
+        
+        <div class="cta-buttons">
+            <a href="auth.html?open=signup" class="btn btn-primary">
+                <i class="fas fa-user-plus"></i> Join Free
+            </a>
+            <a href="products.html" class="btn btn-secondary">
+                <i class="fas fa-box"></i> View Packages
+            </a>
+        </div>
+    </section>
+
+    <!-- ========== FOOTER ========== -->
+    <footer class="footer">
+        <div class="footer-links">
+            <div class="footer-col">
+                <h3>Biluxe10</h3>
+                <p style="opacity: 0.8; font-size: 0.9rem;">India's complete affiliate platform with all features included</p>
+                <div class="social-icons">
+                    <a href="https://www.instagram.com/bilu_xe10" class="social-icon">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="mailto:biluxe10@gmail.com" class="social-icon">
+                        <i class="fas fa-envelope"></i>
+                    </a>
+                </div>
+            </div>
+
+            <div class="footer-col">
+                <h3>Features</h3>
+                <ul>
+                    <li><a href="#"><i class="fas fa-check"></i> 50% Commission</a></li>
+                    <li><a href="#"><i class="fas fa-check"></i> 90% Weekly Bonus</a></li>
+                    <li><a href="#"><i class="fas fa-check"></i> Free Ads Setup</a></li>
+                    <li><a href="#"><i class="fas fa-check"></i> Auto-Upgrade</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+                    <li><a href="features.html"><i class="fas fa-star"></i> Features</a></li>
+                    <li><a href="products.html"><i class="fas fa-box"></i> Packages</a></li>
+                    <li><a href="auth.html?open=login"><i class="fas fa-sign-in-alt"></i> Login</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h3>Contact</h3>
+                <ul>
+                    <li><a href="mailto:biluxe10@gmail.com"><i class="fas fa-envelope"></i> Email</a></li>
+                    <li><a href="https://www.instagram.com/bilu_xe10"><i class="fab fa-instagram"></i> Instagram</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>© 2023-2024 Biluxe10. All features included with membership.</p>
+        </div>
+    </footer>
+
+    <!-- ========== JAVASCRIPT ========== -->
+    <script>
+        // Mobile Menu Toggle
+        document.getElementById('menuToggle').addEventListener('click', function() {
+            const navMenu = document.getElementById('navMenu');
+            navMenu.classList.toggle('active');
+            this.innerHTML = navMenu.classList.contains('active') ? 
+                '<i class="fas fa-times"></i>' : '<i class="fas fa-bars"></i>';
+        });
+
+        // Close menu on link click
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                document.getElementById('navMenu').classList.remove('active');
+                document.getElementById('menuToggle').innerHTML = '<i class="fas fa-bars"></i>';
+            });
+        });
+
+        // Scroll animations
+        document.addEventListener('DOMContentLoaded', function() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animate');
+                    }
+                });
+            }, {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            });
+
+            // Observe all elements with .animate class
+            document.querySelectorAll('.animate').forEach(el => {
+                observer.observe(el);
+            });
+        });
+    </script>
+</body>
+</html>
