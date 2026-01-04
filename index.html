@@ -453,81 +453,137 @@
             background: var(--light-green);
         }
 
-        /* ========== PACKAGES ========== */
-        .packages-section {
-            padding: 5rem 5%;
-            background: var(--transparent);
-        }
+        
+        /* ========== PACKAGES SECTION ========== */
+.packages-section{
+    padding: 5rem 5%;
+    background: linear-gradient(180deg, #f7fafc, #ffffff);
+}
 
-        .packages-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 2rem;
-            max-width: 1200px;
-            margin: 3rem auto 0;
-        }
+.packages-grid{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 3rem auto 0;
+}
 
-        .package-card {
-            background: transparent;
-            padding: 2.5rem 2rem;
-            border-radius: 15px;
-            box-shadow: var(--shadow);
-            text-align: center;
-            transition: all 0.3s ease;
-            border: 2px solid transparent;
-        }
+/* PACKAGE CARD */
+.package-card{
+    background: #ffffff;
+    padding: 2.5rem 2rem;
+    border-radius: 20px;
+    text-align: center;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.08);
+    border: 2px solid transparent;
+    transition: all 0.35s ease;
+    position: relative;
+    overflow: hidden;
+}
 
-        .package-card:hover {
-            transform: translateY(-10px);
-            box-shadow: var(--shadow-lg);
-        }
+.package-card::before{
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, #1a365d, #d69e2e);
+    opacity: 0;
+    transition: 0.4s ease;
+    z-index: 0;
+}
 
-        .package-card.popular {
-            border-color: var(--gold);
-            position: relative;
-        }
+.package-card:hover::before{
+    opacity: 0.05;
+}
 
-        .popular-badge {
-            position: absolute;
-            top: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: var(--gold);
-            color: var(--primary-blue);
-            padding: 0.5rem 1.5rem;
-            border-radius: 20px;
-            font-weight: 600;
-            font-size: 0.9rem;
-        }
+.package-card:hover{
+    transform: translateY(-15px);
+    box-shadow: 0 25px 60px rgba(0,0,0,0.15);
+}
 
-        .package-price {
-            font-size: 2.5rem;
-            font-weight: 800;
-            color: var(--primary-blue);
-            margin: 1rem 0;
-        }
+/* POPULAR PACKAGE */
+.package-card.popular{
+    border-color: var(--gold);
+    box-shadow: 0 25px 60px rgba(214,158,46,0.25);
+}
 
-        .package-price span {
-            font-size: 1rem;
-            color: var(--secondary-blue);
-        }
+.popular-badge{
+    position: absolute;
+    top: -14px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, #d69e2e, #f6e05e);
+    color: #1a365d;
+    padding: 0.5rem 1.6rem;
+    border-radius: 30px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    z-index: 2;
+}
 
-        .package-features {
-            list-style: none;
-            margin: 2rem 0;
-            text-align: left;
-        }
+/* PRICE */
+.package-price{
+    font-size: 2.8rem;
+    font-weight: 800;
+    color: #1a365d;
+    margin: 1.2rem 0;
+}
 
-        .package-features li {
-            padding: 0.5rem 0;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
+.package-price span{
+    font-size: 1rem;
+    color: #718096;
+}
 
-        .package-features li i {
-            color: var(--green);
-        }
+/* FEATURES */
+.package-features{
+    list-style: none;
+    margin: 2rem 0;
+    padding: 0;
+    text-align: left;
+}
+
+.package-features li{
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.6rem 0;
+    color: #2d3748;
+    font-weight: 500;
+}
+
+.package-features li i{
+    color: #38a169;
+    font-size: 0.9rem;
+}
+
+/* PACKAGE BUTTON */
+.package-card .btn{
+    margin-top: 1.5rem;
+    width: 100%;
+    justify-content: center;
+}
+
+/* VIEW ALL PACKAGES BUTTON */
+.view-all-btn{
+    display: inline-block;
+    margin-top: 2.5rem;
+    padding: 14px 34px;
+    border-radius: 30px;
+    border: 2px solid #d69e2e;
+    color: #d69e2e;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.view-all-btn:hover{
+    background: #d69e2e;
+    color: #1a365d;
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(214,158,46,0.35);
+}
+
+        
 
         /* ========== SUCCESS STORIES ========== */
         .success-section {
