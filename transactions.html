@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transactions - Biluxe10 Affiliate</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+    <style>
+        :root {
+            --primary: #10B981;
+            --primary-dark: #059669;
+            --accent: #F59E0B;
+            --purple: #8B5CF6;
+            --pink: #EC4899;
+            --blue: #3B82F6;
+            --red: #EF4444;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+            min-height: 100vh;
+            color: white;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        /* Animated Background */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+        
+        .bg-circle {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(16, 185, 129, 0.2) 0%, rgba(16, 185, 129, 0) 70%);
+            animation: float 15s infinite ease-in-out;
+        }
+        
+        .bg-circle:nth-child(1) {
+            width: 300px;
+            height: 300px;
+            top: 10%;
+            left: 5%;
+            animation-delay: 0s;
+        }
+        
+        .bg-circle:nth-child(2) {
+            width: 200px;
+            height: 200px;
+            top: 60%;
+            left: 80%;
+            animation-delay: 2s;
+            background: radial-gradient(circle, rgba(245, 158, 11, 0.2) 0%, rgba(245, 158, 11, 0) 70%);
+        }
+        
+        .bg-circle:nth-child(3) {
+            width: 400px;
+            height: 400px;
+            top: 30%;
+            left: 60%;
+            animation-delay: 4s;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.2) 0%, rgba(139, 92, 246, 0) 70%);
+        }
+        
+        .bg-circle:nth-child(4) {
+            width: 250px;
+            height: 250px;
+            top: 70%;
+            left: 10%;
+            animation-delay: 6s;
+            background: radial-gradient(circle, rgba(236, 72, 153, 0.2) 0%, rgba(236, 72, 153, 0) 70%);
+        }
+        
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) scale(1);
+                opacity: 0.5;
+            }
+            50% {
+                transform: translateY(-20px) scale(1.05);
+                opacity: 0.8;
+            }
+        }
+        
+        /* Mobile Menu */
+        .mobile-menu-btn {
+            display: none;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: 10px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            z-index: 1001;
+        }
+        
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: 80px;
+            left: 0;
+            right: 0;
+            background: rgba(30, 41, 59, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            border-radius: 0 0 20px 20px;
+            z-index: 1000;
+            padding: 1rem;
+        }
+        
+        .mobile-menu.active {
+            display: block;
+        }
+        
+        .mobile-menu a {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            text-decoration: none;
+            color: white;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .mobile-menu a:hover {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--primary);
+            border-radius: 10px;
+        }
+        
+        .navbar {
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 1rem 1.5rem;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 999;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .logo-img {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            object-fit: cover;
+        }
+        
+        .user-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .user-avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--primary);
+        }
+        
+        .logout-btn {
+            background: rgba(239, 68, 68, 0.2);
+            color: #EF4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .logout-btn:hover {
+            background: rgba(239, 68, 68, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 1.5rem auto;
+            padding: 0 1rem;
+        }
+        
+        .page-header {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.8), rgba(5, 150, 105, 0.8), rgba(245, 158, 11, 0.8));
+            color: white;
+            padding: 1.5rem;
+            border-radius: 20px;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 8px 30px rgba(16, 185, 129, 0.4);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+            transform: rotate(45deg);
+            animation: shine 3s infinite;
+        }
+        
+        @keyframes shine {
+            0% { transform: translateX(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) rotate(45deg); }
+        }
+        
+        .page-header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        /* Transactions Section */
+        .transactions-section {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1.5rem;
+            border-radius: 20px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            border: 1px solid rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            margin-bottom: 2rem;
+        }
+        
+        .transactions-section h3 {
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: white;
+        }
+        
+        .transactions-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .transactions-table th {
+            text-align: left;
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            color: rgba(255,255,255,0.8);
+            font-weight: 600;
+        }
+        
+        .transactions-table td {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        
+        .transaction-type {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .type-commission {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10B981;
+        }
+        
+        .type-withdrawal {
+            background: rgba(239, 68, 68, 0.2);
+            color: #EF4444;
+        }
+        
+        .type-bonus {
+            background: rgba(245, 158, 11, 0.2);
+            color: #F59E0B;
+        }
+        
+        .type-purchase {
+            background: rgba(59, 130, 246, 0.2);
+            color: #3B82F6;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .status-completed {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10B981;
+        }
+        
+        .status-pending {
+            background: rgba(245, 158, 11, 0.2);
+            color: #F59E0B;
+        }
+        
+        .status-failed {
+            background: rgba(239, 68, 68, 0.2);
+            color: #EF4444;
+        }
+        
+        .btn {
+            padding: 1rem 1.5rem;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+        }
+        
+        /* Filter Buttons */
+        .filter-buttons {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .filter-btn {
+            padding: 0.5rem 1rem;
+            border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.1);
+            color: rgba(255,255,255,0.8);
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.85rem;
+        }
+        
+        .filter-btn.active {
+            background: rgba(16, 185, 129, 0.3);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .filter-btn:hover {
+            background: rgba(16, 185, 129, 0.2);
+        }
+        
+        /* Mobile Responsive */
+        @media (min-width: 768px) {
+            .navbar {
+                padding: 1rem 2rem;
+            }
+            
+            .logo {
+                font-size: 1.8rem;
+            }
+            
+            .container {
+                padding: 0 1.5rem;
+            }
+            
+            .page-header {
+                padding: 2rem;
+                border-radius: 25px;
+            }
+            
+            .page-header h1 {
+                font-size: 2.2rem;
+            }
+        }
+        
+        @media (min-width: 1024px) {
+            .mobile-menu-btn {
+                display: none;
+            }
+            
+            .nav-links {
+                display: flex;
+                gap: 0.5rem;
+            }
+            
+            .nav-links a {
+                text-decoration: none;
+                color: white;
+                font-weight: 500;
+                padding: 0.75rem 1.25rem;
+                border-radius: 12px;
+                transition: all 0.3s ease;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+            
+            .nav-links a:hover, .nav-links a.active {
+                background: rgba(16, 185, 129, 0.2);
+                transform: translateY(-2px);
+                box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+            }
+        }
+        
+        @media (max-width: 1023px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            .transactions-table {
+                display: block;
+                overflow-x: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="bg-animation">
+        <div class="bg-circle"></div>
+        <div class="bg-circle"></div>
+        <div class="bg-circle"></div>
+        <div class="bg-circle"></div>
+    </div>
+
+    <!-- Mobile Menu Button -->
+    <button class="mobile-menu-btn" id="mobileMenuBtn">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="dashboard.html"><i class="fas fa-home"></i> Dashboard</a>
+        <a href="earnings.html"><i class="fas fa-chart-line"></i> Earnings</a>
+        <a href="products.html"><i class="fas fa-cube"></i> Packages</a>
+        <a href="referral.html"><i class="fas fa-users"></i> Referral</a>
+        <a href="myteam.html"><i class="fas fa-network-wired"></i> My Team</a>
+        <a href="withdrawal.html"><i class="fas fa-wallet"></i> Withdrawal</a>
+        <a href="transactions.html" class="active"><i class="fas fa-exchange-alt"></i> Transactions</a>
+        <a href="profile.html"><i class="fas fa-user"></i> Profile</a>
+        <a href="support.html"><i class="fas fa-headset"></i> Support</a>
+    </div>
+
+    <nav class="navbar">
+        <div class="logo">
+            <img src="Screenshot_2025-10-30-19-48-01-770_com.google.android.apps.maps (1).jpg" alt="Biluxe10 Logo" class="logo-img">
+            Biluxe10 Affiliate
+        </div>
+        <div class="nav-links">
+            <a href="dashboard.html"><i class="fas fa-home"></i> Dashboard</a>
+            <a href="earnings.html"><i class="fas fa-chart-line"></i> Earnings</a>
+            <a href="products.html"><i class="fas fa-cube"></i> Packages</a>
+            <a href="referral.html"><i class="fas fa-users"></i> Referral</a>
+            <a href="myteam.html"><i class="fas fa-network-wired"></i> My Team</a>
+            <a href="withdrawal.html"><i class="fas fa-wallet"></i> Withdrawal</a>
+            <a href="transactions.html" class="active"><i class="fas fa-exchange-alt"></i> Transactions</a>
+        </div>
+        <div class="user-section">
+            <button class="logout-btn" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+            <div class="user-profile">
+                <img id="headerProfilePic" src="https://ui-avatars.com/api/?name=User&background=10B981&color=fff&size=128" alt="Profile" class="user-avatar">
+                <div>
+                    <div id="headerUserName" style="font-weight: 600; color: white;">User</div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="page-header">
+            <h1><i class="fas fa-exchange-alt"></i> Transactions History</h1>
+            <p style="font-size: 1.1rem; opacity: 0.9;">View all your earnings and withdrawal transactions</p>
+        </div>
+
+        <!-- Transactions Section -->
+        <div class="transactions-section">
+            <h3><i class="fas fa-list"></i> All Transactions</h3>
+            
+            <!-- Filter Buttons -->
+            <div class="filter-buttons">
+                <button class="filter-btn active" onclick="filterTransactions('all', this)">All</button>
+                <button class="filter-btn" onclick="filterTransactions('commission', this)">Earnings</button>
+                <button class="filter-btn" onclick="filterTransactions('withdrawal', this)">Withdrawals</button>
+                <button class="filter-btn" onclick="filterTransactions('bonus', this)">Bonuses</button>
+                <button class="filter-btn" onclick="filterTransactions('purchase', this)">Purchases</button>
+            </div>
+            
+            <div class="table-container">
+                <table class="transactions-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Description</th>
+                            <th>Type</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="transactionsList">
+                        <tr>
+                            <td colspan="5" style="text-align: center; padding: 2rem;">
+                                <i class="fas fa-spinner fa-spin"></i>
+                                <p>Loading transactions...</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-bottom: 2rem;">
+            <a href="withdrawal.html" class="btn btn-primary">
+                <i class="fas fa-wallet"></i> Request Withdrawal
+            </a>
+            <a href="earnings.html" class="btn btn-primary">
+                <i class="fas fa-chart-line"></i> View Earnings
+            </a>
+            <a href="dashboard.html" class="btn btn-primary">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDxxkC9iD1V1w-53Kf4oBrHEXlBLvCc7sE",
+            authDomain: "biluxe10-3e894.firebaseapp.com",
+            projectId: "biluxe10-3e894",
+            storageBucket: "biluxe10-3e894.firebasestorage.app",
+            messagingSenderId: "804749588233",
+            appId: "1:804749588233:web:7777648c0c7834733c05d8"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const auth = firebase.auth();
+
+        let currentUser = null;
+        let currentEmailId = null;
+        let currentFilter = 'all';
+        let allTransactions = [];
+
+        // Helper function: Get sanitized email ID
+        function getSanitizedEmailId(email) {
+            return email.toLowerCase().replace(/\./g, "_");
+        }
+
+        // Mobile Menu Toggle
+        document.getElementById('mobileMenuBtn').addEventListener('click', function() {
+            document.getElementById('mobileMenu').classList.toggle('active');
+        });
+
+        // EMAIL-ID BASED AUTH HANDLING
+        document.addEventListener('DOMContentLoaded', function() {
+            auth.onAuthStateChanged(async (user) => {
+                if (user) {
+                    currentUser = user;
+                    currentEmailId = getSanitizedEmailId(user.email);
+                    console.log("✅ User logged in with email:", user.email);
+                    console.log("✅ Email ID for Firestore:", currentEmailId);
+                    
+                    await setupRealTimeListeners();
+                    await loadUserProfile();
+                } else {
+                    console.log("❌ No user logged in");
+                    window.location.href = 'auth.html';
+                }
+            });
+        });
+
+        // SETUP REAL-TIME LISTENERS - EMAIL-ID BASED
+        async function setupRealTimeListeners() {
+            console.log("🔄 Setting up real-time listeners for email ID:", currentEmailId);
+            
+            loadTransactions();
+        }
+
+        // LOAD USER PROFILE - EMAIL-ID BASED
+        async function loadUserProfile() {
+            try {
+                const userDoc = await db.collection('user_collections').doc(currentEmailId).get();
+                if (userDoc.exists) {
+                    const userData = userDoc.data();
+                    
+                    const displayName = userData.fullName || userData.username || 'User';
+                    document.getElementById('headerUserName').textContent = displayName;
+                    
+                    if (userData.profilePicture) {
+                        document.getElementById('headerProfilePic').src = userData.profilePicture;
+                    } else {
+                        const defaultAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(displayName)}&background=10B981&color=fff&size=128`;
+                        document.getElementById('headerProfilePic').src = defaultAvatar;
+                    }
+                } else {
+                    console.log("⚠️ User document not found for email ID:", currentEmailId);
+                }
+            } catch (error) {
+                console.error("❌ Error loading user profile:", error);
+            }
+        }
+
+        // LOAD TRANSACTIONS - EMAIL-ID BASED (REAL DATA ONLY)
+        function loadTransactions() {
+            console.log("🔄 Loading transactions for email ID:", currentEmailId);
+            
+            if (!currentEmailId) {
+                console.error("No email ID available");
+                return;
+            }
+
+            db.collection('transactions')
+                .where('userId', '==', currentEmailId)
+                .orderBy('timestamp', 'desc')
+                .onSnapshot((snapshot) => {
+                    allTransactions = [];
+                    
+                    snapshot.forEach(doc => {
+                        const transaction = doc.data();
+                        transaction.id = doc.id;
+                        
+                        // FIX 2: SAFE TIMESTAMP HANDLING
+                        let transactionDate = new Date(); // Default fallback
+                        
+                        // Check timestamp field safely
+                        if (transaction.timestamp && 
+                            typeof transaction.timestamp.toDate === 'function') {
+                            transactionDate = transaction.timestamp.toDate();
+                        } 
+                        // Check createdAt field safely
+                        else if (transaction.createdAt && 
+                                 typeof transaction.createdAt.toDate === 'function') {
+                            transactionDate = transaction.createdAt.toDate();
+                        }
+                        // Check if timestamp is a Firestore Timestamp object
+                        else if (transaction.timestamp && 
+                                 transaction.timestamp.seconds && 
+                                 transaction.timestamp.nanoseconds) {
+                            transactionDate = new Date(
+                                transaction.timestamp.seconds * 1000 + 
+                                transaction.timestamp.nanoseconds / 1000000
+                            );
+                        }
+                        // Check if createdAt is a Firestore Timestamp object
+                        else if (transaction.createdAt && 
+                                 transaction.createdAt.seconds && 
+                                 transaction.createdAt.nanoseconds) {
+                            transactionDate = new Date(
+                                transaction.createdAt.seconds * 1000 + 
+                                transaction.createdAt.nanoseconds / 1000000
+                            );
+                        }
+                        
+                        transaction.date = transactionDate;
+                        allTransactions.push(transaction);
+                    });
+
+                    applyFilter(currentFilter);
+                    
+                }, (error) => {
+                    console.error('❌ Error loading transactions:', error);
+                    showErrorMessage('Error loading transactions. Please try refreshing the page.');
+                });
+        }
+
+        // FIX 1: FILTER TRANSACTIONS - NO GLOBAL EVENT OBJECT
+        function filterTransactions(type, buttonElement) {
+            currentFilter = type;
+            
+            // Update active filter button using the passed button element
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Safely apply active class to the clicked button
+            if (buttonElement && buttonElement.classList) {
+                buttonElement.classList.add('active');
+            }
+            
+            // Apply filter to already loaded data
+            applyFilter(type);
+        }
+
+        // APPLY FILTER TO TRANSACTIONS
+        function applyFilter(filterType) {
+            const transactionsList = document.getElementById('transactionsList');
+            
+            if (allTransactions.length === 0) {
+                transactionsList.innerHTML = `
+                    <tr>
+                        <td colspan="5" style="text-align: center; padding: 2rem;">
+                            <i class="fas fa-exchange-alt"></i>
+                            <p>No transactions found</p>
+                            <p style="font-size: 0.9rem; opacity: 0.7; margin-top: 0.5rem;">
+                                Your transactions will appear here automatically
+                            </p>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            const filteredTransactions = filterType === 'all' 
+                ? allTransactions 
+                : allTransactions.filter(t => t.type === filterType);
+
+            if (filteredTransactions.length === 0) {
+                transactionsList.innerHTML = `
+                    <tr>
+                        <td colspan="5" style="text-align: center; padding: 2rem;">
+                            <i class="fas fa-search"></i>
+                            <p>No ${getTypeText(filterType)} transactions found</p>
+                            <p style="font-size: 0.9rem; opacity: 0.7; margin-top: 0.5rem;">
+                                Try selecting a different filter
+                            </p>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            displayTransactions(filteredTransactions);
+        }
+
+        // DISPLAY TRANSACTIONS
+        function displayTransactions(transactions) {
+            const transactionsList = document.getElementById('transactionsList');
+            transactionsList.innerHTML = '';
+
+            transactions.forEach(transaction => {
+                const row = document.createElement('tr');
+                
+                const typeClass = `type-${transaction.type}`;
+                const typeText = getTypeText(transaction.type);
+                const statusClass = `status-${transaction.status || 'completed'}`;
+                const statusText = getStatusText(transaction.status);
+                
+                // Format date safely
+                let dateDisplay = 'Recently';
+                if (transaction.date instanceof Date && !isNaN(transaction.date)) {
+                    dateDisplay = transaction.date.toLocaleDateString('en-IN', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+                }
+                
+                const isNegative = transaction.type === 'withdrawal' || transaction.type === 'purchase';
+                const amountColor = isNegative ? '#EF4444' : '#10B981';
+                const amountSign = isNegative ? '-' : '+';
+                const amountValue = transaction.amount ? transaction.amount.toFixed(2) : '0.00';
+                
+                row.innerHTML = `
+                    <td style="color: rgba(255,255,255,0.8); font-size: 0.9rem;">${dateDisplay}</td>
+                    <td>
+                        <div style="font-weight: 600;">${transaction.description || 'Transaction'}</div>
+                        ${transaction.level ? `<div style="font-size: 0.8rem; color: rgba(255,255,255,0.6);">${transaction.level} level</div>` : ''}
+                    </td>
+                    <td><span class="transaction-type ${typeClass}">${typeText}</span></td>
+                    <td style="font-weight: 700; color: ${amountColor}">
+                        ${amountSign}₹${amountValue}
+                    </td>
+                    <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                `;
+                
+                transactionsList.appendChild(row);
+            });
+        }
+
+        // SHOW ERROR MESSAGE
+        function showErrorMessage(message) {
+            const transactionsList = document.getElementById('transactionsList');
+            transactionsList.innerHTML = `
+                <tr>
+                    <td colspan="5" style="text-align: center; padding: 2rem; color: #EF4444;">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <p>${message}</p>
+                    </td>
+                </tr>
+            `;
+        }
+
+        // HELPER FUNCTIONS
+        function getTypeText(type) {
+            const typeMap = {
+                'commission': 'Earning',
+                'withdrawal': 'Withdrawal',
+                'bonus': 'Bonus',
+                'purchase': 'Purchase'
+            };
+            return typeMap[type] || type;
+        }
+
+        function getStatusText(status) {
+            const statusMap = {
+                'completed': 'Completed',
+                'pending': 'Pending',
+                'failed': 'Failed',
+                'processing': 'Processing'
+            };
+            return statusMap[status] || 'Completed';
+        }
+
+        // LOGOUT FUNCTION
+        function logout() {
+            auth.signOut().then(() => {
+                console.log("✅ User logged out");
+                window.location.href = 'auth.html';
+            }).catch((error) => {
+                console.error("❌ Error logging out:", error);
+            });
+        }
+
+        // FIREBASE RULES FOR EMAIL-ID BASED SYSTEM
+        console.log(`
+        🔥 FIREBASE RULES FOR EMAIL-ID BASED TRANSACTIONS:
+
+        rules_version = '2';
+        service cloud.firestore {
+          match /databases/{database}/documents {
+            match /transactions/{transactionId} {
+              allow read: if request.auth != null && 
+                resource.data.userId == getSanitizedEmailId(request.auth.token.email);
+              allow create: if request.auth != null && 
+                request.resource.data.userId == getSanitizedEmailId(request.auth.token.email);
+            }
+            
+            function getSanitizedEmailId(email) {
+              return email.replace(/\./g, '_').toLowerCase();
+            }
+          }
+        }
+        `);
+    </script>
+</body>
+</html>
