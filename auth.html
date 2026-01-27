@@ -1031,58 +1031,58 @@
                 const referralCode = referralCodeFromURL || referral;
 
                 // Create user data - NO BALANCE INITIALLY
-                const userData = {
-                    userId: user.uid,
-                    email: email,
-                    username: username,
-                    fullName: name,
-                    phoneNumber: phone,
-                    password: password,
-                    
-                    // NO BALANCE ON SIGNUP - Will be added after payment approval
-                    balance: 0,
-                    availableBalance: 0,
-                    totalEarnings: 0,
-                    
-                    // Package information (saved for later bonus)
-                    
-                    user.selectedpackage: selectedPackageType, 
-                    user.packageamount >= 0 
-                    packageAmountnumber: Number(selectedPackageAmount),
-                    joiningBonus: selectedBonus, // Store bonus amount
-                    bonusStatus: 'pending', // Bonus not given yet
-                    
-                    // Referral system
-                    referralCode: generateReferralCode(),
-                    referredBy: "",
-                    referralCount: 0,
-                    teamCount: 0,
-                    
-                    // Earnings
-                    directCommission: 0,
-                    passiveCommission: 0,
-                    totalCommission: 0,
-                    bonusEarnings: 0, // No bonus yet
-                    referralEarnings: 0,
-                    teamEarnings: 0,
-                    
-                    // Time-based earnings
-                    weeklyEarnings: 0,
-                    monthlyEarnings: 0,
-                    dailyEarnings: 0,
-                    
-                    // Status
-                    paymentStatus: "pending", // Payment not done yet
-                    joinDate: new Date(),
-                    lastLogin: new Date(),
-                    isActive: true,
-                    
-                    // Payment info
-                    paymentAmount: Number(selectedPackageAmount),
-                    paymentDate: null,
-                    paymentMethod: null,
-                    paymentProof: null
-                };
+
+         const userData = {
+  userId: user.uid,
+  email: email,
+  username: username,
+  fullName: name,
+  phoneNumber: phone,
+
+  // 💰 balances
+  balance: 0,
+  availableBalance: 0,
+  totalEarnings: 0,
+
+  // 📦 PACKAGE (SIMPLE & SAFE)
+  selectedPackage: selectedPackageType,     // basic / standard / premium / elite
+  packageAmount: Number(selectedPackageAmount),
+  joiningBonus: selectedBonus,
+  bonusStatus: "pending",
+
+  // 👥 referral
+  referralCode: generateReferralCode(),
+  referredBy: "",
+  referralCount: 0,
+  teamCount: 0,
+
+  // 💸 earnings
+  directCommission: 0,
+  passiveCommission: 0,
+  totalCommission: 0,
+  bonusEarnings: 0,
+  referralEarnings: 0,
+  teamEarnings: 0,
+
+  // ⏱ time
+  weeklyEarnings: 0,
+  monthlyEarnings: 0,
+  dailyEarnings: 0,
+
+  // ✅ status
+  paymentStatus: "pending",
+  joinDate: new Date(),
+  lastLogin: new Date(),
+  isActive: true,
+
+  // 💳 payment
+  paymentAmount: Number(selectedPackageAmount),
+  paymentDate: null,
+  paymentMethod: null,
+  paymentProof: null
+};
+                
+
 
                 // Handle referral if exists
                 if (referralCode) {
