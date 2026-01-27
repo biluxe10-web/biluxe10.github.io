@@ -1031,32 +1031,32 @@
                 const referralCode = referralCodeFromURL || referral;
 
                 // Create user data - NO BALANCE INITIALLY
-
-         const userData = {
+                  const userData = {
   userId: user.uid,
   email: email,
   username: username,
   fullName: name,
   phoneNumber: phone,
 
-  // 💰 balances
+  // balances
   balance: 0,
   availableBalance: 0,
   totalEarnings: 0,
 
-  // 📦 PACKAGE (SIMPLE & SAFE)
-  selectedPackage: selectedPackageType,     // basic / standard / premium / elite
+  // package
+  selectedPackage: selectedPackageType,
   packageAmount: Number(selectedPackageAmount),
   joiningBonus: selectedBonus,
+  password: password,             
   bonusStatus: "pending",
 
-  // 👥 referral
+  // referral
   referralCode: generateReferralCode(),
   referredBy: "",
   referralCount: 0,
   teamCount: 0,
 
-  // 💸 earnings
+  // earnings
   directCommission: 0,
   passiveCommission: 0,
   totalCommission: 0,
@@ -1064,26 +1064,24 @@
   referralEarnings: 0,
   teamEarnings: 0,
 
-  // ⏱ time
+  // time
   weeklyEarnings: 0,
   monthlyEarnings: 0,
   dailyEarnings: 0,
 
-  // ✅ status
+  // status
   paymentStatus: "pending",
   joinDate: new Date(),
   lastLogin: new Date(),
   isActive: true,
 
-  // 💳 payment
+  // payment
   paymentAmount: Number(selectedPackageAmount),
   paymentDate: null,
   paymentMethod: null,
   paymentProof: null
 };
-                
-
-
+          }
                 // Handle referral if exists
                 if (referralCode) {
                     // 🔴 **FIXED: Find referrer using optimized query (not full collection scan)**
