@@ -1,0 +1,1305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Courses - Biluxe10 Affiliate</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+    <style>
+        :root {
+            --primary: #10B981;
+            --primary-dark: #059669;
+            --accent: #F59E0B;
+            --purple: #8B5CF6;
+            --pink: #EC4899;
+            --blue: #3B82F6;
+            --red: #EF4444;
+            --cyan: #06B6D4;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+            min-height: 100vh;
+            color: white;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        /* Animated Background */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+        
+        .bg-circle {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(16, 185, 129, 0.2) 0%, rgba(16, 185, 129, 0) 70%);
+            animation: float 15s infinite ease-in-out;
+        }
+        
+        .bg-circle:nth-child(1) {
+            width: 300px;
+            height: 300px;
+            top: 10%;
+            left: 5%;
+            animation-delay: 0s;
+        }
+        
+        .bg-circle:nth-child(2) {
+            width: 200px;
+            height: 200px;
+            top: 60%;
+            left: 80%;
+            animation-delay: 2s;
+            background: radial-gradient(circle, rgba(245, 158, 11, 0.2) 0%, rgba(245, 158, 11, 0) 70%);
+        }
+        
+        .bg-circle:nth-child(3) {
+            width: 400px;
+            height: 400px;
+            top: 30%;
+            left: 60%;
+            animation-delay: 4s;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.2) 0%, rgba(139, 92, 246, 0) 70%);
+        }
+        
+        .bg-circle:nth-child(4) {
+            width: 250px;
+            height: 250px;
+            top: 70%;
+            left: 10%;
+            animation-delay: 6s;
+            background: radial-gradient(circle, rgba(236, 72, 153, 0.2) 0%, rgba(236, 72, 153, 0) 70%);
+        }
+        
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) scale(1);
+                opacity: 0.5;
+            }
+            50% {
+                transform: translateY(-20px) scale(1.05);
+                opacity: 0.8;
+            }
+        }
+        
+        /* Mobile Menu */
+        .mobile-menu-btn {
+            display: none;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: 10px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            z-index: 1001;
+        }
+        
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: 80px;
+            left: 0;
+            right: 0;
+            background: rgba(30, 41, 59, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            border-radius: 0 0 20px 20px;
+            z-index: 1000;
+            padding: 1rem;
+        }
+        
+        .mobile-menu.active {
+            display: block;
+        }
+        
+        .mobile-menu a {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            text-decoration: none;
+            color: white;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .mobile-menu a:hover {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--primary);
+            border-radius: 10px;
+        }
+        
+        .navbar {
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 1rem 1.5rem;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 999;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .logo-img {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            object-fit: cover;
+        }
+        
+        .user-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .user-avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--primary);
+        }
+        
+        .logout-btn {
+            background: rgba(239, 68, 68, 0.2);
+            color: #EF4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .logout-btn:hover {
+            background: rgba(239, 68, 68, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 1.5rem auto;
+            padding: 0 1rem;
+        }
+        
+        .welcome-banner {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.8), rgba(5, 150, 105, 0.8), rgba(245, 158, 11, 0.8));
+            color: white;
+            padding: 1.5rem;
+            border-radius: 20px;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 8px 30px rgba(16, 185, 129, 0.4);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .welcome-banner::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+            transform: rotate(45deg);
+            animation: shine 3s infinite;
+        }
+        
+        @keyframes shine {
+            0% { transform: translateX(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) rotate(45deg); }
+        }
+        
+        .welcome-content h1 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .profile-display {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: rgba(255,255,255,0.1);
+            padding: 1rem;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+            margin-top: 1rem;
+        }
+        
+        .profile-display img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid white;
+        }
+        
+        /* Search Bar */
+        .search-bar {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1rem 1.5rem;
+            border-radius: 20px;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+        }
+        
+        .search-container {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+        
+        .search-input {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 12px;
+            font-size: 1rem;
+            background: rgba(255,255,255,0.1);
+            color: white;
+            transition: all 0.3s ease;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+        }
+        
+        .search-input::placeholder {
+            color: rgba(255,255,255,0.6);
+        }
+        
+        /* Course Grid */
+        .course-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .course-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            position: relative;
+            border: 1px solid rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .course-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+            border-color: rgba(16, 185, 129, 0.3);
+        }
+        
+        .course-card.locked {
+            opacity: 0.7;
+            filter: grayscale(0.3);
+        }
+        
+        .course-card.locked:hover {
+            transform: none;
+            box-shadow: none;
+            border-color: rgba(255,255,255,0.1);
+        }
+        
+        .course-header {
+            padding: 1.5rem 1.5rem 1rem;
+            position: relative;
+        }
+        
+        .course-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .badge-locked {
+            background: rgba(239, 68, 68, 0.2);
+            color: #EF4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+        
+        .badge-progress {
+            background: rgba(245, 158, 11, 0.2);
+            color: #F59E0B;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+        
+        .badge-completed {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10B981;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+        
+        .course-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+        
+        .course-icon.blueprint { background: linear-gradient(135deg, var(--purple), var(--pink)); }
+        .course-icon.basics { background: linear-gradient(135deg, var(--primary), var(--cyan)); }
+        .course-icon.traffic { background: linear-gradient(135deg, var(--accent), var(--red)); }
+        
+        .course-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            line-height: 1.3;
+        }
+        
+        .course-description {
+            color: rgba(255,255,255,0.7);
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin-bottom: 1rem;
+        }
+        
+        .course-content {
+            padding: 0 1.5rem 1.5rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .progress-container {
+            margin-bottom: 1.5rem;
+        }
+        
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.8);
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--cyan));
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+        
+        .course-actions {
+            margin-top: auto;
+            display: flex;
+            gap: 0.75rem;
+        }
+        
+        .btn {
+            padding: 1rem 1.5rem;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            flex: 1;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+        }
+        
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-3px);
+        }
+        
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+        
+        /* Payment Alert */
+        .payment-alert {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(217, 119, 6, 0.2));
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            color: #F59E0B;
+            padding: 1.5rem;
+            border-radius: 20px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+        
+        .payment-alert h2 {
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+        
+        .payment-alert p {
+            margin-bottom: 1.5rem;
+            color: rgba(245, 158, 11, 0.9);
+            font-size: 1.1rem;
+        }
+        
+        .payment-alert .btn {
+            display: inline-flex;
+            max-width: 300px;
+            margin: 0 auto;
+        }
+        
+        /* PDF Modal */
+        .pdf-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(15, 23, 42, 0.95);
+            z-index: 10000;
+            backdrop-filter: blur(10px);
+        }
+        
+        .pdf-modal.active {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .pdf-header {
+            padding: 1.5rem;
+            background: rgba(30, 41, 59, 0.9);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .pdf-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .pdf-close {
+            background: rgba(239, 68, 68, 0.2);
+            color: #EF4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .pdf-close:hover {
+            background: rgba(239, 68, 68, 0.3);
+            transform: scale(1.1);
+        }
+        
+        .pdf-container {
+            flex: 1;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .pdf-iframe {
+            flex: 1;
+            width: 100%;
+            border: none;
+            border-radius: 12px;
+            background: white;
+        }
+        
+        .pdf-controls {
+            margin-top: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .pdf-progress {
+            flex: 1;
+        }
+        
+        /* Loading State */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(15, 23, 42, 0.9);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+        
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-top: 3px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 1rem;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* No Courses Message */
+        .no-courses {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: rgba(255,255,255,0.7);
+        }
+        
+        /* Mobile Responsive */
+        @media (min-width: 768px) {
+            .navbar {
+                padding: 1rem 2rem;
+            }
+            
+            .logo {
+                font-size: 1.8rem;
+            }
+            
+            .container {
+                padding: 0 1.5rem;
+            }
+            
+            .welcome-banner {
+                padding: 2rem;
+                border-radius: 25px;
+            }
+            
+            .welcome-content h1 {
+                font-size: 2.5rem;
+            }
+            
+            .course-grid {
+                grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            }
+            
+            .profile-display img {
+                width: 70px;
+                height: 70px;
+            }
+        }
+        
+        @media (min-width: 1024px) {
+            .course-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .mobile-menu-btn {
+                display: none;
+            }
+            
+            .nav-links {
+                display: flex;
+                gap: 0.5rem;
+            }
+            
+            .nav-links a {
+                text-decoration: none;
+                color: white;
+                font-weight: 500;
+                padding: 0.75rem 1.25rem;
+                border-radius: 12px;
+                transition: all 0.3s ease;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+            
+            .nav-links a:hover, .nav-links a.active {
+                background: rgba(16, 185, 129, 0.2);
+                transform: translateY(-2px);
+                box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+            }
+        }
+        
+        @media (max-width: 1023px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            .course-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .pdf-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .pdf-controls .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="bg-animation">
+        <div class="bg-circle"></div>
+        <div class="bg-circle"></div>
+        <div class="bg-circle"></div>
+        <div class="bg-circle"></div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+        <div class="loading-spinner"></div>
+        <p>Loading your courses...</p>
+    </div>
+
+    <!-- PDF Modal -->
+    <div id="pdfModal" class="pdf-modal">
+        <div class="pdf-header">
+            <div class="pdf-title" id="pdfTitle">Loading PDF...</div>
+            <div class="pdf-close" id="closePdf">
+                <i class="fas fa-times"></i>
+            </div>
+        </div>
+        <div class="pdf-container">
+            <iframe id="pdfIframe" class="pdf-iframe" src=""></iframe>
+            <div class="pdf-controls">
+                <div class="pdf-progress">
+                    <div class="progress-label">
+                        <span>Progress</span>
+                        <span id="pdfProgressPercent">0%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="pdfProgressFill" style="width: 0%"></div>
+                    </div>
+                </div>
+                <button class="btn btn-primary" id="markCompleteBtn">
+                    <i class="fas fa-check-circle"></i> Mark as Completed
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Menu Button -->
+    <button class="mobile-menu-btn" id="mobileMenuBtn">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="dashboard.html"><i class="fas fa-home"></i> Dashboard</a>
+        <a href="earnings.html"><i class="fas fa-chart-line"></i> Earnings</a>
+        <a href="products.html"><i class="fas fa-cube"></i> Packages</a>
+        <a href="course.html" class="active"><i class="fas fa-graduation-cap"></i> Course</a>
+        <a href="referral.html"><i class="fas fa-users"></i> Referral</a>
+        <a href="myteam.html"><i class="fas fa-network-wired"></i> My Team</a>
+        <a href="withdrawal.html"><i class="fas fa-wallet"></i> Withdrawal</a>
+        <a href="transactions.html"><i class="fas fa-exchange-alt"></i> Transactions</a>
+        <a href="profile.html"><i class="fas fa-user"></i> Profile</a>
+        <a href="support.html"><i class="fas fa-headset"></i> Support</a>
+    </div>
+
+    <nav class="navbar">
+        <div class="logo">
+            <img src="Screenshot_2025-10-30-19-48-01-770_com.google.android.apps.maps (1).jpg" alt="Biluxe10 Logo" class="logo-img">
+            Biluxe10 Affiliate
+        </div>
+        <div class="nav-links">
+            <a href="dashboard.html"><i class="fas fa-home"></i> Dashboard</a>
+            <a href="earnings.html"><i class="fas fa-chart-line"></i> Earnings</a>
+            <a href="products.html"><i class="fas fa-cube"></i> Packages</a>
+            <a href="course.html" class="active"><i class="fas fa-graduation-cap"></i> Course</a>
+            <a href="referral.html"><i class="fas fa-users"></i> Referral</a>
+            <a href="myteam.html"><i class="fas fa-network-wired"></i> My Team</a>
+            <a href="withdrawal.html"><i class="fas fa-wallet"></i> Withdrawal</a>
+        </div>
+        <div class="user-section">
+            <button class="logout-btn" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+            <div class="user-profile">
+                <img id="headerProfilePic" src="https://ui-avatars.com/api/?name=User&background=10B981&color=fff&size=128" alt="Profile" class="user-avatar">
+                <div>
+                    <div id="headerUserName" style="font-weight: 600; color: white;">User</div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="welcome-banner">
+            <div class="welcome-content">
+                <h1>Learning Center 🎓</h1>
+                <p style="font-size: 1.1rem; opacity: 0.9;">Master affiliate marketing with our comprehensive courses</p>
+            </div>
+            <div class="profile-display">
+                <img id="bannerProfilePic" src="https://ui-avatars.com/api/?name=User&background=10B981&color=fff&size=128" alt="Profile">
+                <div>
+                    <div id="bannerUserName" style="font-weight: 600; font-size: 1.2rem;">User Name</div>
+                    <div id="packageInfo" style="font-size: 0.9rem; opacity: 0.9;">Loading...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="search-bar">
+            <div class="search-container">
+                <input type="text" id="courseSearch" class="search-input" placeholder="Search courses by name or description...">
+                <div style="color: rgba(255,255,255,0.6); font-size: 0.9rem;">
+                    <span id="courseCount">0</span> courses available
+                </div>
+            </div>
+        </div>
+
+        <!-- Payment Required Alert -->
+        <div id="paymentAlert" class="payment-alert" style="display: none;">
+            <h2><i class="fas fa-lock"></i> Course Access Locked</h2>
+            <p>Complete your payment to unlock all premium courses and start your learning journey!</p>
+            <a href="products.html" class="btn btn-primary">
+                <i class="fas fa-unlock-alt"></i> Unlock Courses Now
+            </a>
+        </div>
+
+        <!-- Course Grid -->
+        <div id="courseGrid" class="course-grid">
+            <!-- Courses will be loaded here -->
+        </div>
+
+        <!-- No Courses Message -->
+        <div id="noCourses" class="no-courses" style="display: none;">
+            <i class="fas fa-book-open" style="font-size: 4rem; opacity: 0.3; margin-bottom: 1rem;"></i>
+            <h3>No courses found</h3>
+            <p>Try searching with different keywords</p>
+        </div>
+    </div>
+
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDxxkC9iD1V1w-53Kf4oBrHEXlBLvCc7sE",
+            authDomain: "biluxe10-3e894.firebaseapp.com",
+            projectId: "biluxe10-3e894",
+            storageBucket: "biluxe10-3e894.firebasestorage.app",
+            messagingSenderId: "804749588233",
+            appId: "1:804749588233:web:7777648c0c7834733c05d8"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const auth = firebase.auth();
+
+        // Course Data
+        const courses = [
+            {
+                id: 'blueprint',
+                title: 'BILUXE10 – The Indian Rupee 1 Lakh Blueprint',
+                description: 'Complete step-by-step guide to earn ₹1,00,000 per month through affiliate marketing.',
+                type: 'pdf',
+                file: 'BILUXE10-THE-indian-rupee1-LAKH-BLUEPRINT.pdf',
+                icon: 'blueprint',
+                color: 'var(--purple)'
+            },
+            {
+                id: 'affiliate_basics',
+                title: 'Affiliate Marketing Fundamentals',
+                description: 'Learn the core concepts, strategies, and best practices of affiliate marketing.',
+                type: 'pdf',
+                file: 'affiliate-marketing-fundamentals.pdf',
+                icon: 'basics',
+                color: 'var(--primary)'
+            },
+            {
+                id: 'traffic_mastery',
+                title: 'Traffic & Lead Generation Mastery',
+                description: 'Master traffic generation techniques and build a consistent lead pipeline.',
+                type: 'pdf',
+                file: 'traffic-lead-generation-mastery.pdf',
+                icon: 'traffic',
+                color: 'var(--accent)'
+            }
+        ];
+
+        // Global Variables
+        let currentUser = null;
+        let userData = null;
+        let unsubscribe = null;
+        let currentPdfCourseId = null;
+
+        // DOM Elements
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        const courseGrid = document.getElementById('courseGrid');
+        const courseSearch = document.getElementById('courseSearch');
+        const courseCount = document.getElementById('courseCount');
+        const noCourses = document.getElementById('noCourses');
+        const paymentAlert = document.getElementById('paymentAlert');
+        const pdfModal = document.getElementById('pdfModal');
+        const pdfIframe = document.getElementById('pdfIframe');
+        const pdfTitle = document.getElementById('pdfTitle');
+        const pdfProgressPercent = document.getElementById('pdfProgressPercent');
+        const pdfProgressFill = document.getElementById('pdfProgressFill');
+        const markCompleteBtn = document.getElementById('markCompleteBtn');
+        const closePdf = document.getElementById('closePdf');
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+
+        // Show/Hide Loading
+        function showLoading() {
+            loadingOverlay.style.display = 'flex';
+        }
+        
+        function hideLoading() {
+            loadingOverlay.style.display = 'none';
+        }
+
+        // Sanitize Email ID
+        function getSanitizedEmailId(email) {
+            return email.toLowerCase().replace(/\./g, "_");
+        }
+
+        // Mobile Menu Toggle
+        mobileMenuBtn.addEventListener('click', function() {
+            mobileMenu.classList.toggle('active');
+        });
+
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', function(event) {
+            if (!mobileMenu.contains(event.target) && !mobileMenuBtn.contains(event.target)) {
+                mobileMenu.classList.remove('active');
+            }
+        });
+
+        // Auth Guard & Initialization
+        document.addEventListener('DOMContentLoaded', function() {
+            auth.onAuthStateChanged(async (user) => {
+                if (user) {
+                    currentUser = user;
+                    console.log("✅ User logged in:", user.email);
+                    showLoading();
+                    await setupRealTimeListeners(user.email);
+                    loadUserProfile();
+                } else {
+                    console.log("❌ No user logged in");
+                    window.location.href = 'auth.html';
+                }
+            });
+        });
+
+        // Setup Real-time Listeners
+        async function setupRealTimeListeners(userEmail) {
+            const emailId = getSanitizedEmailId(userEmail);
+            
+            unsubscribe = db.collection('user_collections').doc(emailId).onSnapshot(
+                (doc) => {
+                    if (doc.exists) {
+                        userData = doc.data();
+                        console.log("📊 User data received:", userData);
+                        
+                        // Check payment status
+                        if (userData.paymentStatus === "approved") {
+                            paymentAlert.style.display = 'none';
+                            renderCourses();
+                        } else {
+                            paymentAlert.style.display = 'block';
+                            courseGrid.innerHTML = '';
+                        }
+                        
+                        updateCourseCount();
+                        hideLoading();
+                    } else {
+                        console.log("❌ No user document found");
+                        showPaymentRequired();
+                        hideLoading();
+                    }
+                },
+                (error) => {
+                    console.error("❌ Error in user listener:", error);
+                    showError("Error loading courses. Please try again.");
+                    hideLoading();
+                }
+            );
+        }
+
+        // Load User Profile
+        function loadUserProfile() {
+            const name = currentUser.displayName || currentUser.email.split('@')[0];
+            const defaultAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=10B981&color=fff&size=128`;
+            
+            document.getElementById('headerProfilePic').src = defaultAvatar;
+            document.getElementById('bannerProfilePic').src = defaultAvatar;
+            document.getElementById('headerUserName').textContent = name;
+            document.getElementById('bannerUserName').textContent = name;
+            
+            if (userData) {
+                const packageInfo = document.getElementById('packageInfo');
+                if (userData.selectedPackage) {
+                    packageInfo.textContent = `${userData.selectedPackage.toUpperCase()} Package`;
+                    if (userData.paymentStatus === "approved") {
+                        packageInfo.textContent += ' • ✅ Active';
+                    }
+                }
+            }
+        }
+
+        // Render Courses
+        function renderCourses() {
+            if (!userData || userData.paymentStatus !== "approved") return;
+            
+            const searchTerm = courseSearch.value.toLowerCase();
+            let filteredCourses = courses;
+            
+            // Filter by search term
+            if (searchTerm) {
+                filteredCourses = courses.filter(course => 
+                    course.title.toLowerCase().includes(searchTerm) || 
+                    course.description.toLowerCase().includes(searchTerm)
+                );
+            }
+            
+            // Clear grid
+            courseGrid.innerHTML = '';
+            
+            // Show no courses message if empty
+            if (filteredCourses.length === 0) {
+                noCourses.style.display = 'block';
+                courseGrid.style.display = 'none';
+            } else {
+                noCourses.style.display = 'none';
+                courseGrid.style.display = 'grid';
+                
+                // Render each course
+                filteredCourses.forEach(course => {
+                    const progress = userData.courseProgress?.[course.id] || 0;
+                    const status = getCourseStatus(progress);
+                    
+                    const courseCard = document.createElement('div');
+                    courseCard.className = `course-card ${status === 'locked' ? 'locked' : ''}`;
+                    courseCard.innerHTML = `
+                        <div class="course-header">
+                            <div class="course-icon ${course.icon}">
+                                <i class="fas fa-book"></i>
+                            </div>
+                            <div class="course-badge badge-${status}">
+                                ${status === 'locked' ? 'Locked' : status === 'progress' ? 'In Progress' : 'Completed'}
+                            </div>
+                            <h3 class="course-title">${course.title}</h3>
+                            <p class="course-description">${course.description}</p>
+                        </div>
+                        <div class="course-content">
+                            ${status !== 'locked' ? `
+                                <div class="progress-container">
+                                    <div class="progress-label">
+                                        <span>Progress</span>
+                                        <span>${progress}%</span>
+                                    </div>
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: ${progress}%"></div>
+                                    </div>
+                                </div>
+                            ` : ''}
+                            <div class="course-actions">
+                                ${status === 'locked' ? `
+                                    <button class="btn btn-secondary" disabled>
+                                        <i class="fas fa-lock"></i> Locked
+                                    </button>
+                                ` : `
+                                    <button class="btn btn-primary" onclick="openCourse('${course.id}')">
+                                        <i class="fas fa-play-circle"></i> ${progress === 0 ? 'Start Learning' : progress === 100 ? 'Review' : 'Continue'}
+                                    </button>
+                                `}
+                            </div>
+                        </div>
+                    `;
+                    
+                    courseGrid.appendChild(courseCard);
+                });
+            }
+            
+            updateCourseCount(filteredCourses.length);
+        }
+
+        // Get Course Status
+        function getCourseStatus(progress) {
+            if (userData.paymentStatus !== "approved") return 'locked';
+            if (progress === 100) return 'completed';
+            if (progress > 0) return 'progress';
+            return 'progress'; // All approved users can access courses
+        }
+
+        // Update Course Count
+        function updateCourseCount(count) {
+            if (count !== undefined) {
+                courseCount.textContent = count;
+            } else {
+                const searchTerm = courseSearch.value.toLowerCase();
+                if (searchTerm) {
+                    const filteredCount = courses.filter(course => 
+                        course.title.toLowerCase().includes(searchTerm) || 
+                        course.description.toLowerCase().includes(searchTerm)
+                    ).length;
+                    courseCount.textContent = filteredCount;
+                } else {
+                    courseCount.textContent = courses.length;
+                }
+            }
+        }
+
+        // Open Course PDF
+        function openCourse(courseId) {
+            const course = courses.find(c => c.id === courseId);
+            if (!course) return;
+            
+            currentPdfCourseId = courseId;
+            const progress = userData.courseProgress?.[courseId] || 0;
+            
+            // Set PDF title and iframe source
+            pdfTitle.textContent = course.title;
+            pdfIframe.src = course.file;
+            
+            // Update progress
+            updatePdfProgress(progress);
+            
+            // Show modal
+            pdfModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            
+            // Update mark complete button
+            markCompleteBtn.disabled = progress === 100;
+            markCompleteBtn.innerHTML = progress === 100 ? 
+                '<i class="fas fa-check-circle"></i> Already Completed' :
+                '<i class="fas fa-check-circle"></i> Mark as Completed';
+        }
+
+        // Update PDF Progress Display
+        function updatePdfProgress(progress) {
+            pdfProgressPercent.textContent = `${progress}%`;
+            pdfProgressFill.style.width = `${progress}%`;
+        }
+
+        // Mark Course as Complete
+        async function markCourseComplete() {
+            if (!currentPdfCourseId || !currentUser || !userData) return;
+            
+            try {
+                showLoading();
+                const emailId = getSanitizedEmailId(currentUser.email);
+                const userRef = db.collection('user_collections').doc(emailId);
+                
+                // Update progress to 100%
+                await userRef.update({
+                    [`courseProgress.${currentPdfCourseId}`]: 100
+                });
+                
+                // Update local data
+                if (!userData.courseProgress) userData.courseProgress = {};
+                userData.courseProgress[currentPdfCourseId] = 100;
+                
+                // Update UI
+                updatePdfProgress(100);
+                markCompleteBtn.disabled = true;
+                markCompleteBtn.innerHTML = '<i class="fas fa-check-circle"></i> Already Completed';
+                
+                // Re-render courses
+                renderCourses();
+                
+                hideLoading();
+                showSuccess('Course marked as completed!');
+            } catch (error) {
+                console.error('Error marking course complete:', error);
+                hideLoading();
+                showError('Failed to update progress. Please try again.');
+            }
+        }
+
+        // Close PDF Modal
+        function closePdfModal() {
+            pdfModal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+            pdfIframe.src = '';
+            currentPdfCourseId = null;
+        }
+
+        // Show Payment Required
+        function showPaymentRequired() {
+            paymentAlert.style.display = 'block';
+            courseGrid.innerHTML = '';
+            noCourses.style.display = 'none';
+        }
+
+        // Show Error Message
+        function showError(message) {
+            const welcomeContent = document.querySelector('.welcome-content');
+            if (welcomeContent) {
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'payment-alert';
+                errorDiv.style.background = 'linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(220, 38, 38, 0.2))';
+                errorDiv.style.borderColor = 'rgba(239, 68, 68, 0.3)';
+                errorDiv.style.color = '#EF4444';
+                errorDiv.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${message}`;
+                welcomeContent.appendChild(errorDiv);
+                
+                setTimeout(() => errorDiv.remove(), 5000);
+            }
+        }
+
+        // Show Success Message
+        function showSuccess(message) {
+            const welcomeContent = document.querySelector('.welcome-content');
+            if (welcomeContent) {
+                const successDiv = document.createElement('div');
+                successDiv.className = 'payment-alert';
+                successDiv.style.background = 'linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.2))';
+                successDiv.style.borderColor = 'rgba(16, 185, 129, 0.3)';
+                successDiv.style.color = '#10B981';
+                successDiv.innerHTML = `<i class="fas fa-check-circle"></i> ${message}`;
+                welcomeContent.appendChild(successDiv);
+                
+                setTimeout(() => successDiv.remove(), 3000);
+            }
+        }
+
+        // Logout Function
+        function logout() {
+            if (unsubscribe) {
+                unsubscribe();
+            }
+            
+            auth.signOut().then(() => {
+                console.log("✅ User logged out");
+                window.location.href = 'auth.html';
+            }).catch((error) => {
+                console.error("❌ Error logging out:", error);
+            });
+        }
+
+        // Event Listeners
+        courseSearch.addEventListener('input', renderCourses);
+        markCompleteBtn.addEventListener('click', markCourseComplete);
+        closePdf.addEventListener('click', closePdfModal);
+
+        // Close modal on ESC key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closePdfModal();
+            }
+        });
+
+        // Close modal on outside click
+        pdfModal.addEventListener('click', function(event) {
+            if (event.target === pdfModal) {
+                closePdfModal();
+            }
+        });
+
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', function() {
+            if (unsubscribe) {
+                unsubscribe();
+            }
+        });
+
+        // Expose functions to global scope for onclick handlers
+        window.openCourse = openCourse;
+        window.logout = logout;
+    </script>
+</body>
+</html>
