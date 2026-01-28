@@ -1,1 +1,1392 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Courses - Biluxe10 Affiliate</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+    <style>
+        :root {
+            --primary: #10B981;
+            --primary-dark: #059669;
+            --primary-light: #34D399;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+            --info: #3B82F6;
+            --dark: #1E293B;
+            --darker: #0F172A;
+            --light: #F8FAFC;
+            --gray: #64748B;
+            --border: rgba(255,255,255,0.1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+        }
+        
+        body {
+            background: var(--darker);
+            color: white;
+            min-height: 100vh;
+        }
+        
+        /* Auth Guard */
+        #authGuard {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--darker);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            flex-direction: column;
+        }
+        
+        .loading-pulse {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--primary);
+            animation: pulse 1.5s infinite;
+            margin-bottom: 1rem;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.9); }
+        }
+        
+        /* Header */
+        .header {
+            background: rgba(30, 41, 59, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: white;
+        }
+        
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--info));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .logout-btn {
+            background: transparent;
+            color: var(--danger);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            padding: 0.5rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+        
+        .logout-btn:hover {
+            background: rgba(239, 68, 68, 0.1);
+        }
+        
+        /* Mobile Navigation */
+        .mobile-nav {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border);
+            overflow-x: auto;
+        }
+        
+        .mobile-nav a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            white-space: nowrap;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+        }
+        
+        .mobile-nav a.active {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+        }
+        
+        /* Main Content */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+        
+        /* Hero Section */
+        .hero-section {
+            margin-bottom: 1.5rem;
+        }
+        
+        .hero-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .hero-subtitle {
+            color: var(--gray);
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+        
+        /* User Stats */
+        .user-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.75rem;
+            margin: 1rem 0;
+        }
+        
+        .stat-card {
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 0.75rem;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.25rem;
+        }
+        
+        .stat-label {
+            font-size: 0.7rem;
+            color: var(--gray);
+        }
+        
+        /* Search Bar */
+        .search-section {
+            margin-bottom: 1.5rem;
+        }
+        
+        .search-container {
+            position: relative;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 2.5rem;
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: white;
+            font-size: 0.9rem;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+        }
+        
+        /* Payment Alert */
+        .payment-alert {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.2);
+            color: var(--warning);
+            padding: 0.75rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            text-align: center;
+            font-size: 0.85rem;
+        }
+        
+        /* Section Headers */
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 1.5rem 0 1rem 0;
+        }
+        
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .courses-count {
+            font-size: 0.8rem;
+            color: var(--gray);
+        }
+        
+        /* Course Grid */
+        .courses-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        @media (min-width: 768px) {
+            .courses-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (min-width: 1024px) {
+            .courses-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        
+        /* Course Card */
+        .course-card {
+            background: linear-gradient(145deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.9));
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.2s ease;
+        }
+        
+        .course-card:hover:not(.locked) {
+            border-color: var(--primary);
+            box-shadow: 0 4px 20px rgba(16, 185, 129, 0.15);
+        }
+        
+        .course-card.locked {
+            opacity: 0.7;
+        }
+        
+        .course-header {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border);
+            position: relative;
+        }
+        
+        .course-badge {
+            position: absolute;
+            top: 0.75rem;
+            right: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.65rem;
+            font-weight: 600;
+        }
+        
+        .badge-free {
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--primary);
+        }
+        
+        .badge-locked {
+            background: rgba(239, 68, 68, 0.15);
+            color: var(--danger);
+        }
+        
+        .badge-completed {
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--primary);
+        }
+        
+        .badge-progress {
+            background: rgba(245, 158, 11, 0.15);
+            color: var(--warning);
+        }
+        
+        .course-price {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+            color: var(--primary-light);
+        }
+        
+        .course-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            line-height: 1.3;
+        }
+        
+        .course-subtitle {
+            color: var(--gray);
+            font-size: 0.8rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .course-content {
+            padding: 1rem;
+        }
+        
+        /* Parts Container */
+        .parts-container {
+            margin-bottom: 0.75rem;
+        }
+        
+        .part-item {
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 0.75rem;
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .part-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .part-item:hover:not(.locked-part) {
+            background: rgba(30, 41, 59, 0.8);
+            border-color: var(--primary);
+        }
+        
+        .part-item.locked-part {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .part-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 0.25rem;
+        }
+        
+        .part-name {
+            font-weight: 500;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .part-status {
+            font-size: 0.65rem;
+            padding: 0.15rem 0.4rem;
+            border-radius: 4px;
+        }
+        
+        .status-completed {
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--primary);
+        }
+        
+        .part-pdf {
+            font-size: 0.7rem;
+            color: var(--gray);
+            font-family: 'Monaco', 'Courier New', monospace;
+            word-break: break-all;
+            margin-top: 0.25rem;
+        }
+        
+        /* Progress Bar */
+        .progress-container {
+            margin-bottom: 1rem;
+        }
+        
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.25rem;
+            font-size: 0.75rem;
+            color: var(--gray);
+        }
+        
+        .progress-bar {
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--primary-light));
+            border-radius: 2px;
+            transition: width 0.3s ease;
+        }
+        
+        /* Buttons */
+        .course-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .btn {
+            padding: 0.75rem 1rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            flex: 1;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+        }
+        
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+        }
+        
+        .btn-upgrade {
+            background: linear-gradient(135deg, var(--warning), #F97316);
+            color: white;
+            width: 100%;
+        }
+        
+        .btn-upgrade:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.2);
+        }
+        
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        /* PDF Modal */
+        .pdf-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(15, 23, 42, 0.95);
+            z-index: 1000;
+        }
+        
+        .pdf-modal.active {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .modal-header {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            flex: 1;
+        }
+        
+        .modal-close {
+            background: rgba(239, 68, 68, 0.15);
+            color: var(--danger);
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            margin-left: 1rem;
+        }
+        
+        .modal-close:hover {
+            background: rgba(239, 68, 68, 0.25);
+        }
+        
+        .modal-body {
+            flex: 1;
+            padding: 1rem;
+        }
+        
+        .pdf-viewer {
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 8px;
+            background: white;
+        }
+        
+        .modal-footer {
+            padding: 1rem;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-footer .btn {
+            padding: 0.5rem 1rem;
+        }
+        
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 2rem 1rem;
+            color: var(--gray);
+        }
+        
+        .empty-state i {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            opacity: 0.3;
+        }
+        
+        @media (max-width: 767px) {
+            .mobile-nav {
+                display: flex;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .logo {
+                margin-bottom: 0.5rem;
+            }
+            
+            .user-info {
+                justify-content: space-between;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Auth Guard -->
+    <div id="authGuard">
+        <div class="loading-pulse"></div>
+        <p>Loading courses...</p>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                <div>Biluxe10 Courses</div>
+            </div>
+            
+            <div class="user-info">
+                <div class="user-avatar" id="userAvatar">U</div>
+                <button class="logout-btn" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+        </div>
+        
+        <div class="mobile-nav">
+            <a href="dashboard.html"><i class="fas fa-home"></i> Dashboard</a>
+            <a href="earnings.html"><i class="fas fa-chart-line"></i> Earnings</a>
+            <a href="course.html" class="active"><i class="fas fa-book"></i> Courses</a>
+            <a href="profile.html"><i class="fas fa-user"></i> Profile</a>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container">
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <h1 class="hero-title">Learning Center</h1>
+            <p class="hero-subtitle">Master affiliate marketing with our premium courses. Progress at your own pace.</p>
+            
+            <div class="user-stats">
+                <div class="stat-card">
+                    <div class="stat-value" id="userNameStat">User</div>
+                    <div class="stat-label">Welcome</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="packageAmount">₹0</div>
+                    <div class="stat-label">Your Package</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="progressStat">0%</div>
+                    <div class="stat-label">Progress</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Payment Alert -->
+        <div id="paymentAlert" class="payment-alert" style="display: none;">
+            <i class="fas fa-lock"></i> Complete payment approval to access premium courses
+        </div>
+
+        <!-- Search -->
+        <section class="search-section">
+            <div class="search-container">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" id="courseSearch" class="search-input" placeholder="Search: AI, Crypto, Content, Dropshipping, 1299, 2499...">
+            </div>
+        </section>
+
+        <!-- Free Course Section -->
+        <div class="section-header">
+            <h2 class="section-title"><i class="fas fa-gift"></i> Free For Everyone</h2>
+            <span class="courses-count" id="freeCount">1 course</span>
+        </div>
+        <div class="courses-grid" id="freeCourseGrid"></div>
+
+        <!-- Premium Courses Section -->
+        <div class="section-header">
+            <h2 class="section-title"><i class="fas fa-crown"></i> Premium Courses</h2>
+            <span class="courses-count" id="premiumCount">0 courses</span>
+        </div>
+        <div class="courses-grid" id="premiumCourseGrid"></div>
+
+        <!-- No Results -->
+        <div id="noResults" class="empty-state" style="display: none;">
+            <i class="fas fa-search"></i>
+            <h3>No courses found</h3>
+            <p>Try different search terms</p>
+        </div>
+    </main>
+
+    <!-- PDF Modal -->
+    <div id="pdfModal" class="pdf-modal">
+        <div class="modal-header">
+            <div class="modal-title" id="pdfTitle">Loading PDF...</div>
+            <div class="modal-close" id="closePdf">
+                <i class="fas fa-times"></i>
+            </div>
+        </div>
+        <div class="modal-body">
+            <iframe id="pdfIframe" class="pdf-viewer" src=""></iframe>
+        </div>
+        <div class="modal-footer">
+            <div>
+                <span>Progress: </span>
+                <span id="pdfProgressPercent">0%</span>
+            </div>
+            <button class="btn btn-primary" id="markCompleteBtn" onclick="markPartComplete()">
+                <i class="fas fa-check"></i> Mark Completed
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDxxkC9iD1V1w-53Kf4oBrHEXlBLvCc7sE",
+            authDomain: "biluxe10-3e894.firebaseapp.com",
+            projectId: "biluxe10-3e894",
+            storageBucket: "biluxe10-3e894.firebasestorage.app",
+            messagingSenderId: "804749588233",
+            appId: "1:804749588233:web:7777648c0c7834733c05d8"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const auth = firebase.auth();
+
+        // Course Data - WITH ALL YOUR SPECIFIED COURSES
+        const COURSES = [
+            {
+                id: 'free_guide',
+                title: 'The Ultimate Biluxe10 Affiliate Mentors Playbook',
+                subtitle: 'Essential guide for all affiliate marketers',
+                price: 0,
+                packageRequired: 0,
+                parts: [
+                    {
+                        id: 'part_1',
+                        name: 'Complete Playbook',
+                        pdfUrl: 'The-Ultimate-Biluxe10-Affiliate-Mentors-Playbook.pdf',
+                        fileName: 'The-Ultimate-Biluxe10-Affiliate-Mentors-Playbook.pdf'
+                    }
+                ],
+                keywords: ['free', 'guide', 'playbook', 'mentor', 'affiliate', 'all'],
+                icon: 'fas fa-book'
+            },
+            {
+                id: 'starter_success',
+                title: 'Starter Success Pack',
+                subtitle: '₹1 Lakh Blueprint System',
+                price: 1299,
+                packageRequired: 1299,
+                parts: [
+                    {
+                        id: 'part_1',
+                        name: 'Part 1: ₹1 Lakh Blueprint',
+                        pdfUrl: 'BILUXE10-THE-indian-rupee1-LAKH-BLUEPRINT.pdf',
+                        fileName: 'BILUXE10-THE-indian-rupee1-LAKH-BLUEPRINT.pdf'
+                    },
+                    {
+                        id: 'part_2',
+                        name: 'Part 2: Chapter 10 System',
+                        pdfUrl: 'Chapter-10-The-indian-rupee1-Lakh-System.pdf',
+                        fileName: 'Chapter-10-The-indian-rupee1-Lakh-System.pdf'
+                    }
+                ],
+                keywords: ['starter', 'success', '1 lakh', '1299', 'blueprint', 'basic'],
+                icon: 'fas fa-rocket'
+            },
+            {
+                id: 'advance_success',
+                title: 'Advance Success Pack',
+                subtitle: '₹10 Lakh Mastery System',
+                price: 2499,
+                packageRequired: 2499,
+                parts: [
+                    {
+                        id: 'part_1',
+                        name: 'Part 1: ₹10 Lakh Mastery',
+                        pdfUrl: 'BILUXE10-THE-indian-rupee10-LAKH-MASTERY.pdf',
+                        fileName: 'BILUXE10-THE-indian-rupee10-LAKH-MASTERY.pdf'
+                    },
+                    {
+                        id: 'part_2',
+                        name: 'Part 2: Financial Systems',
+                        pdfUrl: 'MODULE-4-FINANCIAL-SYSTEMS.pdf',
+                        fileName: 'MODULE-4-FINANCIAL-SYSTEMS.pdf'
+                    }
+                ],
+                keywords: ['advance', 'success', '10 lakh', '2499', 'mastery', 'financial'],
+                icon: 'fas fa-chart-line'
+            },
+            {
+                id: 'digital_empire',
+                title: 'Digital Empire System',
+                subtitle: '₹1 Crore Blueprint',
+                price: 3499,
+                packageRequired: 3499,
+                parts: [
+                    {
+                        id: 'part_1',
+                        name: 'Part 1: ₹1 Crore Blueprint',
+                        pdfUrl: 'BILUXE10-indian-rupee1-Crore-Blueprint.pdf',
+                        fileName: 'BILUXE10-indian-rupee1-Crore-Blueprint.pdf'
+                    },
+                    {
+                        id: 'part_2',
+                        name: 'Part 2: Advanced Marketing',
+                        pdfUrl: 'Module-5-Advanced-Marketing-Months-19-24.pdf',
+                        fileName: 'Module-5-Advanced-Marketing-Months-19-24.pdf'
+                    }
+                ],
+                keywords: ['digital', 'empire', '1 crore', '3499', 'blueprint', 'advanced'],
+                icon: 'fas fa-globe'
+            },
+            {
+                id: 'content_mystery',
+                title: 'Content Mystery',
+                subtitle: 'Content Creation Mastery',
+                price: 499,
+                packageRequired: 499,
+                parts: [
+                    {
+                        id: 'part_1',
+                        name: 'Part 1: Content Creation',
+                        pdfUrl: 'BILUXE10-CONTENT-CREATION-MASTERY.pdf',
+                        fileName: 'BILUXE10-CONTENT-CREATION-MASTERY.pdf'
+                    },
+                    {
+                        id: 'part_2',
+                        name: 'Part 2: Editing Mastery',
+                        pdfUrl: 'Module-5-Editing-Mastery.pdf',
+                        fileName: 'Module-5-Editing-Mastery.pdf'
+                    }
+                ],
+                keywords: ['content', 'creation', 'mystery', '499', 'editing', 'social'],
+                icon: 'fas fa-video'
+            },
+            {
+                id: 'editing_mastery',
+                title: 'Editing Mastery',
+                subtitle: 'Professional Video Editing',
+                price: 4999,
+                packageRequired: 4999,
+                parts: [
+                    {
+                        id: 'part_1',
+                        name: 'Complete Editing Guide',
+                        pdfUrl: 'BILUXE10-EDITING-MASTERY.pdf',
+                        fileName: 'BILUXE10-EDITING-MASTERY.pdf'
+                    }
+                ],
+                keywords: ['editing', 'mastery', 'video', '4999', 'professional'],
+                icon: 'fas fa-cut'
+            },
+            {
+                id: 'dropshipping_mystery',
+                title: 'Dropshipping Mystery',
+                subtitle: 'E-commerce Mastery',
+                price: 9999,
+                packageRequired: 9999,
+                parts: [
+                    {
+                        id: 'part_1',
+                        name: 'Part 1: Dropshipping Mastery',
+                        pdfUrl: 'BILUXE10-DROPSHIPPING-MASTERY.pdf',
+                        fileName: 'BILUXE10-DROPSHIPPING-MASTERY.pdf'
+                    },
+                    {
+                        id: 'part_2',
+                        name: 'Part 2: Instagram Store Setup',
+                        pdfUrl: 'Instagram-Store-Setup.pdf',
+                        fileName: 'Instagram-Store-Setup.pdf'
+                    }
+                ],
+                keywords: ['dropshipping', 'ecommerce', 'store', '9999', 'instagram'],
+                icon: 'fas fa-shopping-cart'
+            },
+            {
+                id: 'crypto_trading',
+                title: 'Crypto Trading',
+                subtitle: 'Cryptocurrency Mastery',
+                price: 15999,
+                packageRequired: 15999,
+                parts: [
+                    {
+                        id: 'part_1',
+                        name: 'Crypto Trading Mastery',
+                        pdfUrl: 'BILUXE10-CRYPTO-TRADING-MASTERY.pdf',
+                        fileName: 'BILUXE10-CRYPTO-TRADING-MASTERY.pdf'
+                    }
+                ],
+                keywords: ['crypto', 'trading', 'cryptocurrency', '15999', 'bitcoin'],
+                icon: 'fas fa-coins'
+            },
+            {
+                id: 'future_ai',
+                title: 'Future AI System',
+                subtitle: 'AI Automation Mastery',
+                price: 23999,
+                packageRequired: 23999,
+                parts: [
+                    {
+                        id: 'part_1',
+                        name: 'Part 1: Future AI System',
+                        pdfUrl: 'BILUXE10-FUTURE-AI-SYSTEM-MASTERY.pdf',
+                        fileName: 'BILUXE10-FUTURE-AI-SYSTEM-MASTERY.pdf'
+                    },
+                    {
+                        id: 'part_2',
+                        name: 'Part 2: AI Automation Systems',
+                        pdfUrl: 'AI-Automation-Systems-Phase-3.pdf',
+                        fileName: 'AI-Automation-Systems-Phase-3.pdf'
+                    }
+                ],
+                keywords: ['ai', 'future', 'automation', '23999', 'artificial'],
+                icon: 'fas fa-robot'
+            }
+        ];
+
+        // Global Variables
+        let currentUser = null;
+        let userData = null;
+        let unsubscribe = null;
+        let currentModalCourse = null;
+        let currentModalPart = null;
+        let userProgress = {};
+
+        // DOM Elements
+        const authGuard = document.getElementById('authGuard');
+        const userAvatar = document.getElementById('userAvatar');
+        const userNameStat = document.getElementById('userNameStat');
+        const packageAmount = document.getElementById('packageAmount');
+        const progressStat = document.getElementById('progressStat');
+        const paymentAlert = document.getElementById('paymentAlert');
+        const freeCourseGrid = document.getElementById('freeCourseGrid');
+        const premiumCourseGrid = document.getElementById('premiumCourseGrid');
+        const freeCount = document.getElementById('freeCount');
+        const premiumCount = document.getElementById('premiumCount');
+        const courseSearch = document.getElementById('courseSearch');
+        const noResults = document.getElementById('noResults');
+        const pdfModal = document.getElementById('pdfModal');
+        const pdfIframe = document.getElementById('pdfIframe');
+        const pdfTitle = document.getElementById('pdfTitle');
+        const pdfProgressPercent = document.getElementById('pdfProgressPercent');
+        const markCompleteBtn = document.getElementById('markCompleteBtn');
+        const closePdf = document.getElementById('closePdf');
+
+        // Firebase Helper Functions
+        function getSanitizedEmail(email) {
+            return email.toLowerCase().replace(/\./g, '_');
+        }
+
+        // STRICT ACCESS LOGIC: Jitna package utna access, zyada ka nahi
+        function hasCourseAccess(course) {
+            if (!userData) return false;
+            if (course.price === 0) return true; // Free course for everyone
+            
+            // Payment must be approved
+            if (userData.paymentStatus !== 'approved') return false;
+            if (!userData.packageAmount) return false;
+            
+            // EXACT LOGIC: user.packageAmount >= course.price
+            // Means: ₹1299 package = can access ₹1299 course ONLY
+            // ₹1299 package CANNOT access ₹2499 course
+            return userData.packageAmount >= course.price;
+        }
+
+        function getCourseProgress(courseId) {
+            if (!userProgress[courseId]) return 0;
+            const course = COURSES.find(c => c.id === courseId);
+            if (!course) return 0;
+            
+            let completedParts = 0;
+            course.parts.forEach(part => {
+                if (userProgress[courseId]?.[part.id] === true) {
+                    completedParts++;
+                }
+            });
+            
+            return Math.round((completedParts / course.parts.length) * 100);
+        }
+
+        function calculateOverallProgress() {
+            let totalProgress = 0;
+            let accessibleCourses = 0;
+            
+            COURSES.forEach(course => {
+                if (hasCourseAccess(course)) {
+                    const progress = getCourseProgress(course.id);
+                    totalProgress += progress;
+                    accessibleCourses++;
+                }
+            });
+            
+            return accessibleCourses > 0 ? Math.round(totalProgress / accessibleCourses) : 0;
+        }
+
+        // Create Course Card
+        function createCourseCard(course) {
+            const hasAccess = hasCourseAccess(course);
+            const progress = getCourseProgress(course.id);
+            const isFree = course.price === 0;
+            const canOpen = hasAccess || isFree;
+            
+            const card = document.createElement('div');
+            card.className = `course-card ${!hasAccess && !isFree ? 'locked' : ''}`;
+            
+            // Badge
+            let badgeClass = 'badge-progress';
+            let badgeText = `${progress}%`;
+            
+            if (!hasAccess && !isFree) {
+                badgeClass = 'badge-locked';
+                badgeText = 'Upgrade Required';
+            } else if (progress === 100) {
+                badgeClass = 'badge-completed';
+                badgeText = 'Completed';
+            } else if (isFree) {
+                badgeClass = 'badge-free';
+                badgeText = 'FREE FOR ALL';
+            }
+            
+            // Parts HTML
+            let partsHTML = '';
+            course.parts.forEach((part, index) => {
+                const isCompleted = userProgress[course.id]?.[part.id] === true;
+                const partCanOpen = canOpen;
+                
+                partsHTML += `
+                    <div class="part-item ${!partCanOpen ? 'locked-part' : ''}"
+                         ${partCanOpen ? `onclick="openPart('${course.id}', '${part.id}')"` : ''}>
+                        <div class="part-header">
+                            <div class="part-name">
+                                <i class="fas fa-file-pdf"></i>
+                                ${part.name}
+                            </div>
+                            <div class="part-status ${isCompleted ? 'status-completed' : ''}">
+                                ${isCompleted ? '✓' : partCanOpen ? 'View' : 'Locked'}
+                            </div>
+                        </div>
+                        <div class="part-pdf">${part.fileName}</div>
+                    </div>
+                `;
+            });
+            
+            card.innerHTML = `
+                <div class="course-header">
+                    <div class="course-badge ${badgeClass}">${badgeText}</div>
+                    <div class="course-price">${isFree ? 'FREE' : `₹${course.price}`}</div>
+                    <h3 class="course-title">${course.title}</h3>
+                    <p class="course-subtitle">${course.subtitle}</p>
+                </div>
+                <div class="course-content">
+                    <div class="parts-container">
+                        ${partsHTML}
+                    </div>
+                    
+                    <div class="progress-container">
+                        <div class="progress-label">
+                            <span>Progress</span>
+                            <span>${progress}%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: ${progress}%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="course-actions">
+                        ${!hasAccess && !isFree ? `
+                            <button class="btn btn-upgrade" onclick="upgradePackage(${course.price})">
+                                <i class="fas fa-arrow-up"></i> Upgrade to ₹${course.price}
+                            </button>
+                        ` : `
+                            <button class="btn btn-primary" ${course.parts[0] ? `onclick="openPart('${course.id}', '${course.parts[0].id}')"` : ''}>
+                                <i class="fas fa-play"></i> ${progress === 0 ? 'Start' : progress === 100 ? 'Review' : 'Continue'}
+                            </button>
+                        `}
+                    </div>
+                </div>
+            `;
+            
+            return card;
+        }
+
+        // Render Courses with Search
+        function renderCourses(searchTerm = '') {
+            const term = searchTerm.toLowerCase().trim();
+            
+            // Filter courses based on search
+            const filteredCourses = COURSES.filter(course => {
+                if (term === '') return true;
+                
+                // Search in title
+                if (course.title.toLowerCase().includes(term)) return true;
+                
+                // Search in subtitle
+                if (course.subtitle.toLowerCase().includes(term)) return true;
+                
+                // Search in keywords
+                if (course.keywords.some(keyword => keyword.toLowerCase().includes(term))) return true;
+                
+                // Search by price/package
+                if (`₹${course.price}`.includes(term)) return true;
+                if (`${course.price}`.includes(term)) return true;
+                if (`package ${course.price}`.includes(term)) return true;
+                
+                return false;
+            });
+            
+            // Clear grids
+            freeCourseGrid.innerHTML = '';
+            premiumCourseGrid.innerHTML = '';
+            
+            // Separate courses
+            const freeCourses = filteredCourses.filter(c => c.price === 0);
+            const premiumCourses = filteredCourses.filter(c => c.price > 0);
+            
+            // Update counts
+            freeCount.textContent = `${freeCourses.length} course${freeCourses.length !== 1 ? 's' : ''}`;
+            premiumCount.textContent = `${premiumCourses.length} course${premiumCourses.length !== 1 ? 's' : ''}`;
+            
+            // Render free courses
+            freeCourses.forEach(course => {
+                freeCourseGrid.appendChild(createCourseCard(course));
+            });
+            
+            // Render premium courses
+            premiumCourses.forEach(course => {
+                premiumCourseGrid.appendChild(createCourseCard(course));
+            });
+            
+            // Show/hide no results
+            if (filteredCourses.length === 0) {
+                noResults.style.display = 'block';
+                freeCourseGrid.style.display = 'none';
+                premiumCourseGrid.style.display = 'none';
+            } else {
+                noResults.style.display = 'none';
+                freeCourseGrid.style.display = 'grid';
+                premiumCourseGrid.style.display = 'grid';
+            }
+            
+            // Update overall progress
+            const overallProgress = calculateOverallProgress();
+            progressStat.textContent = `${overallProgress}%`;
+        }
+
+        // Open PDF Part
+        function openPart(courseId, partId) {
+            const course = COURSES.find(c => c.id === courseId);
+            if (!course) return;
+            
+            // STRICT ACCESS CHECK before opening
+            if (course.price > 0 && !hasCourseAccess(course)) {
+                alert(`You need ₹${course.price} package to access this course\n\nYour package: ₹${userData?.packageAmount || 0}`);
+                return;
+            }
+            
+            const part = course.parts.find(p => p.id === partId);
+            if (!part) return;
+            
+            currentModalCourse = course;
+            currentModalPart = part;
+            
+            // Update modal
+            pdfTitle.textContent = `${course.title} - ${part.name}`;
+            
+            // Use direct PDF link (same directory as HTML file)
+            pdfIframe.src = part.pdfUrl;
+            
+            // Update progress
+            const isCompleted = userProgress[courseId]?.[partId] === true;
+            const progress = getCourseProgress(courseId);
+            pdfProgressPercent.textContent = `${progress}%`;
+            
+            // Update button
+            markCompleteBtn.disabled = isCompleted;
+            markCompleteBtn.innerHTML = isCompleted ? 
+                '<i class="fas fa-check"></i> Already Completed' :
+                '<i class="fas fa-check"></i> Mark Completed';
+            
+            // Show modal
+            pdfModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Mark Part as Completed
+        async function markPartComplete() {
+            if (!currentModalCourse || !currentModalPart || !currentUser) return;
+            
+            try {
+                const emailId = getSanitizedEmail(currentUser.email);
+                const userRef = db.collection('user_collections').doc(emailId);
+                
+                // Update local progress
+                if (!userProgress[currentModalCourse.id]) {
+                    userProgress[currentModalCourse.id] = {};
+                }
+                userProgress[currentModalCourse.id][currentModalPart.id] = true;
+                
+                // Update Firestore
+                await userRef.update({
+                    [`courseProgress.${currentModalCourse.id}.${currentModalPart.id}`]: true
+                });
+                
+                // Update UI
+                markCompleteBtn.disabled = true;
+                markCompleteBtn.innerHTML = '<i class="fas fa-check"></i> Already Completed';
+                
+                // Re-render courses
+                renderCourses(courseSearch.value);
+                
+                // Show toast
+                showToast('Part marked as completed!');
+            } catch (error) {
+                console.error('Error updating progress:', error);
+                showToast('Failed to update progress', 'error');
+            }
+        }
+
+        // Close PDF Modal
+        function closePdfModal() {
+            pdfModal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+            pdfIframe.src = '';
+            currentModalCourse = null;
+            currentModalPart = null;
+        }
+
+        // Upgrade Package
+        function upgradePackage(minAmount) {
+            window.location.href = `products.html?upgrade=${minAmount}`;
+        }
+
+        // Toast Notification
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.textContent = message;
+            toast.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: ${type === 'success' ? '#10B981' : '#EF4444'};
+                color: white;
+                padding: 0.75rem 1.25rem;
+                border-radius: 6px;
+                z-index: 10000;
+                font-size: 0.9rem;
+                font-weight: 500;
+                animation: slideIn 0.3s ease;
+            `;
+            
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // Logout
+        function logout() {
+            if (unsubscribe) unsubscribe();
+            auth.signOut().then(() => {
+                window.location.href = 'auth.html';
+            });
+        }
+
+        // Event Listeners
+        courseSearch.addEventListener('input', (e) => {
+            renderCourses(e.target.value);
+        });
+
+        closePdf.addEventListener('click', closePdfModal);
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closePdfModal();
+        });
+
+        pdfModal.addEventListener('click', (e) => {
+            if (e.target === pdfModal) closePdfModal();
+        });
+
+        // Firebase Auth State Observer
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                currentUser = user;
+                const emailId = getSanitizedEmail(user.email);
+                
+                // Listen to user data
+                unsubscribe = db.collection('user_collections').doc(emailId)
+                    .onSnapshot((doc) => {
+                        if (doc.exists) {
+                            userData = doc.data();
+                            
+                            // Use REAL NAME from Firestore (not email fallback)
+                            if (userData.fullName) {
+                                const firstName = userData.fullName.split(' ')[0];
+                                userAvatar.textContent = firstName.charAt(0).toUpperCase();
+                                userNameStat.textContent = userData.fullName;
+                            } else {
+                                const name = user.email.split('@')[0];
+                                userAvatar.textContent = name.charAt(0).toUpperCase();
+                                userNameStat.textContent = name;
+                            }
+                            
+                            // Update package info
+                            packageAmount.textContent = `₹${userData.packageAmount || 0}`;
+                            
+                            // Load progress
+                            userProgress = userData.courseProgress || {};
+                            
+                            // Show/hide payment alert
+                            if (userData.paymentStatus !== 'approved') {
+                                paymentAlert.style.display = 'block';
+                            } else {
+                                paymentAlert.style.display = 'none';
+                            }
+                            
+                            // Render courses
+                            renderCourses();
+                            
+                            // Hide auth guard immediately
+                            authGuard.style.display = 'none';
+                        } else {
+                            // No user document
+                            paymentAlert.style.display = 'block';
+                            renderCourses();
+                            authGuard.style.display = 'none';
+                        }
+                    }, (error) => {
+                        console.error('Error loading data:', error);
+                        authGuard.style.display = 'none';
+                    });
+            } else {
+                window.location.href = 'auth.html';
+            }
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            // Add animation styles
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes slideIn {
+                    from { transform: translateX(100%); opacity: 0; }
+                    to { transform: translateX(0); opacity: 1; }
+                }
+                @keyframes slideOut {
+                    from { transform: translateX(0); opacity: 1; }
+                    to { transform: translateX(100%); opacity: 0; }
+                }
+            `;
+            document.head.appendChild(style);
+        });
+
+        // Global functions for onclick handlers
+        window.openPart = openPart;
+        window.upgradePackage = upgradePackage;
+        window.logout = logout;
+        window.markPartComplete = markPartComplete;
+    </script>
+</body>
+</html>
