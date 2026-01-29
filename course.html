@@ -1,0 +1,1715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Courses - Biluxe10 Affiliate</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+    <style>
+        :root {
+            --primary: #10B981;
+            --primary-dark: #059669;
+            --accent: #F59E0B;
+            --purple: #8B5CF6;
+            --pink: #EC4899;
+            --blue: #3B82F6;
+            --red: #EF4444;
+            --cyan: #06B6D4;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+            min-height: 100vh;
+            color: white;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        /* Animated Background */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+        
+        .bg-circle {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(16, 185, 129, 0.2) 0%, rgba(16, 185, 129, 0) 70%);
+            animation: float 15s infinite ease-in-out;
+        }
+        
+        .bg-circle:nth-child(1) {
+            width: 300px;
+            height: 300px;
+            top: 10%;
+            left: 5%;
+            animation-delay: 0s;
+        }
+        
+        .bg-circle:nth-child(2) {
+            width: 200px;
+            height: 200px;
+            top: 60%;
+            left: 80%;
+            animation-delay: 2s;
+            background: radial-gradient(circle, rgba(245, 158, 11, 0.2) 0%, rgba(245, 158, 11, 0) 70%);
+        }
+        
+        .bg-circle:nth-child(3) {
+            width: 400px;
+            height: 400px;
+            top: 30%;
+            left: 60%;
+            animation-delay: 4s;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.2) 0%, rgba(139, 92, 246, 0) 70%);
+        }
+        
+        .bg-circle:nth-child(4) {
+            width: 250px;
+            height: 250px;
+            top: 70%;
+            left: 10%;
+            animation-delay: 6s;
+            background: radial-gradient(circle, rgba(236, 72, 153, 0.2) 0%, rgba(236, 72, 153, 0) 70%);
+        }
+        
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) scale(1);
+                opacity: 0.5;
+            }
+            50% {
+                transform: translateY(-20px) scale(1.05);
+                opacity: 0.8;
+            }
+        }
+        
+        /* Mobile Menu */
+        .mobile-menu-btn {
+            display: none;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: 10px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            z-index: 1001;
+        }
+        
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: 80px;
+            left: 0;
+            right: 0;
+            background: rgba(30, 41, 59, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            border-radius: 0 0 20px 20px;
+            z-index: 1000;
+            padding: 1rem;
+        }
+        
+        .mobile-menu.active {
+            display: block;
+        }
+        
+        .mobile-menu a {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            text-decoration: none;
+            color: white;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .mobile-menu a:hover {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--primary);
+            border-radius: 10px;
+        }
+        
+        .navbar {
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 1rem 1.5rem;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 999;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .logo-img {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            object-fit: cover;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        
+        .user-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .user-avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--primary);
+        }
+        
+        .logout-btn {
+            background: rgba(239, 68, 68, 0.2);
+            color: #EF4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .logout-btn:hover {
+            background: rgba(239, 68, 68, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 1.5rem auto;
+            padding: 0 1rem;
+        }
+        
+        .welcome-banner {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.8), rgba(5, 150, 105, 0.8), rgba(245, 158, 11, 0.8));
+            color: white;
+            padding: 1.5rem;
+            border-radius: 20px;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 8px 30px rgba(16, 185, 129, 0.4);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .welcome-banner::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+            transform: rotate(45deg);
+            animation: shine 3s infinite;
+        }
+        
+        @keyframes shine {
+            0% { transform: translateX(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) rotate(45deg); }
+        }
+        
+        .welcome-content h1 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .profile-display {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: rgba(255,255,255,0.1);
+            padding: 1rem;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+            margin-top: 1rem;
+        }
+        
+        .profile-display img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid white;
+        }
+        
+        .search-bar {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1rem 1.5rem;
+            border-radius: 20px;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+        }
+        
+        .search-container {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+        
+        .search-input {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 12px;
+            font-size: 1rem;
+            background: rgba(255,255,255,0.1);
+            color: white;
+            transition: all 0.3s ease;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+        }
+        
+        .search-input::placeholder {
+            color: rgba(255,255,255,0.6);
+        }
+        
+        /* Course Grid */
+        .course-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .course-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            position: relative;
+            border: 1px solid rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .course-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+            border-color: rgba(16, 185, 129, 0.3);
+        }
+        
+        .course-card.locked {
+            opacity: 0.7;
+            filter: grayscale(0.3);
+        }
+        
+        .course-card.locked:hover {
+            transform: none;
+            box-shadow: none;
+            border-color: rgba(255,255,255,0.1);
+        }
+        
+        .course-header {
+            padding: 1.5rem 1.5rem 1rem;
+            position: relative;
+        }
+        
+        .course-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .badge-locked {
+            background: rgba(239, 68, 68, 0.2);
+            color: #EF4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+        
+        .badge-progress {
+            background: rgba(245, 158, 11, 0.2);
+            color: #F59E0B;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+        
+        .badge-completed {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10B981;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+        
+        .badge-free {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10B981;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+        
+        .course-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+            background: linear-gradient(135deg, var(--primary), var(--cyan));
+        }
+        
+        .course-price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+        
+        .course-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            line-height: 1.3;
+        }
+        
+        .course-description {
+            color: rgba(255,255,255,0.7);
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin-bottom: 1rem;
+        }
+        
+        .course-content {
+            padding: 0 1.5rem 1.5rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Parts Container */
+        .parts-container {
+            margin-bottom: 1.5rem;
+        }
+        
+        .part-item {
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .part-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .part-item:hover:not(.locked-part) {
+            background: rgba(30, 41, 59, 0.8);
+            border-color: var(--primary);
+        }
+        
+        .part-item.locked-part {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .part-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+        
+        .part-name {
+            font-weight: 600;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .part-status {
+            font-size: 0.8rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 12px;
+        }
+        
+        .status-completed {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10B981;
+        }
+        
+        .part-pdf {
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.6);
+            font-family: 'Monaco', 'Courier New', monospace;
+            word-break: break-all;
+        }
+        
+        .progress-container {
+            margin-bottom: 1.5rem;
+        }
+        
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.8);
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--cyan));
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+        
+        .course-actions {
+            margin-top: auto;
+            display: flex;
+            gap: 0.75rem;
+        }
+        
+        .btn {
+            padding: 1rem 1.5rem;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            flex: 1;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+        }
+        
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-3px);
+        }
+        
+        .btn-upgrade {
+            background: linear-gradient(135deg, var(--warning), #F97316);
+            color: white;
+            width: 100%;
+        }
+        
+        .btn-upgrade:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+        }
+        
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+        
+        /* Payment Alert */
+        .payment-alert {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(217, 119, 6, 0.2));
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            color: #F59E0B;
+            padding: 1.5rem;
+            border-radius: 20px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            margin-bottom: 1.5rem;
+        }
+        
+        .payment-alert h2 {
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+        
+        .payment-alert p {
+            margin-bottom: 1.5rem;
+            color: rgba(245, 158, 11, 0.9);
+            font-size: 1.1rem;
+        }
+        
+        /* PDF Modal */
+        .pdf-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(15, 23, 42, 0.95);
+            z-index: 10000;
+            backdrop-filter: blur(10px);
+        }
+        
+        .pdf-modal.active {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .pdf-header {
+            padding: 1.5rem;
+            background: rgba(30, 41, 59, 0.9);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .pdf-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .pdf-close {
+            background: rgba(239, 68, 68, 0.2);
+            color: #EF4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .pdf-close:hover {
+            background: rgba(239, 68, 68, 0.3);
+            transform: scale(1.1);
+        }
+        
+        .pdf-container {
+            flex: 1;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .pdf-iframe {
+            flex: 1;
+            width: 100%;
+            border: none;
+            border-radius: 12px;
+            background: white;
+        }
+        
+        .pdf-controls {
+            margin-top: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .pdf-progress {
+            flex: 1;
+        }
+        
+        /* Loading Overlay */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(15, 23, 42, 0.9);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+        
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-top: 3px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 1rem;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .no-courses {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: rgba(255,255,255,0.7);
+        }
+        
+        /* Section Headers */
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 2rem 0 1rem 0;
+        }
+        
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .courses-count {
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.6);
+        }
+        
+        /* User Stats */
+        .user-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        
+        .stat-card {
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 1.25rem;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+            color: var(--primary);
+        }
+        
+        .stat-label {
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.6);
+        }
+        
+        @media (min-width: 768px) {
+            .navbar {
+                padding: 1rem 2rem;
+            }
+            
+            .logo {
+                font-size: 1.8rem;
+            }
+            
+            .container {
+                padding: 0 1.5rem;
+            }
+            
+            .welcome-banner {
+                padding: 2rem;
+                border-radius: 25px;
+            }
+            
+            .welcome-content h1 {
+                font-size: 2.5rem;
+            }
+            
+            .course-grid {
+                grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            }
+            
+            .profile-display img {
+                width: 70px;
+                height: 70px;
+            }
+        }
+        
+        @media (min-width: 1024px) {
+            .course-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .mobile-menu-btn {
+                display: none;
+            }
+            
+            .nav-links {
+                display: flex;
+                gap: 0.5rem;
+            }
+            
+            .nav-links a {
+                text-decoration: none;
+                color: white;
+                font-weight: 500;
+                padding: 0.75rem 1.25rem;
+                border-radius: 12px;
+                transition: all 0.3s ease;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+            
+            .nav-links a:hover, .nav-links a.active {
+                background: rgba(16, 185, 129, 0.2);
+                transform: translateY(-2px);
+                box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+            }
+        }
+        
+        @media (max-width: 1023px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            .course-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .pdf-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .pdf-controls .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-animation">
+        <div class="bg-circle"></div>
+        <div class="bg-circle"></div>
+        <div class="bg-circle"></div>
+        <div class="bg-circle"></div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+        <div class="loading-spinner"></div>
+        <p>Loading your courses...</p>
+    </div>
+
+    <!-- PDF Modal -->
+    <div id="pdfModal" class="pdf-modal">
+        <div class="pdf-header">
+            <div class="pdf-title" id="pdfTitle">Loading PDF...</div>
+            <div class="pdf-close" id="closePdf">
+                <i class="fas fa-times"></i>
+            </div>
+        </div>
+        <div class="pdf-container">
+            <iframe id="pdfIframe" class="pdf-iframe" src=""></iframe>
+            <div class="pdf-controls">
+                <div class="pdf-progress">
+                    <div class="progress-label">
+                        <span>Progress</span>
+                        <span id="pdfProgressPercent">0%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="pdfProgressFill" style="width: 0%"></div>
+                    </div>
+                </div>
+                <button class="btn btn-primary" id="markCompleteBtn">
+                    <i class="fas fa-check-circle"></i> Mark as Completed
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Menu Button -->
+    <button class="mobile-menu-btn" id="mobileMenuBtn">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="dashboard.html"><i class="fas fa-home"></i> Dashboard</a>
+        <a href="earnings.html"><i class="fas fa-chart-line"></i> Earnings</a>
+        <a href="products.html"><i class="fas fa-cube"></i> Packages</a>
+        <a href="course.html" class="active"><i class="fas fa-graduation-cap"></i> Course</a>
+        <a href="referral.html"><i class="fas fa-users"></i> Referral</a>
+        <a href="myteam.html"><i class="fas fa-network-wired"></i> My Team</a>
+        <a href="withdrawal.html"><i class="fas fa-wallet"></i> Withdrawal</a>
+        <a href="transactions.html"><i class="fas fa-exchange-alt"></i> Transactions</a>
+        <a href="profile.html"><i class="fas fa-user"></i> Profile</a>
+        <a href="support.html"><i class="fas fa-headset"></i> Support</a>
+    </div>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="logo">
+            <div class="logo-img">B10</div>
+            Biluxe10 Affiliate
+        </div>
+        <div class="nav-links">
+            <a href="dashboard.html"><i class="fas fa-home"></i> Dashboard</a>
+            <a href="earnings.html"><i class="fas fa-chart-line"></i> Earnings</a>
+            <a href="products.html"><i class="fas fa-cube"></i> Packages</a>
+            <a href="course.html" class="active"><i class="fas fa-graduation-cap"></i> Course</a>
+            <a href="referral.html"><i class="fas fa-users"></i> Referral</a>
+            <a href="myteam.html"><i class="fas fa-network-wired"></i> My Team</a>
+            <a href="withdrawal.html"><i class="fas fa-wallet"></i> Withdrawal</a>
+        </div>
+        <div class="user-section">
+            <button class="logout-btn" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+            <div class="user-profile">
+                <img id="headerProfilePic" src="https://ui-avatars.com/api/?name=User&background=10B981&color=fff&size=128" alt="Profile" class="user-avatar">
+                <div>
+                    <div id="headerUserName" style="font-weight: 600; color: white;">User</div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="welcome-banner">
+            <div class="welcome-content">
+                <h1>Learning Center 🎓</h1>
+                <p style="font-size: 1.1rem; opacity: 0.9;">Master affiliate marketing with our premium courses</p>
+                <div id="paymentAlertContainer"></div>
+            </div>
+            <div class="profile-display">
+                <img id="bannerProfilePic" src="https://ui-avatars.com/api/?name=User&background=10B981&color=fff&size=128" alt="Profile">
+                <div>
+                    <div id="bannerUserName" style="font-weight: 600; font-size: 1.2rem;">User Name</div>
+                    <div id="packageInfo" style="font-size: 0.9rem; opacity: 0.9;">Loading...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- User Stats -->
+        <div class="user-stats">
+            <div class="stat-card">
+                <div class="stat-value" id="userNameStat">User</div>
+                <div class="stat-label">Welcome</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="packageAmount">₹0</div>
+                <div class="stat-label">Your Package</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="progressStat">0%</div>
+                <div class="stat-label">Overall Progress</div>
+            </div>
+        </div>
+
+        <!-- Payment Alert -->
+        <div id="paymentAlert" class="payment-alert" style="display: none;">
+            <h2><i class="fas fa-lock"></i> Course Access Locked</h2>
+            <p>Complete your payment to unlock premium courses and start your learning journey!</p>
+            <a href="products.html" class="btn btn-primary">
+                <i class="fas fa-unlock-alt"></i> Complete Payment Now
+            </a>
+        </div>
+
+        <!-- Search -->
+        <div class="search-bar">
+            <div class="search-container">
+                <input type="text" id="courseSearch" class="search-input" placeholder="Search courses: AI, Crypto, Content, Dropshipping, 1299, 2499...">
+                <div style="color: rgba(255,255,255,0.6); font-size: 0.9rem;">
+                    <span id="courseCount">0</span> courses available
+                </div>
+            </div>
+        </div>
+
+        <!-- Free Course Section -->
+        <div class="section-header">
+            <h2 class="section-title"><i class="fas fa-gift"></i> Free For Everyone</h2>
+            <span class="courses-count" id="freeCount">1 course</span>
+        </div>
+        <div class="course-grid" id="freeCourseGrid"></div>
+
+        <!-- Premium Courses Section -->
+        <div class="section-header">
+            <h2 class="section-title"><i class="fas fa-crown"></i> Premium Courses</h2>
+            <span class="courses-count" id="premiumCount">0 courses</span>
+        </div>
+        <div class="course-grid" id="premiumCourseGrid"></div>
+
+        <!-- No Results -->
+        <div id="noCourses" class="no-courses" style="display: none;">
+            <i class="fas fa-book-open" style="font-size: 4rem; opacity: 0.3; margin-bottom: 1rem;"></i>
+            <h3>No courses found</h3>
+            <p>Try searching with different keywords</p>
+        </div>
+    </div>
+
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDxxkC9iD1V1w-53Kf4oBrHEXlBLvCc7sE",
+            authDomain: "biluxe10-3e894.firebaseapp.com",
+            projectId: "biluxe10-3e894",
+            storageBucket: "biluxe10-3e894.firebasestorage.app",
+            messagingSenderId: "804749588233",
+            appId: "1:804749588233:web:7777648c0c7834733c05d8"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const auth = firebase.auth();
+
+        // Course Data - EXACTLY AS SPECIFIED
+        const COURSES = [
+            {
+                id: 'free_guide',
+                title: 'The Ultimate Biluxe10 Affiliate Mentors Playbook',
+                subtitle: 'Essential guide for all affiliate marketers',
+                price: 0,
+                packageRequired: 0,
+                parts: [
+                    {
+                        id: 'part_1',
+                        name: 'Complete Playbook',
+                        pdfUrl: 'The-Ultimate-Biluxe10-Affiliate-Mentors-Playbook.pdf',
+                        fileName: 'The-Ultimate-Biluxe10-Affiliate-Mentors-Playbook.pdf'
+                    }
+                ],
+                keywords: ['free', 'guide', 'playbook', 'mentor', 'affiliate', 'all'],
+                icon: 'fas fa-book'
+            },
+            {
+                id: 'starter_success',
+                title: 'Starter Success Pack',
+                subtitle: '₹1 Lakh Blueprint System',
+                price: 1299,
+                packageRequired: 1299,
+                parts: [
+                    {
+                        id: 'part_1',
+                        name: 'Part 1: ₹1 Lakh Blueprint',
+                        pdfUrl: 'BILUXE10-THE-indian-rupee1-LAKH-BLUEPRINT.pdf',
+                        fileName: 'BILUXE10-THE-indian-rupee1-LAKH-BLUEPRINT.pdf'
+                    },
+                    {
+                        id: 'part_2',
+                        name: 'Part 2: Chapter 10 System',
+                        pdfUrl: 'Chapter-10-The-indian-rupee1-Lakh-System.pdf',
+                        fileName: 'Chapter-10-The-indian-rupee1-Lakh-System.pdf'
+                    }
+                ],
+                keywords: ['starter', 'success', '1 lakh', '1299', 'blueprint', 'basic'],
+                icon: 'fas fa-rocket'
+            },
+            {
+                id: 'advance_success',
+                title: 'Advance Success Pack',
+                subtitle: '₹10 Lakh Mastery System',
+                price: 2499,
+                packageRequired: 2499,
+                parts: [
+                    {
+                        id: 'part_1',
+                        name: 'Part 1: ₹10 Lakh Mastery',
+                        pdfUrl: 'BILUXE10-THE-indian-rupee10-LAKH-MASTERY.pdf',
+                        fileName: 'BILUXE10-THE-indian-rupee10-LAKH-MASTERY.pdf'
+                    },
+                    {
+                        id: 'part_2',
+                        name: 'Part 2: Financial Systems',
+                        pdfUrl: 'MODULE-4-FINANCIAL-SYSTEMS.pdf',
+                        fileName: 'MODULE-4-FINANCIAL-SYSTEMS.pdf'
+                    }
+                ],
+                keywords: ['advance', 'success', '10 lakh', '2499', 'mastery', 'financial'],
+                icon: 'fas fa-chart-line'
+            },
+            {
+                id: 'digital_empire',
+                title: 'Digital Empire System',
+                subtitle: '₹1 Crore Blueprint',
+                price: 3499,
+                packageRequired: 3499,
+                parts: [
+                    {
+                        id: 'part_1',
+                        name: 'Part 1: ₹1 Crore Blueprint',
+                        pdfUrl: 'BILUXE10-indian-rupee1-Crore-Blueprint.pdf',
+                        fileName: 'BILUXE10-indian-rupee1-Crore-Blueprint.pdf'
+                    },
+                    {
+                        id: 'part_2',
+                        name: 'Part 2: Advanced Marketing',
+                        pdfUrl: 'Module-5-Advanced-Marketing-Months-19-24.pdf',
+                        fileName: 'Module-5-Advanced-Marketing-Months-19-24.pdf'
+                    }
+                ],
+                keywords: ['digital', 'empire', '1 crore', '3499', 'blueprint', 'advanced'],
+                icon: 'fas fa-globe'
+            },
+            {
+                id: 'content_mystery',
+                title: 'Content Mystery',
+                subtitle: 'Content Creation Mastery',
+                price: 499,
+                packageRequired: 499,
+                parts: [
+                    {
+                        id: 'part_1',
+                        name: 'Part 1: Content Creation',
+                        pdfUrl: 'BILUXE10-CONTENT-CREATION-MASTERY.pdf',
+                        fileName: 'BILUXE10-CONTENT-CREATION-MASTERY.pdf'
+                    },
+                    {
+                        id: 'part_2',
+                        name: 'Part 2: Editing Mastery',
+                        pdfUrl: 'Module-5-Editing-Mastery.pdf',
+                        fileName: 'Module-5-Editing-Mastery.pdf'
+                    }
+                ],
+                keywords: ['content', 'creation', 'mystery', '499', 'editing', 'social'],
+                icon: 'fas fa-video'
+            },
+            {
+                id: 'editing_mastery',
+                title: 'Editing Mastery',
+                subtitle: 'Professional Video Editing',
+                price: 4999,
+                packageRequired: 4999,
+                parts: [
+                    {
+                        id: 'part_1',
+                        name: 'Complete Editing Guide',
+                        pdfUrl: 'BILUXE10-EDITING-MASTERY.pdf',
+                        fileName: 'BILUXE10-EDITING-MASTERY.pdf'
+                    }
+                ],
+                keywords: ['editing', 'mastery', 'video', '4999', 'professional'],
+                icon: 'fas fa-cut'
+            },
+            {
+                id: 'dropshipping_mystery',
+                title: 'Dropshipping Mystery',
+                subtitle: 'E-commerce Mastery',
+                price: 9999,
+                packageRequired: 9999,
+                parts: [
+                    {
+                        id: 'part_1',
+                        name: 'Part 1: Dropshipping Mastery',
+                        pdfUrl: 'BILUXE10-DROPSHIPPING-MASTERY.pdf',
+                        fileName: 'BILUXE10-DROPSHIPPING-MASTERY.pdf'
+                    },
+                    {
+                        id: 'part_2',
+                        name: 'Part 2: Instagram Store Setup',
+                        pdfUrl: 'Instagram-Store-Setup.pdf',
+                        fileName: 'Instagram-Store-Setup.pdf'
+                    }
+                ],
+                keywords: ['dropshipping', 'ecommerce', 'store', '9999', 'instagram'],
+                icon: 'fas fa-shopping-cart'
+            },
+            {
+                id: 'crypto_trading',
+                title: 'Crypto Trading',
+                subtitle: 'Cryptocurrency Mastery',
+                price: 15999,
+                packageRequired: 15999,
+                parts: [
+                    {
+                        id: 'part_1',
+                        name: 'Crypto Trading Mastery',
+                        pdfUrl: 'BILUXE10-CRYPTO-TRADING-MASTERY.pdf',
+                        fileName: 'BILUXE10-CRYPTO-TRADING-MASTERY.pdf'
+                    }
+                ],
+                keywords: ['crypto', 'trading', 'cryptocurrency', '15999', 'bitcoin'],
+                icon: 'fas fa-coins'
+            },
+            {
+                id: 'future_ai',
+                title: 'Future AI System',
+                subtitle: 'AI Automation Mastery',
+                price: 23999,
+                packageRequired: 23999,
+                parts: [
+                    {
+                        id: 'part_1',
+                        name: 'Part 1: Future AI System',
+                        pdfUrl: 'BILUXE10-FUTURE-AI-SYSTEM-MASTERY.pdf',
+                        fileName: 'BILUXE10-FUTURE-AI-SYSTEM-MASTERY.pdf'
+                    },
+                    {
+                        id: 'part_2',
+                        name: 'Part 2: AI Automation Systems',
+                        pdfUrl: 'AI-Automation-Systems-Phase-3.pdf',
+                        fileName: 'AI-Automation-Systems-Phase-3.pdf'
+                    }
+                ],
+                keywords: ['ai', 'future', 'automation', '23999', 'artificial'],
+                icon: 'fas fa-robot'
+            }
+        ];
+
+        // Global Variables
+        let currentUser = null;
+        let userData = null;
+        let unsubscribe = null;
+        let currentModalCourse = null;
+        let currentModalPart = null;
+        let userProgress = {};
+
+        // DOM Elements
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        const courseGrid = document.getElementById('courseGrid');
+        const freeCourseGrid = document.getElementById('freeCourseGrid');
+        const premiumCourseGrid = document.getElementById('premiumCourseGrid');
+        const courseSearch = document.getElementById('courseSearch');
+        const courseCount = document.getElementById('courseCount');
+        const freeCount = document.getElementById('freeCount');
+        const premiumCount = document.getElementById('premiumCount');
+        const noCourses = document.getElementById('noCourses');
+        const paymentAlert = document.getElementById('paymentAlert');
+        const pdfModal = document.getElementById('pdfModal');
+        const pdfIframe = document.getElementById('pdfIframe');
+        const pdfTitle = document.getElementById('pdfTitle');
+        const pdfProgressPercent = document.getElementById('pdfProgressPercent');
+        const pdfProgressFill = document.getElementById('pdfProgressFill');
+        const markCompleteBtn = document.getElementById('markCompleteBtn');
+        const closePdf = document.getElementById('closePdf');
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+        const userNameStat = document.getElementById('userNameStat');
+        const packageAmount = document.getElementById('packageAmount');
+        const progressStat = document.getElementById('progressStat');
+
+        // Helper Functions
+        function showLoading() { loadingOverlay.style.display = 'flex'; }
+        function hideLoading() { loadingOverlay.style.display = 'none'; }
+
+        function getSanitizedEmail(email) {
+            return email.toLowerCase().replace(/\./g, '_');
+        }
+
+        // STRICT ACCESS LOGIC: Jitna package utna access, zyada ka nahi
+        function hasCourseAccess(course) {
+            if (!userData) return false;
+            if (course.price === 0) return true; // Free course for everyone
+            
+            // Payment must be approved
+            if (userData.paymentStatus !== 'approved') return false;
+            if (!userData.packageAmount) return false;
+            
+            // EXACT LOGIC: user.packageAmount >= course.price
+            return userData.packageAmount >= course.price;
+        }
+
+        function getCourseProgress(courseId) {
+            if (!userProgress[courseId]) return 0;
+            const course = COURSES.find(c => c.id === courseId);
+            if (!course) return 0;
+            
+            let completedParts = 0;
+            course.parts.forEach(part => {
+                if (userProgress[courseId]?.[part.id] === true) {
+                    completedParts++;
+                }
+            });
+            
+            return Math.round((completedParts / course.parts.length) * 100);
+        }
+
+        function calculateOverallProgress() {
+            let totalProgress = 0;
+            let accessibleCourses = 0;
+            
+            COURSES.forEach(course => {
+                if (hasCourseAccess(course)) {
+                    const progress = getCourseProgress(course.id);
+                    totalProgress += progress;
+                    accessibleCourses++;
+                }
+            });
+            
+            return accessibleCourses > 0 ? Math.round(totalProgress / accessibleCourses) : 0;
+        }
+
+        // Mobile Menu Toggle
+        mobileMenuBtn.addEventListener('click', function() {
+            mobileMenu.classList.toggle('active');
+        });
+
+        document.addEventListener('click', function(event) {
+            if (!mobileMenu.contains(event.target) && !mobileMenuBtn.contains(event.target)) {
+                mobileMenu.classList.remove('active');
+            }
+        });
+
+        // Create Course Card
+        function createCourseCard(course) {
+            const hasAccess = hasCourseAccess(course);
+            const progress = getCourseProgress(course.id);
+            const isFree = course.price === 0;
+            const canOpen = hasAccess || isFree;
+            
+            const card = document.createElement('div');
+            card.className = `course-card ${!hasAccess && !isFree ? 'locked' : ''}`;
+            
+            // Badge
+            let badgeClass = 'badge-progress';
+            let badgeText = `${progress}%`;
+            
+            if (!hasAccess && !isFree) {
+                badgeClass = 'badge-locked';
+                badgeText = 'Upgrade Required';
+            } else if (progress === 100) {
+                badgeClass = 'badge-completed';
+                badgeText = 'Completed';
+            } else if (isFree) {
+                badgeClass = 'badge-free';
+                badgeText = 'FREE FOR ALL';
+            }
+            
+            // Parts HTML
+            let partsHTML = '';
+            course.parts.forEach((part, index) => {
+                const isCompleted = userProgress[course.id]?.[part.id] === true;
+                const partCanOpen = canOpen;
+                
+                partsHTML += `
+                    <div class="part-item ${!partCanOpen ? 'locked-part' : ''}"
+                         ${partCanOpen ? `onclick="openPart('${course.id}', '${part.id}')"` : ''}>
+                        <div class="part-header">
+                            <div class="part-name">
+                                <i class="fas fa-file-pdf"></i>
+                                ${part.name}
+                            </div>
+                            <div class="part-status ${isCompleted ? 'status-completed' : ''}">
+                                ${isCompleted ? '✓ Completed' : partCanOpen ? 'Click to View' : 'Locked'}
+                            </div>
+                        </div>
+                        <div class="part-pdf">${part.fileName}</div>
+                    </div>
+                `;
+            });
+            
+            card.innerHTML = `
+                <div class="course-header">
+                    <div class="course-icon">
+                        <i class="${course.icon}"></i>
+                    </div>
+                    <div class="course-badge ${badgeClass}">${badgeText}</div>
+                    <div class="course-price">${isFree ? 'FREE' : `₹${course.price}`}</div>
+                    <h3 class="course-title">${course.title}</h3>
+                    <p class="course-description">${course.subtitle}</p>
+                </div>
+                <div class="course-content">
+                    <div class="parts-container">
+                        ${partsHTML}
+                    </div>
+                    
+                    <div class="progress-container">
+                        <div class="progress-label">
+                            <span>Course Progress</span>
+                            <span>${progress}%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: ${progress}%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="course-actions">
+                        ${!hasAccess && !isFree ? `
+                            <button class="btn btn-upgrade" onclick="upgradePackage(${course.price})">
+                                <i class="fas fa-arrow-up"></i> Upgrade to ₹${course.price}
+                            </button>
+                        ` : `
+                            <button class="btn btn-primary" ${course.parts[0] ? `onclick="openPart('${course.id}', '${course.parts[0].id}')"` : ''}>
+                                <i class="fas fa-play"></i> ${progress === 0 ? 'Start' : progress === 100 ? 'Review' : 'Continue'}
+                            </button>
+                        `}
+                    </div>
+                </div>
+            `;
+            
+            return card;
+        }
+
+        // Render Courses with Search
+        function renderCourses(searchTerm = '') {
+            const term = searchTerm.toLowerCase().trim();
+            
+            // Filter courses based on search
+            const filteredCourses = COURSES.filter(course => {
+                if (term === '') return true;
+                
+                // Search in title
+                if (course.title.toLowerCase().includes(term)) return true;
+                
+                // Search in subtitle
+                if (course.subtitle.toLowerCase().includes(term)) return true;
+                
+                // Search in keywords
+                if (course.keywords.some(keyword => keyword.toLowerCase().includes(term))) return true;
+                
+                // Search by price/package
+                if (`₹${course.price}`.includes(term)) return true;
+                if (`${course.price}`.includes(term)) return true;
+                if (`package ${course.price}`.includes(term)) return true;
+                
+                return false;
+            });
+            
+            // Clear grids
+            freeCourseGrid.innerHTML = '';
+            premiumCourseGrid.innerHTML = '';
+            
+            // Separate courses
+            const freeCourses = filteredCourses.filter(c => c.price === 0);
+            const premiumCourses = filteredCourses.filter(c => c.price > 0);
+            
+            // Update counts
+            freeCount.textContent = `${freeCourses.length} course${freeCourses.length !== 1 ? 's' : ''}`;
+            premiumCount.textContent = `${premiumCourses.length} course${premiumCourses.length !== 1 ? 's' : ''}`;
+            courseCount.textContent = filteredCourses.length;
+            
+            // Render free courses
+            freeCourses.forEach(course => {
+                freeCourseGrid.appendChild(createCourseCard(course));
+            });
+            
+            // Render premium courses
+            premiumCourses.forEach(course => {
+                premiumCourseGrid.appendChild(createCourseCard(course));
+            });
+            
+            // Show/hide no results
+            if (filteredCourses.length === 0) {
+                noCourses.style.display = 'block';
+                freeCourseGrid.style.display = 'none';
+                premiumCourseGrid.style.display = 'none';
+            } else {
+                noCourses.style.display = 'none';
+                freeCourseGrid.style.display = 'grid';
+                premiumCourseGrid.style.display = 'grid';
+            }
+            
+            // Update overall progress
+            const overallProgress = calculateOverallProgress();
+            progressStat.textContent = `${overallProgress}%`;
+        }
+
+        // Open PDF Part
+        function openPart(courseId, partId) {
+            const course = COURSES.find(c => c.id === courseId);
+            if (!course) return;
+            
+            // STRICT ACCESS CHECK before opening
+            if (course.price > 0 && !hasCourseAccess(course)) {
+                alert(`You need ₹${course.price} package to access this course\n\nYour package: ₹${userData?.packageAmount || 0}`);
+                return;
+            }
+            
+            const part = course.parts.find(p => p.id === partId);
+            if (!part) return;
+            
+            currentModalCourse = course;
+            currentModalPart = part;
+            
+            // Update modal
+            pdfTitle.textContent = `${course.title} - ${part.name}`;
+            pdfIframe.src = part.pdfUrl;
+            
+            // Update progress
+            const isCompleted = userProgress[courseId]?.[partId] === true;
+            const progress = getCourseProgress(courseId);
+            pdfProgressPercent.textContent = `${progress}%`;
+            pdfProgressFill.style.width = `${progress}%`;
+            
+            // Update button
+            markCompleteBtn.disabled = isCompleted;
+            markCompleteBtn.innerHTML = isCompleted ? 
+                '<i class="fas fa-check-circle"></i> Already Completed' :
+                '<i class="fas fa-check-circle"></i> Mark as Completed';
+            
+            // Show modal
+            pdfModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Mark Part as Completed
+        async function markPartComplete() {
+            if (!currentModalCourse || !currentModalPart || !currentUser) return;
+            
+            try {
+                const emailId = getSanitizedEmail(currentUser.email);
+                const userRef = db.collection('user_collections').doc(emailId);
+                
+                // Update local progress
+                if (!userProgress[currentModalCourse.id]) {
+                    userProgress[currentModalCourse.id] = {};
+                }
+                userProgress[currentModalCourse.id][currentModalPart.id] = true;
+                
+                // Update Firestore
+                await userRef.update({
+                    [`courseProgress.${currentModalCourse.id}.${currentModalPart.id}`]: true
+                });
+                
+                // Update UI
+                markCompleteBtn.disabled = true;
+                markCompleteBtn.innerHTML = '<i class="fas fa-check-circle"></i> Already Completed';
+                
+                // Re-render courses
+                renderCourses(courseSearch.value);
+                
+                // Show success
+                showToast('Part marked as completed!');
+            } catch (error) {
+                console.error('Error updating progress:', error);
+                showToast('Failed to update progress', 'error');
+            }
+        }
+
+        // Close PDF Modal
+        function closePdfModal() {
+            pdfModal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+            pdfIframe.src = '';
+            currentModalCourse = null;
+            currentModalPart = null;
+        }
+
+        // Upgrade Package
+        function upgradePackage(minAmount) {
+            window.location.href = `products.html?upgrade=${minAmount}`;
+        }
+
+        // Toast Notification
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.textContent = message;
+            toast.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: ${type === 'success' ? '#10B981' : '#EF4444'};
+                color: white;
+                padding: 1rem 1.5rem;
+                border-radius: 12px;
+                z-index: 10000;
+                font-weight: 600;
+                animation: slideIn 0.3s ease;
+            `;
+            
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // Load User Profile
+        function loadUserProfile(userData) {
+            const name = userData.fullName || currentUser.email.split('@')[0];
+            const defaultAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=10B981&color=fff&size=128`;
+            
+            document.getElementById('headerProfilePic').src = defaultAvatar;
+            document.getElementById('bannerProfilePic').src = defaultAvatar;
+            document.getElementById('headerUserName').textContent = name;
+            document.getElementById('bannerUserName').textContent = name;
+            userNameStat.textContent = name;
+            
+            if (userData) {
+                const packageInfo = document.getElementById('packageInfo');
+                if (userData.selectedPackage) {
+                    packageInfo.textContent = `${userData.selectedPackage.toUpperCase()} Package • ₹${userData.packageAmount || 0}`;
+                }
+                packageAmount.textContent = `₹${userData.packageAmount || 0}`;
+            }
+        }
+
+        // Show Payment Alert
+        function showPaymentAlert() {
+            if (userData && userData.paymentStatus !== "approved") {
+                paymentAlert.style.display = 'block';
+            } else {
+                paymentAlert.style.display = 'none';
+            }
+        }
+
+        // Logout
+        function logout() {
+            if (unsubscribe) unsubscribe();
+            auth.signOut().then(() => {
+                window.location.href = 'auth.html';
+            }).catch((error) => {
+                console.error("Logout error:", error);
+            });
+        }
+
+        // Event Listeners
+        courseSearch.addEventListener('input', (e) => {
+            renderCourses(e.target.value);
+        });
+
+        markCompleteBtn.addEventListener('click', markPartComplete);
+        closePdf.addEventListener('click', closePdfModal);
+
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') closePdfModal();
+        });
+
+        pdfModal.addEventListener('click', function(event) {
+            if (event.target === pdfModal) closePdfModal();
+        });
+
+        // Firebase Auth State Observer
+        document.addEventListener('DOMContentLoaded', function() {
+            auth.onAuthStateChanged(async (user) => {
+                if (user) {
+                    currentUser = user;
+                    showLoading();
+                    
+                    const emailId = getSanitizedEmail(user.email);
+                    
+                    unsubscribe = db.collection('user_collections').doc(emailId)
+                        .onSnapshot((doc) => {
+                            if (doc.exists) {
+                                userData = doc.data();
+                                
+                                loadUserProfile(userData);
+                                showPaymentAlert();
+                                
+                                userProgress = userData.courseProgress || {};
+                                renderCourses();
+                                
+                                hideLoading();
+                            } else {
+                                // No document found
+                                paymentAlert.style.display = 'block';
+                                hideLoading();
+                            }
+                        }, (error) => {
+                            console.error("Error loading data:", error);
+                            hideLoading();
+                        });
+                } else {
+                    window.location.href = 'auth.html';
+                }
+            });
+        });
+
+        // Add animation styles
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOut {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Global functions for onclick handlers
+        window.openPart = openPart;
+        window.upgradePackage = upgradePackage;
+        window.logout = logout;
+        window.markPartComplete = markPartComplete;
+    </script>
+</body>
+</html>
