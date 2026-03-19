@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biluxe10 · secure payment</title>
+    <!-- Font Awesome 6 (clean icons) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Google Font: Inter (crisp & modern) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Inter", system-ui, -apple-system, sans-serif;
+            background: #f0f5fa;  /* very light solid background, no glow */
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .payment-container {
+            max-width: 1300px;
+            width: 100%;
+        }
+
+        /* ----- HEADER – clean, sharp, no effects ----- */
+        .solid-header {
+            background: #0f172a; /* deep royal blue */
+            border-radius: 32px;
+            padding: 1rem 2rem;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            border: 2px solid #d4af37;
+            box-shadow: none;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        /* your real logo image – pure, no filters */
+        .real-logo {
+            height: 58px;
+            width: auto;
+            display: block;
+            border-radius: 12px;
+            border: 2px solid #d4af37;
+            background: white;
+            object-fit: contain;
+        }
+
+        .brand-name {
+            font-size: 1.9rem;
+            font-weight: 700;
+            color: white;
+            letter-spacing: -0.02em;
+        }
+
+        .brand-name span {
+            color: #d4af37;
+            font-weight: 800;
+            margin-left: 4px;
+        }
+
+        .upi-badge {
+            background: #10b981; /* solid green */
+            color: white;
+            font-weight: 600;
+            padding: 0.6rem 2rem;
+            border-radius: 60px;
+            font-size: 1rem;
+            border: 2px solid #d4af37;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .upi-badge i {
+            color: white;
+        }
+
+        /* ----- MAIN CARD – absolutely flat, solid colors, no blur, no glow ----- */
+        .payment-card {
+            display: grid;
+            grid-template-columns: 1.2fr 1.8fr;
+            background: #ffffff;
+            border-radius: 40px;
+            border: 2px solid #d4af37;
+            overflow: hidden;
+            box-shadow: none;
+        }
+
+        /* LEFT PANEL – solid light green (very light, pure) */
+        .left-panel {
+            background: #e6f7ec;  /* flat light green, no gradient */
+            border-right: 2px solid #d4af37;
+            padding: 2.5rem 2rem;
+        }
+
+        .section-label {
+            background: #0f172a;
+            color: white;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0.6rem 1.8rem;
+            border-radius: 60px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            border: 2px solid #d4af37;
+            margin-bottom: 2rem;
+        }
+
+        .section-label i {
+            color: #d4af37;
+        }
+
+        .summary-block {
+            background: #ffffff;
+            border: 2px solid #d4af37;
+            border-radius: 32px;
+            padding: 2rem 1.8rem;
+            margin-bottom: 2rem;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 1rem 0;
+            border-bottom: 1px solid #cbd5e1;
+            font-weight: 500;
+            color: #0f172a;
+        }
+
+        .summary-row:last-child {
+            border-bottom: none;
+        }
+
+        .summary-row .value {
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .amount-large {
+            font-size: 3.2rem;
+            font-weight: 800;
+            color: #0f172a;
+            line-height: 1.1;
+            margin: 1rem 0 0.5rem;
+        }
+
+        .amount-large small {
+            font-size: 1rem;
+            font-weight: 500;
+            color: #10b981;
+            margin-left: 0.5rem;
+        }
+
+        /* UPI identity – solid dark blue, flat */
+        .upi-box {
+            background: #0f172a;
+            border: 2px solid #d4af37;
+            border-radius: 40px;
+            padding: 1.8rem 2rem;
+            text-align: center;
+            margin: 2rem 0 2.5rem;
+        }
+
+        .upi-code {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: #d4af37;
+            word-break: break-all;
+            line-height: 1.2;
+        }
+
+        .upi-verify {
+            color: #a0f0c0;
+            font-size: 1rem;
+            margin-top: 0.7rem;
+        }
+
+        .upi-verify i {
+            color: #10b981;
+            margin-right: 6px;
+        }
+
+        /* manual section – flat with borders */
+        .manual-section {
+            background: #ffffff;
+            border: 2px solid #d4af37;
+            border-radius: 32px;
+            padding: 1.8rem 1.5rem;
+        }
+
+        .manual-section h4 {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.3rem;
+            color: #0f172a;
+            margin-bottom: 1.5rem;
+        }
+
+        .manual-section h4 i {
+            color: #25D366;
+            background: white;
+            border-radius: 50%;
+            border: 2px solid #d4af37;
+            padding: 6px;
+        }
+
+        .whatsapp-btn {
+            background: #25D366;
+            border: 2px solid #0f172a;
+            color: white;
+            width: 100%;
+            padding: 1.2rem;
+            border-radius: 80px;
+            font-weight: 700;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            text-decoration: none;
+            transition: none;
+            box-shadow: none;
+        }
+
+        .whatsapp-btn:hover {
+            background: #20b359; /* simple darken, no glow */
+            border-color: #0f172a;
+        }
+
+        .manual-note {
+            margin-top: 1rem;
+            background: #f1f5f9;
+            padding: 0.9rem 1.2rem;
+            border-radius: 60px;
+            font-size: 0.9rem;
+            color: #0f172a;
+            border: 1px solid #d4af37;
+        }
+
+        /* RIGHT PANEL – pure white, flat */
+        .right-panel {
+            background: #ffffff;
+            padding: 2.5rem 2.5rem;
+        }
+
+        .right-panel h2 {
+            font-size: 2.3rem;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 0.2rem;
+        }
+
+        .right-panel h2 i {
+            color: #10b981;
+            margin-right: 12px;
+        }
+
+        .dest-row {
+            background: #f1f5f9;
+            border-left: 6px solid #d4af37;
+            padding: 0.9rem 2rem;
+            display: inline-block;
+            border-radius: 60px;
+            margin: 1.2rem 0 2rem;
+            font-weight: 500;
+            border: 2px solid #d4af37;
+            border-left-width: 6px;
+        }
+
+        .dest-row strong {
+            background: #0f172a;
+            color: #d4af37;
+            padding: 6px 20px;
+            border-radius: 60px;
+            margin-left: 15px;
+            font-weight: 700;
+            border: 1px solid #d4af37;
+        }
+
+        .selected-msg {
+            background: #e6f7ec;
+            border: 2px solid #d4af37;
+            border-radius: 60px;
+            padding: 1rem 2rem;
+            display: inline-block;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            color: #0f172a;
+        }
+
+        .selected-msg i {
+            color: #10b981;
+            margin-right: 10px;
+        }
+
+        /* app grid – flat tiles */
+        .app-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.2rem;
+            margin: 2rem 0 2.5rem;
+        }
+
+        .app-tile {
+            background: #f8fafc;
+            border: 2px solid #d4af37;
+            border-radius: 34px;
+            padding: 1.5rem 0.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #0f172a;
+            font-weight: 600;
+            transition: background 0.1s;
+        }
+
+        .app-tile i {
+            font-size: 2.6rem;
+            margin-bottom: 8px;
+        }
+
+        .app-tile:hover {
+            background: #e6f7ec;
+            border-color: #0f172a;
+        }
+
+        .phonepe { color: #5f259f; }
+        .googlepay { color: #4285F4; }
+        .paytm { color: #00baf2; }
+        .amazon { color: #ff9900; }
+        .bhim { color: #004d40; }
+        .whatsapp { color: #25D366; }
+
+        .security-strip {
+            background: #f1f5f9;
+            border: 2px solid #d4af37;
+            border-radius: 40px;
+            padding: 1.2rem 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .security-strip i {
+            font-size: 2rem;
+            color: #10b981;
+        }
+
+        .security-strip .gold {
+            color: #d4af37;
+            font-weight: 700;
+        }
+
+        .footer-links {
+            margin-top: 2rem;
+            text-align: center;
+            color: #334155;
+        }
+
+        .footer-links a {
+            color: #0f172a;
+            font-weight: 700;
+            text-decoration: none;
+            border-bottom: 2px solid #d4af37;
+        }
+
+        /* responsive */
+        @media (max-width: 900px) {
+            .payment-card {
+                grid-template-columns: 1fr;
+            }
+            .left-panel {
+                border-right: none;
+                border-bottom: 2px solid #d4af37;
+            }
+        }
+        @media (max-width: 500px) {
+            .app-grid {
+                grid-template-columns: repeat(2,1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="payment-container">
+
+    <!-- HEADER with YOUR EXACT LOGO filename -->
+    <div class="solid-header">
+        <div class="logo-area">
+            <!-- YOUR LOGO: Screenshot_2025-10-30-19-48-01-770_com.google.android.apps.maps (1).jpg -->
+            <img src="Screenshot_2025-10-30-19-48-01-770_com.google.android.apps.maps (1).jpg" 
+                 alt="Biluxe10 logo" 
+                 class="real-logo"
+                 onerror="this.src='https://via.placeholder.com/150x58/0f172a/d4af37?text=Biluxe10'">
+            <div class="brand-name">biluxe10<span>.</span></div>
+        </div>
+        <div class="upi-badge">
+            <i class="fas fa-shield-alt"></i> biluxe10@upi
+        </div>
+    </div>
+
+    <!-- MAIN CARD – no light effects, pure solid -->
+    <div class="payment-card" id="paymentCard">
+
+        <!-- LEFT PANEL (light green solid) -->
+        <div class="left-panel">
+            <div class="section-label">
+                <i class="fas fa-lock"></i> secured summary
+            </div>
+
+            <!-- order summary dynamic -->
+            <div class="summary-block" id="summaryBlock">
+                <div class="summary-row">
+                    <span class="label"><i class="fas fa-box"></i> package</span>
+                    <span class="value" id="packageNameDisplay">Starter Success Pro</span>
+                </div>
+                <div class="summary-row">
+                    <span class="label"><i class="fas fa-tag"></i> amount</span>
+                    <span class="value" id="amountDisplay">₹1299</span>
+                </div>
+                <div class="amount-large" id="bigAmount">₹1299 <small>INR</small></div>
+            </div>
+
+            <!-- fixed UPI ID (biluxe10@upi) -->
+            <div class="upi-box">
+                <div class="upi-code">biluxe10@upi</div>
+                <div class="upi-verify"><i class="fas fa-check-circle"></i> official & active</div>
+            </div>
+
+            <!-- manual whatsapp section (pure) -->
+            <div class="manual-section">
+                <h4><i class="fab fa-whatsapp"></i> manual payment</h4>
+                <a href="#" class="whatsapp-btn" id="whatsappManualBtn" target="_blank">
+                    <i class="fab fa-whatsapp"></i> +91 97432 54743
+                </a>
+                <div class="manual-note" id="manualPreview">
+                    <i class="fas fa-comment"></i> “I have to enroll with <span id="manualPackSpan">Starter Success</span> (amount ₹1299) ...”
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT PANEL (pure white) -->
+        <div class="right-panel">
+            <h2><i class="fas fa-bolt"></i> instant pay</h2>
+            <div class="dest-row">
+                <i class="fas fa-arrow-right" style="color:#d4af37;"></i> paying to <strong>biluxe10@upi</strong>
+            </div>
+
+            <!-- dynamic selected package message -->
+            <div class="selected-msg" id="selectedPackMsg">
+                <i class="fas fa-check-circle"></i> now paying: <span id="selectedPackSpan">Starter Success Pro (₹1299)</span>
+            </div>
+
+            <!-- UPI app grid – crisp flat tiles -->
+            <div class="app-grid" id="appGrid">
+                <a href="#" class="app-tile" id="phonepeLink"><i class="fas fa-mobile-alt phonepe"></i><span>PhonePe</span></a>
+                <a href="#" class="app-tile" id="googlepayLink"><i class="fab fa-google-pay googlepay"></i><span>Google Pay</span></a>
+                <a href="#" class="app-tile" id="paytmLink"><i class="fas fa-rupee-sign paytm"></i><span>Paytm</span></a>
+                <a href="#" class="app-tile" id="amazonLink"><i class="fab fa-amazon amazon"></i><span>Amazon Pay</span></a>
+                <a href="#" class="app-tile" id="bhimLink"><i class="fas fa-university bhim"></i><span>BHIM</span></a>
+                <a href="#" class="app-tile" id="waLink"><i class="fab fa-whatsapp whatsapp"></i><span>WhatsApp</span></a>
+            </div>
+
+            <!-- security strip flat -->
+            <div class="security-strip">
+                <i class="fas fa-shield"></i>
+                <span><strong class="gold">✓</strong> 256-bit plain</span>
+                <span><i class="fas fa-leaf" style="color:#10b981;"></i> no effects</span>
+            </div>
+
+            <div class="footer-links">
+                <i class="fas fa-lock" style="color:#10b981;"></i> biluxe10 · <a href="products.html">← change package</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript – dynamic update based on URL, corrects 999→1299, builds intents -->
+<script>
+    (function() {
+        const params = new URLSearchParams(window.location.search);
+        let amount = params.get('amount') || '1299';
+        let packageId = params.get('package') || 'starter-success';
+
+        amount = amount.replace('₹', '').trim();
+
+        // amount mapping (ensuring starter success is 1299)
+        const packageAmountMap = {
+            'basic': 250,
+            'content-mastery': 499,
+            'starter-success': 1299,      // corrected
+            'advanced-success': 2499,
+            'digital-empire': 3499,
+            'editing-mastery': 4999,
+            'dropshipping': 9999,
+            'crypto-trading': 15999,
+            'ai-mastery': 23999
+        };
+
+        if (packageAmountMap[packageId]) {
+            amount = packageAmountMap[packageId].toString();
+        } else {
+            packageId = 'starter-success';
+            amount = '1299';
+        }
+
+        // pretty names
+        const prettyNames = {
+            'basic': 'Basic Registration (₹250)',
+            'content-mastery': 'Content Mastery Pro (₹499)',
+            'starter-success': 'Starter Success Pro (₹1299)',
+            'advanced-success': 'Advanced Success System (₹2499)',
+            'digital-empire': 'Digital Empire Builder (₹3499)',
+            'editing-mastery': 'Professional Editing Suite (₹4999)',
+            'dropshipping': 'Dropshipping Dominance (₹9999)',
+            'crypto-trading': 'Crypto Trading Pro (₹15999)',
+            'ai-mastery': 'AI Business Revolution (₹23999)'
+        };
+
+        const shortNames = {
+            'basic': 'Basic Registration',
+            'content-mastery': 'Content Mastery',
+            'starter-success': 'Starter Success Pro',
+            'advanced-success': 'Advanced Success',
+            'digital-empire': 'Digital Empire',
+            'editing-mastery': 'Editing Mastery',
+            'dropshipping': 'Dropshipping',
+            'crypto-trading': 'Crypto Trading',
+            'ai-mastery': 'AI Mastery'
+        };
+
+        const displayPackage = prettyNames[packageId] || 'Starter Success Pro (₹1299)';
+        const shortName = shortNames[packageId] || 'Starter Success';
+
+        // update DOM
+        document.getElementById('packageNameDisplay').innerText = displayPackage;
+        document.getElementById('amountDisplay').innerText = `₹${amount}`;
+        document.getElementById('bigAmount').innerHTML = `₹${amount} <small>INR</small>`;
+        document.getElementById('selectedPackSpan').innerText = `${shortName} (₹${amount})`;
+        document.getElementById('manualPackSpan').innerText = shortName;
+        document.getElementById('manualPreview').innerHTML = `<i class="fas fa-comment"></i> “I have to enroll with ${displayPackage} (amount ₹${amount}) ...”`;
+
+        // WhatsApp manual link
+        const waBtn = document.getElementById('whatsappManualBtn');
+        const waPhone = '919743254743';
+        const waMsg = `I have to enroll with ${displayPackage} (amount ₹${amount}). My name is: `;
+        waBtn.href = `https://wa.me/${waPhone}?text=${encodeURIComponent(waMsg)}`;
+
+        // UPI intent builder – pure, flat
+        const upiId = 'biluxe10@upi';
+        const payeeName = 'Biluxe10';
+        const note = `Biluxe10 ${shortName}`;
+        const baseParams = `pa=${encodeURIComponent(upiId)}&pn=${encodeURIComponent(payeeName)}&am=${amount}&tn=${encodeURIComponent(note)}&cu=INR`;
+
+        function getIntent(scheme) {
+            if (scheme === 'googlepay') return `tez://upi/pay?${baseParams}`;
+            if (scheme === 'phonepe') return `phonepe://pay?${baseParams}&mode=UPI`;
+            if (scheme === 'paytm') return `paytmmp://pay?${baseParams}`;
+            if (scheme === 'amazon') return `amazonpay://upi?${baseParams}`;
+            if (scheme === 'bhim') return `bhim://upi/pay?${baseParams}`;
+            return `upi://pay?${baseParams}`;  // fallback / whatsapp
+        }
+
+        function setLink(elId, scheme) {
+            const el = document.getElementById(elId);
+            if (!el) return;
+            const intent = getIntent(scheme);
+            el.href = intent;
+            el.addEventListener('click', (e) => {
+                e.preventDefault();
+                window.location.href = intent;
+            });
+        }
+
+        setLink('phonepeLink', 'phonepe');
+        setLink('googlepayLink', 'googlepay');
+        setLink('paytmLink', 'paytm');
+        setLink('amazonLink', 'amazon');
+        setLink('bhimLink', 'bhim');
+        setLink('waLink', 'whatsapp');
+    })();
+</script>
+
+<!-- image fallback if logo not found — shows clean text -->
+</body>
+</html>
