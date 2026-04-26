@@ -1,0 +1,1346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="robots" content="noindex, nofollow">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' https://fonts.googleapis.com https://fonts.gstatic.com https://www.youtube.com https://www.youtube-nocookie.com https://i.ytimg.com https://s.ytimg.com https://yt3.ggpht.com https://ytimg.com; frame-src https://www.youtube-nocookie.com; img-src * data:; media-src 'none';">
+<title>Courses — Biluxe10</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,700;0,9..144,900;1,9..144,400&family=Cabinet+Grotesk:wght@400;500;600;700;800&family=Instrument+Mono:ital@0;1&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#09090B;--bg2:#0F0F12;--bg3:#141418;--bg4:#1a1a1f;
+  --border:rgba(255,255,255,0.06);--border2:rgba(255,255,255,0.11);
+  --gold:#C8A96E;--gold2:#E2C48A;--gold3:#F0D9A8;
+  --goldA:rgba(200,169,110,0.10);--goldB:rgba(200,169,110,0.18);--goldC:rgba(200,169,110,0.04);
+  --ink:#09090B;--text:#E4E4E7;--text2:#A1A1AA;--text3:#52525B;--text4:#3f3f46;
+  --red:#ef4444;--green:#22c55e;--blue:#3b82f6;
+  --font-display:'Fraunces',serif;--font-body:'Cabinet Grotesk',sans-serif;--font-mono:'Instrument Mono',monospace;
+  --radius:12px;--radius-sm:8px;--radius-xs:5px;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--font-body);line-height:1.6;overflow-x:hidden;min-height:100vh}
+body.modal-open{overflow:hidden}
+a{text-decoration:none;color:inherit}
+button{font-family:var(--font-body)}
+::-webkit-scrollbar{width:3px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--gold);border-radius:2px}
+
+/* ─── ANTI-SCREENSHOT OVERLAY ─── */
+#security-overlay{
+  position:fixed;inset:0;z-index:9999;pointer-events:none;
+  background:transparent;
+}
+body.recording-detected #security-overlay{
+  background:rgba(0,0,0,0.97);
+  pointer-events:all;
+  display:flex;align-items:center;justify-content:center;
+}
+body.recording-detected #security-overlay::after{
+  content:"⚠ Screen Recording Detected\AContent protected. Recording disabled.";
+  white-space:pre;text-align:center;
+  color:var(--gold);font-family:var(--font-mono);font-size:1rem;
+  border:1px solid var(--gold);padding:32px 48px;border-radius:var(--radius);
+  background:var(--bg2);
+}
+
+/* CSS anti-copy watermark on video */
+.player-wrap{position:relative;user-select:none;-webkit-user-select:none}
+.player-wrap::after{
+  content:"BILUXE10 • PROTECTED CONTENT";
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-30deg);
+  font-family:var(--font-mono);font-size:clamp(0.5rem,2vw,0.75rem);
+  color:rgba(200,169,110,0.07);letter-spacing:0.3em;
+  pointer-events:none;white-space:nowrap;z-index:10;
+}
+
+/* ─── NAV ─── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:500;height:66px;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 max(20px,4vw);background:rgba(9,9,11,0.92);
+  backdrop-filter:blur(24px);border-bottom:1px solid var(--border);
+}
+.nav-logo{font-family:var(--font-display);font-size:1.25rem;font-weight:900;color:var(--gold);cursor:pointer}
+.nav-logo sup{font-size:0.5em;color:var(--text3);font-weight:400}
+.nav-center{display:flex;gap:24px}
+.nav-center a{font-size:0.78rem;font-weight:600;color:var(--text2);transition:color 0.2s}
+.nav-center a:hover,.nav-center a.active{color:var(--text)}
+.nav-right{display:flex;gap:10px;align-items:center}
+.nav-btn{padding:8px 18px;border-radius:6px;font-size:0.75rem;font-weight:700;cursor:pointer;transition:all 0.2s;border:none}
+.nav-sign{background:transparent;color:var(--text2);border:1px solid var(--border2)}
+.nav-sign:hover{color:var(--text)}
+.nav-enroll{background:var(--gold);color:var(--ink)}
+.nav-enroll:hover{background:var(--gold2)}
+.nav-user{display:none;align-items:center;gap:8px;font-size:0.75rem;color:var(--text2)}
+.nav-user.show{display:flex}
+.nav-avatar{width:30px;height:30px;border-radius:50%;background:var(--goldA);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:0.7rem;color:var(--gold);font-weight:700}
+.hamburger{display:none;flex-direction:column;gap:4.5px;cursor:pointer;padding:4px}
+.hamburger span{width:20px;height:1.5px;background:var(--text2);border-radius:1px}
+.mobile-menu{display:none;position:fixed;top:66px;left:0;right:0;background:var(--bg2);border-bottom:1px solid var(--border);padding:20px;flex-direction:column;gap:4px;z-index:499}
+.mobile-menu.open{display:flex}
+.mobile-menu a,.mobile-menu button{font-size:0.88rem;color:var(--text2);padding:12px 0;border-bottom:1px solid var(--border);background:none;border-left:none;border-right:none;border-top:none;text-align:left;cursor:pointer;width:100%}
+.mobile-menu a:hover,.mobile-menu button:hover{color:var(--gold)}
+
+/* ─── PAGE HEADER ─── */
+.page-header{padding:120px max(20px,5vw) 50px;max-width:1200px;margin:0 auto}
+.ph-tag{
+  display:inline-flex;align-items:center;gap:7px;
+  font-family:var(--font-mono);font-size:0.62rem;letter-spacing:0.15em;
+  text-transform:uppercase;color:var(--gold);border-left:2px solid var(--gold);
+  padding-left:12px;margin-bottom:18px;
+}
+.ph-h{font-family:var(--font-display);font-size:clamp(2rem,4vw,3.2rem);font-weight:900;margin-bottom:14px;line-height:1.08}
+.ph-h em{color:var(--gold);font-style:italic}
+.ph-p{font-size:0.9rem;color:var(--text2);max-width:520px;line-height:1.85}
+.ph-stats{display:flex;gap:28px;margin-top:28px;flex-wrap:wrap}
+.ph-stat{display:flex;flex-direction:column;gap:2px}
+.ph-stat-n{font-family:var(--font-display);font-size:1.6rem;font-weight:900;color:var(--gold)}
+.ph-stat-l{font-size:0.7rem;color:var(--text3);font-family:var(--font-mono);letter-spacing:0.08em;text-transform:uppercase}
+
+/* ─── FILTERS ─── */
+.filter-section{padding:0 max(20px,5vw) 32px;max-width:1200px;margin:0 auto}
+.filter-bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
+.filter-btn{
+  padding:7px 16px;border-radius:20px;border:1px solid var(--border);
+  background:transparent;font-family:var(--font-body);font-size:0.73rem;
+  font-weight:600;color:var(--text3);cursor:pointer;transition:all 0.2s;
+}
+.filter-btn:hover{border-color:rgba(200,169,110,0.3);color:var(--text2)}
+.filter-btn.active{background:var(--goldA);border-color:rgba(200,169,110,0.3);color:var(--gold)}
+.search-bar{
+  display:flex;gap:10px;align-items:center;
+  background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);
+  padding:10px 16px;max-width:340px;
+}
+.search-bar input{
+  flex:1;background:none;border:none;outline:none;color:var(--text);
+  font-family:var(--font-body);font-size:0.82rem;
+}
+.search-bar input::placeholder{color:var(--text3)}
+.search-icon{color:var(--text3);font-size:0.85rem}
+.filter-row2{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.results-count{font-family:var(--font-mono);font-size:0.65rem;color:var(--text3);letter-spacing:0.05em}
+
+/* ─── COURSES GRID ─── */
+.courses-section{padding:0 max(20px,5vw) 100px;max-width:1200px;margin:0 auto}
+.cat-section{margin-bottom:52px}
+.cat-header{
+  display:flex;align-items:center;gap:14px;margin-bottom:20px;
+  padding-bottom:14px;border-bottom:1px solid var(--border);
+}
+.cat-emoji{font-size:1.4rem}
+.cat-name{font-family:var(--font-display);font-size:1.2rem;font-weight:700;color:var(--text)}
+.cat-count{font-family:var(--font-mono);font-size:0.62rem;color:var(--text3);background:var(--bg3);
+  border:1px solid var(--border);padding:2px 8px;border-radius:3px;letter-spacing:0.05em}
+.courses-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px}
+
+/* ─── COURSE CARD ─── */
+.c-card{
+  background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);
+  padding:20px;cursor:pointer;transition:all 0.25s;position:relative;overflow:hidden;
+  display:flex;flex-direction:column;gap:10px;
+}
+.c-card::before{
+  content:"";position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(200,169,110,0.15),transparent);
+  opacity:0;transition:opacity 0.3s;
+}
+.c-card:hover{border-color:rgba(200,169,110,0.2);transform:translateY(-3px);box-shadow:0 12px 40px rgba(0,0,0,0.4)}
+.c-card:hover::before{opacity:1}
+.c-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+.c-emoji{font-size:1.6rem;line-height:1}
+.c-badge{
+  font-family:var(--font-mono);font-size:0.55rem;letter-spacing:0.08em;
+  text-transform:uppercase;color:var(--gold);background:var(--goldA);
+  border:1px solid rgba(200,169,110,0.18);padding:2px 7px;border-radius:3px;
+  white-space:nowrap;flex-shrink:0;
+}
+.c-badge.locked{color:var(--text3);background:var(--bg3);border-color:var(--border)}
+.c-badge.free{color:#22c55e;background:rgba(34,197,94,0.08);border-color:rgba(34,197,94,0.2)}
+.c-title{font-family:var(--font-display);font-size:0.92rem;font-weight:700;color:var(--text);line-height:1.3}
+.c-meta{display:flex;gap:10px;flex-wrap:wrap}
+.c-meta span{font-family:var(--font-mono);font-size:0.6rem;color:var(--text3)}
+.c-preview-tag{
+  display:inline-flex;align-items:center;gap:5px;
+  font-family:var(--font-mono);font-size:0.58rem;color:#22c55e;
+  background:rgba(34,197,94,0.07);border:1px solid rgba(34,197,94,0.15);
+  padding:2px 7px;border-radius:3px;letter-spacing:0.06em;
+}
+.c-footer{margin-top:auto;display:flex;align-items:center;justify-content:space-between;padding-top:10px;border-top:1px solid var(--border)}
+.c-price-area{display:flex;flex-direction:column;gap:1px}
+.c-price{font-family:var(--font-display);font-size:1.1rem;font-weight:900;color:var(--gold)}
+.c-price-note{font-size:0.6rem;color:var(--text3);font-family:var(--font-mono)}
+.c-btn{
+  padding:7px 14px;background:var(--goldA);color:var(--gold);
+  border:1px solid rgba(200,169,110,0.2);border-radius:6px;
+  font-size:0.7rem;font-weight:700;cursor:pointer;transition:all 0.2s;white-space:nowrap;
+}
+.c-btn:hover{background:var(--goldB);border-color:rgba(200,169,110,0.35)}
+.c-btn.watch{background:rgba(34,197,94,0.1);color:#22c55e;border-color:rgba(34,197,94,0.2)}
+.c-btn.watch:hover{background:rgba(34,197,94,0.18)}
+
+/* ─── VIDEO MODAL ─── */
+.modal-bg{
+  position:fixed;inset:0;z-index:800;background:rgba(0,0,0,0.97);
+  display:none;align-items:center;justify-content:center;
+  backdrop-filter:blur(12px);
+}
+.modal-bg.open{display:flex}
+.modal-box{
+  background:var(--bg2);border:1px solid var(--border2);border-radius:16px;
+  width:min(820px,96vw);max-height:94vh;overflow-y:auto;
+  position:relative;display:flex;flex-direction:column;
+}
+.modal-header{
+  display:flex;align-items:flex-start;justify-content:space-between;gap:12px;
+  padding:22px 24px 16px;border-bottom:1px solid var(--border);flex-shrink:0;
+}
+.modal-title{font-family:var(--font-display);font-size:1.1rem;font-weight:700;color:var(--text);line-height:1.3}
+.modal-cat{font-family:var(--font-mono);font-size:0.58rem;color:var(--gold);text-transform:uppercase;letter-spacing:0.1em;margin-top:4px}
+.modal-close{
+  background:var(--bg3);border:1px solid var(--border);color:var(--text2);
+  width:32px;height:32px;border-radius:6px;cursor:pointer;font-size:1rem;
+  flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all 0.2s;
+}
+.modal-close:hover{color:var(--text);border-color:var(--border2)}
+
+/* PLAYER */
+.player-section{padding:20px 24px;flex-shrink:0}
+.player-wrap{
+  position:relative;width:100%;padding-top:56.25%;
+  background:#000;border-radius:var(--radius-sm);overflow:hidden;
+  border:1px solid var(--border);
+}
+.player-wrap iframe{
+  position:absolute;top:0;left:0;width:100%;height:100%;
+  border:none;transform:scale(1.3);transform-origin:center center;
+  /* 1.3x zoom to hide YouTube UI */
+}
+/* Invisible overlay to block right-click and links on iframe */
+.player-guard{
+  position:absolute;inset:0;z-index:5;
+  background:transparent;cursor:default;
+  /* blocks pointer events from reaching YouTube links */
+}
+
+/* Preview countdown overlay */
+.preview-overlay{
+  position:absolute;inset:0;z-index:20;
+  background:rgba(9,9,11,0.96);
+  display:none;flex-direction:column;align-items:center;justify-content:center;
+  gap:18px;text-align:center;padding:28px;
+  border-radius:var(--radius-sm);
+}
+.preview-overlay.show{display:flex}
+.po-icon{font-size:3rem}
+.po-title{font-family:var(--font-display);font-size:1.4rem;font-weight:900;color:var(--gold)}
+.po-desc{font-size:0.85rem;color:var(--text2);max-width:360px;line-height:1.8}
+.po-cta{
+  display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:6px;
+}
+.po-btn-primary{
+  padding:12px 28px;background:var(--gold);color:var(--ink);
+  border:none;border-radius:8px;font-weight:800;font-size:0.85rem;cursor:pointer;
+  transition:all 0.2s;font-family:var(--font-body);
+}
+.po-btn-primary:hover{background:var(--gold2);transform:translateY(-1px)}
+.po-btn-secondary{
+  padding:12px 20px;background:transparent;color:var(--text2);
+  border:1px solid var(--border2);border-radius:8px;font-size:0.82rem;cursor:pointer;
+  transition:all 0.2s;font-family:var(--font-body);
+}
+.po-btn-secondary:hover{color:var(--text);border-color:rgba(255,255,255,0.2)}
+.preview-timer{
+  font-family:var(--font-mono);font-size:0.7rem;color:var(--text3);
+  position:absolute;top:12px;right:12px;z-index:6;
+  background:rgba(9,9,11,0.8);padding:4px 10px;border-radius:4px;
+  border:1px solid var(--border);
+}
+.preview-timer.hidden{display:none}
+
+/* Watermark during playback */
+.video-watermark{
+  position:absolute;z-index:8;font-family:var(--font-mono);font-size:0.58rem;
+  color:rgba(200,169,110,0.25);letter-spacing:0.12em;pointer-events:none;
+  text-transform:uppercase;animation:wm-move 20s ease-in-out infinite;
+}
+@keyframes wm-move{
+  0%{top:15%;left:10%}25%{top:70%;left:60%}50%{top:30%;left:75%}75%{top:65%;left:20%}100%{top:15%;left:10%}
+}
+
+/* Access denied overlay */
+.access-denied-overlay{
+  position:absolute;inset:0;z-index:25;
+  background:rgba(9,9,11,0.97);
+  display:none;flex-direction:column;align-items:center;justify-content:center;
+  gap:16px;text-align:center;padding:28px;border-radius:var(--radius-sm);
+}
+.access-denied-overlay.show{display:flex}
+.ad-icon{font-size:2.5rem}
+.ad-title{font-family:var(--font-display);font-size:1.2rem;font-weight:900;color:var(--red)}
+.ad-desc{font-size:0.82rem;color:var(--text2);max-width:320px;line-height:1.8}
+
+/* ─── MODAL INFO ─── */
+.modal-info{padding:0 24px 24px;display:flex;flex-direction:column;gap:16px}
+.info-row{display:flex;gap:20px;flex-wrap:wrap}
+.info-chip{
+  display:flex;align-items:center;gap:6px;font-family:var(--font-mono);
+  font-size:0.65rem;color:var(--text2);
+}
+.info-chip span{font-size:0.85rem}
+.enroll-cta{
+  background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius-sm);
+  padding:18px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;
+}
+.enroll-cta-text{display:flex;flex-direction:column;gap:3px}
+.enroll-cta-title{font-weight:700;font-size:0.9rem;color:var(--text)}
+.enroll-cta-sub{font-size:0.75rem;color:var(--text2)}
+.enroll-cta-price{font-family:var(--font-display);font-size:1.6rem;font-weight:900;color:var(--gold)}
+.enroll-cta-btn{
+  padding:12px 26px;background:var(--gold);color:var(--ink);
+  border:none;border-radius:8px;font-weight:800;font-size:0.85rem;cursor:pointer;
+  transition:all 0.2s;white-space:nowrap;font-family:var(--font-body);
+}
+.enroll-cta-btn:hover{background:var(--gold2)}
+
+/* ─── ENROLLMENT MODAL ─── */
+.enroll-modal{
+  position:fixed;inset:0;z-index:900;background:rgba(0,0,0,0.97);
+  display:none;align-items:center;justify-content:center;
+  backdrop-filter:blur(16px);
+}
+.enroll-modal.open{display:flex}
+.enroll-box{
+  background:var(--bg2);border:1px solid var(--border2);border-radius:16px;
+  width:min(480px,94vw);padding:36px;position:relative;
+}
+.enroll-box-close{
+  position:absolute;top:16px;right:16px;
+  background:var(--bg3);border:1px solid var(--border);color:var(--text2);
+  width:30px;height:30px;border-radius:6px;cursor:pointer;font-size:0.9rem;
+  display:flex;align-items:center;justify-content:center;
+}
+.enroll-box h2{font-family:var(--font-display);font-size:1.6rem;font-weight:900;color:var(--gold);margin-bottom:6px}
+.enroll-box p{font-size:0.82rem;color:var(--text2);margin-bottom:22px;line-height:1.75}
+.form-group{margin-bottom:14px}
+.form-group label{display:block;font-size:0.72rem;font-weight:600;color:var(--text2);margin-bottom:6px;font-family:var(--font-mono);letter-spacing:0.05em;text-transform:uppercase}
+.form-group input{
+  width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius-sm);
+  padding:11px 14px;color:var(--text);font-size:0.85rem;font-family:var(--font-body);outline:none;
+  transition:border-color 0.2s;
+}
+.form-group input:focus{border-color:rgba(200,169,110,0.35)}
+.form-group input::placeholder{color:var(--text4)}
+.enroll-submit{
+  width:100%;padding:13px;background:var(--gold);color:var(--ink);
+  border:none;border-radius:8px;font-weight:800;font-size:0.88rem;cursor:pointer;
+  transition:all 0.2s;margin-top:8px;font-family:var(--font-body);
+}
+.enroll-submit:hover{background:var(--gold2)}
+.enroll-tabs{display:flex;gap:2px;background:var(--bg3);border-radius:8px;padding:3px;margin-bottom:20px}
+.enroll-tab{
+  flex:1;padding:8px;border:none;background:transparent;color:var(--text3);
+  font-size:0.78rem;font-weight:600;cursor:pointer;border-radius:6px;transition:all 0.2s;font-family:var(--font-body);
+}
+.enroll-tab.active{background:var(--goldA);color:var(--gold)}
+.enroll-tab-panel{display:none}
+.enroll-tab-panel.active{display:block}
+.form-note{font-size:0.7rem;color:var(--text3);margin-top:10px;text-align:center;line-height:1.7}
+.form-note a{color:var(--gold)}
+.divider{display:flex;align-items:center;gap:10px;margin:16px 0}
+.divider::before,.divider::after{content:"";flex:1;height:1px;background:var(--border)}
+.divider span{font-size:0.68rem;color:var(--text3);font-family:var(--font-mono)}
+.error-msg{font-size:0.72rem;color:var(--red);margin-top:6px;display:none}
+.error-msg.show{display:block}
+.success-msg{font-size:0.72rem;color:var(--green);margin-top:6px;display:none}
+.success-msg.show{display:block}
+
+/* ─── TOAST ─── */
+.toast{
+  position:fixed;bottom:24px;right:24px;z-index:9000;
+  background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius-sm);
+  padding:14px 18px;max-width:300px;display:flex;align-items:center;gap:10px;
+  transform:translateY(80px);opacity:0;transition:all 0.35s cubic-bezier(0.34,1.56,0.64,1);
+  font-size:0.8rem;color:var(--text);
+}
+.toast.show{transform:translateY(0);opacity:1}
+.toast-icon{font-size:1.1rem;flex-shrink:0}
+
+/* ─── FOOTER ─── */
+footer{background:var(--bg2);border-top:1px solid var(--border);padding:32px max(20px,5vw)}
+.ft-bot{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.ft-copy{font-size:0.72rem;color:var(--text3)}
+.ft-copy span{color:var(--gold)}
+.ft-links{display:flex;gap:20px}
+.ft-links a{font-size:0.72rem;color:var(--text3);transition:color 0.2s}
+.ft-links a:hover{color:var(--gold)}
+
+/* ─── EMPTY STATE ─── */
+.empty-state{text-align:center;padding:60px 20px;color:var(--text3)}
+.empty-state .es-icon{font-size:3rem;margin-bottom:12px}
+.empty-state p{font-size:0.85rem}
+
+/* ─── REVEAL ─── */
+.reveal{opacity:0;transform:translateY(16px);transition:opacity 0.5s ease,transform 0.5s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+
+/* ─── RESPONSIVE ─── */
+@media(max-width:768px){
+  .nav-center{display:none}
+  .hamburger{display:flex}
+  .ph-stats{gap:20px}
+  .modal-box{max-height:100vh;border-radius:0}
+  .modal-header,.player-section,.modal-info{padding-left:16px;padding-right:16px}
+  .enroll-cta{flex-direction:column;align-items:flex-start}
+}
+@media(max-width:480px){
+  .courses-grid{grid-template-columns:1fr}
+  .filter-row2{flex-direction:column;align-items:flex-start}
+  .search-bar{max-width:100%}
+}
+
+/* ─── NO SELECT / NO DRAG ─── */
+.player-wrap,.player-wrap *{
+  -webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;
+  -webkit-touch-callout:none;
+}
+</style>
+</head>
+<body>
+
+<!-- Security overlay for screen recording detection -->
+<div id="security-overlay"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo" onclick="javascript:void(0)">Biluxe<sup>10</sup></div>
+  <div class="nav-center">
+    <a href="#" class="active">Courses</a>
+    <a href="javascript:void(0)" onclick="openEnroll()">Bundles</a>
+    <a href="javascript:void(0)">About</a>
+    <a href="javascript:void(0)">FAQ</a>
+    <a href="javascript:void(0)">Contact</a>
+  </div>
+  <div class="nav-right">
+    <div class="nav-user" id="navUser">
+      <div class="nav-avatar" id="navAvatar">U</div>
+      <span id="navUserName">User</span>
+      <button class="nav-btn nav-sign" onclick="signOut()" style="margin-left:4px">Sign Out</button>
+    </div>
+    <button class="nav-btn nav-sign" id="navSignIn" onclick="openEnroll('signin')">Sign In</button>
+    <button class="nav-btn nav-enroll" id="navSignUp" onclick="openEnroll('signup')">Sign Up Free</button>
+  </div>
+  <div class="hamburger" onclick="document.getElementById('mm').classList.toggle('open')">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+<div class="mobile-menu" id="mm">
+  <a href="javascript:void(0)">Courses</a>
+  <a href="javascript:void(0)">Bundles</a>
+  <a href="javascript:void(0)">About</a>
+  <button onclick="openEnroll('signin')">Sign In</button>
+  <button onclick="openEnroll('signup')" style="color:var(--gold)">Sign Up Free →</button>
+</div>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div class="ph-tag">82+ Courses Available</div>
+  <h1 class="ph-h">Learn one skill.<br><em>Change your career.</em></h1>
+  <p class="ph-p">Each course includes self-paced videos, a hands-on project, and an industry certificate. Preview 2 minutes free — enroll to unlock the full course.</p>
+  <div class="ph-stats">
+    <div class="ph-stat"><div class="ph-stat-n">82+</div><div class="ph-stat-l">Courses</div></div>
+    <div class="ph-stat"><div class="ph-stat-n">9</div><div class="ph-stat-l">Categories</div></div>
+    <div class="ph-stat"><div class="ph-stat-n">2 min</div><div class="ph-stat-l">Free Preview</div></div>
+    <div class="ph-stat"><div class="ph-stat-n">1:1</div><div class="ph-stat-l">Device Lock</div></div>
+  </div>
+</div>
+
+<!-- FILTERS -->
+<div class="filter-section">
+  <div class="filter-bar" id="filterBar">
+    <button class="filter-btn active" onclick="filterCourses('all',this)" data-cat="all">All Courses</button>
+    <button class="filter-btn" onclick="filterCourses('starter',this)" data-cat="starter">🚀 Starter</button>
+    <button class="filter-btn" onclick="filterCourses('digital',this)" data-cat="digital">📈 Digital Marketing</button>
+    <button class="filter-btn" onclick="filterCourses('creative',this)" data-cat="creative">🎨 Creative & Design</button>
+    <button class="filter-btn" onclick="filterCourses('data',this)" data-cat="data">📊 Data & Analytics</button>
+    <button class="filter-btn" onclick="filterCourses('dev',this)" data-cat="dev">💻 Web Development</button>
+    <button class="filter-btn" onclick="filterCourses('devops',this)" data-cat="devops">☁ DevOps & Cloud</button>
+    <button class="filter-btn" onclick="filterCourses('ai-ml',this)" data-cat="ai-ml">🧠 AI & Machine Learning</button>
+    <button class="filter-btn" onclick="filterCourses('genai',this)" data-cat="genai">✨ Generative AI</button>
+    <button class="filter-btn" onclick="filterCourses('career',this)" data-cat="career">🎯 AI Career & Industry</button>
+  </div>
+  <div class="filter-row2">
+    <div class="search-bar">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="searchInput" placeholder="Search courses..." oninput="searchCourses(this.value)">
+    </div>
+    <div class="results-count" id="resultsCount">82 courses</div>
+  </div>
+</div>
+
+<!-- COURSES SECTION -->
+<div class="courses-section" id="coursesSection"></div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="ft-bot">
+    <div class="ft-copy">© 2025 <span>Biluxe10</span>. All rights reserved. Content protected.</div>
+    <div class="ft-links">
+      <a href="javascript:void(0)">Home</a>
+      <a href="javascript:void(0)">Bundles</a>
+      <a href="javascript:void(0)">Contact</a>
+      <a href="javascript:void(0)">Privacy</a>
+    </div>
+  </div>
+</footer>
+
+<!-- ─── VIDEO MODAL ─── -->
+<div class="modal-bg" id="videoModal" onclick="handleModalBgClick(event)">
+  <div class="modal-box" id="modalBox" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title" id="modalTitle">Course Title</div>
+        <div class="modal-cat" id="modalCat">Category</div>
+      </div>
+      <button class="modal-close" onclick="closeVideoModal()">✕</button>
+    </div>
+
+    <div class="player-section">
+      <div class="player-wrap" id="playerWrap">
+        <!-- YouTube iframe injected here -->
+        <div id="playerContainer"></div>
+
+        <!-- Moving watermark -->
+        <div class="video-watermark" id="videoWatermark">BILUXE10</div>
+
+        <!-- Countdown timer badge -->
+        <div class="preview-timer" id="previewTimer">⏱ Preview: 2:00</div>
+
+        <!-- Block pointer on iframe to prevent clicking YouTube links -->
+        <div class="player-guard"
+          oncontextmenu="return false"
+          ondragstart="return false"
+          onmousedown="return false"
+        ></div>
+
+        <!-- Preview ended overlay -->
+        <div class="preview-overlay" id="previewOverlay">
+          <div class="po-icon">🔒</div>
+          <div class="po-title">Preview Ended</div>
+          <div class="po-desc">You've watched the 2-minute free preview. Enroll to unlock the full course and continue learning.</div>
+          <div class="po-cta">
+            <button class="po-btn-primary" onclick="closeVideoModal();openEnroll('signup')">Enroll Now →</button>
+            <button class="po-btn-secondary" onclick="closeVideoModal()">Browse Courses</button>
+          </div>
+        </div>
+
+        <!-- Access Denied (not paid) -->
+        <div class="access-denied-overlay" id="accessDenied">
+          <div class="ad-icon">🔐</div>
+          <div class="ad-title">Access Restricted</div>
+          <div class="ad-desc">This content is for enrolled members only. Complete your enrollment to get full access.</div>
+          <div style="margin-top:8px">
+            <button class="po-btn-primary" onclick="closeVideoModal();openEnroll('signup')">Get Full Access →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-info" id="modalInfo">
+      <div class="info-row" id="modalMetaRow"></div>
+      <div class="enroll-cta" id="enrollCta">
+        <div class="enroll-cta-text">
+          <div class="enroll-cta-title">Get Full Access</div>
+          <div class="enroll-cta-sub">Includes certificate, project files & lifetime access</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+          <div class="enroll-cta-price" id="modalPrice">₹999</div>
+          <button class="enroll-cta-btn" onclick="closeVideoModal();openEnroll('signup')">Enroll Now →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── ENROLLMENT MODAL ─── -->
+<div class="enroll-modal" id="enrollModal">
+  <div class="enroll-box">
+    <button class="enroll-box-close" onclick="closeEnroll()">✕</button>
+    <h2>Biluxe<sup style="font-size:0.5em;color:var(--text3)">10</sup></h2>
+
+    <div class="enroll-tabs">
+      <button class="enroll-tab active" onclick="switchTab('signup')" id="tab-signup">Sign Up</button>
+      <button class="enroll-tab" onclick="switchTab('signin')" id="tab-signin">Sign In</button>
+    </div>
+
+    <!-- SIGN UP PANEL -->
+    <div class="enroll-tab-panel active" id="panel-signup">
+      <p>Create your free account and start learning with 2-minute previews of every course.</p>
+      <div class="form-group">
+        <label>Full Name</label>
+        <input type="text" id="su-name" placeholder="Your name">
+      </div>
+      <div class="form-group">
+        <label>Email Address</label>
+        <input type="email" id="su-email" placeholder="you@email.com">
+      </div>
+      <div class="form-group">
+        <label>Mobile Number</label>
+        <input type="tel" id="su-phone" placeholder="+91 9999999999">
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="su-pass" placeholder="Min 8 characters">
+      </div>
+      <div class="error-msg" id="su-error"></div>
+      <div class="success-msg" id="su-success"></div>
+      <button class="enroll-submit" onclick="handleSignUp()">Create Free Account →</button>
+      <div class="form-note">By signing up, you agree to our <a href="javascript:void(0)">Terms</a> & <a href="javascript:void(0)">Privacy Policy</a>.<br>One account per device. Sharing is not permitted.</div>
+    </div>
+
+    <!-- SIGN IN PANEL -->
+    <div class="enroll-tab-panel" id="panel-signin">
+      <p>Welcome back! Sign in to continue your learning journey.</p>
+      <div class="form-group">
+        <label>Email Address</label>
+        <input type="email" id="si-email" placeholder="you@email.com">
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="si-pass" placeholder="Your password">
+      </div>
+      <div class="error-msg" id="si-error"></div>
+      <div class="success-msg" id="si-success"></div>
+      <button class="enroll-submit" onclick="handleSignIn()">Sign In →</button>
+      <div class="divider"><span>or</span></div>
+      <div class="form-note">Forgot password? <a href="javascript:void(0)" onclick="showToast('📧','Password reset email sent (demo)')">Reset it here</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <div class="toast-icon" id="toastIcon">✓</div>
+  <div id="toastMsg">Message</div>
+</div>
+
+<script>
+/* ════════════════════════════════════════════
+   DATA — 82+ COURSES
+════════════════════════════════════════════ */
+const CATEGORIES = [
+  {
+    id:'starter', label:'🚀 Digital Entrepreneurship Starter', emoji:'🚀',
+    courses:[
+      {id:'s1',title:'Digital Entrepreneurship Basics',price:'₹1,299',hrs:'4 hrs',badge:'Free Preview',url:'https://youtu.be/CcwYCG0Gggw'},
+      {id:'s2',title:'Canva & Content Creation',price:'₹699',hrs:'3 hrs',badge:'Popular',url:'https://youtu.be/x7-XSJHcaVI'},
+      {id:'s3',title:'WhatsApp Business Marketing',price:'₹799',hrs:'3 hrs',badge:'Hot',url:'https://youtu.be/PlVxtty0wrI'},
+      {id:'s4',title:'ChatGPT for Daily Work',price:'₹799',hrs:'3 hrs',badge:'Trending',url:'https://youtu.be/IcCAEudzEDw'},
+    ]
+  },
+  {
+    id:'digital', label:'📈 Digital Marketing Mastery', emoji:'📈',
+    courses:[
+      {id:'d1',title:'Affiliate Marketing Mastery',price:'₹1,499',hrs:'8 hrs',badge:'Hot',url:'https://youtu.be/TF3BhN_dTdo'},
+      {id:'d2',title:'SEO & Blogging',price:'₹899',hrs:'5 hrs',badge:'SEO',url:'https://youtu.be/pDUMhloKybU'},
+      {id:'d3',title:'Social Media Management',price:'₹1,299',hrs:'6 hrs',badge:'Popular',url:'https://youtu.be/9WVGLqiHVuk'},
+      {id:'d4',title:'Email Marketing',price:'₹999',hrs:'4 hrs',badge:'New',url:'https://www.youtube.com/live/yn6L7q4V1xg'},
+      {id:'d5',title:'Google Ads Complete',price:'₹1,399',hrs:'7 hrs',badge:'Ads',url:'https://youtu.be/autzRHtt-RM'},
+      {id:'d6',title:'Facebook Ads Mastery',price:'₹1,399',hrs:'7 hrs',badge:'Ads',url:'https://youtu.be/WNiU5ZxazI4'},
+      {id:'d7',title:'Freelancing Mastery',price:'₹1,599',hrs:'9 hrs',badge:'Best',url:'https://youtu.be/gMmTpoiITM4'},
+    ]
+  },
+  {
+    id:'creative', label:'🎨 Creative, Design & E-commerce', emoji:'🎨',
+    courses:[
+      {id:'c1',title:'UI/UX Design Complete',price:'₹1,299',hrs:'12 hrs',badge:'Creative',url:'https://youtube.com/playlist?list=PL7ZIgV4R67IOMRiW_Q7vZqLulb0xyKDHD'},
+      {id:'c2',title:'No Code Web Development',price:'₹1,099',hrs:'6 hrs',badge:'No-Code',url:'https://youtu.be/9nIwTjG2fdI'},
+      {id:'c3',title:'Video Editing with CapCut',price:'₹899',hrs:'5 hrs',badge:'Video',url:'https://youtu.be/nXeslaOL_BE'},
+      {id:'c4',title:'Podcast & Audio Production',price:'₹999',hrs:'4 hrs',badge:'Audio',url:'https://www.youtube.com/live/cGWFvYknE7o'},
+      {id:'c5',title:'Ecommerce Complete Course',price:'₹1,299',hrs:'8 hrs',badge:'Commerce',url:'https://youtu.be/5d9jtO0uOpk'},
+      {id:'c6',title:'Dropshipping & Print on Demand',price:'₹1,199',hrs:'6 hrs',badge:'Dropship',url:'https://youtu.be/thYCp3y1Yuw'},
+    ]
+  },
+  {
+    id:'data', label:'📊 Data Analytics & Business', emoji:'📊',
+    courses:[
+      {id:'da1',title:'Excel for Data Analysis',price:'₹1,299',hrs:'8 hrs',badge:'Analytics',url:'https://youtu.be/Kjz_DDO4Fzs'},
+      {id:'da2',title:'SQL for Beginners',price:'₹999',hrs:'6 hrs',badge:'SQL',url:'https://youtu.be/7azCOKryADA'},
+      {id:'da3',title:'Power BI & Tableau',price:'₹1,399',hrs:'9 hrs',badge:'BI',url:'https://youtu.be/Gmk3DWOxVKQ'},
+      {id:'da4',title:'Python Basics',price:'₹1,199',hrs:'7 hrs',badge:'Python',url:'https://youtu.be/LgW6Vla0kXA'},
+      {id:'da5',title:'Business Analytics',price:'₹1,099',hrs:'5 hrs',badge:'Business',url:'https://youtu.be/cCTuOBOqSaM'},
+      {id:'da6',title:'Financial Accounting Basics',price:'₹899',hrs:'4 hrs',badge:'Finance',url:'https://youtu.be/vO09q2V8TGQ'},
+    ]
+  },
+  {
+    id:'dev', label:'💻 Full Stack Web Development', emoji:'💻',
+    courses:[
+      {id:'dev1',title:'HTML, CSS & JavaScript',price:'₹1,499',hrs:'14 hrs',badge:'Foundations',url:'https://youtube.com/playlist?list=PLMxec9nlD1X1_xQlC-REYdCvw8pdoQa0h'},
+      {id:'dev2',title:'React.js Complete',price:'₹1,699',hrs:'12 hrs',badge:'Frontend',url:'https://youtu.be/Wt3isV2irrA'},
+      {id:'dev3',title:'Node.js & Express',price:'₹1,499',hrs:'10 hrs',badge:'Backend',url:'https://youtu.be/PCcMF1xTQO0'},
+      {id:'dev4',title:'MongoDB Full Course',price:'₹1,199',hrs:'7 hrs',badge:'Database',url:'https://youtu.be/5AfUgOYEiwQ'},
+      {id:'dev5',title:'Databases In-Depth',price:'₹1,199',hrs:'8 hrs',badge:'Database',url:'https://youtu.be/pPqazMTzNOM'},
+      {id:'dev6',title:'REST APIs (Backend)',price:'₹1,299',hrs:'6 hrs',badge:'API',url:'https://youtu.be/6SJQ5eOChrA'},
+      {id:'dev7',title:'Git & Version Control',price:'₹799',hrs:'3 hrs',badge:'Git',url:'https://youtu.be/mAFoROnOfHs'},
+      {id:'dev8',title:'E-commerce Project',price:'₹1,499',hrs:'10 hrs',badge:'Project',url:'https://youtu.be/el5bTI6GBQ8'},
+      {id:'dev9',title:'Job Preparation Roadmap',price:'₹999',hrs:'5 hrs',badge:'Career',url:'https://youtu.be/-4e3ewcTupM'},
+    ]
+  },
+  {
+    id:'devops', label:'☁ DevOps, Cloud & Security', emoji:'☁',
+    courses:[
+      {id:'do1',title:'AWS Cloud Practitioner',price:'₹1,799',hrs:'12 hrs',badge:'AWS',url:'https://youtu.be/a8FFknuJwB0'},
+      {id:'do2',title:'Docker & Kubernetes',price:'₹1,699',hrs:'14 hrs',badge:'DevOps',url:'https://youtube.com/playlist?list=PLhNrFKat_aeLmPHBkS42O1pdN8Pt-tfF9'},
+      {id:'do3',title:'CI/CD Pipelines',price:'₹1,399',hrs:'8 hrs',badge:'CI/CD',url:'https://youtu.be/Ke_Wr5zPE0A'},
+      {id:'do4',title:'Linux for DevOps',price:'₹1,199',hrs:'7 hrs',badge:'Linux',url:'https://youtu.be/e01GGTKmtpc'},
+      {id:'do5',title:'Cybersecurity Fundamentals',price:'₹1,499',hrs:'10 hrs',badge:'Security',url:'https://www.youtube.com/live/z2hVCeiwvGk'},
+      {id:'do6',title:'Ethical Hacking',price:'₹1,699',hrs:'12 hrs',badge:'Hacking',url:'https://youtu.be/2eLJNBroFrg'},
+      {id:'do7',title:'Cloud Security',price:'₹1,499',hrs:'8 hrs',badge:'Cloud',url:'https://youtu.be/a58CqpP6vEw'},
+      {id:'do8',title:'DevOps Project',price:'₹1,299',hrs:'6 hrs',badge:'Project',url:'https://youtu.be/H5FAxTBuNM8'},
+    ]
+  },
+  {
+    id:'ai-ml', label:'🧠 AI & Machine Learning', emoji:'🧠',
+    courses:[
+      {id:'ml1',title:'Python for Data Science',price:'₹1,499',hrs:'10 hrs',badge:'Python',url:'https://youtu.be/CMEWVn1uZpQ'},
+      {id:'ml2',title:'Machine Learning Fundamentals',price:'₹1,699',hrs:'12 hrs',badge:'ML',url:'https://youtu.be/hR-tMLTMw0s'},
+      {id:'ml3',title:'Deep Learning & Neural Networks',price:'₹1,899',hrs:'14 hrs',badge:'DL',url:'https://youtu.be/G1P2IaBcXx8'},
+      {id:'ml4',title:'Natural Language Processing (NLP)',price:'₹1,799',hrs:'12 hrs',badge:'NLP',url:'https://www.youtube.com/live/BCLjPLeVCBY'},
+      {id:'ml5',title:'Computer Vision',price:'₹1,799',hrs:'12 hrs',badge:'CV',url:'https://youtube.com/playlist?list=PLPTV0NXA_ZSgmWYoSpY_2EJzPJjkke4Az'},
+      {id:'ml6',title:'Big Data Engineering',price:'₹1,699',hrs:'11 hrs',badge:'BigData',url:'https://youtu.be/H5SHmiKTFsM'},
+      {id:'ml7',title:'Data Engineering',price:'₹1,599',hrs:'10 hrs',badge:'Data',url:'https://youtu.be/hf2go3E2m8g'},
+      {id:'ml8',title:'MLOps Fundamentals',price:'₹1,699',hrs:'10 hrs',badge:'MLOps',url:'https://youtu.be/dPmH3G9NQtY'},
+      {id:'ml9',title:'End-to-End ML Project',price:'₹1,499',hrs:'8 hrs',badge:'Project',url:'https://youtu.be/o6vbe5G7xNo'},
+      {id:'ml10',title:'Data Science Interview Prep',price:'₹999',hrs:'5 hrs',badge:'Interview',url:'https://youtu.be/A3ZSv6IqXY8'},
+    ]
+  },
+  {
+    id:'genai', label:'✨ Generative AI & LLMs', emoji:'✨',
+    courses:[
+      {id:'g1',title:'Generative AI & LLMs',price:'₹1,899',hrs:'12 hrs',badge:'GenAI',url:'https://youtu.be/d4yCWBGFCEs'},
+      {id:'g2',title:'Agentic AI Development',price:'₹2,099',hrs:'14 hrs',badge:'Agents',url:'https://www.youtube.com/live/-rUKr8JDits'},
+      {id:'g3',title:'LangChain & LlamaIndex',price:'₹1,799',hrs:'10 hrs',badge:'LangChain',url:'https://youtu.be/-8IUWRtznX8'},
+      {id:'g4',title:'Vector Databases',price:'₹1,499',hrs:'7 hrs',badge:'VectorDB',url:'https://youtu.be/8KrTO9bS91s'},
+      {id:'g5',title:'AI Agents for Business',price:'₹1,699',hrs:'9 hrs',badge:'AI Biz',url:'https://youtu.be/EsTrWCV0Ph4'},
+      {id:'g6',title:'LLM Fine-Tuning',price:'₹1,999',hrs:'12 hrs',badge:'Fine-Tune',url:'https://youtu.be/iOdFUJiB0Zc'},
+      {id:'g7',title:'RAG Implementation',price:'₹1,699',hrs:'9 hrs',badge:'RAG',url:'https://youtu.be/o126p1QN_RI'},
+      {id:'g8',title:'Multi-Agent Systems',price:'₹1,899',hrs:'11 hrs',badge:'Multi-Agent',url:'https://youtu.be/rHtRWyxVQps'},
+      {id:'g9',title:'AI Safety & Governance',price:'₹1,299',hrs:'6 hrs',badge:'Safety',url:'https://youtu.be/b6HwyKFShek'},
+      {id:'g10',title:'AI Agents Capstone Project',price:'₹1,999',hrs:'10 hrs',badge:'Capstone',url:'https://youtu.be/HVi0F3YT13I'},
+      {id:'g11',title:'Prompt Engineering Mastery',price:'₹1,299',hrs:'6 hrs',badge:'Prompts',url:'https://youtu.be/YhRfgYH_AoU'},
+      {id:'g12',title:'AI API Integration',price:'₹1,499',hrs:'8 hrs',badge:'API',url:'https://youtu.be/xcP9NE6C5EI'},
+    ]
+  },
+  {
+    id:'career', label:'🎯 AI Career, Industry & Research', emoji:'🎯',
+    courses:[
+      {id:'cr1',title:'AI Product Management',price:'₹1,699',hrs:'9 hrs',badge:'PM',url:'https://youtu.be/IfW1FMDkw4k'},
+      {id:'cr2',title:'AI Strategy & Roadmap',price:'₹1,599',hrs:'8 hrs',badge:'Strategy',url:'https://youtu.be/zwUSZD3t_BU'},
+      {id:'cr3',title:'AI Team Leadership',price:'₹1,499',hrs:'7 hrs',badge:'Leadership',url:'https://www.youtube.com/live/1NMM9Q_TjxE'},
+      {id:'cr4',title:'AI Project Management',price:'₹1,399',hrs:'6 hrs',badge:'PM',url:'https://youtu.be/lADZ6Pxy9m8'},
+      {id:'cr5',title:'AI Ethics & Governance',price:'₹1,299',hrs:'5 hrs',badge:'Ethics',url:'https://youtu.be/VugSwwHaOgQ'},
+      {id:'cr6',title:'AI Career Mastery',price:'₹1,499',hrs:'7 hrs',badge:'Career',url:'https://youtu.be/aIuPQjPQEb4'},
+      {id:'cr7',title:'Resume & LinkedIn for AI',price:'₹799',hrs:'3 hrs',badge:'Resume',url:'https://youtu.be/qCZlSCmphMM'},
+      {id:'cr8',title:'Salary Negotiation',price:'₹699',hrs:'2 hrs',badge:'Salary',url:'https://youtu.be/vLbrwSzXUro'},
+      {id:'cr9',title:'Freelancing & Consulting for AI',price:'₹1,299',hrs:'6 hrs',badge:'Freelance',url:'https://youtu.be/Ozp3k4qzmHo'},
+      {id:'cr10',title:'AI for Finance & Banking',price:'₹1,499',hrs:'8 hrs',badge:'Finance',url:'https://youtu.be/Nh7OhW7ZcIU'},
+      {id:'cr11',title:'AI for Healthcare',price:'₹1,499',hrs:'8 hrs',badge:'Health',url:'https://youtu.be/eZFtf69sido'},
+      {id:'cr12',title:'AI for E-commerce & Retail',price:'₹1,299',hrs:'6 hrs',badge:'Retail',url:'https://youtu.be/plo5kk_MzL4'},
+      {id:'cr13',title:'AI for Manufacturing',price:'₹1,299',hrs:'6 hrs',badge:'Industry',url:'https://youtu.be/bNiThiN8cLg'},
+      {id:'cr14',title:'Edge AI & TinyML',price:'₹1,699',hrs:'10 hrs',badge:'Edge AI',url:'https://youtube.com/playlist?list=PL7VEa1KauMQppUExiIOfxxk_2ta94EEpd'},
+      {id:'cr15',title:'AI Model Optimization',price:'₹1,599',hrs:'8 hrs',badge:'Optimization',url:'https://youtu.be/zqoJCOgMd_4'},
+      {id:'cr16',title:'Federated Learning',price:'₹1,799',hrs:'10 hrs',badge:'Fed Learn',url:'https://youtube.com/playlist?list=PLNG4feLHqCWkdlSrEL2xbCtGa6QBxlUZb'},
+      {id:'cr17',title:'Graph Neural Networks',price:'₹1,799',hrs:'10 hrs',badge:'GNN',url:'https://youtube.com/playlist?list=PLPTV0NXA_ZSg4Pimkso0nHxwYMB6IGX7l'},
+      {id:'cr18',title:'Reinforcement Learning',price:'₹1,899',hrs:'12 hrs',badge:'RL',url:'https://youtu.be/VnpRp7ZglfA'},
+      {id:'cr19',title:'Time Series Forecasting',price:'₹1,499',hrs:'7 hrs',badge:'Time Series',url:'https://youtu.be/qx5055j0U6c'},
+      {id:'cr20',title:'Recommendation Systems',price:'₹1,499',hrs:'7 hrs',badge:'RecSys',url:'https://youtu.be/F2tn-BviO_U'},
+      {id:'cr21',title:'AI Research Paper Implementation',price:'₹1,699',hrs:'9 hrs',badge:'Research',url:'https://youtu.be/onU5Hbb3qao'},
+      {id:'cr22',title:'Building AI Startups',price:'₹1,899',hrs:'10 hrs',badge:'Startup',url:'https://youtu.be/zO1098PFOw8'},
+    ]
+  },
+];
+
+/* ════════════════════════════════════════════
+   AUTH STATE (simulated — replace with real backend)
+════════════════════════════════════════════ */
+// In production: replace with JWT calls to your backend
+// DB check: userId → device fingerprint → paymentStatus
+const DB = {
+  users: JSON.parse(localStorage.getItem('b10_users') || '{}'),
+  save() { localStorage.setItem('b10_users', JSON.stringify(this.users)); }
+};
+
+let currentUser = null;
+
+function getDeviceId() {
+  let id = localStorage.getItem('b10_did');
+  if (!id) {
+    id = 'dev_' + Math.random().toString(36).substr(2,12) + Date.now().toString(36);
+    localStorage.setItem('b10_did', id);
+  }
+  return id;
+}
+
+function loadSession() {
+  const s = sessionStorage.getItem('b10_sess');
+  if (s) {
+    try { currentUser = JSON.parse(s); updateNavForUser(); } catch(e) {}
+  }
+}
+
+function updateNavForUser() {
+  const navUser = document.getElementById('navUser');
+  const navSignIn = document.getElementById('navSignIn');
+  const navSignUp = document.getElementById('navSignUp');
+  const navAvatar = document.getElementById('navAvatar');
+  const navUserName = document.getElementById('navUserName');
+  if (currentUser) {
+    navUser.classList.add('show');
+    navSignIn.style.display = 'none';
+    navSignUp.style.display = 'none';
+    navAvatar.textContent = currentUser.name ? currentUser.name[0].toUpperCase() : 'U';
+    navUserName.textContent = currentUser.name || currentUser.email;
+  } else {
+    navUser.classList.remove('show');
+    navSignIn.style.display = '';
+    navSignUp.style.display = '';
+  }
+}
+
+function signOut() {
+  currentUser = null;
+  sessionStorage.removeItem('b10_sess');
+  updateNavForUser();
+  showToast('👋','Signed out successfully');
+  renderAll('all');
+}
+
+function handleSignUp() {
+  const name = document.getElementById('su-name').value.trim();
+  const email = document.getElementById('su-email').value.trim().toLowerCase();
+  const phone = document.getElementById('su-phone').value.trim();
+  const pass = document.getElementById('su-pass').value;
+  const errEl = document.getElementById('su-error');
+  const sucEl = document.getElementById('su-success');
+  errEl.classList.remove('show'); sucEl.classList.remove('show');
+
+  if (!name || !email || !phone || !pass) { errEl.textContent='All fields required.'; errEl.classList.add('show'); return; }
+  if (pass.length < 8) { errEl.textContent='Password must be 8+ characters.'; errEl.classList.add('show'); return; }
+  if (DB.users[email]) { errEl.textContent='Account already exists. Please sign in.'; errEl.classList.add('show'); return; }
+
+  const did = getDeviceId();
+  // Check if this device already has an account (one device = one account)
+  const existing = Object.values(DB.users).find(u => u.deviceId === did);
+  if (existing) {
+    errEl.textContent='A Biluxe10 account is already registered on this device. One account per device allowed.';
+    errEl.classList.add('show'); return;
+  }
+
+  const user = { name, email, phone, pass: btoa(pass), deviceId: did, paid: false, createdAt: Date.now() };
+  DB.users[email] = user;
+  DB.save();
+  currentUser = { name, email, paid: false };
+  sessionStorage.setItem('b10_sess', JSON.stringify(currentUser));
+  sucEl.textContent='Account created! Welcome to Biluxe10.'; sucEl.classList.add('show');
+  setTimeout(() => { closeEnroll(); updateNavForUser(); showToast('🎉','Welcome! Start with a 2-min preview of any course.'); }, 1200);
+}
+
+function handleSignIn() {
+  const email = document.getElementById('si-email').value.trim().toLowerCase();
+  const pass = document.getElementById('si-pass').value;
+  const errEl = document.getElementById('si-error');
+  const sucEl = document.getElementById('si-success');
+  errEl.classList.remove('show'); sucEl.classList.remove('show');
+
+  if (!email || !pass) { errEl.textContent='Email and password required.'; errEl.classList.add('show'); return; }
+  const user = DB.users[email];
+  if (!user) { errEl.textContent='No account found with this email.'; errEl.classList.add('show'); return; }
+  if (user.pass !== btoa(pass)) { errEl.textContent='Incorrect password.'; errEl.classList.add('show'); return; }
+
+  // Device check: if user tries to sign in from a different device
+  const did = getDeviceId();
+  if (user.deviceId && user.deviceId !== did) {
+    errEl.textContent='⚠ Access denied: This account is registered to another device. Contact support.';
+    errEl.classList.add('show'); return;
+  }
+
+  currentUser = { name: user.name, email, paid: user.paid };
+  sessionStorage.setItem('b10_sess', JSON.stringify(currentUser));
+  sucEl.textContent='Signed in! Welcome back, ' + user.name + '.'; sucEl.classList.add('show');
+  setTimeout(() => { closeEnroll(); updateNavForUser(); showToast('👋','Welcome back, ' + user.name + '!'); }, 1000);
+}
+
+function isPaid() {
+  if (!currentUser) return false;
+  // Check against DB for latest payment status
+  const user = DB.users[currentUser.email];
+  return user ? user.paid : false;
+}
+
+/* For demo: mark user as paid (in production, verify via payment gateway webhook) */
+function markPaid(email) {
+  if (DB.users[email]) { DB.users[email].paid = true; DB.save(); }
+  if (currentUser && currentUser.email === email) {
+    currentUser.paid = true;
+    sessionStorage.setItem('b10_sess', JSON.stringify(currentUser));
+  }
+}
+
+/* ════════════════════════════════════════════
+   RENDERING
+════════════════════════════════════════════ */
+let currentFilter = 'all';
+let currentSearch = '';
+
+function extractVideoId(url) {
+  if (!url) return null;
+  // Handle playlist
+  if (url.includes('playlist?list=')) {
+    const m = url.match(/list=([^&]+)/);
+    return m ? { type: 'playlist', id: m[1] } : null;
+  }
+  // Handle live & standard youtu.be / youtube.com
+  const patterns = [
+    /youtu\.be\/([^?&\n]+)/,
+    /youtube\.com\/watch\?v=([^&\n]+)/,
+    /youtube\.com\/live\/([^?&\n]+)/,
+    /youtube\.com\/embed\/([^?&\n]+)/,
+  ];
+  for (const p of patterns) {
+    const m = url.match(p);
+    if (m) return { type: 'video', id: m[1] };
+  }
+  return null;
+}
+
+function buildEmbedUrl(parsed, startSec = 0) {
+  if (!parsed) return '';
+  const params = new URLSearchParams({
+    autoplay: '1',
+    rel: '0',
+    modestbranding: '1',
+    iv_load_policy: '3',
+    controls: '0',        // hide controls (max restriction)
+    disablekb: '1',       // disable keyboard shortcuts
+    fs: '0',              // no fullscreen button
+    cc_load_policy: '0',
+    playsinline: '1',
+    enablejsapi: '1',
+    origin: window.location.origin || 'https://biluxe10.com',
+    start: String(Math.floor(startSec)),
+  });
+  if (parsed.type === 'playlist') {
+    params.set('listType', 'playlist');
+    params.set('list', parsed.id);
+    return `https://www.youtube-nocookie.com/embed/videoseries?${params}`;
+  }
+  return `https://www.youtube-nocookie.com/embed/${parsed.id}?${params}`;
+}
+
+function getAllCourses() {
+  return CATEGORIES.flatMap(cat => cat.courses.map(c => ({ ...c, catId: cat.id, catLabel: cat.label })));
+}
+
+function renderAll(filter, search = '') {
+  const section = document.getElementById('coursesSection');
+  section.innerHTML = '';
+  let totalShown = 0;
+
+  if (filter === 'all' && !search) {
+    // Render by category
+    CATEGORIES.forEach(cat => {
+      const catEl = renderCategory(cat, search);
+      if (catEl) { section.appendChild(catEl); totalShown += cat.courses.length; }
+    });
+  } else {
+    // Flat grid filtered
+    const all = getAllCourses();
+    const filtered = all.filter(c => {
+      const matchCat = filter === 'all' || c.catId === filter;
+      const matchSearch = !search || c.title.toLowerCase().includes(search.toLowerCase());
+      return matchCat && matchSearch;
+    });
+    totalShown = filtered.length;
+
+    if (filtered.length === 0) {
+      section.innerHTML = `<div class="empty-state"><div class="es-icon">🔍</div><p>No courses found. Try a different search or filter.</p></div>`;
+    } else {
+      // Group by category
+      const byCat = {};
+      filtered.forEach(c => {
+        if (!byCat[c.catId]) byCat[c.catId] = [];
+        byCat[c.catId].push(c);
+      });
+      CATEGORIES.forEach(cat => {
+        if (!byCat[cat.id]) return;
+        const fake = { ...cat, courses: byCat[cat.id] };
+        const el = renderCategory(fake, search);
+        if (el) section.appendChild(el);
+      });
+    }
+  }
+
+  document.getElementById('resultsCount').textContent = `${totalShown} course${totalShown !== 1 ? 's' : ''}`;
+  observeReveal();
+}
+
+function renderCategory(cat, search) {
+  const wrap = document.createElement('div');
+  wrap.className = 'cat-section reveal';
+  const header = document.createElement('div');
+  header.className = 'cat-header';
+  header.innerHTML = `
+    <div class="cat-emoji">${cat.emoji}</div>
+    <div class="cat-name">${cat.label.replace(/^[^ ]+ /,'')}</div>
+    <div class="cat-count">${cat.courses.length} courses</div>
+  `;
+  const grid = document.createElement('div');
+  grid.className = 'courses-grid';
+  cat.courses.forEach((c, i) => {
+    const card = document.createElement('div');
+    card.className = 'c-card reveal';
+    card.style.transitionDelay = `${(i % 4) * 0.06}s`;
+
+    const userPaid = isPaid();
+    const btnLabel = userPaid ? 'Watch Now' : 'Preview 2min';
+    const btnClass = userPaid ? 'c-btn watch' : 'c-btn';
+
+    card.innerHTML = `
+      <div class="c-card-top">
+        <div class="c-emoji">${getCatEmoji(c.catId)}</div>
+        <span class="c-badge">${c.badge}</span>
+      </div>
+      <div class="c-title">${c.title}</div>
+      <div class="c-meta">
+        <span>⏱ ${c.hrs}</span>
+        <span>🎓 Certificate</span>
+        <span>Self-paced</span>
+      </div>
+      <div class="c-preview-tag">▶ ${userPaid ? 'Full Access' : '2 min free preview'}</div>
+      <div class="c-footer">
+        <div class="c-price-area">
+          <div class="c-price">${c.price}</div>
+          <div class="c-price-note">one-time · lifetime</div>
+        </div>
+        <button class="${btnClass}" onclick="openCourse('${c.id}')">${btnLabel} →</button>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+  wrap.appendChild(header);
+  wrap.appendChild(grid);
+  return wrap;
+}
+
+function getCatEmoji(catId) {
+  const map = { starter:'🚀',digital:'📈',creative:'🎨',data:'📊',dev:'💻',devops:'☁',
+    'ai-ml':'🧠',genai:'✨',career:'🎯' };
+  return map[catId] || '📚';
+}
+
+function filterCourses(cat, btn) {
+  currentFilter = cat;
+  currentSearch = document.getElementById('searchInput').value;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderAll(cat, currentSearch);
+}
+
+function searchCourses(q) {
+  currentSearch = q;
+  renderAll(currentFilter, q);
+}
+
+function observeReveal() {
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); }
+    });
+  }, { threshold: 0.05 });
+  document.querySelectorAll('.reveal:not(.visible)').forEach(el => obs.observe(el));
+}
+
+/* ════════════════════════════════════════════
+   COURSE OPEN / VIDEO PLAYER
+════════════════════════════════════════════ */
+let playerIframe = null;
+let previewTimerInterval = null;
+let previewSeconds = 120; // 2 minutes
+let currentCourseId = null;
+let playerReady = false;
+
+function getCourse(id) {
+  for (const cat of CATEGORIES) {
+    const c = cat.courses.find(x => x.id === id);
+    if (c) return { ...c, catId: cat.id, catLabel: cat.label };
+  }
+  return null;
+}
+
+function openCourse(id) {
+  const course = getCourse(id);
+  if (!course) return;
+  currentCourseId = id;
+
+  // Set modal content
+  document.getElementById('modalTitle').textContent = course.title;
+  document.getElementById('modalCat').textContent = course.catLabel;
+  document.getElementById('modalPrice').textContent = course.price;
+  document.getElementById('modalMetaRow').innerHTML = `
+    <div class="info-chip"><span>⏱</span>${course.hrs}</div>
+    <div class="info-chip"><span>🎓</span>Certificate Included</div>
+    <div class="info-chip"><span>♾</span>Lifetime Access</div>
+    <div class="info-chip"><span>📱</span>One Device</div>
+  `;
+
+  // Reset overlays
+  document.getElementById('previewOverlay').classList.remove('show');
+  document.getElementById('accessDenied').classList.remove('show');
+  document.getElementById('previewTimer').classList.remove('hidden');
+  previewSeconds = 120;
+  updateTimerDisplay();
+  clearInterval(previewTimerInterval);
+
+  // Show/hide enroll CTA based on auth
+  const enrollCta = document.getElementById('enrollCta');
+  enrollCta.style.display = isPaid() ? 'none' : '';
+
+  // Open modal
+  document.getElementById('videoModal').classList.add('open');
+  document.body.classList.add('modal-open');
+
+  // Load video
+  loadPlayer(course);
+}
+
+function loadPlayer(course) {
+  const container = document.getElementById('playerContainer');
+  container.innerHTML = '';
+  playerIframe = null;
+
+  const parsed = extractVideoId(course.url);
+  if (!parsed) {
+    container.innerHTML = '<div style="padding:40px;text-align:center;color:var(--text3)">Video unavailable</div>';
+    return;
+  }
+
+  const embedUrl = buildEmbedUrl(parsed, 0);
+  const iframe = document.createElement('iframe');
+  iframe.src = embedUrl;
+  iframe.allow = 'autoplay; encrypted-media';
+  iframe.allowFullscreen = false;
+  iframe.setAttribute('allowfullscreen', 'false');
+  iframe.setAttribute('mozallowfullscreen', 'false');
+  iframe.setAttribute('webkitallowfullscreen', 'false');
+  iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-presentation');
+  iframe.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;border:none;transform:scale(1.3);transform-origin:center center;';
+
+  container.appendChild(iframe);
+  playerIframe = iframe;
+
+  const userPaid = isPaid();
+
+  if (userPaid) {
+    // Full access — no timer
+    document.getElementById('previewTimer').classList.add('hidden');
+  } else {
+    // Start 2-min preview countdown
+    startPreviewTimer();
+  }
+}
+
+function startPreviewTimer() {
+  clearInterval(previewTimerInterval);
+  previewTimerInterval = setInterval(() => {
+    previewSeconds--;
+    updateTimerDisplay();
+    if (previewSeconds <= 0) {
+      clearInterval(previewTimerInterval);
+      // Stop playback by removing iframe
+      document.getElementById('playerContainer').innerHTML = '';
+      playerIframe = null;
+      document.getElementById('previewOverlay').classList.add('show');
+      document.getElementById('previewTimer').classList.add('hidden');
+    }
+  }, 1000);
+}
+
+function updateTimerDisplay() {
+  const m = Math.floor(previewSeconds / 60);
+  const s = previewSeconds % 60;
+  document.getElementById('previewTimer').textContent = `⏱ Preview: ${m}:${s.toString().padStart(2,'0')}`;
+}
+
+function closeVideoModal() {
+  clearInterval(previewTimerInterval);
+  document.getElementById('videoModal').classList.remove('open');
+  document.body.classList.remove('modal-open');
+  // Kill iframe to stop playback
+  document.getElementById('playerContainer').innerHTML = '';
+  playerIframe = null;
+  currentCourseId = null;
+}
+
+function handleModalBgClick(e) {
+  if (e.target === document.getElementById('videoModal')) closeVideoModal();
+}
+
+/* ════════════════════════════════════════════
+   ENROLLMENT MODAL
+════════════════════════════════════════════ */
+function openEnroll(tab = 'signup') {
+  closeVideoModal();
+  document.getElementById('enrollModal').classList.add('open');
+  document.body.classList.add('modal-open');
+  switchTab(tab);
+  // Clear fields
+  ['su-name','su-email','su-phone','su-pass','si-email','si-pass'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  ['su-error','su-success','si-error','si-success'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.remove('show');
+  });
+}
+
+function closeEnroll() {
+  document.getElementById('enrollModal').classList.remove('open');
+  document.body.classList.remove('modal-open');
+}
+
+function switchTab(tab) {
+  document.querySelectorAll('.enroll-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.enroll-tab-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  document.getElementById('panel-' + tab).classList.add('active');
+}
+
+/* ════════════════════════════════════════════
+   TOAST
+════════════════════════════════════════════ */
+let toastTimer = null;
+function showToast(icon, msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('toastIcon').textContent = icon;
+  document.getElementById('toastMsg').textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+/* ════════════════════════════════════════════
+   SECURITY: Anti-screenshot / anti-recording
+════════════════════════════════════════════ */
+function initSecurity() {
+  // 1. Detect screen capture via mediaDevices (Chrome/Edge)
+  if (navigator.mediaDevices && navigator.mediaDevices.getDisplayMedia) {
+    const origGetDisplayMedia = navigator.mediaDevices.getDisplayMedia.bind(navigator.mediaDevices);
+    navigator.mediaDevices.getDisplayMedia = async function(opts) {
+      document.body.classList.add('recording-detected');
+      showToast('⚠','Screen recording detected. Content hidden.');
+      throw new DOMException('Screen capture not allowed on this platform.', 'NotAllowedError');
+    };
+  }
+
+  // 2. Visibility change (alt-tab, screen recorders sometimes)
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden && playerIframe) {
+      // Pause by replacing iframe with placeholder
+      const pc = document.getElementById('playerContainer');
+      pc._pausedUrl = playerIframe ? playerIframe.src : '';
+      pc.innerHTML = '<div style="width:100%;height:100%;position:absolute;top:0;left:0;background:#000;display:flex;align-items:center;justify-content:center;color:var(--text3);font-size:0.8rem;font-family:var(--font-mono)">CONTENT PAUSED</div>';
+    }
+  });
+
+  // 3. Context menu disabled on player
+  document.getElementById('playerWrap').addEventListener('contextmenu', e => e.preventDefault());
+
+  // 4. Keyboard shortcuts: block print screen (partial), dev tools hints
+  document.addEventListener('keydown', e => {
+    // Block F12
+    if (e.key === 'F12') { e.preventDefault(); showToast('🔒','Developer tools disabled.'); return; }
+    // Block Ctrl+Shift+I / Ctrl+U / Ctrl+S / Ctrl+P
+    if (e.ctrlKey && ['u','s','p','a'].includes(e.key.toLowerCase())) { e.preventDefault(); return; }
+    if (e.ctrlKey && e.shiftKey && ['i','j','c'].includes(e.key.toLowerCase())) { e.preventDefault(); return; }
+    // PrintScreen
+    if (e.key === 'PrintScreen') {
+      navigator.clipboard.writeText('').catch(() => {});
+      showToast('🔒','Screenshots are disabled on this platform.');
+    }
+  });
+
+  // 5. Detect devtools open (resize heuristic)
+  let devtoolsOpen = false;
+  setInterval(() => {
+    const threshold = 160;
+    if (window.outerWidth - window.innerWidth > threshold || window.outerHeight - window.innerHeight > threshold) {
+      if (!devtoolsOpen) {
+        devtoolsOpen = true;
+        if (document.getElementById('videoModal').classList.contains('open')) {
+          document.getElementById('playerContainer').innerHTML = '';
+          showToast('⚠','Video paused: Developer tools detected.');
+        }
+      }
+    } else {
+      devtoolsOpen = false;
+    }
+  }, 1500);
+
+  // 6. Disable text selection globally
+  document.addEventListener('selectstart', e => e.preventDefault());
+
+  // 7. Disable drag
+  document.addEventListener('dragstart', e => e.preventDefault());
+
+  // 8. Detect if page opened in iframe (clickjacking protection)
+  if (window.top !== window.self) {
+    document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;color:#fff;font-family:monospace;font-size:1rem;background:#000">⚠ Embedding not permitted.</div>';
+  }
+
+  // 9. Block navigation away to external links
+  document.addEventListener('click', e => {
+    const link = e.target.closest('a');
+    if (link && link.href && !link.href.startsWith(window.location.origin) && !link.href.startsWith('javascript')) {
+      e.preventDefault();
+      showToast('🔗','External links are disabled. Stay on Biluxe10.');
+    }
+  });
+}
+
+/* ════════════════════════════════════════════
+   INIT
+════════════════════════════════════════════ */
+document.addEventListener('DOMContentLoaded', () => {
+  loadSession();
+  renderAll('all');
+  initSecurity();
+
+  // Enroll modal: close on bg click
+  document.getElementById('enrollModal').addEventListener('click', e => {
+    if (e.target === document.getElementById('enrollModal')) closeEnroll();
+  });
+
+  // Keyboard close
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      closeVideoModal();
+      closeEnroll();
+    }
+  });
+
+  // Watermark update with username
+  setInterval(() => {
+    const wm = document.getElementById('videoWatermark');
+    if (wm && currentUser) {
+      wm.textContent = `BILUXE10 • ${(currentUser.email || '').slice(0,14).toUpperCase()}`;
+    }
+  }, 5000);
+});
+</script>
+</body>
+</html>
