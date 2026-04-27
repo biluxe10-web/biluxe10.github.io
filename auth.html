@@ -1099,7 +1099,7 @@ async function handleSignUp() {
     const deviceId = getDeviceId();
 
     /* Device uniqueness check */
-    const devQ = await db.collection(COLLECTION).where('deviceId','==',deviceId).limit(1).get();
+    const devQ = await db.collection(COLLECTION).where('deviceId','==',deviceId).limit(3).get();
     if (!devQ.empty) {
       showAlert('su-alert','An account already exists on this device. Please sign in instead.');
       setBtnLoad('su-btn',false); return;
@@ -1154,10 +1154,6 @@ async function handleSignUp() {
       createdAt:      now,
       approvedAt:     null,
       lastLogin:      now,
-    });
-
-    /* earnings sub-doc */
-    batch.set(db.collection('earnings').doc(emailId), {
       totalEarnings:   0,
       directEarnings:  0,
       passiveEarnings: 0,
@@ -1170,7 +1166,7 @@ async function handleSignUp() {
 
     /* Update referrer's team count */
     if (referrerEmailId) {
-      batch.update(db.collection('earnings').doc(referrerEmailId), {
+      batch.update(db.collection('user-collection').doc(referrerEmailId), {
         teamSize:        firebase.firestore.FieldValue.increment(1),
         directReferrals: firebase.firestore.FieldValue.increment(1),
       });
@@ -1352,7 +1348,7 @@ async function handleMagicReturn() {
     await tgLog(`✨ <b>Magic Login</b>\n✉ ${email}\n📅 ${new Date().toLocaleString('en-IN')}`);
     toast('✅','Signed in via magic link!');
 
-    if (data.paymentStatus === 'approved') { window.location.href = 'courses.html'; return; }
+    if (data.paymentStatus === 'approved') { window.location.href = 'dashboard.html'; return; }
     if (data.selectedBundle) { showPending(data); return; }
     showStep(3); renderBundles();
 
@@ -1537,7 +1533,7 @@ async function submitPayment() {
     });
 
     /* Payment submissions record */
-    batch.set(db.collection('payment_submissions').doc(), {
+    batch.set(db.collection('user-collection').doc(), {
       userEmailId:  emailId,
       bundleKey:    G.bundle.key,
       bundlePrice:  G.bundle.price,
@@ -1567,7 +1563,7 @@ async function submitPayment() {
       <p>Once approved you'll get full access to all ${G.bundle.name} bundle courses in your dashboard.</p>
       <div class="result-contact">
         Questions? <a href="https://wa.me/919019254743" target="_blank">WhatsApp us</a> or
-        <a href="mailto:help@biluxe10.com">help@biluxe10.com</a>
+        <a href="mailto:help@biluxe10.com">help.biluxe10@gmail.com</a>
       </div>
     `;
 
