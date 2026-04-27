@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="robots" content="noindex, nofollow">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' https://fonts.googleapis.com https://fonts.gstatic.com https://www.youtube.com https://www.youtube-nocookie.com https://i.ytimg.com https://s.ytimg.com https://yt3.ggpht.com https://ytimg.com https://www.gstatic.com https://firebasestorage.googleapis.com; connect-src 'self' https://*.firebaseio.com https://*.googleapis.com wss://*.firebaseio.com; frame-src https://www.youtube-nocookie.com; img-src * data:; media-src 'none';">
+<title>Courses — Biluxe10</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,700;0,9..144,900;1,9..144,400&family=Cabinet+Grotesk:wght@400;500;600;700;800&family=Instrument+Mono:ital@0;1&display=swap" rel="stylesheet">
+
+<!-- Firebase 9 compat CDN — same version as auth.html -->
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+
+<style>
+/* ─────────────────────────────────────────────
+   RESET & TOKENS
+───────────────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#09090B;--bg2:#0F0F12;--bg3:#141418;--bg4:#1a1a1f;
+  --border:rgba(255,255,255,0.06);--border2:rgba(255,255,255,0.11);
+  --gold:#C8A96E;--gold2:#E2C48A;--gold3:#F0D9A8;
+  --goldA:rgba(200,169,110,0.10);--goldB:rgba(200,169,110,0.18);--goldC:rgba(200,169,110,0.04);
+  --ink:#09090B;--text:#E4E4E7;--text2:#A1A1AA;--text3:#52525B;--text4:#3f3f46;
+  --red:#ef4444;--green:#22c55e;--blue:#3b82f6;
+  --font-display:'Fraunces',serif;--font-body:'Cabinet Grotesk',sans-serif;--font-mono:'Instrument Mono',monospace;
+  --radius:12px;--radius-sm:8px;--radius-xs:5px;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--font-body);line-height:1.6;overflow-x:hidden;min-height:100vh}
+body.modal-open{overflow:hidden}
+a{text-decoration:none;color:inherit}
+button{font-family:var(--font-body)}
+::-webkit-scrollbar{width:3px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--gold);border-radius:2px}
+
+/* ─── NAV ─── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:500;height:66px;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 max(20px,4vw);background:rgba(9,9,11,0.92);
+  backdrop-filter:blur(24px);border-bottom:1px solid var(--border);
+}
+.nav-logo{font-family:var(--font-display);font-size:1.25rem;font-weight:900;color:var(--gold);cursor:pointer}
+.nav-logo sup{font-size:0.5em;color:var(--text3);font-weight:400}
+.nav-center{display:flex;gap:24px}
+.nav-center a{font-size:0.78rem;font-weight:600;color:var(--text2);transition:color 0.2s;cursor:pointer}
+.nav-center a:hover,.nav-center a.active{color:var(--text)}
+.nav-right{display:flex;gap:10px;align-items:center}
+.nav-btn{padding:8px 18px;border-radius:6px;font-size:0.75rem;font-weight:700;cursor:pointer;transition:all 0.2s;border:none}
+.nav-sign{background:transparent;color:var(--text2);border:1px solid var(--border2)}
+.nav-sign:hover{color:var(--text)}
+.nav-enroll{background:var(--gold);color:var(--ink)}
+.nav-enroll:hover{background:var(--gold2)}
+.nav-user{display:none;align-items:center;gap:8px;font-size:0.75rem;color:var(--text2)}
+.nav-user.show{display:flex}
+.nav-avatar{width:30px;height:30px;border-radius:50%;background:var(--goldA);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:0.7rem;color:var(--gold);font-weight:700}
+.hamburger{display:none;flex-direction:column;gap:4.5px;cursor:pointer;padding:4px}
+.hamburger span{width:20px;height:1.5px;background:var(--text2);border-radius:1px}
+.mobile-menu{display:none;position:fixed;top:66px;left:0;right:0;background:var(--bg2);border-bottom:1px solid var(--border);padding:20px;flex-direction:column;gap:4px;z-index:499}
+.mobile-menu.open{display:flex}
+.mobile-menu a,.mobile-menu button{font-size:0.88rem;color:var(--text2);padding:12px 0;border-bottom:1px solid var(--border);background:none;border-left:none;border-right:none;border-top:none;text-align:left;cursor:pointer;width:100%}
+.mobile-menu a:hover,.mobile-menu button:hover{color:var(--gold)}
+.paid-badge{
+  display:inline-flex;align-items:center;gap:4px;font-family:var(--font-mono);
+  font-size:0.58rem;color:var(--green);background:rgba(34,197,94,0.08);
+  border:1px solid rgba(34,197,94,0.2);padding:2px 7px;border-radius:3px;
+  letter-spacing:0.05em;
+}
+
+/* ─── PAGE HEADER ─── */
+.page-header{padding:120px max(20px,5vw) 50px;max-width:1200px;margin:0 auto}
+.ph-tag{display:inline-flex;align-items:center;gap:7px;font-family:var(--font-mono);font-size:0.62rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);border-left:2px solid var(--gold);padding-left:12px;margin-bottom:18px}
+.ph-h{font-family:var(--font-display);font-size:clamp(2rem,4vw,3.2rem);font-weight:900;margin-bottom:14px;line-height:1.08}
+.ph-h em{color:var(--gold);font-style:italic}
+.ph-p{font-size:0.9rem;color:var(--text2);max-width:520px;line-height:1.85}
+.ph-stats{display:flex;gap:28px;margin-top:28px;flex-wrap:wrap}
+.ph-stat{display:flex;flex-direction:column;gap:2px}
+.ph-stat-n{font-family:var(--font-display);font-size:1.6rem;font-weight:900;color:var(--gold)}
+.ph-stat-l{font-size:0.7rem;color:var(--text3);font-family:var(--font-mono);letter-spacing:0.08em;text-transform:uppercase}
+
+/* ─── FILTERS ─── */
+.filter-section{padding:0 max(20px,5vw) 32px;max-width:1200px;margin:0 auto}
+.filter-bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
+.filter-btn{padding:7px 16px;border-radius:20px;border:1px solid var(--border);background:transparent;font-family:var(--font-body);font-size:0.73rem;font-weight:600;color:var(--text3);cursor:pointer;transition:all 0.2s}
+.filter-btn:hover{border-color:rgba(200,169,110,0.3);color:var(--text2)}
+.filter-btn.active{background:var(--goldA);border-color:rgba(200,169,110,0.3);color:var(--gold)}
+.search-bar{display:flex;gap:10px;align-items:center;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 16px;max-width:340px}
+.search-bar input{flex:1;background:none;border:none;outline:none;color:var(--text);font-family:var(--font-body);font-size:0.82rem}
+.search-bar input::placeholder{color:var(--text3)}
+.search-icon{color:var(--text3);font-size:0.85rem}
+.filter-row2{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.results-count{font-family:var(--font-mono);font-size:0.65rem;color:var(--text3);letter-spacing:0.05em}
+
+/* ─── COURSES GRID ─── */
+.courses-section{padding:0 max(20px,5vw) 100px;max-width:1200px;margin:0 auto}
+.cat-section{margin-bottom:52px}
+.cat-header{display:flex;align-items:center;gap:14px;margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid var(--border)}
+.cat-emoji{font-size:1.4rem}
+.cat-name{font-family:var(--font-display);font-size:1.2rem;font-weight:700;color:var(--text)}
+.cat-count{font-family:var(--font-mono);font-size:0.62rem;color:var(--text3);background:var(--bg3);border:1px solid var(--border);padding:2px 8px;border-radius:3px;letter-spacing:0.05em}
+.courses-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px}
+
+/* ─── COURSE CARD ─── */
+.c-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:20px;cursor:pointer;transition:all 0.25s;position:relative;overflow:hidden;display:flex;flex-direction:column;gap:10px}
+.c-card::before{content:"";position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(200,169,110,0.15),transparent);opacity:0;transition:opacity 0.3s}
+.c-card:hover{border-color:rgba(200,169,110,0.2);transform:translateY(-3px);box-shadow:0 12px 40px rgba(0,0,0,0.4)}
+.c-card:hover::before{opacity:1}
+.c-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+.c-emoji{font-size:1.6rem;line-height:1}
+.c-badge{font-family:var(--font-mono);font-size:0.55rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--gold);background:var(--goldA);border:1px solid rgba(200,169,110,0.18);padding:2px 7px;border-radius:3px;white-space:nowrap;flex-shrink:0}
+.c-title{font-family:var(--font-display);font-size:0.92rem;font-weight:700;color:var(--text);line-height:1.3}
+.c-meta{display:flex;gap:10px;flex-wrap:wrap}
+.c-meta span{font-family:var(--font-mono);font-size:0.6rem;color:var(--text3)}
+.c-preview-tag{display:inline-flex;align-items:center;gap:5px;font-family:var(--font-mono);font-size:0.58rem;color:#22c55e;background:rgba(34,197,94,0.07);border:1px solid rgba(34,197,94,0.15);padding:2px 7px;border-radius:3px;letter-spacing:0.06em}
+.c-footer{margin-top:auto;display:flex;align-items:center;justify-content:space-between;padding-top:10px;border-top:1px solid var(--border)}
+.c-price-area{display:flex;flex-direction:column;gap:1px}
+.c-price{font-family:var(--font-display);font-size:1.1rem;font-weight:900;color:var(--gold)}
+.c-price-note{font-size:0.6rem;color:var(--text3);font-family:var(--font-mono)}
+.c-btn{padding:7px 14px;background:var(--goldA);color:var(--gold);border:1px solid rgba(200,169,110,0.2);border-radius:6px;font-size:0.7rem;font-weight:700;cursor:pointer;transition:all 0.2s;white-space:nowrap}
+.c-btn:hover{background:var(--goldB);border-color:rgba(200,169,110,0.35)}
+.c-btn.watch{background:rgba(34,197,94,0.1);color:#22c55e;border-color:rgba(34,197,94,0.2)}
+.c-btn.watch:hover{background:rgba(34,197,94,0.18)}
+
+/* ─── VIDEO MODAL ─── */
+.modal-bg{position:fixed;inset:0;z-index:800;background:rgba(0,0,0,0.97);display:none;align-items:center;justify-content:center;backdrop-filter:blur(12px)}
+.modal-bg.open{display:flex}
+.modal-box{background:var(--bg2);border:1px solid var(--border2);border-radius:16px;width:min(820px,96vw);max-height:94vh;overflow-y:auto;position:relative;display:flex;flex-direction:column}
+.modal-header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:22px 24px 16px;border-bottom:1px solid var(--border);flex-shrink:0}
+.modal-title{font-family:var(--font-display);font-size:1.1rem;font-weight:700;color:var(--text);line-height:1.3}
+.modal-cat{font-family:var(--font-mono);font-size:0.58rem;color:var(--gold);text-transform:uppercase;letter-spacing:0.1em;margin-top:4px}
+.modal-close{background:var(--bg3);border:1px solid var(--border);color:var(--text2);width:32px;height:32px;border-radius:6px;cursor:pointer;font-size:1rem;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all 0.2s}
+.modal-close:hover{color:var(--text);border-color:var(--border2)}
+
+/* ─── PLAYER ─── */
+.player-section{padding:20px 24px;flex-shrink:0}
+.player-wrap{position:relative;width:100%;padding-top:56.25%;background:#000;border-radius:var(--radius-sm);overflow:hidden;border:1px solid var(--border);user-select:none;-webkit-user-select:none}
+/* Watermark overlay on video container */
+.player-wrap::after{content:"BILUXE10 • PROTECTED CONTENT";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-30deg);font-family:var(--font-mono);font-size:clamp(0.5rem,2vw,0.75rem);color:rgba(200,169,110,0.07);letter-spacing:0.3em;pointer-events:none;white-space:nowrap;z-index:10}
+.player-wrap iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:none;
+  /* Scale 1.5x to aggressively crop YouTube chrome (title bar, controls, logo, share) */
+  transform:scale(1.5);transform-origin:center center}
+/* Top-safe clipping: hide YouTube header bar + title */
+.player-inner{position:absolute;inset:0;overflow:hidden}
+.player-guard{position:absolute;inset:0;z-index:5;background:transparent;cursor:default}
+.video-watermark{position:absolute;z-index:8;font-family:var(--font-mono);font-size:0.58rem;color:rgba(200,169,110,0.25);letter-spacing:0.12em;pointer-events:none;text-transform:uppercase;animation:wm-move 20s ease-in-out infinite}
+@keyframes wm-move{0%{top:15%;left:10%}25%{top:70%;left:60%}50%{top:30%;left:75%}75%{top:65%;left:20%}100%{top:15%;left:10%}}
+.preview-timer{font-family:var(--font-mono);font-size:0.7rem;color:var(--gold);position:absolute;top:12px;right:12px;z-index:20;background:rgba(9,9,11,0.85);padding:4px 10px;border-radius:4px;border:1px solid rgba(200,169,110,0.3)}
+.preview-timer.hidden{display:none}
+
+/* Preview ended / Access denied overlays */
+.preview-overlay,.access-denied-overlay{position:absolute;inset:0;z-index:25;background:rgba(9,9,11,0.97);display:none;flex-direction:column;align-items:center;justify-content:center;gap:18px;text-align:center;padding:28px;border-radius:var(--radius-sm)}
+.preview-overlay.show,.access-denied-overlay.show{display:flex}
+.po-icon,.ad-icon{font-size:3rem}
+.po-title{font-family:var(--font-display);font-size:1.4rem;font-weight:900;color:var(--gold)}
+.po-desc,.ad-desc{font-size:0.85rem;color:var(--text2);max-width:360px;line-height:1.8}
+.ad-title{font-family:var(--font-display);font-size:1.2rem;font-weight:900;color:var(--red)}
+.po-cta{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:6px}
+.po-btn-primary{padding:12px 28px;background:var(--gold);color:var(--ink);border:none;border-radius:8px;font-weight:800;font-size:0.85rem;cursor:pointer;transition:all 0.2s;font-family:var(--font-body)}
+.po-btn-primary:hover{background:var(--gold2);transform:translateY(-1px)}
+.po-btn-secondary{padding:12px 20px;background:transparent;color:var(--text2);border:1px solid var(--border2);border-radius:8px;font-size:0.82rem;cursor:pointer;transition:all 0.2s;font-family:var(--font-body)}
+.po-btn-secondary:hover{color:var(--text);border-color:rgba(255,255,255,0.2)}
+
+/* ─── MODAL INFO ─── */
+.modal-info{padding:0 24px 24px;display:flex;flex-direction:column;gap:16px}
+.info-row{display:flex;gap:20px;flex-wrap:wrap}
+.info-chip{display:flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:0.65rem;color:var(--text2)}
+.info-chip span{font-size:0.85rem}
+.enroll-cta{background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:18px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.enroll-cta-text{display:flex;flex-direction:column;gap:3px}
+.enroll-cta-title{font-weight:700;font-size:0.9rem;color:var(--text)}
+.enroll-cta-sub{font-size:0.75rem;color:var(--text2)}
+.enroll-cta-price{font-family:var(--font-display);font-size:1.6rem;font-weight:900;color:var(--gold)}
+.enroll-cta-btn{padding:12px 26px;background:var(--gold);color:var(--ink);border:none;border-radius:8px;font-weight:800;font-size:0.85rem;cursor:pointer;transition:all 0.2s;white-space:nowrap;font-family:var(--font-body)}
+.enroll-cta-btn:hover{background:var(--gold2)}
+.full-access-banner{background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.2);border-radius:var(--radius-sm);padding:14px 18px;display:flex;align-items:center;gap:10px;font-size:0.82rem;color:var(--green)}
+
+/* ─── TOAST ─── */
+.toast{position:fixed;bottom:24px;right:24px;z-index:9000;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:14px 18px;max-width:300px;display:flex;align-items:center;gap:10px;transform:translateY(80px);opacity:0;transition:all 0.35s cubic-bezier(0.34,1.56,0.64,1);font-size:0.8rem;color:var(--text)}
+.toast.show{transform:translateY(0);opacity:1}
+.toast-icon{font-size:1.1rem;flex-shrink:0}
+
+/* ─── FOOTER ─── */
+footer{background:var(--bg2);border-top:1px solid var(--border);padding:32px max(20px,5vw)}
+.ft-bot{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.ft-copy{font-size:0.72rem;color:var(--text3)}
+.ft-copy span{color:var(--gold)}
+.ft-links{display:flex;gap:20px}
+.ft-links a{font-size:0.72rem;color:var(--text3);transition:color 0.2s;cursor:pointer}
+.ft-links a:hover{color:var(--gold)}
+
+/* ─── EMPTY STATE ─── */
+.empty-state{text-align:center;padding:60px 20px;color:var(--text3)}
+.empty-state .es-icon{font-size:3rem;margin-bottom:12px}
+.empty-state p{font-size:0.85rem}
+
+/* ─── REVEAL ─── */
+.reveal{opacity:0;transform:translateY(16px);transition:opacity 0.5s ease,transform 0.5s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+
+/* ─── RESPONSIVE ─── */
+@media(max-width:768px){
+  .nav-center{display:none}
+  .hamburger{display:flex}
+  .ph-stats{gap:20px}
+  .modal-box{max-height:100vh;border-radius:0}
+  .modal-header,.player-section,.modal-info{padding-left:16px;padding-right:16px}
+  .enroll-cta{flex-direction:column;align-items:flex-start}
+}
+@media(max-width:480px){
+  .courses-grid{grid-template-columns:1fr}
+  .filter-row2{flex-direction:column;align-items:flex-start}
+  .search-bar{max-width:100%}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo" onclick="window.location.href='index.html'">Biluxe<sup>10</sup></div>
+  <div class="nav-center">
+    <a class="active">Courses</a>
+    <a onclick="goToAuth()">Bundles</a>
+    <a onclick="window.location.href='index.html'">Home</a>
+    <a>About</a>
+    <a>FAQ</a>
+    <a>Contact</a>
+  </div>
+  <div class="nav-right">
+    <!-- Shown when signed in -->
+    <div class="nav-user" id="navUser">
+      <div class="nav-avatar" id="navAvatar">U</div>
+      <span id="navUserName">User</span>
+      <span class="paid-badge" id="navPaidBadge" style="display:none">✓ Enrolled</span>
+      <button class="nav-btn nav-sign" onclick="doSignOut()" style="margin-left:4px">Sign Out</button>
+    </div>
+    <!-- Shown when signed out -->
+    <button class="nav-btn nav-sign" id="navSignIn" onclick="goToAuth('signin')">Sign In</button>
+    <button class="nav-btn nav-enroll" id="navSignUp" onclick="goToAuth('signup')">Sign Up Free</button>
+  </div>
+  <div class="hamburger" id="hamburger">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<div class="mobile-menu" id="mm">
+  <a onclick="window.location.href='index.html'">Home</a>
+  <a>Courses</a>
+  <a onclick="goToAuth()">Bundles</a>
+  <a>About</a>
+  <button onclick="goToAuth('signin')">Sign In</button>
+  <button onclick="goToAuth('signup')" style="color:var(--gold)">Sign Up Free →</button>
+</div>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div class="ph-tag">82+ Courses Available</div>
+  <h1 class="ph-h">Learn one skill.<br><em>Change your career.</em></h1>
+  <p class="ph-p">Each course includes self-paced videos, a hands-on project, and an industry certificate. Preview 2 minutes free — enroll to unlock the full course.</p>
+  <div class="ph-stats">
+    <div class="ph-stat"><div class="ph-stat-n">82+</div><div class="ph-stat-l">Courses</div></div>
+    <div class="ph-stat"><div class="ph-stat-n">9</div><div class="ph-stat-l">Categories</div></div>
+    <div class="ph-stat"><div class="ph-stat-n">2 min</div><div class="ph-stat-l">Free Preview</div></div>
+    <div class="ph-stat"><div class="ph-stat-n">1:1</div><div class="ph-stat-l">Device Lock</div></div>
+  </div>
+</div>
+
+<!-- FILTERS -->
+<div class="filter-section">
+  <div class="filter-bar" id="filterBar">
+    <button class="filter-btn active" onclick="filterCourses('all',this)">All Courses</button>
+    <button class="filter-btn" onclick="filterCourses('starter',this)">🚀 Starter</button>
+    <button class="filter-btn" onclick="filterCourses('digital',this)">📈 Digital Marketing</button>
+    <button class="filter-btn" onclick="filterCourses('creative',this)">🎨 Creative & Design</button>
+    <button class="filter-btn" onclick="filterCourses('data',this)">📊 Data & Analytics</button>
+    <button class="filter-btn" onclick="filterCourses('dev',this)">💻 Web Development</button>
+    <button class="filter-btn" onclick="filterCourses('devops',this)">☁ DevOps & Cloud</button>
+    <button class="filter-btn" onclick="filterCourses('ai-ml',this)">🧠 AI & Machine Learning</button>
+    <button class="filter-btn" onclick="filterCourses('genai',this)">✨ Generative AI</button>
+    <button class="filter-btn" onclick="filterCourses('career',this)">🎯 AI Career & Industry</button>
+  </div>
+  <div class="filter-row2">
+    <div class="search-bar">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="searchInput" placeholder="Search courses..." oninput="searchCourses(this.value)">
+    </div>
+    <div class="results-count" id="resultsCount">82 courses</div>
+  </div>
+</div>
+
+<!-- COURSES -->
+<div class="courses-section" id="coursesSection"></div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="ft-bot">
+    <div class="ft-copy">© 2025 <span>Biluxe10</span>. All rights reserved. Content protected.</div>
+    <div class="ft-links">
+      <a onclick="window.location.href='index.html'">Home</a>
+      <a onclick="goToAuth()">Bundles</a>
+      <a>Contact</a>
+      <a>Privacy</a>
+    </div>
+  </div>
+</footer>
+
+<!-- ─── VIDEO MODAL ─── -->
+<div class="modal-bg" id="videoModal" onclick="handleModalBgClick(event)">
+  <div class="modal-box" id="modalBox" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title" id="modalTitle">Course Title</div>
+        <div class="modal-cat" id="modalCat">Category</div>
+      </div>
+      <button class="modal-close" onclick="closeVideoModal()">✕</button>
+    </div>
+
+    <div class="player-section">
+      <div class="player-wrap" id="playerWrap">
+        <div class="player-inner">
+          <div id="playerContainer"></div>
+        </div>
+
+        <!-- Moving watermark -->
+        <div class="video-watermark" id="videoWatermark">BILUXE10</div>
+
+        <!-- Countdown badge — only shown during preview -->
+        <div class="preview-timer hidden" id="previewTimer">⏱ 2:00</div>
+
+        <!-- Block pointer on iframe — prevents clicking YouTube links/title -->
+        <div class="player-guard"
+          oncontextmenu="return false"
+          ondragstart="return false"
+          onmousedown="return false"></div>
+
+        <!-- Preview ended overlay -->
+        <div class="preview-overlay" id="previewOverlay">
+          <div class="po-icon">🔒</div>
+          <div class="po-title">Preview Ended</div>
+          <div class="po-desc">You've watched the 2-minute free preview. Enroll to unlock the full course and continue learning.</div>
+          <div class="po-cta">
+            <button class="po-btn-primary" onclick="closeVideoModal();goToAuth('signup')">Enroll Now →</button>
+            <button class="po-btn-secondary" onclick="closeVideoModal()">Browse Courses</button>
+          </div>
+        </div>
+
+        <!-- Access denied (not paid) -->
+        <div class="access-denied-overlay" id="accessDenied">
+          <div class="ad-icon">🔐</div>
+          <div class="ad-title">Access Restricted</div>
+          <div class="ad-desc">This content is for enrolled members only. Complete your enrollment to get full access.</div>
+          <div style="margin-top:8px">
+            <button class="po-btn-primary" onclick="closeVideoModal();goToAuth('signup')">Get Full Access →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-info" id="modalInfo">
+      <div class="info-row" id="modalMetaRow"></div>
+      <!-- Shown when NOT paid -->
+      <div class="enroll-cta" id="enrollCta">
+        <div class="enroll-cta-text">
+          <div class="enroll-cta-title">Get Full Access</div>
+          <div class="enroll-cta-sub">Certificate, project files & lifetime access</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+          <div class="enroll-cta-price" id="modalPrice">₹999</div>
+          <button class="enroll-cta-btn" onclick="closeVideoModal();goToAuth('signup')">Enroll Now →</button>
+        </div>
+      </div>
+      <!-- Shown when paid -->
+      <div class="full-access-banner" id="fullAccessBanner" style="display:none">
+        <span>✅</span>
+        <span>You have <strong>full access</strong> to this course. Enjoy learning!</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <div class="toast-icon" id="toastIcon">✓</div>
+  <div id="toastMsg">Message</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     FIREBASE + SCRIPTS
+══════════════════════════════════════════════ -->
+<script>
+/* ────────────────────────────────────────────
+   FIREBASE — same config as auth.html
+──────────────────────────────────────────── */
+const FB_CFG = {
+  apiKey:            "AIzaSyDxxkC9iD1V1w-53Kf4oBrHEXlBLvCc7sE",
+  authDomain:        "biluxe10-3e894.firebaseapp.com",
+  projectId:         "biluxe10-3e894",
+  storageBucket:     "biluxe10-3e894.appspot.com",
+  messagingSenderId: "804749588233",
+  appId:             "1:804749588233:web:7777648c0c7834733c05d8",
+  measurementId:     "G-1K0XR7PHQC"
+};
+if (!firebase.apps.length) firebase.initializeApp(FB_CFG);
+const auth = firebase.auth();
+const db   = firebase.firestore();
+const COLLECTION = 'User-collection';
+
+/* Sanitize email exactly as auth.html does */
+const san = e => e.toLowerCase().trim().replace(/\./g,'_').replace(/@/g,'__at__');
+
+/* ────────────────────────────────────────────
+   COURSE DATA  — 82+ courses
+   KEY FIX: "Digital Entrepreneurship Basics" in Starter
+            → updated URL + price ₹499
+            → preview starts at 2:00 (120 seconds in)
+──────────────────────────────────────────── */
+const CATEGORIES = [
+  {
+    id:'starter', label:'🚀 Digital Entrepreneurship Starter', emoji:'🚀',
+    courses:[
+      {
+        id:'s1', title:'Digital Entrepreneurship Basics',
+        price:'₹499', hrs:'4 hrs', badge:'Starter',
+        url:'https://youtu.be/x5hf-1Nj-ck',  /* ← updated URL */
+        previewStart: 120                       /* ← skip first 2 min; preview plays from 2:00 */
+      },
+      {id:'s2',title:'Canva & Content Creation',price:'₹699',hrs:'3 hrs',badge:'Popular',url:'https://youtu.be/x7-XSJHcaVI',previewStart:120},
+      {id:'s3',title:'WhatsApp Business Marketing',price:'₹799',hrs:'3 hrs',badge:'Hot',url:'https://youtu.be/PlVxtty0wrI',previewStart:120},
+      {id:'s4',title:'ChatGPT for Daily Work',price:'₹799',hrs:'3 hrs',badge:'Trending',url:'https://youtu.be/IcCAEudzEDw',previewStart:120},
+    ]
+  },
+  {
+    id:'digital', label:'📈 Digital Marketing Mastery', emoji:'📈',
+    courses:[
+      {id:'d1',title:'Affiliate Marketing Mastery',price:'₹1,499',hrs:'8 hrs',badge:'Hot',url:'https://youtu.be/TF3BhN_dTdo',previewStart:120},
+      {id:'d2',title:'SEO & Blogging',price:'₹899',hrs:'5 hrs',badge:'SEO',url:'https://youtu.be/pDUMhloKybU',previewStart:120},
+      {id:'d3',title:'Social Media Management',price:'₹1,299',hrs:'6 hrs',badge:'Popular',url:'https://youtu.be/9WVGLqiHVuk',previewStart:120},
+      {id:'d4',title:'Email Marketing',price:'₹999',hrs:'4 hrs',badge:'New',url:'https://www.youtube.com/live/yn6L7q4V1xg',previewStart:120},
+      {id:'d5',title:'Google Ads Complete',price:'₹1,399',hrs:'7 hrs',badge:'Ads',url:'https://youtu.be/autzRHtt-RM',previewStart:120},
+      {id:'d6',title:'Facebook Ads Mastery',price:'₹1,399',hrs:'7 hrs',badge:'Ads',url:'https://youtu.be/WNiU5ZxazI4',previewStart:120},
+      {id:'d7',title:'Freelancing Mastery',price:'₹1,599',hrs:'9 hrs',badge:'Best',url:'https://youtu.be/gMmTpoiITM4',previewStart:120},
+    ]
+  },
+  {
+    id:'creative', label:'🎨 Creative, Design & E-commerce', emoji:'🎨',
+    courses:[
+      {id:'c1',title:'UI/UX Design Complete',price:'₹1,299',hrs:'12 hrs',badge:'Creative',url:'https://youtube.com/playlist?list=PL7ZIgV4R67IOMRiW_Q7vZqLulb0xyKDHD',previewStart:120},
+      {id:'c2',title:'No Code Web Development',price:'₹1,099',hrs:'6 hrs',badge:'No-Code',url:'https://youtu.be/9nIwTjG2fdI',previewStart:120},
+      {id:'c3',title:'Video Editing with CapCut',price:'₹899',hrs:'5 hrs',badge:'Video',url:'https://youtu.be/nXeslaOL_BE',previewStart:120},
+      {id:'c4',title:'Podcast & Audio Production',price:'₹999',hrs:'4 hrs',badge:'Audio',url:'https://www.youtube.com/live/cGWFvYknE7o',previewStart:120},
+      {id:'c5',title:'Ecommerce Complete Course',price:'₹1,299',hrs:'8 hrs',badge:'Commerce',url:'https://youtu.be/5d9jtO0uOpk',previewStart:120},
+      {id:'c6',title:'Dropshipping & Print on Demand',price:'₹1,199',hrs:'6 hrs',badge:'Dropship',url:'https://youtu.be/thYCp3y1Yuw',previewStart:120},
+    ]
+  },
+  {
+    id:'data', label:'📊 Data Analytics & Business', emoji:'📊',
+    courses:[
+      {id:'da1',title:'Excel for Data Analysis',price:'₹1,299',hrs:'8 hrs',badge:'Analytics',url:'https://youtu.be/Kjz_DDO4Fzs',previewStart:120},
+      {id:'da2',title:'SQL for Beginners',price:'₹999',hrs:'6 hrs',badge:'SQL',url:'https://youtu.be/7azCOKryADA',previewStart:120},
+      {id:'da3',title:'Power BI & Tableau',price:'₹1,399',hrs:'9 hrs',badge:'BI',url:'https://youtu.be/Gmk3DWOxVKQ',previewStart:120},
+      {id:'da4',title:'Python Basics',price:'₹1,199',hrs:'7 hrs',badge:'Python',url:'https://youtu.be/LgW6Vla0kXA',previewStart:120},
+      {id:'da5',title:'Business Analytics',price:'₹1,099',hrs:'5 hrs',badge:'Business',url:'https://youtu.be/cCTuOBOqSaM',previewStart:120},
+      {id:'da6',title:'Financial Accounting Basics',price:'₹899',hrs:'4 hrs',badge:'Finance',url:'https://youtu.be/vO09q2V8TGQ',previewStart:120},
+    ]
+  },
+  {
+    id:'dev', label:'💻 Full Stack Web Development', emoji:'💻',
+    courses:[
+      {id:'dev1',title:'HTML, CSS & JavaScript',price:'₹1,499',hrs:'14 hrs',badge:'Foundations',url:'https://youtube.com/playlist?list=PLMxec9nlD1X1_xQlC-REYdCvw8pdoQa0h',previewStart:120},
+      {id:'dev2',title:'React.js Complete',price:'₹1,699',hrs:'12 hrs',badge:'Frontend',url:'https://youtu.be/Wt3isV2irrA',previewStart:120},
+      {id:'dev3',title:'Node.js & Express',price:'₹1,499',hrs:'10 hrs',badge:'Backend',url:'https://youtu.be/PCcMF1xTQO0',previewStart:120},
+      {id:'dev4',title:'MongoDB Full Course',price:'₹1,199',hrs:'7 hrs',badge:'Database',url:'https://youtu.be/5AfUgOYEiwQ',previewStart:120},
+      {id:'dev5',title:'Databases In-Depth',price:'₹1,199',hrs:'8 hrs',badge:'Database',url:'https://youtu.be/pPqazMTzNOM',previewStart:120},
+      {id:'dev6',title:'REST APIs (Backend)',price:'₹1,299',hrs:'6 hrs',badge:'API',url:'https://youtu.be/6SJQ5eOChrA',previewStart:120},
+      {id:'dev7',title:'Git & Version Control',price:'₹799',hrs:'3 hrs',badge:'Git',url:'https://youtu.be/mAFoROnOfHs',previewStart:120},
+      {id:'dev8',title:'E-commerce Project',price:'₹1,499',hrs:'10 hrs',badge:'Project',url:'https://youtu.be/el5bTI6GBQ8',previewStart:120},
+      {id:'dev9',title:'Job Preparation Roadmap',price:'₹999',hrs:'5 hrs',badge:'Career',url:'https://youtu.be/-4e3ewcTupM',previewStart:120},
+    ]
+  },
+  {
+    id:'devops', label:'☁ DevOps, Cloud & Security', emoji:'☁',
+    courses:[
+      {id:'do1',title:'AWS Cloud Practitioner',price:'₹1,799',hrs:'12 hrs',badge:'AWS',url:'https://youtu.be/a8FFknuJwB0',previewStart:120},
+      {id:'do2',title:'Docker & Kubernetes',price:'₹1,699',hrs:'14 hrs',badge:'DevOps',url:'https://youtube.com/playlist?list=PLhNrFKat_aeLmPHBkS42O1pdN8Pt-tfF9',previewStart:120},
+      {id:'do3',title:'CI/CD Pipelines',price:'₹1,399',hrs:'8 hrs',badge:'CI/CD',url:'https://youtu.be/Ke_Wr5zPE0A',previewStart:120},
+      {id:'do4',title:'Linux for DevOps',price:'₹1,199',hrs:'7 hrs',badge:'Linux',url:'https://youtu.be/e01GGTKmtpc',previewStart:120},
+      {id:'do5',title:'Cybersecurity Fundamentals',price:'₹1,499',hrs:'10 hrs',badge:'Security',url:'https://www.youtube.com/live/z2hVCeiwvGk',previewStart:120},
+      {id:'do6',title:'Ethical Hacking',price:'₹1,699',hrs:'12 hrs',badge:'Hacking',url:'https://youtu.be/2eLJNBroFrg',previewStart:120},
+      {id:'do7',title:'Cloud Security',price:'₹1,499',hrs:'8 hrs',badge:'Cloud',url:'https://youtu.be/a58CqpP6vEw',previewStart:120},
+      {id:'do8',title:'DevOps Project',price:'₹1,299',hrs:'6 hrs',badge:'Project',url:'https://youtu.be/H5FAxTBuNM8',previewStart:120},
+    ]
+  },
+  {
+    id:'ai-ml', label:'🧠 AI & Machine Learning', emoji:'🧠',
+    courses:[
+      {id:'ml1',title:'Python for Data Science',price:'₹1,499',hrs:'10 hrs',badge:'Python',url:'https://youtu.be/CMEWVn1uZpQ',previewStart:120},
+      {id:'ml2',title:'Machine Learning Fundamentals',price:'₹1,699',hrs:'12 hrs',badge:'ML',url:'https://youtu.be/hR-tMLTMw0s',previewStart:120},
+      {id:'ml3',title:'Deep Learning & Neural Networks',price:'₹1,899',hrs:'14 hrs',badge:'DL',url:'https://youtu.be/G1P2IaBcXx8',previewStart:120},
+      {id:'ml4',title:'Natural Language Processing (NLP)',price:'₹1,799',hrs:'12 hrs',badge:'NLP',url:'https://www.youtube.com/live/BCLjPLeVCBY',previewStart:120},
+      {id:'ml5',title:'Computer Vision',price:'₹1,799',hrs:'12 hrs',badge:'CV',url:'https://youtube.com/playlist?list=PLPTV0NXA_ZSgmWYoSpY_2EJzPJjkke4Az',previewStart:120},
+      {id:'ml6',title:'Big Data Engineering',price:'₹1,699',hrs:'11 hrs',badge:'BigData',url:'https://youtu.be/H5SHmiKTFsM',previewStart:120},
+      {id:'ml7',title:'Data Engineering',price:'₹1,599',hrs:'10 hrs',badge:'Data',url:'https://youtu.be/hf2go3E2m8g',previewStart:120},
+      {id:'ml8',title:'MLOps Fundamentals',price:'₹1,699',hrs:'10 hrs',badge:'MLOps',url:'https://youtu.be/dPmH3G9NQtY',previewStart:120},
+      {id:'ml9',title:'End-to-End ML Project',price:'₹1,499',hrs:'8 hrs',badge:'Project',url:'https://youtu.be/o6vbe5G7xNo',previewStart:120},
+      {id:'ml10',title:'Data Science Interview Prep',price:'₹999',hrs:'5 hrs',badge:'Interview',url:'https://youtu.be/A3ZSv6IqXY8',previewStart:120},
+    ]
+  },
+  {
+    id:'genai', label:'✨ Generative AI & LLMs', emoji:'✨',
+    courses:[
+      {id:'g1',title:'Generative AI & LLMs',price:'₹1,899',hrs:'12 hrs',badge:'GenAI',url:'https://youtu.be/d4yCWBGFCEs',previewStart:120},
+      {id:'g2',title:'Agentic AI Development',price:'₹2,099',hrs:'14 hrs',badge:'Agents',url:'https://www.youtube.com/live/-rUKr8JDits',previewStart:120},
+      {id:'g3',title:'LangChain & LlamaIndex',price:'₹1,799',hrs:'10 hrs',badge:'LangChain',url:'https://youtu.be/-8IUWRtznX8',previewStart:120},
+      {id:'g4',title:'Vector Databases',price:'₹1,499',hrs:'7 hrs',badge:'VectorDB',url:'https://youtu.be/8KrTO9bS91s',previewStart:120},
+      {id:'g5',title:'AI Agents for Business',price:'₹1,699',hrs:'9 hrs',badge:'AI Biz',url:'https://youtu.be/EsTrWCV0Ph4',previewStart:120},
+      {id:'g6',title:'LLM Fine-Tuning',price:'₹1,999',hrs:'12 hrs',badge:'Fine-Tune',url:'https://youtu.be/iOdFUJiB0Zc',previewStart:120},
+      {id:'g7',title:'RAG Implementation',price:'₹1,699',hrs:'9 hrs',badge:'RAG',url:'https://youtu.be/o126p1QN_RI',previewStart:120},
+      {id:'g8',title:'Multi-Agent Systems',price:'₹1,899',hrs:'11 hrs',badge:'Multi-Agent',url:'https://youtu.be/rHtRWyxVQps',previewStart:120},
+      {id:'g9',title:'AI Safety & Governance',price:'₹1,299',hrs:'6 hrs',badge:'Safety',url:'https://youtu.be/b6HwyKFShek',previewStart:120},
+      {id:'g10',title:'AI Agents Capstone Project',price:'₹1,999',hrs:'10 hrs',badge:'Capstone',url:'https://youtu.be/HVi0F3YT13I',previewStart:120},
+      {id:'g11',title:'Prompt Engineering Mastery',price:'₹1,299',hrs:'6 hrs',badge:'Prompts',url:'https://youtu.be/YhRfgYH_AoU',previewStart:120},
+      {id:'g12',title:'AI API Integration',price:'₹1,499',hrs:'8 hrs',badge:'API',url:'https://youtu.be/xcP9NE6C5EI',previewStart:120},
+    ]
+  },
+  {
+    id:'career', label:'🎯 AI Career, Industry & Research', emoji:'🎯',
+    courses:[
+      {id:'cr1',title:'AI Product Management',price:'₹1,699',hrs:'9 hrs',badge:'PM',url:'https://youtu.be/IfW1FMDkw4k',previewStart:120},
+      {id:'cr2',title:'AI Strategy & Roadmap',price:'₹1,599',hrs:'8 hrs',badge:'Strategy',url:'https://youtu.be/zwUSZD3t_BU',previewStart:120},
+      {id:'cr3',title:'AI Team Leadership',price:'₹1,499',hrs:'7 hrs',badge:'Leadership',url:'https://www.youtube.com/live/1NMM9Q_TjxE',previewStart:120},
+      {id:'cr4',title:'AI Project Management',price:'₹1,399',hrs:'6 hrs',badge:'PM',url:'https://youtu.be/lADZ6Pxy9m8',previewStart:120},
+      {id:'cr5',title:'AI Ethics & Governance',price:'₹1,299',hrs:'5 hrs',badge:'Ethics',url:'https://youtu.be/VugSwwHaOgQ',previewStart:120},
+      {id:'cr6',title:'AI Career Mastery',price:'₹1,499',hrs:'7 hrs',badge:'Career',url:'https://youtu.be/aIuPQjPQEb4',previewStart:120},
+      {id:'cr7',title:'Resume & LinkedIn for AI',price:'₹799',hrs:'3 hrs',badge:'Resume',url:'https://youtu.be/qCZlSCmphMM',previewStart:120},
+      {id:'cr8',title:'Salary Negotiation',price:'₹699',hrs:'2 hrs',badge:'Salary',url:'https://youtu.be/vLbrwSzXUro',previewStart:120},
+      {id:'cr9',title:'Freelancing & Consulting for AI',price:'₹1,299',hrs:'6 hrs',badge:'Freelance',url:'https://youtu.be/Ozp3k4qzmHo',previewStart:120},
+      {id:'cr10',title:'AI for Finance & Banking',price:'₹1,499',hrs:'8 hrs',badge:'Finance',url:'https://youtu.be/Nh7OhW7ZcIU',previewStart:120},
+      {id:'cr11',title:'AI for Healthcare',price:'₹1,499',hrs:'8 hrs',badge:'Health',url:'https://youtu.be/eZFtf69sido',previewStart:120},
+      {id:'cr12',title:'AI for E-commerce & Retail',price:'₹1,299',hrs:'6 hrs',badge:'Retail',url:'https://youtu.be/plo5kk_MzL4',previewStart:120},
+      {id:'cr13',title:'AI for Manufacturing',price:'₹1,299',hrs:'6 hrs',badge:'Industry',url:'https://youtu.be/bNiThiN8cLg',previewStart:120},
+      {id:'cr14',title:'Edge AI & TinyML',price:'₹1,699',hrs:'10 hrs',badge:'Edge AI',url:'https://youtube.com/playlist?list=PL7VEa1KauMQppUExiIOfxxk_2ta94EEpd',previewStart:120},
+      {id:'cr15',title:'AI Model Optimization',price:'₹1,599',hrs:'8 hrs',badge:'Optimization',url:'https://youtu.be/zqoJCOgMd_4',previewStart:120},
+      {id:'cr16',title:'Federated Learning',price:'₹1,799',hrs:'10 hrs',badge:'Fed Learn',url:'https://youtube.com/playlist?list=PLNG4feLHqCWkdlSrEL2xbCtGa6QBxlUZb',previewStart:120},
+      {id:'cr17',title:'Graph Neural Networks',price:'₹1,799',hrs:'10 hrs',badge:'GNN',url:'https://youtube.com/playlist?list=PLPTV0NXA_ZSg4Pimkso0nHxwYMB6IGX7l',previewStart:120},
+      {id:'cr18',title:'Reinforcement Learning',price:'₹1,899',hrs:'12 hrs',badge:'RL',url:'https://youtu.be/VnpRp7ZglfA',previewStart:120},
+      {id:'cr19',title:'Time Series Forecasting',price:'₹1,499',hrs:'7 hrs',badge:'Time Series',url:'https://youtu.be/qx5055j0U6c',previewStart:120},
+      {id:'cr20',title:'Recommendation Systems',price:'₹1,499',hrs:'7 hrs',badge:'RecSys',url:'https://youtu.be/F2tn-BviO_U',previewStart:120},
+      {id:'cr21',title:'AI Research Paper Implementation',price:'₹1,699',hrs:'9 hrs',badge:'Research',url:'https://youtu.be/onU5Hbb3qao',previewStart:120},
+      {id:'cr22',title:'Building AI Startups',price:'₹1,899',hrs:'10 hrs',badge:'Startup',url:'https://youtu.be/zO1098PFOw8',previewStart:120},
+    ]
+  },
+];
+
+/* ────────────────────────────────────────────
+   AUTH STATE — reads from Firebase (same DB as auth.html)
+──────────────────────────────────────────── */
+let currentUser  = null;  // { displayName, email, emailId }
+let userIsPaid   = false; // true only if Firestore paymentStatus === 'approved'
+let authResolved = false;
+
+/* Redirect to auth.html (with tab hint) */
+function goToAuth(tab) {
+  const t = tab || 'signup';
+  window.location.href = `auth.html?tab=${t}`;
+}
+
+/* Sign out — uses Firebase */
+async function doSignOut() {
+  try { await auth.signOut(); } catch(e){}
+  currentUser  = null;
+  userIsPaid   = false;
+  updateNavUI();
+  renderAll('all');
+  showToast('👋','Signed out successfully');
+}
+
+/* Update nav bar */
+function updateNavUI() {
+  const navUser   = document.getElementById('navUser');
+  const navSignIn = document.getElementById('navSignIn');
+  const navSignUp = document.getElementById('navSignUp');
+  const navAvatar = document.getElementById('navAvatar');
+  const navName   = document.getElementById('navUserName');
+  const paidBadge = document.getElementById('navPaidBadge');
+
+  if (currentUser) {
+    navUser.classList.add('show');
+    navSignIn.style.display = 'none';
+    navSignUp.style.display = 'none';
+    const initials = (currentUser.displayName || currentUser.email || 'U')[0].toUpperCase();
+    navAvatar.textContent = initials;
+    navName.textContent   = currentUser.displayName || currentUser.email.split('@')[0];
+    paidBadge.style.display = userIsPaid ? '' : 'none';
+  } else {
+    navUser.classList.remove('show');
+    navSignIn.style.display = '';
+    navSignUp.style.display = '';
+    paidBadge.style.display = 'none';
+  }
+}
+
+/* Firebase auth observer — single source of truth */
+auth.onAuthStateChanged(async (firebaseUser) => {
+  if (firebaseUser) {
+    const emailId = san(firebaseUser.email);
+    currentUser = {
+      displayName: firebaseUser.displayName || '',
+      email:       firebaseUser.email,
+      emailId:     emailId
+    };
+    /* Fetch payment status from Firestore */
+    try {
+      const snap = await db.collection(COLLECTION).doc(emailId).get();
+      if (snap.exists) {
+        const data = snap.data();
+        userIsPaid = data.paymentStatus === 'approved';
+        /* Use name from Firestore (more reliable than Firebase Auth displayName) */
+        if (data.fullName) currentUser.displayName = data.fullName;
+      }
+    } catch(e) {
+      userIsPaid = false;
+    }
+  } else {
+    currentUser = null;
+    userIsPaid  = false;
+  }
+  authResolved = true;
+  updateNavUI();
+  renderAll(currentFilter, currentSearch);
+});
+
+/* ────────────────────────────────────────────
+   VIDEO URL UTILS
+──────────────────────────────────────────── */
+function extractVideoId(url) {
+  if (!url) return null;
+  if (url.includes('playlist?list=')) {
+    const m = url.match(/list=([^&]+)/);
+    return m ? { type:'playlist', id:m[1] } : null;
+  }
+  const patterns = [
+    /youtu\.be\/([^?&\n]+)/,
+    /youtube\.com\/watch\?v=([^&\n]+)/,
+    /youtube\.com\/live\/([^?&\n]+)/,
+    /youtube\.com\/embed\/([^?&\n]+)/,
+  ];
+  for (const p of patterns) {
+    const m = url.match(p);
+    if (m) return { type:'video', id:m[1].split('?')[0] };
+  }
+  return null;
+}
+
+/* Build embed URL.
+   startSec: where the video begins playing (used for paid users starting from 0,
+             and for preview users starting from previewStart offset).
+*/
+function buildEmbedUrl(parsed, startSec) {
+  if (!parsed) return '';
+  const start = Math.max(0, Math.floor(startSec || 0));
+  const params = new URLSearchParams({
+    autoplay:       '1',
+    rel:            '0',
+    modestbranding: '1',
+    iv_load_policy: '3',
+    controls:       '1',   // keep controls for paid; hidden for preview via overlay
+    disablekb:      '0',
+    fs:             '0',   // no fullscreen
+    cc_load_policy: '0',
+    playsinline:    '1',
+    enablejsapi:    '1',
+    origin:         window.location.origin || 'https://biluxe10.com',
+    start:          String(start),
+  });
+  if (parsed.type === 'playlist') {
+    params.set('listType','playlist');
+    params.set('list', parsed.id);
+    return `https://www.youtube-nocookie.com/embed/videoseries?${params}`;
+  }
+  return `https://www.youtube-nocookie.com/embed/${parsed.id}?${params}`;
+}
+
+/* ────────────────────────────────────────────
+   RENDERING
+──────────────────────────────────────────── */
+let currentFilter = 'all';
+let currentSearch = '';
+
+function getCatEmoji(catId) {
+  const map = {starter:'🚀',digital:'📈',creative:'🎨',data:'📊',dev:'💻',
+               devops:'☁',  'ai-ml':'🧠',genai:'✨',career:'🎯'};
+  return map[catId] || '📚';
+}
+
+function renderAll(filter, search) {
+  filter = filter || 'all';
+  search = search || '';
+  const section = document.getElementById('coursesSection');
+  section.innerHTML = '';
+  let totalShown = 0;
+
+  if (filter === 'all' && !search) {
+    CATEGORIES.forEach(cat => {
+      section.appendChild(renderCategory(cat));
+      totalShown += cat.courses.length;
+    });
+  } else {
+    const filtered = CATEGORIES.flatMap(cat =>
+      cat.courses
+        .filter(c => (filter === 'all' || c.catId === cat.id || cat.id === filter)
+                  && (!search || c.title.toLowerCase().includes(search.toLowerCase())))
+        .map(c => ({ ...c, catId:cat.id, catLabel:cat.label }))
+    );
+    // Group back by category for display
+    const byCat = {};
+    CATEGORIES.forEach(cat => {
+      cat.courses.forEach(c => {
+        const matchCat = filter === 'all' || cat.id === filter;
+        const matchSrch = !search || c.title.toLowerCase().includes(search.toLowerCase());
+        if (matchCat && matchSrch) {
+          if (!byCat[cat.id]) byCat[cat.id] = { ...cat, courses: [] };
+          byCat[cat.id].courses.push(c);
+        }
+      });
+    });
+
+    if (Object.keys(byCat).length === 0) {
+      section.innerHTML = `<div class="empty-state"><div class="es-icon">🔍</div><p>No courses found.</p></div>`;
+    } else {
+      CATEGORIES.forEach(cat => {
+        if (!byCat[cat.id]) return;
+        section.appendChild(renderCategory(byCat[cat.id]));
+        totalShown += byCat[cat.id].courses.length;
+      });
+    }
+  }
+
+  document.getElementById('resultsCount').textContent =
+    `${totalShown} course${totalShown !== 1 ? 's' : ''}`;
+  observeReveal();
+}
+
+function renderCategory(cat) {
+  const wrap = document.createElement('div');
+  wrap.className = 'cat-section reveal';
+
+  wrap.innerHTML = `
+    <div class="cat-header">
+      <div class="cat-emoji">${cat.emoji}</div>
+      <div class="cat-name">${cat.label.replace(/^[^\s]+\s/,'')}</div>
+      <div class="cat-count">${cat.courses.length} courses</div>
+    </div>
+    <div class="courses-grid" id="grid-${cat.id}"></div>
+  `;
+
+  const grid = wrap.querySelector(`#grid-${cat.id}`);
+  cat.courses.forEach((c, i) => {
+    const card = document.createElement('div');
+    card.className = 'c-card reveal';
+    card.style.transitionDelay = `${(i % 4) * 0.06}s`;
+
+    const btnLabel = userIsPaid ? 'Watch Now' : 'Preview 2 min';
+    const btnClass = userIsPaid ? 'c-btn watch' : 'c-btn';
+    const previewLabel = userIsPaid ? '▶ Full Access' : '▶ 2 min free preview';
+
+    card.innerHTML = `
+      <div class="c-card-top">
+        <div class="c-emoji">${getCatEmoji(cat.id)}</div>
+        <span class="c-badge">${c.badge}</span>
+      </div>
+      <div class="c-title">${c.title}</div>
+      <div class="c-meta">
+        <span>⏱ ${c.hrs}</span>
+        <span>🎓 Certificate</span>
+        <span>Self-paced</span>
+      </div>
+      <div class="c-preview-tag">${previewLabel}</div>
+      <div class="c-footer">
+        <div class="c-price-area">
+          <div class="c-price">${c.price}</div>
+          <div class="c-price-note">one-time · lifetime</div>
+        </div>
+        <button class="${btnClass}" onclick="openCourse('${c.id}','${cat.id}')">
+          ${btnLabel} →
+        </button>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+  return wrap;
+}
+
+function observeReveal() {
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); }
+    });
+  }, { threshold:0.05 });
+  document.querySelectorAll('.reveal:not(.visible)').forEach(el => obs.observe(el));
+}
+
+function filterCourses(cat, btn) {
+  currentFilter = cat;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderAll(cat, currentSearch);
+}
+
+function searchCourses(q) {
+  currentSearch = q;
+  renderAll(currentFilter, q);
+}
+
+/* ────────────────────────────────────────────
+   COURSE OPEN / VIDEO PLAYER
+   
+   LOGIC:
+   - Paid user  → video starts from 0:00, no timer, full controls
+   - Free user  → video starts from previewStart (default 120s = 2:00 into video)
+                  countdown runs for 120 s, then overlay shows
+──────────────────────────────────────────── */
+let previewTimerInterval = null;
+let previewSecondsLeft   = 120;
+let currentCourseObj     = null;
+
+function getCourse(id, catId) {
+  const cat = CATEGORIES.find(c => c.id === catId)
+           || CATEGORIES.find(c => c.courses.some(x => x.id === id));
+  if (!cat) return null;
+  const course = cat.courses.find(c => c.id === id);
+  return course ? { ...course, catId:cat.id, catLabel:cat.label } : null;
+}
+
+function openCourse(id, catId) {
+  const course = getCourse(id, catId);
+  if (!course) return;
+  currentCourseObj = course;
+
+  /* Populate modal header */
+  document.getElementById('modalTitle').textContent = course.title;
+  document.getElementById('modalCat').textContent   = course.catLabel;
+  document.getElementById('modalPrice').textContent  = course.price;
+  document.getElementById('modalMetaRow').innerHTML  = `
+    <div class="info-chip"><span>⏱</span>${course.hrs}</div>
+    <div class="info-chip"><span>🎓</span>Certificate Included</div>
+    <div class="info-chip"><span>♾</span>Lifetime Access</div>
+    <div class="info-chip"><span>📱</span>One Device</div>
+  `;
+
+  /* Show/hide enroll CTA vs full-access banner */
+  document.getElementById('enrollCta').style.display       = userIsPaid ? 'none' : '';
+  document.getElementById('fullAccessBanner').style.display = userIsPaid ? ''     : 'none';
+
+  /* Reset overlays */
+  document.getElementById('previewOverlay').classList.remove('show');
+  document.getElementById('accessDenied').classList.remove('show');
+  document.getElementById('previewTimer').classList.remove('hidden');
+
+  /* Open modal */
+  document.getElementById('videoModal').classList.add('open');
+  document.body.classList.add('modal-open');
+
+  /* Load player */
+  loadPlayer(course);
+}
+
+function loadPlayer(course) {
+  clearInterval(previewTimerInterval);
+  const container = document.getElementById('playerContainer');
+  container.innerHTML = '';
+
+  const parsed = extractVideoId(course.url);
+  if (!parsed) {
+    container.innerHTML = '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--text3);font-size:0.8rem">Video unavailable</div>';
+    return;
+  }
+
+  /* Paid: start from 0. Free: start from previewStart (skip intro) */
+  const previewStart = course.previewStart || 120;
+  const startSec     = userIsPaid ? 0 : previewStart;
+
+  const iframe = document.createElement('iframe');
+  iframe.src = buildEmbedUrl(parsed, startSec);
+  iframe.allow = 'autoplay; encrypted-media';
+  iframe.setAttribute('allowfullscreen', 'false');
+  iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-presentation');
+  iframe.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;border:none;transform:scale(1.5);transform-origin:center center';
+  container.appendChild(iframe);
+
+  if (userIsPaid) {
+    /* Paid — no countdown, timer hidden */
+    document.getElementById('previewTimer').classList.add('hidden');
+  } else {
+    /* Free — start 2-minute countdown */
+    previewSecondsLeft = 120;
+    updateTimerDisplay();
+    document.getElementById('previewTimer').classList.remove('hidden');
+    startPreviewCountdown();
+  }
+}
+
+function startPreviewCountdown() {
+  clearInterval(previewTimerInterval);
+  previewTimerInterval = setInterval(() => {
+    previewSecondsLeft--;
+    updateTimerDisplay();
+    if (previewSecondsLeft <= 0) {
+      clearInterval(previewTimerInterval);
+      /* Kill video */
+      document.getElementById('playerContainer').innerHTML = '';
+      document.getElementById('previewTimer').classList.add('hidden');
+      document.getElementById('previewOverlay').classList.add('show');
+    }
+  }, 1000);
+}
+
+function updateTimerDisplay() {
+  const m = Math.floor(previewSecondsLeft / 60);
+  const s = previewSecondsLeft % 60;
+  document.getElementById('previewTimer').textContent =
+    `⏱ ${m}:${String(s).padStart(2,'0')}`;
+}
+
+function closeVideoModal() {
+  clearInterval(previewTimerInterval);
+  document.getElementById('videoModal').classList.remove('open');
+  document.body.classList.remove('modal-open');
+  document.getElementById('playerContainer').innerHTML = '';
+  currentCourseObj = null;
+}
+
+function handleModalBgClick(e) {
+  if (e.target === document.getElementById('videoModal')) closeVideoModal();
+}
+
+/* ────────────────────────────────────────────
+   WATERMARK UPDATE
+──────────────────────────────────────────── */
+setInterval(() => {
+  const wm = document.getElementById('videoWatermark');
+  if (!wm) return;
+  wm.textContent = currentUser
+    ? `BILUXE10 • ${currentUser.email.split('@')[0].toUpperCase().slice(0,14)}`
+    : 'BILUXE10';
+}, 5000);
+
+/* ────────────────────────────────────────────
+   TOAST
+──────────────────────────────────────────── */
+let toastTimer = null;
+function showToast(icon, msg) {
+  document.getElementById('toastIcon').textContent = icon;
+  document.getElementById('toastMsg').textContent  = msg;
+  const t = document.getElementById('toast');
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+/* ────────────────────────────────────────────
+   SECURITY: keyboard blocking
+──────────────────────────────────────────── */
+function initSecurity() {
+  document.addEventListener('keydown', e => {
+    if (e.key === 'F12') { e.preventDefault(); return; }
+    if (e.ctrlKey && ['u','s','p'].includes(e.key.toLowerCase())) { e.preventDefault(); return; }
+    if (e.ctrlKey && e.shiftKey && ['i','j','c'].includes(e.key.toLowerCase())) { e.preventDefault(); return; }
+    if (e.key === 'PrintScreen') { navigator.clipboard.writeText('').catch(()=>{}); }
+    if (e.key === 'Escape') closeVideoModal();
+  });
+
+  document.getElementById('playerWrap').addEventListener('contextmenu', e => e.preventDefault());
+  document.addEventListener('selectstart', e => e.preventDefault());
+  document.addEventListener('dragstart', e => e.preventDefault());
+
+  if (window.top !== window.self) {
+    document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;color:#fff;font-family:monospace;font-size:1rem;background:#000">⚠ Embedding not permitted.</div>';
+  }
+}
+
+/* ────────────────────────────────────────────
+   HAMBURGER
+──────────────────────────────────────────── */
+document.getElementById('hamburger').addEventListener('click', () => {
+  document.getElementById('mm').classList.toggle('open');
+});
+
+/* ────────────────────────────────────────────
+   INIT
+   Note: renderAll is called by auth observer once resolved.
+         We also call it immediately as a placeholder.
+──────────────────────────────────────────── */
+document.addEventListener('DOMContentLoaded', () => {
+  initSecurity();
+
+  /* Check if returning from auth.html after successful sign-up/sign-in */
+  const urlP = new URLSearchParams(window.location.search);
+  if (urlP.get('welcome') === '1') {
+    showToast('🎉','Welcome! Start with a 2-min preview of any course.');
+    window.history.replaceState({}, '', window.location.pathname);
+  }
+
+  /* Render immediately (before auth resolves) so page isn't blank */
+  renderAll('all');
+});
+</script>
+</body>
+</html>
