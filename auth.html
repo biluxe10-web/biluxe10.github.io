@@ -1,0 +1,1147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="robots" content="noindex, nofollow">
+<title>Join Biluxe10 — Sign Up & Sign In</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,700;0,9..144,900;1,9..144,400&family=Cabinet+Grotesk:wght@400;500;600;700;800&family=Instrument+Mono:ital@0;1&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#09090B;--bg2:#0F0F12;--bg3:#141418;--bg4:#1a1a20;
+  --border:rgba(255,255,255,0.06);--border2:rgba(255,255,255,0.11);
+  --border3:rgba(255,255,255,0.18);
+  --gold:#C8A96E;--gold2:#E2C48A;--gold3:#F0D9A8;
+  --goldA:rgba(200,169,110,0.10);--goldB:rgba(200,169,110,0.18);
+  --goldC:rgba(200,169,110,0.05);
+  --red:#ef4444;--green:#22c55e;--amber:#f59e0b;
+  --ink:#09090B;
+  --text:#E4E4E7;--text2:#A1A1AA;--text3:#52525B;--text4:#3f3f46;
+  --font-display:'Fraunces',serif;
+  --font-body:'Cabinet Grotesk',sans-serif;
+  --font-mono:'Instrument Mono',monospace;
+  --r:10px;--rs:8px;--rxs:5px;
+}
+html{height:100%}
+body{min-height:100vh;background:var(--bg);color:var(--text);font-family:var(--font-body);line-height:1.6;overflow-x:hidden}
+a{color:var(--gold);text-decoration:none}
+a:hover{text-decoration:underline}
+button{font-family:var(--font-body);cursor:pointer}
+input{font-family:var(--font-body)}
+::-webkit-scrollbar{width:3px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--gold);border-radius:2px}
+
+body::before{
+  content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 700px 500px at 20% -10%,rgba(200,169,110,0.055) 0%,transparent 70%),
+    radial-gradient(ellipse 400px 400px at 85% 90%,rgba(200,169,110,0.03) 0%,transparent 70%);
+}
+.grain{
+  position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0.022;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Layout */
+.layout{display:grid;grid-template-columns:360px 1fr;min-height:100vh;position:relative;z-index:1}
+
+/* Sidebar */
+.sidebar{background:var(--bg2);border-right:1px solid var(--border);position:sticky;top:0;height:100vh;overflow:hidden}
+.sb-inner{display:flex;flex-direction:column;height:100%;padding:40px 32px;position:relative}
+.sb-glow{position:absolute;top:-120px;right:-120px;width:380px;height:380px;border-radius:50%;background:radial-gradient(circle,rgba(200,169,110,0.07),transparent);pointer-events:none}
+.sb-logo{font-family:var(--font-display);font-size:1.15rem;font-weight:900;color:var(--gold);flex-shrink:0}
+.sb-logo sup{font-size:0.48em;color:var(--text4);font-weight:400}
+.sb-body{flex:1;display:flex;flex-direction:column;justify-content:center;padding:28px 0}
+.sb-tag{font-family:var(--font-mono);font-size:0.57rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);border-left:2px solid var(--gold);padding-left:10px;margin-bottom:16px;display:block;transition:all 0.4s}
+.sb-h{font-family:var(--font-display);font-size:clamp(1.5rem,2.2vw,2.2rem);font-weight:900;line-height:1.08;margin-bottom:12px;color:var(--text);transition:all 0.4s}
+.sb-h em{color:var(--gold);font-style:italic}
+.sb-p{font-size:0.77rem;color:var(--text2);line-height:1.85;margin-bottom:24px;max-width:300px;transition:all 0.4s}
+.sb-perks{display:flex;flex-direction:column;gap:8px}
+.sb-perk{display:flex;align-items:flex-start;gap:10px;background:rgba(255,255,255,0.025);border:1px solid var(--border);padding:9px 12px;border-radius:var(--rs);transition:border-color 0.2s}
+.sb-perk:hover{border-color:rgba(200,169,110,0.12)}
+.sp-icon{font-size:0.85rem;flex-shrink:0;margin-top:2px}
+.sp-title{font-size:0.74rem;font-weight:700;color:var(--text);margin-bottom:1px}
+.sp-desc{font-size:0.64rem;color:var(--text3);line-height:1.5}
+.sb-progress{flex-shrink:0}
+.sp-label{font-family:var(--font-mono);font-size:0.55rem;color:var(--text3);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:7px}
+.sp-track{height:2px;background:var(--bg3);border-radius:1px;overflow:hidden;margin-bottom:10px}
+.sp-fill{height:100%;border-radius:1px;background:linear-gradient(90deg,var(--gold),rgba(200,169,110,0.3));transition:width 0.6s cubic-bezier(0.34,1.2,0.64,1);width:16%}
+.sp-dots{display:flex}
+.sp-dot-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;font-family:var(--font-mono);font-size:0.48rem;color:var(--text4);text-align:center}
+.sp-dot{width:7px;height:7px;border-radius:50%;background:var(--bg3);border:1px solid var(--border2);transition:all 0.35s;flex-shrink:0}
+.sp-dot-item.done .sp-dot{background:var(--gold);border-color:var(--gold);box-shadow:0 0 6px rgba(200,169,110,0.5)}
+.sp-dot-item.active .sp-dot{background:transparent;border-color:var(--gold);box-shadow:0 0 0 3px var(--goldA)}
+.sp-dot-item.done,.sp-dot-item.active{color:var(--text3)}
+.sb-copy{font-family:var(--font-mono);font-size:0.5rem;color:var(--text4);letter-spacing:0.05em;margin-top:12px}
+
+/* Main */
+.main{padding:48px max(28px,3vw);display:flex;align-items:flex-start;justify-content:center;background:var(--bg);overflow-y:auto;min-height:100vh}
+.auth-box{width:100%;max-width:480px;padding-top:4px}
+.back-btn{display:none;align-items:center;gap:5px;font-size:0.7rem;color:var(--text3);background:none;border:none;cursor:pointer;margin-bottom:20px;padding:0;transition:color 0.2s}
+.back-btn:hover{color:var(--gold)}
+.back-btn.show{display:flex}
+
+/* Steps */
+.step{display:none}
+.step.active{display:block;animation:fadeUp 0.38s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.step-h{font-family:var(--font-display);font-size:1.45rem;font-weight:900;color:var(--text);margin-bottom:5px}
+.step-sub{font-size:0.78rem;color:var(--text2);margin-bottom:20px;line-height:1.75}
+
+/* Auth tabs */
+.atabs{display:flex;gap:2px;background:var(--bg2);border:1px solid var(--border);border-radius:9px;padding:3px;margin-bottom:22px}
+.atab{flex:1;padding:9px 0;border:none;background:transparent;color:var(--text3);font-size:0.75rem;font-weight:700;cursor:pointer;border-radius:7px;transition:all 0.2s}
+.atab.active{background:var(--bg3);color:var(--text);border:1px solid var(--border2)}
+.atab-panel{display:none}
+.atab-panel.active{display:block;animation:fadeUp 0.3s ease}
+
+/* Role cards */
+.role-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:16px}
+.role-card{background:var(--bg2);border:2px solid var(--border);border-radius:11px;padding:18px 14px;cursor:pointer;transition:all 0.22s;position:relative;overflow:hidden}
+.role-card::after{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:var(--gold);opacity:0;transition:opacity 0.22s}
+.role-card:hover{border-color:rgba(200,169,110,0.3);transform:translateY(-2px)}
+.role-card.sel{border-color:var(--gold);background:var(--goldC)}
+.role-card.sel::after{opacity:1}
+.rc-tick{position:absolute;top:9px;right:9px;width:17px;height:17px;border-radius:50%;background:var(--gold);color:var(--ink);font-size:0.55rem;font-weight:900;display:none;align-items:center;justify-content:center}
+.role-card.sel .rc-tick{display:flex}
+.rc-icon{font-size:1.6rem;margin-bottom:9px}
+.rc-name{font-family:var(--font-display);font-size:0.88rem;font-weight:700;color:var(--text);margin-bottom:4px}
+.rc-desc{font-size:0.68rem;color:var(--text2);line-height:1.6;margin-bottom:9px}
+.rc-rate{font-family:var(--font-mono);font-size:0.55rem;color:var(--gold);background:var(--goldA);border:1px solid rgba(200,169,110,0.2);padding:2px 7px;border-radius:3px;display:inline-block}
+
+/* Form */
+.fgroup{margin-bottom:13px}
+.flabel{display:flex;align-items:center;justify-content:space-between;font-family:var(--font-mono);font-size:0.59rem;color:var(--text3);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:5px}
+.flabel-note{text-transform:none;letter-spacing:0;font-weight:400;color:var(--text4)}
+.fi-wrap{position:relative}
+.fi-icon{position:absolute;left:11px;top:50%;transform:translateY(-50%);font-size:0.72rem;color:var(--text3);pointer-events:none}
+.finput{width:100%;background:var(--bg2);border:1px solid var(--border2);border-radius:var(--rs);padding:11px 13px;color:var(--text);font-size:0.83rem;outline:none;transition:all 0.2s;-webkit-appearance:none}
+.fi-wrap .finput{padding-left:34px}
+.finput:focus{border-color:rgba(200,169,110,0.4);box-shadow:0 0 0 3px rgba(200,169,110,0.06)}
+.finput::placeholder{color:var(--text4)}
+.finput.err{border-color:rgba(239,68,68,0.5)}
+.finput.ok{border-color:rgba(34,197,94,0.4)}
+.finput[readonly]{color:var(--gold);cursor:default;background:var(--goldA)}
+.f2{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.vmsg{font-size:0.67rem;margin-top:4px;line-height:1.5;display:none;align-items:center;gap:4px}
+.vmsg.show{display:flex}
+.vmsg.e{color:var(--red)}.vmsg.g{color:var(--green)}
+.divider{display:flex;align-items:center;gap:10px;margin:14px 0}
+.divider::before,.divider::after{content:"";flex:1;height:1px;background:var(--border)}
+.divider span{font-size:0.6rem;color:var(--text3);font-family:var(--font-mono);letter-spacing:0.06em}
+.info-box{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rs);padding:11px 14px;font-size:0.75rem;color:var(--text2);line-height:1.75;margin-bottom:14px}
+.info-box strong{color:var(--gold)}
+.alert{padding:11px 14px;border-radius:var(--rs);font-size:0.76rem;line-height:1.6;margin-bottom:12px;display:none;animation:fadeUp 0.3s ease}
+.alert.show{display:block}
+.alert.err{background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.22);color:var(--red)}
+.alert.ok{background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.22);color:var(--green)}
+.alert.info{background:var(--goldA);border:1px solid rgba(200,169,110,0.2);color:var(--gold)}
+
+/* Buttons */
+.btn-p{width:100%;padding:12px;background:var(--gold);color:var(--ink);border:none;border-radius:var(--rs);font-weight:800;font-size:0.84rem;cursor:pointer;transition:all 0.22s;letter-spacing:0.02em;position:relative;overflow:hidden}
+.btn-p::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.18),transparent);transform:translateX(-100%);transition:transform 0.5s}
+.btn-p:hover{background:var(--gold2);transform:translateY(-1px);box-shadow:0 6px 20px rgba(200,169,110,0.28)}
+.btn-p:hover::after{transform:translateX(100%)}
+.btn-p:active{transform:translateY(0)}
+.btn-p:disabled{opacity:0.5;cursor:not-allowed;transform:none;box-shadow:none}
+.btn-p .ld{display:none;width:14px;height:14px;border:2px solid rgba(0,0,0,0.25);border-top-color:var(--ink);border-radius:50%;animation:spin 0.75s linear infinite;margin-right:7px;vertical-align:middle}
+.btn-p.loading .ld{display:inline-block}
+.btn-p.loading{opacity:0.8;cursor:not-allowed}
+@keyframes spin{to{transform:rotate(360deg)}}
+.btn-s{width:100%;padding:11px;background:transparent;color:var(--text2);border:1px solid var(--border2);border-radius:var(--rs);font-weight:600;font-size:0.8rem;cursor:pointer;transition:all 0.2s;margin-top:8px}
+.btn-s:hover{border-color:rgba(200,169,110,0.3);color:var(--gold)}
+
+/* Bundle */
+.comm-notice{background:var(--bg2);border:1px solid rgba(200,169,110,0.18);border-radius:var(--rs);padding:11px 14px;font-size:0.74rem;color:var(--text2);line-height:1.75;margin-bottom:14px}
+.comm-notice strong{color:var(--gold)}
+.bundle-scroll{max-height:52vh;overflow-y:auto;padding-right:2px;margin-bottom:13px}
+.bundle-scroll::-webkit-scrollbar{width:2px}
+.bundle-scroll::-webkit-scrollbar-thumb{background:var(--gold)}
+.bundle-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(185px,1fr));gap:9px}
+.bcard{background:var(--bg2);border:2px solid var(--border);border-radius:10px;padding:15px 13px;cursor:pointer;transition:all 0.22s;position:relative;overflow:hidden;--acc:#C8A96E}
+.bcard-bar{position:absolute;top:0;left:0;right:0;height:2px;background:var(--acc);opacity:0.5}
+.bcard-tick{position:absolute;top:8px;right:8px;width:15px;height:15px;border-radius:50%;background:var(--acc);color:#09090B;font-size:0.52rem;font-weight:900;display:none;align-items:center;justify-content:center}
+.bcard.sel{border-color:var(--acc);background:rgba(255,255,255,0.018)}
+.bcard.sel .bcard-tick{display:flex}
+.bcard:hover{transform:translateY(-2px);border-color:rgba(200,169,110,0.25)}
+.bcard-icon{font-size:1.3rem;margin-bottom:7px}
+.bcard-name{font-family:var(--font-mono);font-size:0.52rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text3);margin-bottom:2px}
+.bcard-price{font-family:var(--font-display);font-size:1.15rem;font-weight:900;color:var(--acc);margin-bottom:2px}
+.bcard-lpa{font-family:var(--font-mono);font-size:0.52rem;color:var(--green);background:rgba(34,197,94,0.07);border:1px solid rgba(34,197,94,0.15);padding:2px 6px;border-radius:3px;display:inline-block;margin-bottom:8px}
+.bcard-skills{list-style:none;display:flex;flex-direction:column;gap:2px}
+.bcard-skills li{font-size:0.62rem;color:var(--text2);display:flex;align-items:center;gap:5px}
+.bcard-skills li::before{content:"·";color:var(--acc)}
+.sel-summary{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--rs);padding:10px 14px;display:flex;justify-content:space-between;align-items:center;font-size:0.76rem;color:var(--text2);margin-bottom:13px}
+.sel-right{font-family:var(--font-display);font-size:1rem;font-weight:900;color:var(--gold)}
+
+/* Payment */
+.pay-summary{background:var(--bg2);border:1px solid var(--border2);border-radius:10px;padding:14px;margin-bottom:16px}
+.pay-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border);font-size:0.78rem}
+.pay-row:last-child{border:none}
+.pay-row-label{font-family:var(--font-mono);font-size:0.6rem;color:var(--text3);letter-spacing:0.05em;text-transform:uppercase}
+.pay-row-val{font-weight:600;color:var(--text)}
+.pay-price{font-family:var(--font-display)!important;font-size:1.15rem!important;color:var(--gold)!important;font-weight:900!important}
+.pay-upi-row{display:flex;align-items:center;gap:7px;font-family:var(--font-mono);font-size:0.73rem}
+.copy-btn{padding:2px 8px;font-size:0.56rem;background:var(--goldA);color:var(--gold);border:1px solid rgba(200,169,110,0.2);border-radius:3px;cursor:pointer;font-weight:700;transition:background 0.2s}
+.copy-btn:hover{background:var(--goldB)}
+.pay-sect{font-family:var(--font-mono);font-size:0.57rem;color:var(--text3);letter-spacing:0.12em;text-transform:uppercase;margin:14px 0 8px}
+.pay-apps{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:2px}
+.pay-app{display:flex;align-items:center;justify-content:center;gap:6px;padding:10px;border:1px solid var(--border2);border-radius:var(--rs);background:var(--bg2);cursor:pointer;transition:all 0.2s;font-weight:700;font-size:0.76rem;color:var(--text);text-decoration:none}
+.pay-app:hover{border-color:rgba(200,169,110,0.28);color:var(--gold);transform:translateY(-1px);text-decoration:none}
+.qr-wrap{text-align:center;margin:6px 0 14px}
+.qr-img{width:160px;height:160px;border-radius:8px;background:white;display:inline-flex;align-items:center;justify-content:center;overflow:hidden}
+.qr-img img{width:100%;height:100%;object-fit:contain}
+.utr-input{width:100%;background:var(--bg2);border:1px solid var(--border2);border-radius:var(--rs);padding:11px 14px;color:var(--text);font-size:0.82rem;font-family:var(--font-mono);outline:none;transition:border-color 0.2s;letter-spacing:0.06em;margin-top:6px}
+.utr-input:focus{border-color:rgba(200,169,110,0.4)}
+.utr-input::placeholder{color:var(--text4);font-family:var(--font-body);letter-spacing:0}
+.pay-note{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rs);padding:11px 13px;font-size:0.69rem;color:var(--text2);line-height:1.75;display:flex;gap:7px;align-items:flex-start;margin-top:14px}
+
+/* Result */
+.big-icon{font-size:3rem;text-align:center;margin-bottom:12px}
+.big-h{font-family:var(--font-display);font-size:1.4rem;font-weight:900;text-align:center;margin-bottom:14px}
+.big-h.ok{color:var(--green)}.big-h.pend{color:var(--amber)}
+.result-card{background:var(--bg2);border-radius:10px;padding:18px;font-size:0.78rem;color:var(--text2);line-height:1.85}
+.result-card p{margin-bottom:8px}
+.result-card strong{color:var(--text)}
+.result-contact{margin-top:12px;padding-top:12px;border-top:1px solid var(--border);font-size:0.7rem;color:var(--text3)}
+.result-card.green-border{border:1px solid rgba(34,197,94,0.2)}
+.result-card.amber-border{border:1px solid rgba(245,158,11,0.2)}
+
+/* Legal / toggle */
+.legal{font-size:0.63rem;color:var(--text4);text-align:center;margin-top:12px;line-height:1.7}
+.legal a{color:var(--gold)}
+.toggle-row{text-align:center;margin-top:18px;padding-top:16px;border-top:1px solid var(--border);font-size:0.76rem;color:var(--text3)}
+.tlink{color:var(--gold);font-weight:700;cursor:pointer;padding:2px 8px;border-radius:4px;background:var(--goldA);margin-left:4px;transition:all 0.2s;display:inline-block}
+.tlink:hover{background:var(--goldB)}
+
+/* Toast */
+.toast{position:fixed;bottom:22px;right:22px;z-index:9000;background:var(--bg3);border:1px solid var(--border2);border-radius:9px;padding:13px 16px;max-width:290px;display:flex;align-items:center;gap:9px;transform:translateY(72px);opacity:0;transition:all 0.35s cubic-bezier(0.34,1.56,0.64,1);font-size:0.77rem;color:var(--text);pointer-events:none}
+.toast.show{transform:translateY(0);opacity:1}
+
+@media(max-width:860px){.layout{grid-template-columns:1fr}.sidebar{display:none}.main{padding:32px 18px;min-height:100vh}}
+@media(max-width:480px){.role-grid{grid-template-columns:1fr}.bundle-grid{grid-template-columns:1fr 1fr}.pay-apps{grid-template-columns:1fr 1fr}.f2{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="grain"></div>
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sb-glow"></div>
+    <div class="sb-inner">
+      <div class="sb-logo">Biluxe<sup>10</sup></div>
+      <div class="sb-body">
+        <span class="sb-tag" id="sbTag">Getting Started</span>
+        <h2 class="sb-h" id="sbH">Choose how you<br>want to <em>grow.</em></h2>
+        <p class="sb-p" id="sbP">Join as a learner and access all courses, or as a partner and earn referral commissions. Both paths are open.</p>
+        <div class="sb-perks">
+          <div class="sb-perk"><span class="sp-icon">📚</span><div><div class="sp-title">Learn & Grow</div><div class="sp-desc">Full course access + 65% direct + 10% passive commissions</div></div></div>
+          <div class="sb-perk"><span class="sp-icon">🤝</span><div><div class="sp-title">Partner Mode</div><div class="sp-desc">40% direct commission. Instant dashboard after approval.</div></div></div>
+          <div class="sb-perk"><span class="sp-icon">✉</span><div><div class="sp-title">Magic Link Login</div><div class="sp-desc">No password — one click from your email, every time</div></div></div>
+          <div class="sb-perk"><span class="sp-icon">🔐</span><div><div class="sp-title">Device-Locked Security</div><div class="sp-desc">One account per device. No unauthorised sharing.</div></div></div>
+        </div>
+      </div>
+      <div class="sb-progress">
+        <div class="sp-label">Your progress</div>
+        <div class="sp-track"><div class="sp-fill" id="spFill"></div></div>
+        <div class="sp-dots">
+          <div class="sp-dot-item active" id="sd1"><div class="sp-dot"></div>Role</div>
+          <div class="sp-dot-item" id="sd2"><div class="sp-dot"></div>Account</div>
+          <div class="sp-dot-item" id="sd3"><div class="sp-dot"></div>Bundle</div>
+          <div class="sp-dot-item" id="sd4"><div class="sp-dot"></div>Pay</div>
+          <div class="sp-dot-item" id="sd5"><div class="sp-dot"></div>Done</div>
+        </div>
+        <div class="sb-copy">© 2025 Biluxe10 Ed-Tech · Bangalore, India</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+    <div class="auth-box">
+      <button class="back-btn" id="backBtn" onclick="goBack()">← Back</button>
+
+      <!-- STEP 1: ROLE -->
+      <div class="step active" id="step1">
+        <h2 class="step-h">How do you want to join?</h2>
+        <p class="step-sub">Pick your path. You can contact support later to switch.</p>
+        <div class="info-box">Already have an account? <a href="#" onclick="goSignIn();return false">Sign in here →</a></div>
+        <div class="role-grid">
+          <div class="role-card" onclick="pickRole('learner',this)">
+            <div class="rc-tick">✓</div>
+            <div class="rc-icon">📚</div>
+            <div class="rc-name">Learn & Grow</div>
+            <div class="rc-desc">Access all courses in your bundle. Certificate, career support & referral earnings. Access granted after admin approval.</div>
+            <span class="rc-rate">65% Direct + 10% Passive</span>
+          </div>
+          <div class="role-card" onclick="pickRole('partner',this)">
+            <div class="rc-tick">✓</div>
+            <div class="rc-icon">🤝</div>
+            <div class="rc-name">Partner</div>
+            <div class="rc-desc">Promote Biluxe10 to your network. Commission only — no course access. Dashboard unlocks after admin approval.</div>
+            <span class="rc-rate">40% Direct Commission</span>
+          </div>
+        </div>
+        <div class="info-box" style="font-size:0.72rem;margin-bottom:16px">
+          <strong>Learner:</strong> A refers B (₹999) → A earns ₹649. B refers C → B earns ₹649 + A earns ₹100 passive.<br>
+          <strong>Partner:</strong> A refers B (₹999) → A earns ₹400. No passive chain.
+        </div>
+        <button class="btn-p" id="roleBtn" onclick="goStep(2)" disabled><span class="ld"></span>Continue →</button>
+      </div>
+
+      <!-- STEP 2: ACCOUNT -->
+      <div class="step" id="step2">
+        <div class="atabs">
+          <button class="atab active" id="tab-su" onclick="switchAuthTab('su')">Sign Up</button>
+          <button class="atab" id="tab-si" onclick="switchAuthTab('si')">Sign In</button>
+        </div>
+
+        <!-- SIGN UP -->
+        <div class="atab-panel active" id="panel-su">
+          <h2 class="step-h">Create your account</h2>
+          <p class="step-sub">We'll send a magic link to verify your email. No password needed.</p>
+          <div class="f2">
+            <div class="fgroup">
+              <div class="flabel">Full Name</div>
+              <div class="fi-wrap"><span class="fi-icon">👤</span>
+                <input class="finput" type="text" id="su-name" placeholder="Your full name" autocomplete="name" oninput="vName()">
+              </div>
+              <div class="vmsg e" id="v-name">⚠ At least 3 characters</div>
+            </div>
+            <div class="fgroup">
+              <div class="flabel">Mobile</div>
+              <div class="fi-wrap"><span class="fi-icon">📱</span>
+                <input class="finput" type="tel" id="su-phone" placeholder="9999999999" autocomplete="tel" oninput="vPhone()">
+              </div>
+              <div class="vmsg e" id="v-phone">⚠ Valid 10-digit number</div>
+            </div>
+          </div>
+          <div class="fgroup">
+            <div class="flabel">Email Address</div>
+            <div class="fi-wrap"><span class="fi-icon">✉</span>
+              <input class="finput" type="email" id="su-email" placeholder="you@email.com" autocomplete="email" oninput="vEmail('su-email','v-su-email')">
+            </div>
+            <div class="vmsg e" id="v-su-email">⚠ Enter a valid email</div>
+          </div>
+          <div class="fgroup">
+            <div class="flabel">Referral Code <span class="flabel-note">optional</span></div>
+            <div class="fi-wrap"><span class="fi-icon">🔗</span>
+              <input class="finput" type="text" id="su-ref" placeholder="BLX1020260112" autocomplete="off" style="text-transform:uppercase" oninput="this.value=this.value.toUpperCase()">
+            </div>
+            <div class="vmsg g" id="v-ref-ok">✓ Referral code applied</div>
+            <div class="vmsg e" id="v-ref-err">⚠ Invalid referral code — leave blank if none</div>
+          </div>
+          <div class="alert" id="su-alert"></div>
+          <button class="btn-p" id="su-btn" onclick="handleSignUp()"><span class="ld"></span><span class="bt">Send Magic Link →</span></button>
+          <div class="legal">By signing up you agree to our <a href="#">Terms</a> &amp; <a href="#">Privacy Policy</a>.<br>One account per device. Unauthorised sharing is prohibited.</div>
+          <div class="toggle-row">Already have an account? <span class="tlink" onclick="switchAuthTab('si')">Sign In</span></div>
+        </div>
+
+        <!-- SIGN IN -->
+        <div class="atab-panel" id="panel-si">
+          <h2 class="step-h">Welcome back</h2>
+          <p class="step-sub">Enter your registered email — we'll send a magic sign-in link instantly.</p>
+          <div class="fgroup">
+            <div class="flabel">Email Address</div>
+            <div class="fi-wrap"><span class="fi-icon">✉</span>
+              <input class="finput" type="email" id="si-email" placeholder="you@email.com" autocomplete="email" oninput="vEmail('si-email','v-si-email')">
+            </div>
+            <div class="vmsg e" id="v-si-email">⚠ Enter a valid email</div>
+          </div>
+          <div class="alert" id="si-alert"></div>
+          <button class="btn-p" id="si-btn" onclick="handleSignIn()"><span class="ld"></span><span class="bt">Send Magic Link →</span></button>
+          <div class="toggle-row">No account? <span class="tlink" onclick="switchAuthTab('su')">Sign Up Free</span></div>
+        </div>
+      </div>
+
+      <!-- STEP: MAGIC LINK SENT -->
+      <div class="step" id="step-magic">
+        <div class="big-icon">✉</div>
+        <div class="big-h ok" style="font-size:1.2rem">Magic Link Sent!</div>
+        <div class="result-card green-border">
+          <p>We've sent a sign-in link to <strong id="sentEmailDisplay">your email</strong>.</p>
+          <p>Click the link in your email to verify and continue to bundle selection.</p>
+          <p style="margin-top:10px;font-size:0.72rem;color:var(--text3)">
+            Didn't get it? Check spam or
+            <a href="#" onclick="resendLink();return false">resend the link</a>.
+            Link expires in 10 minutes.
+          </p>
+        </div>
+        <button class="btn-s" onclick="showStep(2)" style="margin-top:14px">← Use a different email</button>
+      </div>
+
+      <!-- STEP 3: BUNDLE -->
+      <div class="step" id="step3">
+        <h2 class="step-h">Select your bundle</h2>
+        <p class="step-sub">Nine bundles aligned to real salary ranges. Start anywhere, upgrade anytime.</p>
+        <div class="comm-notice" id="commNotice"></div>
+        <div class="bundle-scroll"><div class="bundle-grid" id="bundleGrid"></div></div>
+        <div class="sel-summary" id="selSummary" style="display:none">
+          <span style="font-size:0.76rem;color:var(--text2)">Selected: <strong id="selName" style="color:var(--text)">—</strong></span>
+          <span class="sel-right" id="selPrice">₹—</span>
+        </div>
+        <div class="alert" id="b3-alert"></div>
+        <button class="btn-p" onclick="bundleNext()"><span class="ld"></span><span class="bt">Continue to Payment →</span></button>
+      </div>
+
+      <!-- STEP 4: PAYMENT -->
+      <div class="step" id="step4">
+        <h2 class="step-h">Complete payment</h2>
+        <p class="step-sub">Pay via UPI and submit your UTR. Verified in 2–6 hours (9 AM–9 PM IST).</p>
+        <div id="payContent"></div>
+      </div>
+
+      <!-- STEP 5: RESULT -->
+      <div class="step" id="step5">
+        <div class="big-icon" id="s5icon">🎉</div>
+        <div class="big-h" id="s5head"></div>
+        <div class="result-card" id="s5card"></div>
+        <button class="btn-s" onclick="window.location.href='courses.html'" style="margin-top:14px">Browse Courses →</button>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<div class="toast" id="toast"><span id="tIcon">✓</span><span id="tMsg">Done</span></div>
+
+<script>
+/* ══════════════════════════════════════════════════
+   FIREBASE CONFIG — biluxe10-3e894
+══════════════════════════════════════════════════ */
+const FB_CFG = {
+  apiKey:            "AIzaSyDxxkC9iD1V1w-53Kf4oBrHEXlBLvCc7sE",
+  authDomain:        "biluxe10-3e894.firebaseapp.com",
+  projectId:         "biluxe10-3e894",
+  storageBucket:     "biluxe10-3e894.appspot.com",
+  messagingSenderId: "804749588233",
+  appId:             "1:804749588233:web:7777648c0c7834733c05d8",
+  measurementId:     "G-1K0XR7PHQC"
+};
+if (!firebase.apps.length) firebase.initializeApp(FB_CFG);
+const auth = firebase.auth();
+const db   = firebase.firestore();
+
+/*
+  ══════════════════════════════════════════════════
+  TELEGRAM — loaded from Vercel /api/env
+  Add in Vercel → Settings → Environment Variables:
+    TELEGRAM_BOT_TOKEN
+    TELEGRAM_CHAT_ID
+  Create file /api/env.js:
+    export default (req, res) => res.json({
+      tbt: process.env.TELEGRAM_BOT_TOKEN,
+      tci: process.env.TELEGRAM_CHAT_ID
+    });
+  ══════════════════════════════════════════════════
+*/
+let TG = { token:'', chatId:'' };
+fetch('/api/env').then(r=>r.ok?r.json():{}).then(d=>{
+  TG.token  = d.tbt||'';
+  TG.chatId = d.tci||'';
+}).catch(()=>{});
+
+/* ══════════════════════════════════════════════════
+   CONSTANTS
+══════════════════════════════════════════════════ */
+
+// Firestore collection — your existing collection
+const COL = 'user_collection';
+
+const COMMISSION = {
+  learner: { direct:0.65, passive:0.10 },
+  partner: { direct:0.40, passive:0    }
+};
+
+const BUNDLES = [
+  { key:'starter',     icon:'🌟', name:'Starter',     price:499,   lpa:'₹3 LPA',     color:'#C8A96E', skills:['Digital Entrepreneurship','Canva & Content','WhatsApp Business','ChatGPT Basics'] },
+  { key:'pro',         icon:'🚀', name:'Pro',          price:999,   lpa:'₹3–4 LPA',   color:'#7CB9E8', skills:['Affiliate Marketing','SEO & Google Ads','Social Media Growth','Freelancing'] },
+  { key:'professional',icon:'🎨', name:'Professional', price:2499,  lpa:'₹3–4 LPA',   color:'#A78BFA', skills:['UI/UX Design','No-Code Tools','Video Editing','E-commerce'] },
+  { key:'elite',       icon:'📊', name:'Elite',        price:3699,  lpa:'₹4–6 LPA',   color:'#34D399', skills:['Excel & SQL','Power BI','Python for Data','Business Analytics'] },
+  { key:'premium',     icon:'💻', name:'Premium',      price:4999,  lpa:'₹6–8 LPA',   color:'#60A5FA', skills:['Full-Stack MERN','Git & GitHub','E-commerce Project','Job Prep'] },
+  { key:'master',      icon:'☁️', name:'Master',       price:6999,  lpa:'₹8–12 LPA',  color:'#7DD3FC', skills:['AWS Cloud','Docker & Kubernetes','CI/CD Pipelines','Cybersecurity'] },
+  { key:'elitepro',    icon:'🤖', name:'Elite Pro',    price:11999, lpa:'₹12–16 LPA', color:'#FB923C', skills:['Data Science & ML','Deep Learning','NLP','MLOps'] },
+  { key:'legend',      icon:'🧠', name:'Legend',       price:15999, lpa:'₹14–18 LPA', color:'#F472B6', skills:['Generative AI','LangChain & RAG','Agentic AI','Prompt Engineering'] },
+  { key:'ultimate',    icon:'👑', name:'Ultimate',     price:23999, lpa:'₹16–25 LPA', color:'#F0D9A8', skills:['AI Product Mgmt','Leadership & Ethics','14+ Specializations','Executive Mentoring'] },
+];
+
+const SB = {
+  1:      { tag:'Getting Started',  h:'Choose how you<br>want to <em>grow.</em>',          p:'Join as a learner and access all courses, or as a partner and earn commissions.' },
+  2:      { tag:'Create Account',   h:'One click to<br><em>get started.</em>',              p:'Enter your details — a magic link lands in your inbox to verify your email.' },
+  magic:  { tag:'Check Your Inbox', h:'Magic link<br><em>on its way.</em>',                 p:'Click the link in your email. No password needed — now or ever.' },
+  3:      { tag:'Pick Your Bundle', h:'Every bundle has a<br>clear <em>salary goal.</em>',  p:'Nine bundles aligned to real salary ranges. Start anywhere, upgrade anytime.' },
+  4:      { tag:'Secure Payment',   h:'One payment.<br><em>Lifetime access.</em>',           p:'Pay via UPI and submit your UTR. Verified in 2–6 hours (Mon–Sat).' },
+  5:      { tag:"You're In!",       h:'Payment<br><em>submitted.</em>',                     p:'Our team will verify and unlock your access within 2–6 hours.' },
+};
+const PROG = { 1:'16%', 2:'33%', magic:'33%', 3:'58%', 4:'80%', 5:'100%' };
+
+/* ══════════════════════════════════════════════════
+   STATE
+══════════════════════════════════════════════════ */
+let G = { role:null, bundle:null, step:1, sess:null, lastEmail:'' };
+const urlP       = new URLSearchParams(window.location.search);
+const refFromURL = (urlP.get('ref')||'').toUpperCase();
+
+/* ══════════════════════════════════════════════════
+   HELPERS
+══════════════════════════════════════════════════ */
+const $     = id => document.getElementById(id);
+const san   = e  => e.toLowerCase().trim().replace(/\./g,'_').replace(/@/g,'__at__');
+const toINR = n  => '₹' + Number(n).toLocaleString('en-IN');
+
+function getDeviceId() {
+  let d = localStorage.getItem('b10_did');
+  if (!d) {
+    try {
+      const raw = [navigator.userAgent,navigator.language,screen.width,screen.height,
+                   new Date().getTimezoneOffset(),navigator.hardwareConcurrency||0].join('|');
+      d = 'dv_' + btoa(unescape(encodeURIComponent(raw))).replace(/[^a-zA-Z0-9]/g,'').substr(0,20)+'_'+Date.now().toString(36);
+    } catch(e) {
+      d = 'dv_'+Math.random().toString(36).substr(2,20)+Date.now().toString(36);
+    }
+    localStorage.setItem('b10_did', d);
+  }
+  return d;
+}
+
+/*
+  Referral code format: BLX10 + YYYYMM + 2 random digits
+  Example: BLX1020260134  (13 chars total)
+*/
+function genRefCode() {
+  const now = new Date();
+  const ym  = now.getFullYear().toString() + String(now.getMonth()+1).padStart(2,'0');
+  const rnd = String(Math.floor(Math.random()*90)+10);
+  return 'BLX10' + ym + rnd;
+}
+
+async function tgLog(msg) {
+  try {
+    if (!TG.token) return;
+    await fetch(`https://api.telegram.org/bot${TG.token}/sendMessage`, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ chat_id:TG.chatId, text:msg, parse_mode:'HTML' })
+    });
+  } catch(e) {}
+}
+
+function showAlert(id, msg, type='err') {
+  const el=$(id); if(!el) return;
+  el.textContent=msg; el.className='alert show '+type;
+}
+function clearAlert(id) { const el=$(id); if(el) el.className='alert'; }
+
+let _tt;
+function toast(icon, msg) {
+  $('tIcon').textContent=icon; $('tMsg').textContent=msg;
+  const t=$('toast'); t.classList.add('show');
+  clearTimeout(_tt); _tt=setTimeout(()=>t.classList.remove('show'),3600);
+}
+
+function setBtnLoad(id, on) {
+  const b=$(id); if(!b) return;
+  b.classList.toggle('loading',on); b.disabled=on;
+}
+
+function copyText(t) { navigator.clipboard.writeText(t).then(()=>toast('✓','Copied!')); }
+
+/* ══════════════════════════════════════════════════
+   STEP NAVIGATION
+══════════════════════════════════════════════════ */
+function showStep(n) {
+  document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));
+  const key = (n==='magic') ? 'step-magic' : 'step'+n;
+  const el = $(key); if(el) el.classList.add('active');
+  if(typeof n==='number') G.step=n;
+
+  const d=SB[n];
+  if(d){ $('sbTag').textContent=d.tag; $('sbH').innerHTML=d.h; $('sbP').textContent=d.p; }
+  const pf=$('spFill'); if(pf) pf.style.width=PROG[n]||'16%';
+
+  [1,2,3,4,5].forEach(i=>{
+    const el=$('sd'+i); if(!el) return;
+    el.classList.remove('active','done');
+    const cur=typeof n==='number'?n:(n==='magic'?2:1);
+    if(i<cur) el.classList.add('done');
+    else if(i===cur) el.classList.add('active');
+  });
+
+  const bb=$('backBtn');
+  if(bb) bb.classList.toggle('show', (typeof n==='number'&&n>1&&n<5)||(n==='magic'));
+}
+
+function goStep(n) { showStep(n); }
+function goBack() {
+  if(G.step===2||G.step==='magic') showStep(1);
+  else if(G.step===3) showStep(2);
+  else if(G.step===4) showStep(3);
+}
+function goSignIn() { showStep(2); switchAuthTab('si'); }
+
+function switchAuthTab(tab) {
+  ['su','si'].forEach(t=>{
+    $('tab-'+t).classList.toggle('active',t===tab);
+    $('panel-'+t).classList.toggle('active',t===tab);
+  });
+}
+
+/* ══════════════════════════════════════════════════
+   ROLE
+══════════════════════════════════════════════════ */
+function pickRole(role, card) {
+  G.role=role;
+  document.querySelectorAll('.role-card').forEach(c=>c.classList.remove('sel'));
+  card.classList.add('sel');
+  $('roleBtn').disabled=false;
+}
+
+/* ══════════════════════════════════════════════════
+   VALIDATIONS
+══════════════════════════════════════════════════ */
+function setV(inputId, ok, msgId) {
+  const inp=$(inputId), msg=$(msgId);
+  if(inp){ inp.classList.toggle('err',!ok&&!!inp.value.trim()); inp.classList.toggle('ok',ok); }
+  if(msg){ msg.className='vmsg'+((!ok&&inp&&inp.value.trim())?' show e':''); }
+  return ok;
+}
+function vName()      { return setV('su-name', $('su-name').value.trim().length>=3,'v-name'); }
+function vPhone()     { return setV('su-phone',$('su-phone').value.replace(/\D/g,'').length>=10,'v-phone'); }
+function vEmail(i,v)  { return setV(i,/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test($(i).value.trim()),v); }
+
+/* ══════════════════════════════════════════════════
+   SIGN UP — sends magic link, saves pending data
+══════════════════════════════════════════════════ */
+async function handleSignUp() {
+  clearAlert('su-alert');
+  ['v-ref-ok','v-ref-err'].forEach(id=>$(id).classList.remove('show'));
+
+  const name  = $('su-name').value.trim();
+  const email = $('su-email').value.trim().toLowerCase();
+  const phone = $('su-phone').value.trim().replace(/\s/g,'');
+  const ref   = ($('su-ref').value.trim()||refFromURL).toUpperCase();
+
+  if(!vName()|!vEmail('su-email','v-su-email')|!vPhone()) {
+    showAlert('su-alert','Please fix the highlighted fields.'); return;
+  }
+  if(!G.role){ showAlert('su-alert','Go back and select your role first.'); return; }
+
+  setBtnLoad('su-btn',true);
+  try {
+    const emailId  = san(email);
+    const deviceId = getDeviceId();
+
+    // Check existing account
+    const snap = await db.collection(COL).doc(emailId).get();
+    if(snap.exists){
+      showAlert('su-alert','This email is already registered. Please sign in instead.');
+      setBtnLoad('su-btn',false); return;
+    }
+
+    // Device check
+    const devQ = await db.collection(COL).where('deviceId','==',deviceId).limit(1).get();
+    if(!devQ.empty){
+      showAlert('su-alert','An account already exists on this device. Please sign in.');
+      setBtnLoad('su-btn',false); return;
+    }
+
+    // Referral validation
+    let referrerEmailId='';
+    if(ref){
+      const refQ = await db.collection(COL).where('referralCode','==',ref).limit(1).get();
+      if(refQ.empty){
+        $('v-ref-err').classList.add('show');
+        showAlert('su-alert','Invalid referral code. Leave blank if you don\'t have one.');
+        setBtnLoad('su-btn',false); return;
+      }
+      referrerEmailId = refQ.docs[0].id;
+      $('v-ref-ok').classList.add('show');
+    }
+
+    // Save pending data — committed after magic link click
+    localStorage.setItem('b10_pending_signup', JSON.stringify({
+      name, email, phone, role:G.role, referrerEmailId, ref, deviceId
+    }));
+
+    // Send magic link
+    await auth.sendSignInLinkToEmail(email, {
+      url: `${window.location.origin}/auth.html?mode=signup&email=${encodeURIComponent(email)}`,
+      handleCodeInApp: true,
+    });
+    localStorage.setItem('b10_magic_email', email);
+
+    G.lastEmail = email;
+    $('sentEmailDisplay').textContent = email;
+    showStep('magic');
+
+    await tgLog(
+      `📧 <b>Magic Link Sent (Signup)</b>\n`+
+      `👤 ${name}\n✉ ${email}\n📱 ${phone}\n`+
+      `🎭 Role: ${G.role}\n🔗 Ref: ${ref||'None'}\n`+
+      `📅 ${new Date().toLocaleString('en-IN')}`
+    );
+
+  } catch(e) {
+    const M={
+      'auth/invalid-email':'Invalid email address.',
+      'auth/network-request-failed':'Network error. Check your connection.',
+      'auth/too-many-requests':'Too many attempts. Please wait a few minutes.',
+    };
+    showAlert('su-alert', M[e.code]||e.message);
+  }
+  setBtnLoad('su-btn',false);
+}
+
+/* ══════════════════════════════════════════════════
+   SIGN IN — sends magic link
+══════════════════════════════════════════════════ */
+async function handleSignIn() {
+  clearAlert('si-alert');
+  const email = $('si-email').value.trim().toLowerCase();
+  if(!vEmail('si-email','v-si-email')){ showAlert('si-alert','Enter a valid email address.'); return; }
+
+  setBtnLoad('si-btn',true);
+  try {
+    const emailId = san(email);
+    const snap    = await db.collection(COL).doc(emailId).get();
+    if(!snap.exists){
+      showAlert('si-alert','No account found with this email. Please sign up.');
+      setBtnLoad('si-btn',false); return;
+    }
+
+    await auth.sendSignInLinkToEmail(email, {
+      url: `${window.location.origin}/auth.html?mode=signin&email=${encodeURIComponent(email)}`,
+      handleCodeInApp: true,
+    });
+    localStorage.setItem('b10_magic_email', email);
+
+    G.lastEmail = email;
+    $('sentEmailDisplay').textContent = email;
+    showStep('magic');
+
+    await tgLog(`✉ <b>Magic Link Sent (Login)</b>\n✉ ${email}\n📅 ${new Date().toLocaleString('en-IN')}`);
+
+  } catch(e) {
+    showAlert('si-alert', e.code==='auth/network-request-failed'
+      ? 'Network error. Check your connection.' : e.message);
+  }
+  setBtnLoad('si-btn',false);
+}
+
+function resendLink() {
+  const email = G.lastEmail;
+  if(!email){ toast('⚠','No email saved. Please go back.'); return; }
+  const mode = localStorage.getItem('b10_pending_signup') ? 'signup' : 'signin';
+  const url  = `${window.location.origin}/auth.html?mode=${mode}&email=${encodeURIComponent(email)}`;
+  auth.sendSignInLinkToEmail(email,{url,handleCodeInApp:true})
+    .then(()=>toast('✉','Link resent! Check your inbox.'))
+    .catch(e=>toast('⚠',e.message));
+}
+
+/* ══════════════════════════════════════════════════
+   MAGIC LINK RETURN HANDLER
+   Runs on page load when URL is a Firebase email link
+══════════════════════════════════════════════════ */
+async function handleMagicReturn() {
+  if(!auth.isSignInWithEmailLink(window.location.href)) return;
+
+  let email = localStorage.getItem('b10_magic_email')
+    || decodeURIComponent(urlP.get('email')||'')
+    || window.prompt('Confirm your email address to complete sign-in:');
+  if(!email) return;
+  email = email.trim().toLowerCase();
+
+  const mode = urlP.get('mode') || 'signin';
+
+  try {
+    const cred     = await auth.signInWithEmailLink(email, window.location.href);
+    localStorage.removeItem('b10_magic_email');
+    // Clean URL without reload
+    window.history.replaceState({},'','/auth.html');
+
+    const emailId  = san(email);
+    const deviceId = getDeviceId();
+    const now      = firebase.firestore.FieldValue.serverTimestamp();
+
+    /* ── SIGNUP MODE ── */
+    if(mode==='signup') {
+      const pending = JSON.parse(localStorage.getItem('b10_pending_signup')||'null');
+      if(!pending){ toast('⚠','Signup session expired. Please fill the form again.'); showStep(2); return; }
+      localStorage.removeItem('b10_pending_signup');
+
+      const myRefCode = genRefCode();
+      const batch     = db.batch();
+
+      /*
+        ══════════════════════════════════════════════════════
+        user_collection document — document ID = sanitized email
+        All fields below are written on first signup.
+        Earning fields initialised to 0.
+        ══════════════════════════════════════════════════════
+      */
+      batch.set(db.collection(COL).doc(emailId), {
+        // ── Identity ──
+        userId:          cred.user.uid,
+        email:           email,
+        fullName:        pending.name,
+        phoneNumber:     pending.phone,
+        username:        email.split('@')[0],
+        role:            pending.role,           // 'learner' | 'partner'
+
+        // ── Referral ──
+        referralCode:    myRefCode,              // BLX1020260134
+        referredBy:      pending.referrerEmailId || '',
+
+        // ── Payment & Access ──
+        paymentStatus:   'pending',              // pending | approved | rejected
+        selectedBundle:  '',
+        bundlePrice:     0,
+        paymentProofUrl: '',                     // UTR number submitted by user
+        paymentMethod:   'upi',
+
+        // ── Security ──
+        deviceId:        deviceId,
+        isActive:        true,
+        emailVerified:   true,
+
+        // ── Earnings (new fields) ──
+        dailyEarning:    0,
+        weeklyEarning:   0,
+        monthlyEarning:  0,
+        totalEarning:    0,
+        bonusEarning:    0,
+        withdrawnAmount: 0,
+
+        // ── Timestamps ──
+        createdAt:       now,
+        approvedAt:      null,
+        lastLogin:       now,
+      });
+
+      // Increment referrer teamSize
+      if(pending.referrerEmailId){
+        batch.update(db.collection(COL).doc(pending.referrerEmailId),{
+          teamSize: firebase.firestore.FieldValue.increment(1),
+        });
+      }
+
+      await batch.commit();
+
+      G.sess = { email, emailId, name:pending.name, role:pending.role };
+      sessionStorage.setItem('b10_sess', JSON.stringify(G.sess));
+      G.role = pending.role;
+
+      await tgLog(
+        `🆕 <b>Account Verified — Biluxe10</b>\n`+
+        `👤 ${pending.name}\n✉ ${email}\n📱 ${pending.phone}\n`+
+        `🎭 Role: ${pending.role}\n🔗 Ref: ${pending.ref||'None'}\n`+
+        `🔑 Referral Code: ${myRefCode}\n`+
+        `📅 ${new Date().toLocaleString('en-IN')}`
+      );
+
+      toast('🎉','Email verified! Select your bundle.');
+      showStep(3); renderBundles();
+      return;
+    }
+
+    /* ── SIGNIN MODE ── */
+    const snap = await db.collection(COL).doc(emailId).get();
+    if(!snap.exists){ toast('⚠','Account not found. Please sign up.'); showStep(2); return; }
+
+    const data = snap.data();
+
+    // Device lock check
+    if(data.deviceId && data.deviceId!==deviceId){
+      await auth.signOut();
+      toast('⚠','⚠ Device mismatch. Use your registered device or contact support.');
+      await tgLog(`🚨 <b>Device Mismatch</b>\n✉ ${email}\n📅 ${new Date().toLocaleString('en-IN')}`);
+      showStep(2); return;
+    }
+
+    // Update last login + device
+    await db.collection(COL).doc(emailId).update({
+      lastLogin:    now,
+      deviceId:     deviceId,
+      emailVerified:true,
+    });
+
+    G.sess = { email, emailId, name:data.fullName, role:data.role };
+    sessionStorage.setItem('b10_sess', JSON.stringify(G.sess));
+    G.role = data.role;
+
+    await tgLog(`✅ <b>Login via Magic Link</b>\n✉ ${email}\n📅 ${new Date().toLocaleString('en-IN')}`);
+    toast('👋',`Welcome back, ${data.fullName}!`);
+
+    setTimeout(()=>{ routeAfterLogin(data); }, 700);
+
+  } catch(e) {
+    if(e.code==='auth/invalid-action-code'){
+      toast('⚠','This link has expired or already been used. Request a new one.');
+    } else {
+      toast('⚠','Error: '+e.message);
+    }
+    showStep(2);
+  }
+}
+
+/* ══════════════════════════════════════════════════
+   ROUTING AFTER LOGIN
+   - Partner: goes to dashboard directly after payment exists
+   - Learner: must wait for admin approval
+══════════════════════════════════════════════════ */
+function routeAfterLogin(data) {
+  if(data.paymentStatus==='approved'){
+    window.location.href='dashboard.html'; return;
+  }
+  if(data.selectedBundle && data.paymentStatus==='pending'){
+    showPending(data); return;
+  }
+  // No bundle selected yet
+  showStep(3); renderBundles();
+}
+
+/* ══════════════════════════════════════════════════
+   BUNDLE SELECTION
+══════════════════════════════════════════════════ */
+function renderBundles() {
+  const grid=$('bundleGrid'); if(!grid) return;
+  grid.innerHTML='';
+
+  const cn=$('commNotice');
+  if(cn && G.role){
+    const r=COMMISSION[G.role];
+    cn.innerHTML = G.role==='learner'
+      ? `<strong>Your commissions (Learner):</strong> Direct referral = <strong>${(r.direct*100).toFixed(0)}%</strong> of bundle price. When their referral joins = <strong>${(r.passive*100).toFixed(0)}%</strong> passive on top.`
+      : `<strong>Your commissions (Partner):</strong> Every direct referral earns you <strong>${(r.direct*100).toFixed(0)}%</strong> of their bundle price.`;
+  }
+
+  BUNDLES.forEach(b=>{
+    const c=document.createElement('div');
+    c.className='bcard'; c.dataset.key=b.key;
+    c.style.setProperty('--acc',b.color);
+    c.innerHTML=`
+      <div class="bcard-bar"></div>
+      <div class="bcard-tick">✓</div>
+      <div class="bcard-icon">${b.icon}</div>
+      <div class="bcard-name">${b.name}</div>
+      <div class="bcard-price">${toINR(b.price)}</div>
+      <div class="bcard-lpa">${b.lpa}</div>
+      <ul class="bcard-skills">${b.skills.map(s=>`<li>${s}</li>`).join('')}</ul>
+    `;
+    c.onclick=()=>pickBundle(b,c);
+    grid.appendChild(c);
+  });
+}
+
+function pickBundle(bundle, card) {
+  G.bundle=bundle;
+  document.querySelectorAll('.bcard').forEach(c=>c.classList.remove('sel'));
+  card.classList.add('sel');
+  const ss=$('selSummary'); if(ss) ss.style.display='';
+  $('selName').textContent  = bundle.name;
+  $('selPrice').textContent = toINR(bundle.price);
+}
+
+function bundleNext() {
+  if(!G.bundle){ showAlert('b3-alert','Please select a bundle to continue.'); return; }
+  clearAlert('b3-alert');
+  showStep(4); renderPayment();
+}
+
+/* ══════════════════════════════════════════════════
+   PAYMENT
+══════════════════════════════════════════════════ */
+function renderPayment() {
+  if(!G.bundle) return;
+  const amt    = G.bundle.price;
+  const upiId  = 'biluxe10@upi';
+  const note   = encodeURIComponent('Biluxe10-'+G.bundle.name);
+  const base   = `pa=${upiId}&pn=Biluxe10&am=${amt}&cu=INR&tn=${note}`;
+  const upiUrl = `upi://pay?${base}`;
+  const qrUrl  = `https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent(upiUrl)}`;
+
+  const commLine = (()=>{
+    if(!G.role) return '';
+    const d=Math.round(amt*COMMISSION[G.role].direct);
+    return `<div class="pay-row"><div class="pay-row-label">Referrer Earns</div><div class="pay-row-val" style="color:var(--green)">${toINR(d)}</div></div>`;
+  })();
+
+  $('payContent').innerHTML=`
+    <div class="pay-summary">
+      <div class="pay-row"><div class="pay-row-label">Bundle</div><div class="pay-row-val">${G.bundle.name}</div></div>
+      <div class="pay-row"><div class="pay-row-label">Amount</div><div class="pay-row-val pay-price">${toINR(amt)}</div></div>
+      <div class="pay-row">
+        <div class="pay-row-label">UPI ID</div>
+        <div class="pay-row-val">
+          <div class="pay-upi-row">${upiId}<button class="copy-btn" onclick="copyText('${upiId}')">Copy</button></div>
+        </div>
+      </div>
+      ${commLine}
+    </div>
+    <div class="pay-sect">Pay with your app</div>
+    <div class="pay-apps">
+      <a href="phonepe://pay?${base}" class="pay-app">💜 PhonePe</a>
+      <a href="tez://upi/pay?${base}" class="pay-app">🔵 Google Pay</a>
+      <a href="paytmmp://pay?${base}" class="pay-app">🔷 Paytm</a>
+      <a href="${upiUrl}" class="pay-app">✦ Any UPI</a>
+    </div>
+    <div class="pay-sect" style="margin-top:14px">Or scan QR code</div>
+    <div class="qr-wrap"><div class="qr-img"><img src="${qrUrl}" alt="UPI QR" loading="lazy"></div></div>
+    <div class="pay-sect">Enter UTR / Transaction ID after payment</div>
+    <input type="text" class="utr-input" id="utrInput"
+      placeholder="12-digit UTR e.g. 426159873201"
+      maxlength="20" oninput="this.value=this.value.replace(/\\D/g,'')">
+    <div class="vmsg e" id="v-utr" style="margin-top:5px">⚠ Enter a valid 10–12 digit UTR</div>
+    <div class="alert" id="pay-alert" style="margin-top:10px"></div>
+    <button class="btn-p" id="pay-btn" onclick="submitPayment()" style="margin-top:11px">
+      <span class="ld"></span><span class="bt">Submit Payment →</span>
+    </button>
+    <div class="pay-note">
+      <span>🕒</span>
+      <span>Approval takes <strong>2–6 hours</strong> (9 AM–9 PM IST, Mon–Sat). Learners get course access after admin approves. Partners get dashboard access after approval too.</span>
+    </div>
+  `;
+}
+
+async function submitPayment() {
+  const utr=$('utrInput')?$('utrInput').value.trim():'';
+  clearAlert('pay-alert');
+  $('v-utr').classList.remove('show');
+  if(!utr||utr.length<10){ $('v-utr').classList.add('show'); return; }
+  if(!G.bundle){ toast('⚠','Bundle not selected.'); return; }
+
+  const sess=G.sess||JSON.parse(sessionStorage.getItem('b10_sess')||'null');
+  if(!sess||!sess.emailId){ toast('⚠','Session expired. Please sign in again.'); showStep(2); return; }
+
+  setBtnLoad('pay-btn',true);
+  try {
+    const now=firebase.firestore.FieldValue.serverTimestamp();
+    const batch=db.batch();
+
+    // Update user record
+    batch.update(db.collection(COL).doc(sess.emailId),{
+      selectedBundle:  G.bundle.key,
+      bundlePrice:     G.bundle.price,
+      paymentStatus:   'pending',
+      paymentMethod:   'upi',
+      paymentProofUrl: utr,
+    });
+
+    // Payment submissions collection (for admin review)
+    batch.set(db.collection('payment_submissions').doc(),{
+      userEmailId: sess.emailId,
+      bundleKey:   G.bundle.key,
+      bundlePrice: G.bundle.price,
+      utrNumber:   utr,
+      role:        sess.role||G.role||'learner',
+      status:      'pending',
+      submittedAt: now,
+      reviewedAt:  null,
+      reviewedBy:  '',
+    });
+
+    await batch.commit();
+
+    await tgLog(
+      `💳 <b>Payment Submitted — Biluxe10</b>\n`+
+      `👤 ${sess.name}\n✉ ${sess.email}\n`+
+      `🎭 Role: ${sess.role||G.role}\n`+
+      `💰 ${G.bundle.name} — ${toINR(G.bundle.price)}\n`+
+      `🔖 UTR: ${utr}\n`+
+      `📅 ${new Date().toLocaleString('en-IN')}`
+    );
+
+    showStep(5);
+    $('s5icon').textContent='⏳';
+    $('s5head').textContent='Payment Under Review';
+    $('s5head').className='big-h pend';
+    $('s5card').className='result-card amber-border';
+    $('s5card').innerHTML=`
+      <p>Payment of <strong>${toINR(G.bundle.price)}</strong> for the <strong>${G.bundle.name} Bundle</strong> received.</p>
+      <p>Our admin will verify and grant access within <strong>2–6 hours</strong> (9 AM–9 PM IST, Mon–Sat).</p>
+      <p>Once approved, you'll be redirected to your dashboard automatically on next login.</p>
+      <div class="result-contact">
+        Need help?
+        <a href="https://wa.me/919019254743" target="_blank">WhatsApp us</a> ·
+        <a href="mailto:help@biluxe10.com">help@biluxe10.com</a>
+      </div>
+    `;
+
+  } catch(e) {
+    showAlert('pay-alert','Submission failed: '+e.message);
+    setBtnLoad('pay-btn',false);
+  }
+}
+
+function showPending(data) {
+  showStep(5);
+  $('s5icon').textContent='⏳';
+  $('s5head').textContent='Payment Under Review';
+  $('s5head').className='big-h pend';
+  $('s5card').className='result-card amber-border';
+  $('s5card').innerHTML=`
+    <p>Your payment for the <strong>${data.selectedBundle}</strong> bundle (<strong>${toINR(data.bundlePrice||0)}</strong>) is being reviewed.</p>
+    <p>We verify within <strong>2–6 hours</strong> (9 AM–9 PM IST, Mon–Sat).</p>
+    <div class="result-contact">
+      Need help?
+      <a href="https://wa.me/919019254743" target="_blank">WhatsApp us</a> ·
+      <a href="mailto:help@biluxe10.com">help@biluxe10.com</a>
+    </div>
+  `;
+}
+
+/* ══════════════════════════════════════════════════
+   AUTH STATE OBSERVER
+   If user is already logged in and approved, redirect to dashboard
+══════════════════════════════════════════════════ */
+auth.onAuthStateChanged(async user => {
+  if(!user) return;
+  if(auth.isSignInWithEmailLink(window.location.href)) return; // handled separately
+  try {
+    const emailId=san(user.email);
+    const snap=await db.collection(COL).doc(emailId).get();
+    if(!snap.exists) return;
+    const data=snap.data();
+    if(data.paymentStatus==='approved') window.location.href='dashboard.html';
+  } catch(e) {}
+});
+
+/* ══════════════════════════════════════════════════
+   INIT
+══════════════════════════════════════════════════ */
+document.addEventListener('DOMContentLoaded', async () => {
+  // Pre-fill referral from URL
+  if(refFromURL){
+    const r=$('su-ref');
+    if(r){ r.value=refFromURL; r.readOnly=true; }
+    $('v-ref-ok').classList.add('show');
+  }
+
+  // Handle magic link return (most important — runs first)
+  await handleMagicReturn();
+
+  // Restore session
+  try {
+    const saved=sessionStorage.getItem('b10_sess');
+    if(saved){ G.sess=JSON.parse(saved); G.role=G.sess.role; }
+  } catch(e) {}
+
+  // Enter key support
+  document.addEventListener('keydown', e => {
+    if(e.key!=='Enter') return;
+    if($('step2').classList.contains('active')){
+      if($('panel-su').classList.contains('active')) handleSignUp();
+      else handleSignIn();
+    }
+    if($('step1').classList.contains('active') && !$('roleBtn').disabled) goStep(2);
+  });
+});
+</script>
+</body>
+</html>
