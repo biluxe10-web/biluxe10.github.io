@@ -693,7 +693,7 @@ body::after{
 
           <div class="legal">
             By signing up you agree to our <a href="#">Terms of Service</a> & <a href="#">Privacy Policy</a>.<br>
-            One account per device. Unauthorised sharing is prohibited.
+            one account per device. Unauthorised sharing is prohibited.
           </div>
 
           <div class="toggle-row">
@@ -911,7 +911,7 @@ function getDeviceId() {
 
 function genRefCode() {
   const c = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-  let r = 'BLX';
+  let r = 'BLX10';
   for (let i = 0; i < 7; i++) r += c[Math.floor(Math.random() * c.length)];
   return r;
 }
@@ -1104,7 +1104,7 @@ async function handleSignUp() {
     const deviceId = getDeviceId();
 
     /* Device uniqueness check */
-    const devQ = await db.collection(COLLECTION).where('deviceId','==',deviceId).limit(1).get();
+    const devQ = await db.collection(COLLECTION).where('deviceId','==',deviceId).limit(3).get();
     if (!devQ.empty) {
       showAlert('su-alert','An account already exists on this device. Please sign in instead.');
       setBtnLoad('su-btn',false); return;
