@@ -1241,7 +1241,7 @@ async function handleSignIn() {
     if (data.deviceId && data.deviceId !== deviceId) {
       await auth.signOut();
       showAlert('si-alert',
-        '⚠ This account is registered to another device. Contact support: help@biluxe10.com'
+        '⚠ This account is registered to another device. Contact support: help.biluxe10@gmail.com'
       );
       await tgLog(`🚨 <b>Device Mismatch</b>\n✉ ${email}\n📅 ${new Date().toLocaleString('en-IN')}`);
       setBtnLoad('si-btn',false); return;
@@ -1386,8 +1386,8 @@ function renderBundles() {
   if (cn && G.role) {
     const r = COMMISSION[G.role];
     cn.innerHTML = G.role === 'learner'
-      ? `<strong>Your commissions (Learner):</strong> Direct referral earns you <strong>${(r.direct*100).toFixed(0)}%</strong> of bundle price. When your referral's referral joins, you earn <strong>${(r.passive*100).toFixed(0)}%</strong> passive on top.`
-      : `<strong>Your commissions (Partner):</strong> Every direct referral earns you <strong>${(r.direct*100).toFixed(0)}%</strong> of their bundle price. No passive chain.`;
+      ? `<strong>Your commissions (Learner):</strong> Direct referral earns you <strong>${(r.direct*65).toFixed(0)}%</strong> of bundle price. When your referral's referral joins, you earn <strong>${(r.passive*10%).toFixed(0)}%</strong> passive on top.`
+      : `<strong>Your commissions (Partner):</strong> Every direct referral earns you <strong>${(r.direct*40).toFixed(0)}%</strong> of their bundle price. No passive chain.`;
   }
 
   BUNDLES.forEach(b => {
