@@ -1357,7 +1357,7 @@ async function handleMagicReturn() {
     await tgLog(`✨ <b>Magic Login</b>\n✉ ${email}\n📅 ${new Date().toLocaleString('en-IN')}`);
     toast('✅','Signed in via magic link!');
 
-    if (data.paymentStatus === 'approved') { window.location.href = 'courses.html'; return; }
+    if (data.paymentStatus === 'approved') { window.location.href = 'dashboard.html'; return; }
     if (data.selectedBundle) { showPending(data); return; }
     showStep(3); renderBundles();
 
@@ -1594,7 +1594,7 @@ function showPending(data) {
     <p>You'll receive an email once access is granted.</p>
     <div class="result-contact">
       Need help? <a href="https://wa.me/919019254743" target="_blank">WhatsApp us</a> or
-      <a href="mailto:help@biluxe10.com">help@biluxe10.com</a>
+      <a href="mailto:help@biluxe10.com">help.biluxe10@gmail.com</a>
     </div>
   `;
 }
