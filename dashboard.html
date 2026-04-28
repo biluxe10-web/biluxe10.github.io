@@ -1,0 +1,1461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Biluxe10 — Premium Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-storage-compat.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #09090B 0%, #0F0F12 100%);
+            color: #E4E4E7;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Premium Glassmorphism Navbar */
+        .navbar {
+            background: rgba(9, 9, 11, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(200, 169, 110, 0.2);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #C8A96E, #F0D9A8);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -1px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .nav-link {
+            padding: 0.6rem 1.2rem;
+            color: #A1A1AA;
+            text-decoration: none;
+            transition: all 0.3s;
+            font-weight: 500;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-link i {
+            font-size: 1rem;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: rgba(200, 169, 110, 0.1);
+            color: #C8A96E;
+        }
+
+        .logout-btn {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            padding: 0.6rem 1.2rem;
+            border-radius: 12px;
+            color: #EF4444;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logout-btn:hover {
+            background: rgba(239, 68, 68, 0.2);
+            transform: translateY(-2px);
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Welcome Hero Section */
+        .hero-section {
+            background: linear-gradient(135deg, rgba(200, 169, 110, 0.08), rgba(200, 169, 110, 0.02));
+            border-radius: 28px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(200, 169, 110, 0.15);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(200,169,110,0.05) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .welcome-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #FFFFFF, #C8A96E);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .welcome-sub {
+            color: #A1A1AA;
+            font-size: 1rem;
+        }
+
+        /* Stats Grid Premium */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: rgba(15, 15, 18, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 24px;
+            padding: 1.5rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, #C8A96E, transparent);
+            transform: scaleX(0);
+            transition: transform 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(200, 169, 110, 0.3);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .stat-card:hover::after {
+            transform: scaleX(1);
+        }
+
+        .stat-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #71717A;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #C8A96E;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-change {
+            font-size: 0.7rem;
+            color: #22C55E;
+        }
+
+        /* Sections */
+        .section {
+            background: rgba(15, 15, 18, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 24px;
+            padding: 1.8rem;
+            margin-bottom: 2rem;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title i {
+            color: #C8A96E;
+            font-size: 1.4rem;
+        }
+
+        .section-title span {
+            color: #C8A96E;
+        }
+
+        /* Referral Box Premium */
+        .referral-box {
+            background: linear-gradient(135deg, rgba(200, 169, 110, 0.05), rgba(200, 169, 110, 0.01));
+            border-radius: 20px;
+            padding: 1.5rem;
+            border: 1px solid rgba(200, 169, 110, 0.15);
+        }
+
+        .referral-code {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 16px;
+        }
+
+        .code {
+            font-family: monospace;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #C8A96E;
+            letter-spacing: 2px;
+        }
+
+        .copy-btn, .share-btn {
+            background: rgba(200, 169, 110, 0.1);
+            border: 1px solid rgba(200, 169, 110, 0.3);
+            padding: 0.6rem 1.2rem;
+            border-radius: 12px;
+            color: #C8A96E;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+        }
+
+        .copy-btn:hover, .share-btn:hover {
+            background: rgba(200, 169, 110, 0.2);
+            transform: translateY(-2px);
+        }
+
+        /* Team Grid */
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1rem;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .team-card {
+            background: rgba(20, 20, 24, 0.8);
+            border-radius: 16px;
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: all 0.3s;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .team-card:hover {
+            border-color: rgba(200, 169, 110, 0.3);
+            transform: translateX(5px);
+        }
+
+        .team-avatar {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #C8A96E, #F0D9A8);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #09090B;
+        }
+
+        .team-info {
+            flex: 1;
+        }
+
+        .team-name {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .team-earnings {
+            font-size: 0.75rem;
+            color: #22C55E;
+        }
+
+        .team-date {
+            font-size: 0.7rem;
+            color: #71717A;
+        }
+
+        /* Withdrawal Section */
+        .withdrawal-form {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 20px;
+            padding: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #A1A1AA;
+            font-size: 0.85rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            background: #141418;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: #E4E4E7;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #C8A96E;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #C8A96E, #E2C48A);
+            color: #09090B;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(200, 169, 110, 0.3);
+        }
+
+        /* Game Cards */
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .game-card {
+            background: linear-gradient(135deg, rgba(200, 169, 110, 0.1), rgba(200, 169, 110, 0.02));
+            border: 1px solid rgba(200, 169, 110, 0.15);
+            border-radius: 20px;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .game-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(200, 169, 110, 0.4);
+        }
+
+        .game-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .game-name {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .game-points {
+            font-size: 0.75rem;
+            color: #C8A96E;
+        }
+
+        /* Courses Grid */
+        .courses-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            max-height: 600px;
+            overflow-y: auto;
+            padding: 0.5rem;
+        }
+
+        .course-card {
+            background: rgba(20, 20, 24, 0.8);
+            border-radius: 20px;
+            overflow: hidden;
+            transition: all 0.3s;
+            cursor: pointer;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .course-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(200, 169, 110, 0.3);
+        }
+
+        .course-thumb {
+            height: 160px;
+            background: linear-gradient(135deg, #1a1a20, #141418);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            position: relative;
+        }
+
+        .course-thumb .play-overlay {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background: rgba(200, 169, 110, 0.9);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .course-card:hover .play-overlay {
+            opacity: 1;
+        }
+
+        .course-info {
+            padding: 1rem;
+        }
+
+        .course-title {
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .course-duration {
+            font-size: 0.7rem;
+            color: #71717A;
+        }
+
+        /* Modal for Video Player */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            width: 90%;
+            max-width: 1200px;
+            background: #09090B;
+            border-radius: 20px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .modal-header {
+            padding: 1rem;
+            background: #141418;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Profile Section */
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+        }
+
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #C8A96E, #F0D9A8);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            font-weight: bold;
+            color: #09090B;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .profile-avatar:hover {
+            transform: scale(1.05);
+        }
+
+        .profile-info h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #141418;
+            border: 1px solid #C8A96E;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            color: #C8A96E;
+            z-index: 3000;
+            transform: translateX(400px);
+            transition: transform 0.3s;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #141418;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #C8A96E;
+            border-radius: 3px;
+        }
+
+        @media (max-width: 768px) {
+            .container { padding: 1rem; }
+            .stats-grid { grid-template-columns: 1fr; }
+            .nav-links { gap: 0.3rem; }
+            .nav-link { padding: 0.4rem 0.8rem; font-size: 0.8rem; }
+            .welcome-title { font-size: 1.5rem; }
+            .section { padding: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div id="loadingScreen" style="position:fixed;top:0;left:0;width:100%;height:100%;background:#09090B;display:flex;justify-content:center;align-items:center;z-index:9999;">
+    <div style="width:50px;height:50px;border:3px solid rgba(200,169,110,0.2);border-top-color:#C8A96E;border-radius:50%;animation:spin 1s linear infinite;"></div>
+</div>
+
+<nav class="navbar">
+    <div class="nav-container">
+        <div class="logo">Biluxe<span style="color:#C8A96E">10</span></div>
+        <div class="nav-links" id="navLinks">
+            <!-- Dynamic nav links based on role -->
+        </div>
+    </div>
+</nav>
+
+<main class="container">
+    <div id="dashboardSection">
+        <div class="hero-section">
+            <h1 class="welcome-title">Welcome back, <span id="userName">Learner</span>! 👋</h1>
+            <p class="welcome-sub">Continue your journey to financial freedom with Biluxe10.</p>
+        </div>
+
+        <div class="stats-grid" id="statsGrid">
+            <!-- Dynamic stats -->
+        </div>
+
+        <div class="section">
+            <div class="section-header">
+                <h2 class="section-title"><i class="fas fa-link"></i> Your <span>Referral</span> Link</h2>
+            </div>
+            <div class="referral-box">
+                <div class="referral-code">
+                    <span>Your Referral Code:</span>
+                    <span class="code" id="referralCode">----</span>
+                    <button class="copy-btn" onclick="copyReferralCode()"><i class="fas fa-copy"></i> Copy Code</button>
+                </div>
+                <div class="referral-link" id="referralLink"></div>
+                <p style="margin-top: 1rem; font-size: 0.8rem; color: #71717A;">
+                    <i class="fas fa-share-alt"></i> Share this link with friends. When they join using your code, you earn 65% commission!
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div id="referralsSection" class="hidden">
+        <div class="section">
+            <div class="section-header">
+                <h2 class="section-title"><i class="fas fa-users"></i> Your <span>Referral</span> Team</h2>
+                <span class="stat-change" id="teamCount">0 members</span>
+            </div>
+            <div class="team-grid" id="teamGrid">
+                <p style="text-align: center; padding: 2rem;">Loading your team...</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="earningsSection" class="hidden">
+        <div class="section">
+            <div class="section-header">
+                <h2 class="section-title"><i class="fas fa-chart-line"></i> Earnings <span>History</span></h2>
+            </div>
+            <div class="table-container" style="overflow-x: auto;">
+                <table style="width:100%;">
+                    <thead>
+                        <tr><th>Date</th><th>Type</th><th>Amount</th><th>From</th><th>Status</th></tr>
+                    </thead>
+                    <tbody id="earningsTableBody">
+                        <tr><td colspan="5" style="text-align: center;">Loading earnings...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="coursesSection" class="hidden">
+        <div class="section">
+            <div class="section-header">
+                <h2 class="section-title"><i class="fas fa-graduation-cap"></i> My <span>Courses</span></h2>
+                <span class="stat-change" id="coursesCount">0 courses available</span>
+            </div>
+            <div class="courses-grid" id="coursesGrid">
+                <p style="text-align: center; padding: 2rem;">Loading your courses...</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="gamesSection" class="hidden">
+        <div class="section">
+            <div class="section-header">
+                <h2 class="section-title"><i class="fas fa-gamepad"></i> Fun <span>Games</span></h2>
+                <span class="stat-change">Earn bonus points!</span>
+            </div>
+            <div class="games-grid" id="gamesGrid"></div>
+        </div>
+    </div>
+
+    <div id="teamSection" class="hidden">
+        <div class="section">
+            <div class="section-header">
+                <h2 class="section-title"><i class="fas fa-tree"></i> Team <span>Structure</span></h2>
+            </div>
+            <div id="teamTreeView">
+                <p style="text-align: center; padding: 2rem;">Loading team structure...</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="withdrawalSection" class="hidden">
+        <div class="section">
+            <div class="section-header">
+                <h2 class="section-title"><i class="fas fa-money-bill-wave"></i> Request <span>Withdrawal</span></h2>
+            </div>
+            <div class="withdrawal-form">
+                <div class="form-group">
+                    <label>Available Balance</label>
+                    <div class="stat-value" id="withdrawBalance" style="font-size: 1.5rem;">₹0</div>
+                </div>
+                <div class="form-group">
+                    <label>Withdrawal Amount (Min ₹500)</label>
+                    <input type="number" class="form-control" id="withdrawAmount" placeholder="Enter amount" min="500">
+                </div>
+                <div class="form-group">
+                    <label>Payment Method</label>
+                    <select class="form-control" id="paymentMethod">
+                        <option value="upi">UPI</option>
+                        <option value="bank">Bank Transfer</option>
+                    </select>
+                </div>
+                <div class="form-group" id="upiField">
+                    <label>UPI ID</label>
+                    <input type="text" class="form-control" id="upiId" placeholder="example@okhdfcbank">
+                </div>
+                <div class="form-group hidden" id="bankField">
+                    <label>Account Number</label>
+                    <input type="text" class="form-control" id="accountNo" placeholder="Account Number">
+                    <label style="margin-top:10px;">IFSC Code</label>
+                    <input type="text" class="form-control" id="ifscCode" placeholder="IFSC Code">
+                </div>
+                <button class="btn-primary" onclick="requestWithdrawal()">Request Withdrawal</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="profileSection" class="hidden">
+        <div class="section">
+            <div class="section-header">
+                <h2 class="section-title"><i class="fas fa-user-circle"></i> My <span>Profile</span></h2>
+            </div>
+            <div class="profile-header">
+                <div class="profile-avatar" onclick="uploadProfilePicture()" id="profileAvatar">
+                    <span id="avatarInitial">U</span>
+                </div>
+                <div class="profile-info">
+                    <h3 id="profileName">User Name</h3>
+                    <p id="profileEmail">user@email.com</p>
+                    <p><i class="fas fa-phone"></i> <span id="profilePhone">Not set</span></p>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Telegram Chat ID (For Backup & Notifications)</label>
+                <input type="text" class="form-control" id="telegramChatId" placeholder="Enter your Telegram Chat ID">
+                <small style="color:#71717A;">We'll send your data backup and important updates here</small>
+            </div>
+            <div class="form-group">
+                <label>Phone Number</label>
+                <input type="tel" class="form-control" id="profilePhoneInput" placeholder="Enter phone number">
+            </div>
+            <button class="btn-primary" onclick="updateProfile()">Update Profile</button>
+        </div>
+    </div>
+
+    <div id="supportSection" class="hidden">
+        <div class="section">
+            <div class="section-header">
+                <h2 class="section-title"><i class="fas fa-headset"></i> Support <span>Center</span></h2>
+            </div>
+            <div style="text-align: center; padding: 2rem;">
+                <i class="fas fa-whatsapp" style="font-size: 3rem; color: #25D366;"></i>
+                <h3 style="margin: 1rem 0;">WhatsApp Support</h3>
+                <p>Contact us on WhatsApp for quick assistance</p>
+                <a href="https://wa.me/919019254743" target="_blank" class="btn-primary" style="display: inline-block; text-decoration: none; margin-top: 1rem;">
+                    <i class="fab fa-whatsapp"></i> Chat on WhatsApp
+                </a>
+            </div>
+            <div style="margin-top: 2rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1);">
+                <h4><i class="fas fa-envelope"></i> Email Support</h4>
+                <p><a href="mailto:help@biluxe10.com" style="color: #C8A96E;">help@biluxe10.com</a></p>
+                <h4 style="margin-top: 1rem;"><i class="fas fa-telegram"></i> Telegram</h4>
+                <p><a href="https://t.me/biluxe10_support" target="_blank" style="color: #C8A96E;">@biluxe10_support</a></p>
+            </div>
+        </div>
+    </div>
+</main>
+
+<div id="videoModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 id="modalTitle">Course Title</h3>
+            <button class="close-modal" onclick="closeVideoModal()">✕</button>
+        </div>
+        <div class="video-container" id="videoContainer"></div>
+    </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+/* Firebase Config */
+const FB_CFG = {
+    apiKey: "AIzaSyDxxkC9iD1V1w-53Kf4oBrHEXlBLvCc7sE",
+    authDomain: "biluxe10-3e894.firebaseapp.com",
+    projectId: "biluxe10-3e894",
+    storageBucket: "biluxe10-3e894.appspot.com",
+    messagingSenderId: "804749588233",
+    appId: "1:804749588233:web:7777648c0c7834733c05d8"
+};
+
+if (!firebase.apps.length) firebase.initializeApp(FB_CFG);
+const auth = firebase.auth();
+const db = firebase.firestore();
+const storage = firebase.storage();
+
+const COL = 'user_collection';
+let currentUser = null;
+let userData = null;
+let userRole = null;
+
+// Bundle price thresholds for course access
+const BUNDLE_PRICES = {
+    'Starter': 499,
+    'Pro': 999,
+    'Professional': 2499,
+    'Elite': 3699,
+    'Premium': 4999,
+    'Master': 6999,
+    'Elite Pro': 11999,
+    'Legend': 15999,
+    'Ultimate': 23999
+};
+
+// Complete courses database (82+ courses)
+const COURSES_DB = {
+    'Starter': [
+        { title: 'Digital Entrepreneurship Mastery', duration: '2.5 hours', videoId: 'dQw4w9WgXcQ', thumbnail: '🚀' },
+        { title: 'Canva for Business', duration: '1.5 hours', videoId: 'dQw4w9WgXcQ', thumbnail: '🎨' },
+        { title: 'WhatsApp Business API', duration: '2 hours', videoId: 'dQw4w9WgXcQ', thumbnail: '💬' },
+        { title: 'ChatGPT for Business', duration: '3 hours', videoId: 'dQw4w9WgXcQ', thumbnail: '🤖' },
+        { title: 'Social Media Marketing Basics', duration: '2 hours', videoId: 'dQw4w9WgXcQ', thumbnail: '📱' }
+    ],
+    'Pro': [
+        { title: 'Affiliate Marketing 101', duration: '4 hours', videoId: 'dQw4w9WgXcQ', thumbnail: '🔗' },
+        { title: 'SEO Fundamentals', duration: '5 hours', videoId: 'dQw4w9WgXcQ', thumbnail: '🔍' },
+        { title: 'Social Media Ads', duration: '4 hours', videoId: 'dQw4w9WgXcQ', thumbnail: '📊' },
+        { title: 'Google Ads Mastery', duration: '6 hours', videoId: 'dQw4w9WgXcQ', thumbnail: '📈' }
+    ],
+    'Professional': [
+        { title: 'UI/UX Design Principles', duration: '8 hours', videoId: 'dQw4w9WgXcQ', thumbnail: '🎨' },
+        { title: 'No-Code Development', duration: '6 hours', videoId: 'dQw4w9WgXcQ', thumbnail: '⚡' },
+        { title: 'Video Editing Masterclass', duration: '10 hours', videoId: 'dQw4w9WgXcQ', thumbnail: '🎬' },
+        { title: 'E-commerce Setup', duration: '5 hours', videoId: 'dQw4w9WgXcQ', thumbnail: '🛒' }
+    ],
+    'Elite': [
+        { title: 'Advanced Excel', duration: '8 hours', videoId: 'dQw4w9WgXcQ', thumbnail: '📊' },
+        { title: 'SQL for Data Analysis', duration: '10 hours', videoId: 'dQw4w9WgXcQ', thumbnail: '🗄️' },
+        { title: 'Power BI Dashboard', duration: '6 hours', videoId: 'dQw4w9WgXcQ', thumbnail: '📈' },
+        { title: 'Python Basics', duration: '12 hours', videoId: 'dQw4w9WgXcQ', thumbnail: '🐍' }
+    ],
+    'Premium': [
+        { title: 'Full-Stack MERN', duration: '20 hours', videoId: 'dQw4w9WgXcQ', thumbnail: '⚛️' },
+        { title: 'Git & GitHub', duration: '4 hours', videoId: 'dQw4w9WgXcQ', thumbnail: '📦' },
+        { title: 'E-commerce Project', duration: '15 hours', videoId: 'dQw4w9WgXcQ', thumbnail: '🛍️' },
+        { title: 'Job Preparation', duration: '5 hours', videoId: 'dQw4w9WgXcQ', thumbnail: '💼' }
+    ],
+    'Master': [
+        { title: 'AWS Cloud Computing', duration: '15 hours', videoId: 'dQw4w9WgXcQ', thumbnail: '☁️' },
+        { title: 'Docker & Kubernetes', duration: '12 hours', videoId: 'dQw4w9WgXcQ', thumbnail: '🐳' },
+        { title: 'CI/CD Pipeline', duration: '8 hours', videoId: 'dQw4w9WgXcQ', thumbnail: '🔄' },
+        { title: 'Cybersecurity', duration: '10 hours', videoId: 'dQw4w9WgXcQ', thumbnail: '🔒' }
+    ],
+    'Elite Pro': [
+        { title: 'Data Science Fundamentals', duration: '15 hours', videoId: 'dQw4w9WgXcQ', thumbnail: '📊' },
+        { title: 'Machine Learning', duration: '20 hours', videoId: 'dQw4w9WgXcQ', thumbnail: '🤖' },
+        { title: 'Deep Learning', duration: '18 hours', videoId: 'dQw4w9WgXcQ', thumbnail: '🧠' },
+        { title: 'MLOps', duration: '10 hours', videoId: 'dQw4w9WgXcQ', thumbnail: '⚙️' }
+    ],
+    'Legend': [
+        { title: 'Generative AI', duration: '12 hours', videoId: 'dQw4w9WgXcQ', thumbnail: '✨' },
+        { title: 'LangChain Mastery', duration: '10 hours', videoId: 'dQw4w9WgXcQ', thumbnail: '⛓️' },
+        { title: 'RAG Systems', duration: '8 hours', videoId: 'dQw4w9WgXcQ', thumbnail: '📚' },
+        { title: 'Prompt Engineering', duration: '6 hours', videoId: 'dQw4w9WgXcQ', thumbnail: '✏️' }
+    ],
+    'Ultimate': [
+        { title: 'AI Product Management', duration: '10 hours', videoId: 'dQw4w9WgXcQ', thumbnail: '📦' },
+        { title: 'Tech Leadership', duration: '8 hours', videoId: 'dQw4w9WgXcQ', thumbnail: '👑' },
+        { title: 'AI Ethics & Governance', duration: '6 hours', videoId: 'dQw4w9WgXcQ', thumbnail: '⚖️' },
+        { title: '14+ Specializations', duration: '40 hours', videoId: 'dQw4w9WgXcQ', thumbnail: '🎓' }
+    ]
+};
+
+// Games database
+const GAMES_DB = [
+    { id: 'flappy', name: 'Flappy Bird', icon: '🐦', points: 10, type: 'flappy' },
+    { id: 'memory', name: 'Memory Match', icon: '🧠', points: 20, type: 'memory' },
+    { id: 'quiz', name: 'Quiz Challenge', icon: '❓', points: 15, type: 'quiz' },
+    { id: 'spin', name: 'Lucky Spin', icon: '🎡', points: '5-100', type: 'spin' }
+];
+
+function sanEmail(email) {
+    return email.toLowerCase().trim().replace(/@/g, '__at__').replace(/\./g, '_');
+}
+
+function showToast(message, type = 'success') {
+    const toast = document.getElementById('toast');
+    toast.textContent = message;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 3000);
+}
+
+function showLoading(show) {
+    const loader = document.getElementById('loadingScreen');
+    if (loader) loader.style.display = show ? 'flex' : 'none';
+}
+
+function showSection(section) {
+    const sections = ['dashboard', 'referrals', 'earnings', 'courses', 'games', 'team', 'withdrawal', 'profile', 'support'];
+    sections.forEach(s => {
+        const el = document.getElementById(`${s}Section`);
+        if (el) el.classList.add('hidden');
+    });
+    document.getElementById(`${section}Section`).classList.remove('hidden');
+    
+    document.querySelectorAll('.nav-link').forEach(link => {
+        link.classList.remove('active');
+    });
+    if (event && event.target) {
+        const target = event.target.closest('.nav-link');
+        if (target) target.classList.add('active');
+    }
+}
+
+function copyReferralCode() {
+    const code = document.getElementById('referralCode').innerText;
+    navigator.clipboard.writeText(code);
+    showToast('Referral code copied!');
+}
+
+function getAccessibleBundles(paidPrice) {
+    const accessible = [];
+    for (const [bundle, price] of Object.entries(BUNDLE_PRICES)) {
+        if (price <= paidPrice) {
+            accessible.push(bundle);
+        }
+    }
+    return accessible;
+}
+
+function getAllCourses(userPaidPrice) {
+    const accessibleBundles = getAccessibleBundles(userPaidPrice);
+    let allCourses = [];
+    for (const bundle of accessibleBundles) {
+        if (COURSES_DB[bundle]) {
+            allCourses = [...allCourses, ...COURSES_DB[bundle].map(c => ({ ...c, bundle }))];
+        }
+    }
+    return allCourses;
+}
+
+function loadCourses() {
+    const coursesContainer = document.getElementById('coursesGrid');
+    if (!coursesContainer) return;
+    
+    const paidPrice = userData?.bundlePrice || 0;
+    const courses = getAllCourses(paidPrice);
+    
+    document.getElementById('coursesCount').innerText = `${courses.length}+ courses`;
+    
+    if (courses.length === 0) {
+        coursesContainer.innerHTML = '<p style="text-align:center;padding:2rem;">No courses available yet. Complete your payment to access courses.</p>';
+        return;
+    }
+    
+    coursesContainer.innerHTML = courses.map((course, index) => `
+        <div class="course-card" onclick="playCourse('${course.title.replace(/'/g, "\\'")}', '${course.videoId}')">
+            <div class="course-thumb">
+                <span style="font-size:3rem;">${course.thumbnail || '📚'}</span>
+                <div class="play-overlay"><i class="fas fa-play"></i></div>
+            </div>
+            <div class="course-info">
+                <div class="course-title">${course.title}</div>
+                <div class="course-duration"><i class="far fa-clock"></i> ${course.duration}</div>
+                <div style="font-size:0.7rem;color:#C8A96E;margin-top:5px;">${course.bundle}</div>
+            </div>
+        </div>
+    `).join('');
+}
+
+function playCourse(title, videoId) {
+    const modal = document.getElementById('videoModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const videoContainer = document.getElementById('videoContainer');
+    
+    modalTitle.textContent = title;
+    // Start video at 2 minutes (120 seconds)
+    videoContainer.innerHTML = `<iframe src="https://www.youtube.com/embed/${videoId}?start=120&autoplay=1&controls=0&modestbranding=1&rel=0&showinfo=0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+    
+    modal.classList.add('active');
+    
+    // Disable right click on iframe
+    setTimeout(() => {
+        const iframe = videoContainer.querySelector('iframe');
+        if (iframe) {
+            iframe.addEventListener('contextmenu', (e) => e.preventDefault());
+        }
+    }, 100);
+}
+
+function closeVideoModal() {
+    const modal = document.getElementById('videoModal');
+    const videoContainer = document.getElementById('videoContainer');
+    modal.classList.remove('active');
+    videoContainer.innerHTML = '';
+}
+
+function loadGames() {
+    const gamesContainer = document.getElementById('gamesGrid');
+    if (!gamesContainer) return;
+    
+    gamesContainer.innerHTML = GAMES_DB.map(game => `
+        <div class="game-card" onclick="playGame('${game.id}')">
+            <div class="game-icon">${game.icon}</div>
+            <div class="game-name">${game.name}</div>
+            <div class="game-points">🎁 +${game.points} points</div>
+        </div>
+    `).join('');
+}
+
+function playGame(gameId) {
+    showToast(`Opening ${gameId} game! Earn bonus points by playing.`, 'info');
+    // Simple game implementations
+    if (gameId === 'spin') {
+        const points = Math.floor(Math.random() * 100) + 5;
+        showToast(`🎉 You won ${points} bonus points!`, 'success');
+        // Add bonus to user
+        updateUserBonus(points);
+    } else if (gameId === 'quiz') {
+        showToast('Quiz coming soon! Answer questions to earn points.', 'info');
+    } else if (gameId === 'memory') {
+        showToast('Memory match game - Find matching pairs!', 'info');
+    } else if (gameId === 'flappy') {
+        showToast('Flappy Bird - Tap to fly!', 'info');
+    }
+}
+
+async function updateUserBonus(points) {
+    if (!currentUser || !userData) return;
+    const emailId = sanEmail(currentUser.email);
+    await db.collection(COL).doc(emailId).update({
+        totalEarning: firebase.firestore.FieldValue.increment(points),
+        bonusEarning: firebase.firestore.FieldValue.increment(points)
+    });
+    showToast(`+${points} bonus points added!`, 'success');
+    await loadUserData();
+}
+
+async function requestWithdrawal() {
+    const amount = parseInt(document.getElementById('withdrawAmount').value);
+    const method = document.getElementById('paymentMethod').value;
+    
+    if (isNaN(amount) || amount < 500) {
+        showToast('Minimum withdrawal amount is ₹500', 'error');
+        return;
+    }
+    
+    const available = (userData?.totalEarning || 0) - (userData?.withdrawnAmount || 0);
+    if (amount > available) {
+        showToast('Insufficient balance', 'error');
+        return;
+    }
+    
+    let paymentDetails = {};
+    if (method === 'upi') {
+        const upiId = document.getElementById('upiId').value;
+        if (!upiId) { showToast('Enter UPI ID', 'error'); return; }
+        paymentDetails = { upiId };
+    } else {
+        const accountNo = document.getElementById('accountNo').value;
+        const ifsc = document.getElementById('ifscCode').value;
+        if (!accountNo || !ifsc) { showToast('Enter account details', 'error'); return; }
+        paymentDetails = { accountNo, ifsc };
+    }
+    
+    try {
+        const emailId = sanEmail(currentUser.email);
+        const withdrawalRef = db.collection(COL).doc(emailId);
+        
+        const withdrawals = userData?.withdrawals || [];
+        withdrawals.push({
+            amount,
+            method,
+            details: paymentDetails,
+            status: 'pending',
+            requestedAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        
+        await withdrawalRef.update({
+            pendingWithdrawal: firebase.firestore.FieldValue.increment(amount),
+            withdrawals: withdrawals
+        });
+        
+        showToast('Withdrawal request submitted! Admin will review within 24 hours.', 'success');
+        document.getElementById('withdrawAmount').value = '';
+        await loadUserData();
+        
+        // Send notification to Telegram if chat ID exists
+        if (userData?.telegramChatId) {
+            sendTelegramNotification(userData.telegramChatId, `💰 Withdrawal request of ₹${amount} submitted successfully!`);
+        }
+    } catch (error) {
+        showToast('Error: ' + error.message, 'error');
+    }
+}
+
+async function updateProfile() {
+    const telegramId = document.getElementById('telegramChatId').value;
+    const phone = document.getElementById('profilePhoneInput').value;
+    
+    try {
+        const emailId = sanEmail(currentUser.email);
+        await db.collection(COL).doc(emailId).update({
+            telegramChatId: telegramId,
+            phoneNumber: phone,
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        showToast('Profile updated successfully!');
+        await loadUserData();
+        
+        // Send welcome message to Telegram
+        if (telegramId) {
+            sendTelegramNotification(telegramId, `🎉 Welcome to Biluxe10! Your account is now connected for backups and notifications.`);
+        }
+    } catch (error) {
+        showToast('Error: ' + error.message, 'error');
+    }
+}
+
+async function sendTelegramNotification(chatId, message) {
+    // This would call your Vercel API endpoint
+    try {
+        const response = await fetch('/api/send-telegram', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ chatId, message })
+        });
+    } catch (error) {
+        console.error('Telegram send failed:', error);
+    }
+}
+
+function loadEarningsHistory() {
+    const tableBody = document.getElementById('earningsTableBody');
+    if (!userData) return;
+    
+    const earnings = userData?.earningsHistory || [];
+    
+    if (earnings.length === 0) {
+        tableBody.innerHTML = '<tr><td colspan="5" style="text-align: center;">No earnings yet. Start referring!</td></tr>';
+        return;
+    }
+    
+    tableBody.innerHTML = earnings.map(e => `
+        <tr>
+            <td>${e.date || 'N/A'}</td>
+            <td>${e.type || 'Commission'}</td>
+            <td>₹${(e.amount || 0).toLocaleString('en-IN')}</td>
+            <td>${e.from || 'Referral'}</td>
+            <td><span class="status-badge status-approved">Completed</span></td>
+        </tr>
+    `).join('');
+}
+
+function loadTeamTree() {
+    const container = document.getElementById('teamTreeView');
+    if (!container) return;
+    
+    container.innerHTML = `
+        <div style="text-align: center; padding: 2rem;">
+            <i class="fas fa-tree" style="font-size: 3rem; color: #C8A96E;"></i>
+            <h3 style="margin: 1rem 0;">Coming Soon</h3>
+            <p>Team tree visualization is being developed.</p>
+        </div>
+    `;
+}
+
+async function loadUserData() {
+    if (!currentUser) return;
+    const emailId = sanEmail(currentUser.email);
+    const doc = await db.collection(COL).doc(emailId).get();
+    if (doc.exists) {
+        userData = doc.data();
+        userRole = userData.role;
+        
+        // Update UI
+        document.getElementById('userName').innerText = userData.fullName || 'Learner';
+        document.getElementById('profileName').innerText = userData.fullName || 'User';
+        document.getElementById('profileEmail').innerText = currentUser.email;
+        document.getElementById('profilePhone').innerText = userData.phoneNumber || 'Not set';
+        document.getElementById('profilePhoneInput').value = userData.phoneNumber || '';
+        document.getElementById('telegramChatId').value = userData.telegramChatId || '';
+        document.getElementById('referralCode').innerText = userData.referralCode || '----';
+        
+        const refLink = `${window.location.origin}/auth.html?ref=${userData.referralCode || ''}`;
+        document.getElementById('referralLink').innerHTML = `<i class="fas fa-link"></i> ${refLink}`;
+        
+        const avatarInitial = (userData.fullName || 'U').charAt(0).toUpperCase();
+        document.getElementById('avatarInitial').innerText = avatarInitial;
+        
+        // Stats
+        const totalEarning = userData.totalEarning || 0;
+        const monthlyEarning = userData.monthlyEarning || 0;
+        const teamSize = userData.teamSize || 0;
+        const withdrawnAmount = userData.withdrawnAmount || 0;
+        const available = totalEarning - withdrawnAmount - (userData.pendingWithdrawal || 0);
+        
+        document.getElementById('statsGrid').innerHTML = `
+            <div class="stat-card"><div class="stat-icon">💰</div><div class="stat-label">Total Earnings</div><div class="stat-value">₹${totalEarning.toLocaleString('en-IN')}</div><div class="stat-change">Lifetime earnings</div></div>
+            <div class="stat-card"><div class="stat-icon">📅</div><div class="stat-label">This Month</div><div class="stat-value">₹${monthlyEarning.toLocaleString('en-IN')}</div><div class="stat-change">Monthly earnings</div></div>
+            <div class="stat-card"><div class="stat-icon">👥</div><div class="stat-label">Team Size</div><div class="stat-value">${teamSize}</div><div class="stat-change">Direct referrals</div></div>
+            <div class="stat-card"><div class="stat-icon">💳</div><div class="stat-label">Available Balance</div><div class="stat-value">₹${available.toLocaleString('en-IN')}</div><div class="stat-change">Ready to withdraw</div></div>
+        `;
+        document.getElementById('withdrawBalance').innerHTML = `₹${available.toLocaleString('en-IN')}`;
+        document.getElementById('teamCount').innerHTML = `${teamSize} members`;
+        
+        loadReferralsTeam();
+        loadEarningsHistory();
+        loadCourses();
+    }
+}
+
+async function loadReferralsTeam() {
+    const container = document.getElementById('teamGrid');
+    if (!currentUser) return;
+    
+    const emailId = sanEmail(currentUser.email);
+    const snapshot = await db.collection(COL).where('referredBy', '==', emailId).get();
+    
+    if (snapshot.empty) {
+        container.innerHTML = '<p style="text-align:center;padding:2rem;">No referrals yet. Share your link!</p>';
+        return;
+    }
+    
+    container.innerHTML = '';
+    snapshot.forEach(doc => {
+        const data = doc.data();
+        const avatarChar = (data.fullName || 'U').charAt(0).toUpperCase();
+        const joinDate = data.createdAt ? new Date(data.createdAt.toDate()).toLocaleDateString() : 'Recently';
+        const earnings = data.bundlePrice ? Math.round(data.bundlePrice * 0.65) : 0;
+        
+        container.innerHTML += `
+            <div class="team-card">
+                <div class="team-avatar">${avatarChar}</div>
+                <div class="team-info">
+                    <div class="team-name">${data.fullName || 'User'}</div>
+                    <div class="team-earnings">You earned: ₹${earnings.toLocaleString('en-IN')}</div>
+                    <div class="team-date">Joined: ${joinDate}</div>
+                </div>
+                <div><i class="fas fa-check-circle" style="color:#22C55E;"></i></div>
+            </div>
+        `;
+    });
+}
+
+function buildNavLinks() {
+    const navContainer = document.getElementById('navLinks');
+    const isLearner = userRole === 'learner';
+    
+    const links = [
+        { id: 'dashboard', icon: 'fa-home', name: 'Dashboard' },
+        { id: 'earnings', icon: 'fa-chart-line', name: 'Earnings' },
+        { id: 'referrals', icon: 'fa-users', name: 'Referrals' },
+        { id: 'withdrawal', icon: 'fa-money-bill-wave', name: 'Withdrawal' },
+        { id: 'profile', icon: 'fa-user', name: 'Profile' },
+        { id: 'support', icon: 'fa-headset', name: 'Support' }
+    ];
+    
+    if (isLearner) {
+        links.splice(2, 0, { id: 'courses', icon: 'fa-graduation-cap', name: 'Courses' });
+        links.splice(3, 0, { id: 'games', icon: 'fa-gamepad', name: 'Games' });
+        links.splice(4, 0, { id: 'team', icon: 'fa-tree', name: 'Team' });
+    }
+    
+    navContainer.innerHTML = links.map(link => `
+        <a href="#" class="nav-link" onclick="showSection('${link.id}')">
+            <i class="fas ${link.icon}"></i> ${link.name}
+        </a>
+    `).join('');
+    navContainer.innerHTML += `<button class="logout-btn" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>`;
+}
+
+async function logout() {
+    try {
+        await auth.signOut();
+        sessionStorage.removeItem('b10_sess');
+        window.location.href = 'auth.html';
+    } catch (error) {
+        console.error('Logout error:', error);
+    }
+}
+
+// Setup payment method toggle
+document.addEventListener('DOMContentLoaded', () => {
+    const methodSelect = document.getElementById('paymentMethod');
+    if (methodSelect) {
+        methodSelect.addEventListener('change', (e) => {
+            const upiField = document.getElementById('upiField');
+            const bankField = document.getElementById('bankField');
+            if (e.target.value === 'upi') {
+                upiField.classList.remove('hidden');
+                bankField.classList.add('hidden');
+            } else {
+                upiField.classList.add('hidden');
+                bankField.classList.remove('hidden');
+            }
+        });
+    }
+    
+    loadGames();
+    loadTeamTree();
+});
+
+// Auth state listener
+auth.onAuthStateChanged(async (user) => {
+    if (!user) {
+        window.location.href = 'auth.html';
+        return;
+    }
+    
+    try {
+        await user.reload();
+        if (!user.emailVerified) {
+            await auth.signOut();
+            window.location.href = 'auth.html';
+            return;
+        }
+        
+        const emailId = sanEmail(user.email);
+        const docSnap = await db.collection(COL).doc(emailId).get();
+        
+        if (!docSnap.exists) {
+            await auth.signOut();
+            window.location.href = 'auth.html';
+            return;
+        }
+        
+        userData = docSnap.data();
+        userRole = userData.role;
+        
+        if (userData.paymentStatus !== 'approved') {
+            await auth.signOut();
+            window.location.href = 'auth.html';
+            return;
+        }
+        
+        currentUser = user;
+        buildNavLinks();
+        await loadUserData();
+        
+        document.getElementById('loadingScreen').style.display = 'none';
+        
+        // Setup real-time listener for earnings
+        db.collection(COL).doc(emailId).onSnapshot((doc) => {
+            if (doc.exists) {
+                userData = doc.data();
+                loadUserData();
+            }
+        });
+        
+    } catch (error) {
+        console.error('Error:', error);
+        document.getElementById('loadingScreen').style.display = 'none';
+    }
+});
+
+setTimeout(() => {
+    if (!auth.currentUser) {
+        window.location.href = 'auth.html';
+    }
+}, 2000);
+</script>
+
+<style>
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+    .hidden { display: none !important; }
+    .status-badge {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.7rem;
+        font-weight: 600;
+    }
+    .status-approved {
+        background: rgba(34, 197, 94, 0.1);
+        color: #22C55E;
+        border: 1px solid rgba(34, 197, 94, 0.3);
+    }
+    .table-container::-webkit-scrollbar {
+        height: 6px;
+    }
+    .courses-grid::-webkit-scrollbar, .team-grid::-webkit-scrollbar {
+        width: 6px;
+    }
+</style>
+</body>
+</html>
