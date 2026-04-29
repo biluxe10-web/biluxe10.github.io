@@ -1,0 +1,2022 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Biluxe10 — Advanced Ed-Tech Platform India</title>
+<meta name="description" content="Learn AI, Digital Marketing, Full Stack Development, Data Science & more with Biluxe10 — India's advanced ed-tech platform.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://biluxe10.com/">
+<meta property="og:title" content="Biluxe10 — Advanced Ed-Tech Platform India">
+<meta property="og:description" content="Learn AI, Marketing & Development with real projects, industry certificates & career support. From ₹499.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;0,9..144,900;1,9..144,400&family=Cabinet+Grotesk:wght@400;500;600;700;800&family=Instrument+Mono:ital@0;1&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#07070A;--bg2:#0D0D11;--bg3:#121216;--bg4:#181820;
+  --border:rgba(255,255,255,0.055);--border2:rgba(255,255,255,0.10);--border3:rgba(255,255,255,0.16);
+  --gold:#C8A96E;--gold2:#E2C48A;--gold3:#F0D9A8;
+  --goldA:rgba(200,169,110,0.08);--goldB:rgba(200,169,110,0.15);--goldC:rgba(200,169,110,0.22);
+  --ink:#07070A;--text:#EBEBF0;--text2:#9898A8;--text3:#50505F;
+  --green:#22c55e;--red:#ef4444;
+  --font-display:'Fraunces',Georgia,serif;
+  --font-ui:'Cabinet Grotesk',sans-serif;
+  --font-mono:'Instrument Mono',monospace;
+  --nav-h:64px;
+  --ease-out:cubic-bezier(0.16,1,0.3,1);
+  --ease-spring:cubic-bezier(0.34,1.56,0.64,1);
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--font-ui);overflow-x:hidden;line-height:1.6;font-size:15px}
+a{text-decoration:none;color:inherit}
+h1,h2,h3,h4{font-family:var(--font-display);line-height:1.05;letter-spacing:-0.025em}
+img{max-width:100%;display:block}
+::-webkit-scrollbar{width:2px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--gold);border-radius:2px}
+::selection{background:var(--goldB);color:var(--text)}
+
+/* PAGES */
+.page{display:none;min-height:100vh}
+.page.active{display:block}
+
+/* CURSOR */
+#cursor-glow{position:fixed;width:500px;height:500px;border-radius:50%;pointer-events:none;background:radial-gradient(circle,rgba(200,169,110,0.045) 0%,transparent 65%);transform:translate(-50%,-50%);z-index:0;will-change:transform}
+#cursor-dot{position:fixed;width:5px;height:5px;background:var(--gold);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:transform 0.1s}
+
+/* SPLASH */
+#splash{position:fixed;inset:0;z-index:9998;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity 0.9s var(--ease-out),visibility 0.9s}
+#splash.hide{opacity:0;visibility:hidden;pointer-events:none}
+.sp-logo-wrap{display:flex;align-items:center;gap:16px;animation:spReveal 1.2s var(--ease-out) both}
+.sp-logo-img{width:58px;height:58px;object-fit:contain;border-radius:14px;box-shadow:0 0 40px rgba(200,169,110,0.3)}
+.sp-wordmark{font-family:var(--font-display);font-size:clamp(3rem,7vw,5rem);font-weight:900;color:transparent;background:linear-gradient(135deg,var(--gold3),var(--gold),var(--gold2));-webkit-background-clip:text;background-clip:text;letter-spacing:-0.04em}
+.sp-wordmark sup{font-size:0.38em;vertical-align:super;color:var(--text3)}
+.sp-tagline{font-family:var(--font-mono);font-size:0.62rem;color:var(--text3);letter-spacing:0.22em;text-transform:uppercase;margin-top:10px;animation:spReveal 1s 0.25s var(--ease-out) both}
+.sp-bar{margin-top:52px;width:160px;animation:spReveal 0.6s 0.4s both}
+.sp-bar-track{height:1px;background:var(--bg3);border-radius:4px;overflow:hidden}
+.sp-bar-fill{height:100%;width:0;background:linear-gradient(90deg,var(--gold),rgba(200,169,110,0.25));animation:spLoad 2.1s 0.5s var(--ease-out) forwards}
+@keyframes spReveal{from{opacity:0;transform:translateY(22px) scale(0.97)}to{opacity:1;transform:none}}
+@keyframes spLoad{to{width:100%}}
+
+/* COOKIE */
+#cookie{position:fixed;bottom:18px;left:18px;z-index:8000;background:var(--bg3);border:1px solid var(--border3);border-radius:16px;padding:20px 22px;width:300px;box-shadow:0 24px 60px rgba(0,0,0,0.7);display:none;animation:ckIn 0.45s var(--ease-out) both}
+#cookie.show{display:block}
+@keyframes ckIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.ck-t{font-family:var(--font-display);font-size:1rem;font-weight:700;margin-bottom:5px}
+.ck-d{font-size:0.72rem;color:var(--text2);line-height:1.55;margin-bottom:14px}
+.ck-btns{display:flex;gap:8px}
+.ck-yes{flex:1;padding:9px;border:none;border-radius:8px;background:var(--gold);color:var(--ink);font-weight:700;font-size:0.72rem;cursor:pointer;font-family:var(--font-ui)}
+.ck-no{flex:1;padding:9px;border:1px solid var(--border2);border-radius:8px;background:transparent;color:var(--text2);font-size:0.72rem;cursor:pointer;font-family:var(--font-ui)}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:500;height:var(--nav-h);display:flex;align-items:center;justify-content:space-between;padding:0 max(18px,4.5vw);background:rgba(7,7,10,0.75);backdrop-filter:blur(32px) saturate(1.4);border-bottom:1px solid var(--border);transition:all 0.3s}
+nav.scrolled{background:rgba(7,7,10,0.97);border-bottom-color:rgba(200,169,110,0.12)}
+.nav-logo{display:flex;align-items:center;gap:10px;cursor:pointer;transition:opacity 0.2s}
+.nav-logo:hover{opacity:0.8}
+.nav-logo img{width:34px;height:34px;object-fit:contain;border-radius:8px}
+.nav-logo-text{font-family:var(--font-display);font-size:1.15rem;font-weight:900;color:transparent;background:linear-gradient(120deg,var(--gold2),var(--gold));-webkit-background-clip:text;background-clip:text;letter-spacing:-0.025em}
+.nav-logo-text sup{font-size:0.42em;color:var(--text3);font-weight:400}
+.nav-links{display:flex;gap:28px;align-items:center}
+.nav-links a{font-size:0.79rem;font-weight:600;color:var(--text2);transition:color 0.2s;position:relative;cursor:pointer}
+.nav-links a::after{content:'';position:absolute;bottom:-4px;left:0;right:0;height:1px;background:var(--gold);transform:scaleX(0);transform-origin:left;transition:transform 0.25s}
+.nav-links a:hover{color:var(--text)}
+.nav-links a:hover::after{transform:scaleX(1)}
+.nav-right{display:flex;gap:8px;align-items:center}
+.nav-ghost{padding:8px 18px;border:1px solid var(--border2);border-radius:8px;font-size:0.75rem;font-weight:600;color:var(--text2);cursor:pointer;font-family:var(--font-ui);background:transparent;transition:all 0.2s}
+.nav-ghost:hover{color:var(--text);border-color:var(--border3)}
+.nav-cta{padding:8px 20px;border-radius:8px;background:linear-gradient(135deg,var(--gold2),var(--gold));font-size:0.75rem;font-weight:700;color:var(--ink);font-family:var(--font-ui);cursor:pointer;border:none;transition:all 0.22s;box-shadow:0 2px 12px rgba(200,169,110,0.25)}
+.nav-cta:hover{transform:translateY(-1px);box-shadow:0 5px 20px rgba(200,169,110,0.35)}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:6px;border-radius:8px}
+.hamburger span{width:22px;height:1.5px;background:var(--text2);border-radius:2px;transition:all 0.35s var(--ease-out);display:block}
+.hamburger.open span:nth-child(1){transform:translateY(6.5px) rotate(45deg)}
+.hamburger.open span:nth-child(2){opacity:0;transform:scaleX(0)}
+.hamburger.open span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg)}
+
+/* MOBILE MENU */
+#mobile-menu{position:fixed;top:var(--nav-h);left:0;right:0;bottom:0;background:var(--bg);z-index:498;transform:translateX(-100%);transition:transform 0.42s var(--ease-out);overflow-y:auto}
+#mobile-menu.open{transform:translateX(0)}
+.mm-inner{padding:24px 20px 48px}
+.mm-label{font-family:var(--font-mono);font-size:0.58rem;color:var(--text3);letter-spacing:0.18em;text-transform:uppercase;margin-bottom:10px;padding-left:4px}
+.mm-links{display:flex;flex-direction:column;gap:3px;margin-bottom:28px}
+.mm-link{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-radius:12px;font-size:0.95rem;font-weight:600;color:var(--text2);transition:all 0.2s;cursor:pointer;background:transparent;border:none;width:100%;text-align:left;font-family:var(--font-ui)}
+.mm-link:hover{background:var(--bg2);color:var(--text)}
+.mm-link span.arr{color:var(--text3);font-size:0.7rem}
+.mm-auth{display:flex;flex-direction:column;gap:10px;padding-top:20px;border-top:1px solid var(--border)}
+.mm-btn-p{padding:15px;border-radius:12px;background:linear-gradient(135deg,var(--gold2),var(--gold));color:var(--ink);border:none;font-family:var(--font-ui);font-size:0.85rem;font-weight:700;cursor:pointer}
+.mm-btn-s{padding:15px;border-radius:12px;background:transparent;color:var(--text2);border:1px solid var(--border2);font-family:var(--font-ui);font-size:0.85rem;font-weight:600;cursor:pointer}
+
+/* BUNDLE MODAL */
+#bundle-modal{position:fixed;inset:0;z-index:9990;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;visibility:hidden;transition:opacity 0.38s ease,visibility 0.38s}
+#bundle-modal.open{opacity:1;visibility:visible}
+.bm-bg{position:absolute;inset:0;background:rgba(0,0,0,0.78);backdrop-filter:blur(14px);cursor:pointer}
+.bm-card{position:relative;z-index:1;width:100%;max-width:560px;max-height:88vh;overflow-y:auto;background:var(--bg2);border-radius:24px;border:1px solid var(--border3);box-shadow:0 48px 100px rgba(0,0,0,0.75);transform:translateY(28px) scale(0.96);transition:transform 0.38s var(--ease-spring)}
+#bundle-modal.open .bm-card{transform:none}
+.bm-close{position:absolute;top:14px;right:14px;width:32px;height:32px;border-radius:50%;background:var(--bg3);border:1px solid var(--border2);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text2);font-size:0.85rem;transition:all 0.2s;z-index:2;font-family:var(--font-ui)}
+.bm-close:hover{background:var(--bg4);color:var(--text)}
+.bm-img-wrap{position:relative;height:200px;overflow:hidden;border-radius:24px 24px 0 0}
+.bm-img{width:100%;height:100%;object-fit:cover;object-position:center top}
+.bm-img-grad{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,0.1) 0%,rgba(13,13,17,0.9) 100%)}
+.bm-img-overlay{position:absolute;bottom:0;left:0;right:0;padding:22px 26px}
+.bm-tier-pill{display:inline-block;font-family:var(--font-mono);font-size:0.58rem;letter-spacing:0.15em;text-transform:uppercase;padding:4px 12px;border-radius:20px;margin-bottom:6px}
+.bm-img-title{font-family:var(--font-display);font-size:1.6rem;font-weight:900;color:#fff;line-height:1.1}
+.bm-body-inner{padding:24px 26px 28px}
+.bm-price-row{display:flex;align-items:baseline;gap:10px;margin-bottom:8px}
+.bm-price{font-family:var(--font-display);font-size:2.5rem;font-weight:900;line-height:1}
+.bm-lpa-badge{display:inline-flex;align-items:center;gap:5px;font-family:var(--font-mono);font-size:0.66rem;padding:4px 12px;border-radius:6px;background:rgba(52,211,153,0.08);color:#34D399;border:1px solid rgba(52,211,153,0.18);margin-bottom:22px}
+.bm-section-h{font-family:var(--font-mono);font-size:0.58rem;color:var(--text3);letter-spacing:0.14em;text-transform:uppercase;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+.bm-skills-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:22px}
+.bm-skill-chip{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:9px 13px;font-size:0.76rem;color:var(--text2);display:flex;align-items:center;gap:7px}
+.bm-skill-chip::before{content:"✓";font-weight:800;font-size:0.65rem;flex-shrink:0}
+.bm-perks{display:flex;flex-direction:column;gap:8px;margin-bottom:22px}
+.bm-perk{display:flex;align-items:center;gap:10px;font-size:0.78rem;color:var(--text2);padding:8px 12px;background:var(--bg3);border-radius:9px;border:1px solid var(--border)}
+.bm-perk-icon{font-size:1rem;flex-shrink:0}
+.bm-enroll-btn{width:100%;padding:15px;border-radius:12px;border:none;font-family:var(--font-ui);font-size:0.88rem;font-weight:700;cursor:pointer;transition:all 0.22s}
+.bm-enroll-btn:hover{transform:translateY(-2px)}
+
+/* VIDEO MODAL - FULLSCREEN CAPABLE */
+#video-modal{position:fixed;inset:0;z-index:9985;display:flex;align-items:center;justify-content:center;padding:0;opacity:0;visibility:hidden;transition:opacity 0.35s ease,visibility 0.35s;background:rgba(0,0,0,0.96);backdrop-filter:blur(20px)}
+#video-modal.open{opacity:1;visibility:visible}
+.vm-box{width:100%;max-width:900px;max-height:96vh;overflow-y:auto;background:var(--bg2);border:1px solid var(--border3);border-radius:20px;box-shadow:0 48px 100px rgba(0,0,0,0.8);position:relative;display:flex;flex-direction:column;transform:translateY(24px) scale(0.97);transition:transform 0.35s var(--ease-spring);margin:16px}
+#video-modal.open .vm-box{transform:none}
+.vm-header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:20px 22px 16px;border-bottom:1px solid var(--border);flex-shrink:0}
+.vm-title{font-family:var(--font-display);font-size:1.05rem;font-weight:700;color:var(--text);line-height:1.3}
+.vm-cat{font-family:var(--font-mono);font-size:0.57rem;color:var(--gold);text-transform:uppercase;letter-spacing:0.1em;margin-top:4px}
+.vm-header-right{display:flex;gap:8px;align-items:center}
+.vm-fs-btn{background:var(--goldA);border:1px solid rgba(200,169,110,0.3);color:var(--gold);width:32px;height:32px;border-radius:8px;cursor:pointer;font-size:0.85rem;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all 0.2s;font-family:var(--font-ui);title:'Fullscreen'}
+.vm-fs-btn:hover{background:var(--goldB)}
+.vm-close{background:var(--bg3);border:1px solid var(--border);color:var(--text2);width:32px;height:32px;border-radius:8px;cursor:pointer;font-size:1rem;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all 0.2s;font-family:var(--font-ui)}
+.vm-close:hover{color:var(--text)}
+.vm-player-wrap{position:relative;margin:18px 22px 0;border-radius:12px;overflow:hidden;background:#000;border:1px solid var(--border)}
+.vm-player-wrap.fullscreen-mode{position:fixed;inset:0;margin:0;border-radius:0;z-index:99999;border:none}
+.player-ratio{position:relative;width:100%;padding-top:56.25%}
+.vm-player-wrap.fullscreen-mode .player-ratio{padding-top:0;height:100vh}
+.player-ratio iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:none}
+.video-watermark{position:absolute;z-index:8;font-family:var(--font-mono);font-size:0.55rem;color:rgba(200,169,110,0.22);letter-spacing:0.12em;pointer-events:none;text-transform:uppercase;animation:wm-move 20s ease-in-out infinite}
+@keyframes wm-move{0%{top:15%;left:10%}25%{top:72%;left:62%}50%{top:28%;left:75%}75%{top:65%;left:18%}100%{top:15%;left:10%}}
+.preview-timer{font-family:var(--font-mono);font-size:0.68rem;color:var(--gold);position:absolute;top:10px;right:10px;z-index:20;background:rgba(7,7,10,0.88);padding:4px 10px;border-radius:5px;border:1px solid rgba(200,169,110,0.28);letter-spacing:0.04em}
+.preview-timer.hidden{display:none}
+.vm-overlay{position:absolute;inset:0;z-index:25;background:rgba(7,7,10,0.97);display:none;flex-direction:column;align-items:center;justify-content:center;gap:16px;text-align:center;padding:28px;border-radius:12px}
+.vm-overlay.show{display:flex}
+.vo-icon{font-size:2.8rem}
+.vo-title{font-family:var(--font-display);font-size:1.3rem;font-weight:900}
+.vo-desc{font-size:0.83rem;color:var(--text2);max-width:340px;line-height:1.8}
+.vo-cta{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:4px}
+.vo-btn-p{padding:11px 26px;background:var(--gold);color:var(--ink);border:none;border-radius:8px;font-weight:800;font-size:0.83rem;cursor:pointer;font-family:var(--font-ui)}
+.vo-btn-s{padding:11px 18px;background:transparent;color:var(--text2);border:1px solid var(--border2);border-radius:8px;font-size:0.8rem;cursor:pointer;font-family:var(--font-ui)}
+/* Fullscreen close overlay btn */
+.fs-close-overlay{display:none;position:fixed;top:16px;right:16px;z-index:100000;background:rgba(7,7,10,0.85);border:1px solid rgba(200,169,110,0.3);color:var(--gold);width:40px;height:40px;border-radius:10px;cursor:pointer;font-size:1.1rem;align-items:center;justify-content:center;font-family:var(--font-ui)}
+.fs-close-overlay.show{display:flex}
+.vm-info{padding:16px 22px 22px;display:flex;flex-direction:column;gap:14px}
+.vm-meta-row{display:flex;gap:18px;flex-wrap:wrap}
+.vm-chip{display:flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:0.63rem;color:var(--text2)}
+.vm-enroll-cta{background:var(--bg3);border:1px solid var(--border2);border-radius:12px;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.vec-left{display:flex;flex-direction:column;gap:3px}
+.vec-title{font-weight:700;font-size:0.88rem;color:var(--text)}
+.vec-sub{font-size:0.73rem;color:var(--text2)}
+.vec-price{font-family:var(--font-display);font-size:1.5rem;font-weight:900;color:var(--gold)}
+.vec-btn{padding:11px 24px;background:var(--gold);color:var(--ink);border:none;border-radius:8px;font-weight:800;font-size:0.83rem;cursor:pointer;font-family:var(--font-ui)}
+
+/* HERO */
+#hero{min-height:100vh;display:flex;align-items:center;padding:calc(var(--nav-h) + 48px) max(18px,5vw) 80px;position:relative;overflow:hidden}
+.hero-bg-grid{position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(rgba(200,169,110,0.035) 1px,transparent 1px),linear-gradient(90deg,rgba(200,169,110,0.035) 1px,transparent 1px);background-size:72px 72px;-webkit-mask-image:radial-gradient(ellipse 80% 70% at 50% 40%,black 30%,transparent 100%);mask-image:radial-gradient(ellipse 80% 70% at 50% 40%,black 30%,transparent 100%)}
+.hero-blob1{position:absolute;top:-15%;right:-8%;width:680px;height:680px;background:radial-gradient(circle,rgba(200,169,110,0.06) 0%,transparent 60%);pointer-events:none;animation:blobPulse 7s ease-in-out infinite}
+.hero-blob2{position:absolute;bottom:-10%;left:-5%;width:480px;height:480px;background:radial-gradient(circle,rgba(200,169,110,0.04) 0%,transparent 60%);pointer-events:none;animation:blobPulse 9s 2s ease-in-out infinite}
+@keyframes blobPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.6;transform:scale(1.05)}}
+.hero-inner{max-width:1180px;margin:0 auto;width:100%;display:grid;grid-template-columns:1fr 430px;gap:90px;align-items:center;position:relative;z-index:1}
+.hero-pill{display:inline-flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:0.62rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);background:var(--goldA);border:1px solid rgba(200,169,110,0.2);padding:5px 14px 5px 8px;border-radius:20px;margin-bottom:26px}
+.pill-dot{width:6px;height:6px;background:var(--gold);border-radius:50%;animation:pillPulse 2s ease infinite;flex-shrink:0}
+@keyframes pillPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.4;transform:scale(0.7)}}
+.hero-h1{font-size:clamp(2.9rem,5.8vw,5.2rem);font-weight:900;margin-bottom:22px;color:var(--text)}
+.hero-h1 .line2{color:transparent;background:linear-gradient(120deg,var(--gold3),var(--gold),var(--gold2));-webkit-background-clip:text;background-clip:text;font-style:italic;position:relative;display:inline-block}
+.hero-h1 .line2::after{content:'';position:absolute;bottom:-6px;left:0;width:100%;height:2px;background:linear-gradient(90deg,var(--gold),rgba(200,169,110,0.15));border-radius:2px;animation:lineGrow 1.8s 0.8s var(--ease-out) both;transform-origin:left}
+@keyframes lineGrow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.hero-p{font-size:1rem;color:var(--text2);line-height:1.85;margin-bottom:36px;max-width:460px}
+.hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:52px}
+.btn-gold{padding:13px 28px;background:linear-gradient(135deg,var(--gold2),var(--gold));color:var(--ink);border:none;border-radius:9px;font-family:var(--font-ui);font-size:0.8rem;font-weight:700;cursor:pointer;transition:all 0.22s;box-shadow:0 4px 20px rgba(200,169,110,0.28)}
+.btn-gold:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(200,169,110,0.38)}
+.btn-outline{padding:13px 28px;background:transparent;color:var(--text2);border:1px solid var(--border2);border-radius:9px;font-family:var(--font-ui);font-size:0.8rem;font-weight:600;cursor:pointer;transition:all 0.22s}
+.btn-outline:hover{border-color:var(--goldC);color:var(--text);background:var(--goldA)}
+.hero-stats{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.h-stat{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:16px 20px;transition:all 0.3s;position:relative;overflow:hidden}
+.h-stat::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(200,169,110,0.25),transparent);opacity:0;transition:opacity 0.3s}
+.h-stat:hover{border-color:rgba(200,169,110,0.2);background:var(--bg3)}
+.h-stat:hover::before{opacity:1}
+.h-stat-n{font-family:var(--font-display);font-size:1.75rem;font-weight:900;color:var(--gold);line-height:1}
+.h-stat-l{font-size:0.69rem;color:var(--text3);margin-top:4px;letter-spacing:0.04em}
+
+/* Hero carousel */
+.hero-right{position:relative;z-index:1}
+.hero-live{position:absolute;top:-14px;right:-10px;z-index:10;background:linear-gradient(135deg,#EF4444,#B91C1C);border:2px solid var(--bg2);border-radius:20px;padding:5px 12px;display:flex;align-items:center;gap:5px;font-family:var(--font-mono);font-size:0.58rem;color:#fff;letter-spacing:0.07em;box-shadow:0 4px 14px rgba(239,68,68,0.35);animation:float 3.5s 1s ease-in-out infinite}
+.live-dot{width:5px;height:5px;background:#fff;border-radius:50%;animation:blink 1.4s ease infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.bpc{background:var(--bg2);border:1px solid var(--border2);border-radius:20px;overflow:hidden;box-shadow:0 28px 72px rgba(0,0,0,0.55),inset 0 1px 0 rgba(255,255,255,0.06)}
+.bpc-head{padding:16px 20px 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.bpc-label{font-family:var(--font-mono);font-size:0.62rem;color:var(--text3);letter-spacing:0.12em;text-transform:uppercase}
+.bpc-dots-wrap{display:flex;gap:5px}
+.bpc-dot{width:6px;height:6px;border-radius:50%;background:var(--border2);transition:all 0.3s;cursor:pointer}
+.bpc-dot.on{background:var(--gold);width:18px;border-radius:3px}
+.bpc-overflow{overflow:hidden}
+.bpc-track{display:flex;transition:transform 0.52s cubic-bezier(0.25,0.46,0.45,0.94)}
+.bpc-slide{min-width:100%;padding:0}
+.bpc-img-zone{height:165px;overflow:hidden;position:relative}
+.bpc-img-zone img{width:100%;height:100%;object-fit:cover;object-position:top center}
+.bpc-img-grad{position:absolute;inset:0;background:linear-gradient(to bottom,transparent 40%,var(--bg2) 100%)}
+.bpc-img-price{position:absolute;bottom:14px;left:18px;font-family:var(--font-display);font-size:1.6rem;font-weight:900;color:#fff;text-shadow:0 2px 10px rgba(0,0,0,0.6)}
+.bpc-img-tier{position:absolute;top:12px;left:12px;font-family:var(--font-mono);font-size:0.58rem;letter-spacing:0.14em;text-transform:uppercase;padding:4px 10px;border-radius:20px;background:rgba(0,0,0,0.55);backdrop-filter:blur(8px);color:#fff;border:1px solid rgba(255,255,255,0.15)}
+.bpc-content{padding:16px 18px 18px}
+.bpc-name{font-family:var(--font-display);font-size:1.1rem;font-weight:700;color:var(--text);margin-bottom:4px}
+.bpc-lpa{display:inline-block;font-family:var(--font-mono);font-size:0.6rem;padding:3px 9px;border-radius:4px;background:rgba(52,211,153,0.08);color:#34D399;border:1px solid rgba(52,211,153,0.18);margin-bottom:12px}
+.bpc-skills{list-style:none;display:flex;flex-direction:column;gap:4px;margin-bottom:14px}
+.bpc-skills li{font-size:0.73rem;color:var(--text2);display:flex;align-items:center;gap:6px}
+.bpc-skills li::before{content:"·";color:var(--gold);font-size:1.2rem;line-height:0;flex-shrink:0}
+.bpc-open{width:100%;padding:10px;background:linear-gradient(135deg,var(--gold2),var(--gold));color:var(--ink);border:none;border-radius:9px;font-family:var(--font-ui);font-size:0.76rem;font-weight:700;cursor:pointer;transition:all 0.2s}
+.bpc-foot{display:flex;gap:8px;padding:12px 18px;border-top:1px solid var(--border);justify-content:flex-end}
+.bpc-arr{width:32px;height:32px;border-radius:50%;border:1px solid var(--border2);background:transparent;cursor:pointer;color:var(--text2);font-size:0.8rem;display:flex;align-items:center;justify-content:center;transition:all 0.2s;font-family:var(--font-ui)}
+.bpc-arr:hover{border-color:var(--goldC);color:var(--gold)}
+.hero-badge{position:absolute;bottom:-18px;left:-28px;background:var(--bg2);border:1px solid var(--border2);border-radius:12px;padding:11px 15px;display:flex;align-items:center;gap:10px;box-shadow:0 16px 40px rgba(0,0,0,0.45);animation:float 4.5s ease-in-out infinite}
+.hb-icon{font-size:1.4rem}
+.hb-t{font-size:0.7rem;color:var(--text2);line-height:1.4}
+.hb-t strong{display:block;font-size:0.8rem;color:var(--text)}
+
+/* MARQUEE */
+.marquee-wrap{background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:18px 0;overflow:hidden;position:relative}
+.marquee-wrap::before,.marquee-wrap::after{content:'';position:absolute;top:0;bottom:0;width:120px;z-index:2;pointer-events:none}
+.marquee-wrap::before{left:0;background:linear-gradient(90deg,var(--bg2),transparent)}
+.marquee-wrap::after{right:0;background:linear-gradient(270deg,var(--bg2),transparent)}
+.mq-inner{display:flex;width:max-content;animation:mq 22s linear infinite}
+.mq-inner:hover{animation-play-state:paused}
+.mq-group{display:flex}
+.mq-chip{margin:0 8px;white-space:nowrap;background:var(--bg3);border:1px solid var(--border);padding:5px 16px;border-radius:20px;font-family:var(--font-mono);font-size:0.75rem;color:var(--text3);display:inline-flex;align-items:center;gap:7px;transition:all 0.2s;cursor:default}
+.mq-chip:hover{border-color:rgba(200,169,110,0.22);color:var(--gold)}
+.mq-chip-dot{width:3px;height:3px;background:var(--gold);border-radius:50%;opacity:0.6}
+@keyframes mq{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+/* SECTION COMMON */
+section{padding:100px max(18px,5vw)}
+.container{max-width:1180px;margin:0 auto;width:100%}
+.sec-eyebrow{display:inline-flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);border-left:2px solid var(--gold);padding-left:12px;margin-bottom:16px}
+.sec-h{font-size:clamp(2rem,3.8vw,3.1rem);font-weight:900;margin-bottom:14px;color:var(--text)}
+.sec-h em{color:transparent;background:linear-gradient(120deg,var(--gold2),var(--gold));-webkit-background-clip:text;background-clip:text;font-style:italic}
+.sec-p{font-size:0.92rem;color:var(--text2);max-width:520px;line-height:1.85;margin-bottom:50px}
+
+/* WHY */
+#why{background:var(--bg)}
+.why-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1px;background:var(--border);border:1px solid var(--border);border-radius:16px;overflow:hidden}
+.why-card{background:var(--bg);padding:34px 28px;transition:background 0.3s;cursor:default;position:relative;overflow:hidden}
+.why-card::after{content:'';position:absolute;bottom:0;left:0;width:0;height:2px;background:linear-gradient(90deg,var(--gold),transparent);transition:width 0.4s var(--ease-out)}
+.why-card:hover{background:var(--bg2)}
+.why-card:hover::after{width:100%}
+.why-num{font-family:var(--font-mono);font-size:0.58rem;color:var(--text3);letter-spacing:0.14em;margin-bottom:22px}
+.why-icon{width:48px;height:48px;border-radius:12px;background:var(--goldA);border:1px solid rgba(200,169,110,0.12);display:flex;align-items:center;justify-content:center;font-size:1.5rem;margin-bottom:18px;transition:all 0.3s}
+.why-card:hover .why-icon{background:var(--goldB);border-color:rgba(200,169,110,0.28)}
+.why-t{font-family:var(--font-display);font-size:1rem;font-weight:700;margin-bottom:10px;color:var(--text)}
+.why-d{font-size:0.79rem;color:var(--text2);line-height:1.78}
+
+/* BUNDLES */
+#bundles{background:var(--bg2)}
+.bc-outer{position:relative}
+.bc-scroll{overflow:hidden;border-radius:18px}
+.bc-track{display:flex;transition:transform 0.55s cubic-bezier(0.25,0.46,0.45,0.94)}
+.bcard{min-width:316px;flex-shrink:0;margin-right:14px;background:var(--bg3);border:1px solid var(--border);border-radius:18px;overflow:hidden;cursor:pointer;transition:all 0.35s;position:relative}
+.bcard:hover{transform:translateY(-5px);box-shadow:0 20px 60px rgba(0,0,0,0.4)}
+.bcard-img{height:160px;position:relative;overflow:hidden}
+.bcard-img img{width:100%;height:100%;object-fit:cover;object-position:top;transition:transform 0.45s}
+.bcard:hover .bcard-img img{transform:scale(1.04)}
+.bcard-img-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,0.08) 0%,rgba(13,13,17,0.85) 100%)}
+.bcard-tier-tag{position:absolute;top:12px;left:12px;font-family:var(--font-mono);font-size:0.56rem;letter-spacing:0.14em;text-transform:uppercase;padding:4px 11px;border-radius:20px;background:rgba(0,0,0,0.5);backdrop-filter:blur(10px);color:#fff;border:1px solid rgba(255,255,255,0.15)}
+.bcard-price-tag{position:absolute;bottom:14px;left:14px;font-family:var(--font-display);font-size:1.55rem;font-weight:900;color:#fff;text-shadow:0 2px 12px rgba(0,0,0,0.7);line-height:1}
+.bcard-lpa-tag{position:absolute;bottom:14px;right:12px;font-family:var(--font-mono);font-size:0.58rem;padding:3px 9px;border-radius:4px;background:rgba(52,211,153,0.18);color:#34D399;border:1px solid rgba(52,211,153,0.25);backdrop-filter:blur(8px)}
+.bcard-body{padding:18px 18px 0}
+.bcard-name{font-family:var(--font-display);font-size:1.05rem;font-weight:700;color:var(--text);margin-bottom:12px}
+.bcard-skills{list-style:none;display:flex;flex-direction:column;gap:5px;margin-bottom:16px}
+.bcard-skills li{font-size:0.74rem;color:var(--text2);display:flex;align-items:center;gap:7px}
+.bcard-skills li::before{content:"→";font-size:0.62rem;flex-shrink:0}
+.bcard-accent-line{height:3px;border-radius:18px 18px 0 0;position:absolute;top:0;left:0;right:0}
+.bcard-footer{padding:14px 18px 16px;display:flex;gap:8px;border-top:1px solid var(--border)}
+.bcard-enroll{flex:1;padding:9px;border-radius:9px;font-family:var(--font-ui);font-size:0.74rem;font-weight:700;cursor:pointer;transition:all 0.2s;border:none}
+.bcard-detail{flex:1;padding:9px;border-radius:9px;font-family:var(--font-mono);font-size:0.63rem;font-weight:600;cursor:pointer;transition:all 0.2s;letter-spacing:0.05em;text-transform:uppercase;border:1px solid var(--border2);background:transparent;color:var(--text3)}
+.bcard-detail:hover{border-color:rgba(200,169,110,0.28);color:var(--gold)}
+.bc-controls{display:flex;align-items:center;gap:12px;margin-top:26px}
+.bc-btn{width:42px;height:42px;border-radius:50%;border:1px solid var(--border2);background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text2);font-size:0.9rem;transition:all 0.2s;font-family:var(--font-ui)}
+.bc-btn:hover{border-color:var(--goldC);color:var(--gold)}
+.bc-dots{display:flex;gap:6px;align-items:center}
+.bc-dot-i{width:6px;height:6px;border-radius:50%;background:var(--border2);transition:all 0.3s;cursor:pointer}
+.bc-dot-i.on{background:var(--gold);width:20px;border-radius:3px}
+.bth-gold{--tc:var(--gold);--tb:var(--goldA);--tbb:var(--goldB);--tbc:rgba(200,169,110,0.25)}
+.bth-slate{--tc:#7CB9E8;--tb:rgba(124,185,232,0.08);--tbb:rgba(124,185,232,0.15);--tbc:rgba(124,185,232,0.22)}
+.bth-violet{--tc:#A78BFA;--tb:rgba(167,139,250,0.08);--tbb:rgba(167,139,250,0.15);--tbc:rgba(167,139,250,0.22)}
+.bth-green{--tc:#34D399;--tb:rgba(52,211,153,0.08);--tbb:rgba(52,211,153,0.15);--tbc:rgba(52,211,153,0.22)}
+.bth-blue{--tc:#60A5FA;--tb:rgba(96,165,250,0.08);--tbb:rgba(96,165,250,0.15);--tbc:rgba(96,165,250,0.22)}
+.bth-cloud{--tc:#7DD3FC;--tb:rgba(125,211,252,0.08);--tbb:rgba(125,211,252,0.15);--tbc:rgba(125,211,252,0.22)}
+.bth-orange{--tc:#FB923C;--tb:rgba(251,146,60,0.08);--tbb:rgba(251,146,60,0.15);--tbc:rgba(251,146,60,0.22)}
+.bth-pink{--tc:#F472B6;--tb:rgba(244,114,182,0.08);--tbb:rgba(244,114,182,0.15);--tbc:rgba(244,114,182,0.22)}
+.bth-crown{--tc:var(--gold3);--tb:var(--goldA);--tbb:var(--goldB);--tbc:rgba(200,169,110,0.3)}
+.bcard{border-color:var(--tbc,var(--border))}
+.bcard-accent-line{background:linear-gradient(90deg,var(--tc),rgba(0,0,0,0))}
+.bcard-tier-tag{color:var(--tc)}
+.bcard-skills li::before{color:var(--tc)}
+.bcard-enroll{background:var(--tb);color:var(--tc);border:1px solid var(--tbc)}
+.bcard-enroll:hover{background:var(--tbb)}
+.bth-crown .bcard-enroll{background:var(--gold);color:var(--ink);border:none}
+
+/* HOW IT WORKS */
+#how{background:var(--bg)}
+.how-steps{display:grid;grid-template-columns:repeat(4,1fr);position:relative;margin-top:56px}
+.how-line{position:absolute;top:38px;left:12.5%;right:12.5%;height:1px;background:linear-gradient(90deg,transparent,var(--border2),var(--border2),transparent)}
+.how-step{padding:28px 22px;text-align:center;position:relative}
+.how-circle{width:76px;height:76px;border-radius:50%;background:var(--bg3);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:1.6rem;font-weight:900;color:var(--gold);margin:0 auto 22px;position:relative;z-index:1;transition:all 0.3s}
+.how-step:hover .how-circle{background:var(--goldA);border-color:var(--goldC);transform:scale(1.08)}
+.how-t{font-family:var(--font-display);font-size:0.95rem;font-weight:700;margin-bottom:9px;color:var(--text)}
+.how-d{font-size:0.78rem;color:var(--text2);line-height:1.78}
+
+/* STATS */
+#stats{background:var(--bg2);padding:80px max(18px,5vw)}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:16px;overflow:hidden;max-width:900px;margin:0 auto}
+.stat-cell{background:var(--bg2);padding:38px 20px;text-align:center;transition:background 0.3s;position:relative;overflow:hidden}
+.stat-cell::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:50%;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:0;transition:opacity 0.3s}
+.stat-cell:hover{background:var(--bg3)}
+.stat-cell:hover::before{opacity:1}
+.stat-n{font-family:var(--font-display);font-size:2.8rem;font-weight:900;color:var(--gold);line-height:1}
+.stat-l{font-size:0.71rem;color:var(--text3);margin-top:8px;letter-spacing:0.05em}
+
+/* TESTIMONIALS */
+#testimonials{background:var(--bg)}
+.t-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(268px,1fr));gap:14px;margin-top:44px}
+.t-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:26px;transition:all 0.32s;position:relative;overflow:hidden}
+.t-card::before{content:'';position:absolute;top:-1px;left:20px;right:20px;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:0;transition:opacity 0.3s}
+.t-card:hover{border-color:rgba(200,169,110,0.2);transform:translateY(-4px);box-shadow:0 14px 40px rgba(0,0,0,0.3)}
+.t-card:hover::before{opacity:1}
+.t-stars{color:var(--gold);font-size:0.76rem;letter-spacing:3px;margin-bottom:14px}
+.t-text{font-size:0.81rem;color:var(--text2);line-height:1.9;margin-bottom:20px;font-style:italic}
+.t-author{display:flex;align-items:center;gap:12px}
+.t-av{width:40px;height:40px;border-radius:50%;flex-shrink:0;background:linear-gradient(135deg,var(--gold),rgba(200,169,110,0.35));display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:0.78rem;font-weight:700;color:var(--ink)}
+.t-name{font-family:var(--font-display);font-size:0.82rem;font-weight:700;color:var(--text)}
+.t-role{font-size:0.67rem;color:var(--text3);margin-top:2px}
+.t-badge{margin-left:auto;padding:3px 10px;border-radius:4px;font-family:var(--font-mono);font-size:0.6rem;font-weight:600;background:rgba(52,211,153,0.08);color:#34D399;border:1px solid rgba(52,211,153,0.18);white-space:nowrap}
+
+/* ABOUT */
+#about{background:var(--bg2)}
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start}
+.diff-table{width:100%;border-collapse:collapse;margin:28px 0}
+.diff-table th{font-family:var(--font-mono);font-size:0.59rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--text3);padding:9px 16px;background:var(--bg3);border:1px solid var(--border);text-align:left}
+.diff-table td{font-size:0.77rem;color:var(--text2);padding:11px 16px;border:1px solid var(--border);vertical-align:top;line-height:1.6;transition:background 0.2s}
+.diff-table tr:hover td{background:var(--bg3)}
+.diff-table td:first-child{color:var(--text3)}
+.diff-table td:last-child{color:var(--text)}
+.team-stack{display:flex;flex-direction:column;gap:10px}
+.team-item{display:flex;align-items:center;gap:14px;background:var(--bg3);border:1px solid var(--border);padding:14px 18px;border-radius:12px;transition:all 0.2s}
+.team-item:hover{border-color:rgba(200,169,110,0.18);transform:translateX(4px)}
+.team-ico{font-size:1.5rem;flex-shrink:0}
+.team-n{font-family:var(--font-display);font-size:0.82rem;font-weight:700;color:var(--text)}
+.team-r{font-size:0.68rem;color:var(--text3);margin-top:2px}
+.about-nums{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:24px}
+.an{background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:18px 20px;transition:all 0.3s}
+.an:hover{border-color:rgba(200,169,110,0.22)}
+.an-n{font-family:var(--font-display);font-size:1.65rem;font-weight:900;color:var(--gold)}
+.an-l{font-size:0.69rem;color:var(--text3);margin-top:3px;letter-spacing:0.04em}
+
+/* FAQ */
+#faq{background:var(--bg)}
+.faq-inner{max-width:700px;margin:0 auto;display:flex;flex-direction:column;gap:8px;margin-top:40px}
+.faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:12px;overflow:hidden;transition:border-color 0.3s}
+.faq-item.open{border-color:rgba(200,169,110,0.22)}
+.faq-q{width:100%;padding:18px 22px;background:transparent;border:none;text-align:left;font-family:var(--font-display);font-size:0.88rem;font-weight:600;color:var(--text);cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:16px;transition:color 0.2s}
+.faq-q:hover{color:var(--gold)}
+.faq-icon{color:var(--gold);font-size:0.85rem;transition:transform 0.3s;flex-shrink:0;font-family:var(--font-mono);width:22px;height:22px;border-radius:50%;background:var(--goldA);display:flex;align-items:center;justify-content:center}
+.faq-item.open .faq-icon{transform:rotate(45deg);background:var(--goldB)}
+.faq-a{max-height:0;overflow:hidden;transition:max-height 0.38s ease}
+.faq-item.open .faq-a{max-height:220px}
+.faq-a p{padding:0 22px 18px;font-size:0.79rem;color:var(--text2);line-height:1.88}
+
+/* ═══════════════════════════════════════
+   LEGAL MODAL — CREATIVE REDESIGN
+═══════════════════════════════════════ */
+#legal-modal{position:fixed;inset:0;z-index:9980;display:flex;align-items:center;justify-content:center;padding:16px;opacity:0;visibility:hidden;transition:opacity 0.35s,visibility 0.35s;background:rgba(0,0,0,0.9);backdrop-filter:blur(20px)}
+#legal-modal.open{opacity:1;visibility:visible}
+.lm-box{width:100%;max-width:780px;max-height:92vh;background:var(--bg);border:1px solid var(--border3);border-radius:24px;box-shadow:0 60px 120px rgba(0,0,0,0.85);display:flex;flex-direction:column;transform:translateY(20px) scale(0.97);transition:transform 0.35s var(--ease-spring);overflow:hidden;position:relative}
+#legal-modal.open .lm-box{transform:none}
+/* Decorative top bar */
+.lm-deco-bar{height:4px;background:linear-gradient(90deg,var(--gold3),var(--gold),var(--gold2),var(--gold3));flex-shrink:0}
+.lm-header{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:24px 28px 20px;flex-shrink:0;border-bottom:1px solid var(--border)}
+.lm-header-left{display:flex;align-items:center;gap:14px}
+.lm-icon-wrap{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0}
+.lm-title{font-family:var(--font-display);font-size:1.2rem;font-weight:900;color:var(--text)}
+.lm-subtitle{font-family:var(--font-mono);font-size:0.58rem;color:var(--text3);letter-spacing:0.1em;text-transform:uppercase;margin-top:2px}
+.lm-close{background:var(--bg3);border:1px solid var(--border2);color:var(--text2);width:36px;height:36px;border-radius:10px;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;transition:all 0.2s;flex-shrink:0;font-family:var(--font-ui)}
+.lm-close:hover{color:var(--text);border-color:var(--border3)}
+.lm-body{overflow-y:auto;padding:28px 28px 36px;flex:1}
+.lm-meta-strip{display:flex;gap:20px;flex-wrap:wrap;margin-bottom:28px;padding:12px 16px;background:var(--bg3);border-radius:10px;border:1px solid var(--border)}
+.lm-meta-item{display:flex;align-items:center;gap:7px;font-family:var(--font-mono);font-size:0.6rem;color:var(--text3);letter-spacing:0.06em}
+.lm-meta-item span{color:var(--gold)}
+
+/* Legal section cards */
+.lm-section{margin-bottom:20px;border:1px solid var(--border);border-radius:14px;overflow:hidden}
+.lm-section-header{display:flex;align-items:center;gap:12px;padding:14px 18px;background:var(--bg2);cursor:pointer;transition:background 0.2s;user-select:none}
+.lm-section-header:hover{background:var(--bg3)}
+.lm-section-num{font-family:var(--font-mono);font-size:0.6rem;color:var(--text3);background:var(--bg3);border:1px solid var(--border);padding:3px 8px;border-radius:4px;flex-shrink:0}
+.lm-section-title{font-family:var(--font-display);font-size:0.92rem;font-weight:700;color:var(--gold);flex:1}
+.lm-section-arrow{color:var(--text3);font-size:0.75rem;transition:transform 0.3s;flex-shrink:0}
+.lm-section.expanded .lm-section-arrow{transform:rotate(90deg)}
+.lm-section-body{max-height:0;overflow:hidden;transition:max-height 0.35s ease}
+.lm-section.expanded .lm-section-body{max-height:600px}
+.lm-section-content{padding:16px 18px 18px;border-top:1px solid var(--border)}
+.lm-section-content p{font-size:0.8rem;color:var(--text2);line-height:1.9;margin-bottom:10px}
+.lm-section-content p:last-child{margin-bottom:0}
+.lm-section-content ul{list-style:none;display:flex;flex-direction:column;gap:7px}
+.lm-section-content ul li{font-size:0.8rem;color:var(--text2);line-height:1.7;padding-left:18px;position:relative}
+.lm-section-content ul li::before{content:"▸";position:absolute;left:0;color:var(--gold);font-size:0.65rem}
+.lm-highlight-box{background:var(--goldA);border:1px solid rgba(200,169,110,0.2);border-radius:10px;padding:14px 16px;margin-top:12px;font-size:0.78rem;color:var(--gold);line-height:1.7;font-family:var(--font-mono);letter-spacing:0.02em}
+.lm-contact-footer{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:18px 20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:24px}
+.lm-contact-icon{font-size:1.5rem;flex-shrink:0}
+.lm-contact-info{flex:1}
+.lm-contact-label{font-family:var(--font-mono);font-size:0.58rem;color:var(--text3);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:3px}
+.lm-contact-val{font-size:0.82rem;color:var(--text);font-weight:600}
+.lm-contact-val a{color:var(--gold)}
+
+/* ═══════════════════════════════════════
+   PREMIUM QUICK LINKS — FOOTER REDESIGN
+═══════════════════════════════════════ */
+footer{background:var(--bg3);border-top:1px solid var(--border);position:relative;overflow:hidden}
+footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold),rgba(200,169,110,0.4),var(--gold),transparent)}
+footer::after{content:'';position:absolute;top:-200px;right:-100px;width:600px;height:600px;background:radial-gradient(circle,rgba(200,169,110,0.04),transparent 70%);pointer-events:none}
+
+/* Footer top CTA band */
+.ft-cta-band{padding:0 max(18px,5vw);background:linear-gradient(135deg,rgba(200,169,110,0.06) 0%,transparent 100%);border-bottom:1px solid var(--border)}
+.ft-cta-inner{max-width:1180px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:24px;padding:36px 0;flex-wrap:wrap}
+.ft-cta-text h3{font-family:var(--font-display);font-size:1.5rem;font-weight:900;color:var(--text);margin-bottom:5px}
+.ft-cta-text p{font-size:0.82rem;color:var(--text2)}
+.ft-cta-actions{display:flex;gap:10px;flex-wrap:wrap}
+.ft-cta-btn-p{padding:12px 26px;background:linear-gradient(135deg,var(--gold2),var(--gold));color:var(--ink);border:none;border-radius:9px;font-family:var(--font-ui);font-size:0.79rem;font-weight:700;cursor:pointer;transition:all 0.22s;box-shadow:0 4px 18px rgba(200,169,110,0.28)}
+.ft-cta-btn-p:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(200,169,110,0.38)}
+.ft-cta-btn-s{padding:12px 24px;background:transparent;color:var(--text2);border:1px solid var(--border2);border-radius:9px;font-family:var(--font-ui);font-size:0.79rem;font-weight:600;cursor:pointer;transition:all 0.22s}
+.ft-cta-btn-s:hover{border-color:var(--goldC);color:var(--text)}
+
+/* Main footer grid */
+.ft-main{padding:52px max(18px,5vw) 0;border-bottom:1px solid var(--border)}
+.ft-main-inner{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:48px}
+
+/* Brand column */
+.ft-brand{display:flex;flex-direction:column;gap:0}
+.ft-brand-logo{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+.ft-brand-logo img{width:38px;height:38px;object-fit:contain;border-radius:9px;box-shadow:0 0 18px rgba(200,169,110,0.2)}
+.ft-brand-name{font-family:var(--font-display);font-size:1.3rem;font-weight:900;color:transparent;background:linear-gradient(120deg,var(--gold2),var(--gold));-webkit-background-clip:text;background-clip:text;letter-spacing:-0.025em}
+.ft-brand-name sup{font-size:0.4em;color:var(--text3);font-weight:400}
+.ft-brand-tagline{font-family:var(--font-mono);font-size:0.58rem;color:var(--text3);letter-spacing:0.16em;text-transform:uppercase;margin-bottom:16px;display:flex;align-items:center;gap:7px}
+.ft-brand-tagline::before{content:'';width:16px;height:1px;background:var(--gold);flex-shrink:0}
+.ft-brand-desc{font-size:0.78rem;color:var(--text2);line-height:1.85;max-width:270px;margin-bottom:24px}
+.ft-contact-stack{display:flex;flex-direction:column;gap:8px;margin-bottom:24px}
+.ft-contact-item{display:flex;align-items:center;gap:10px;padding:9px 13px;background:var(--bg2);border:1px solid var(--border);border-radius:9px;transition:all 0.22s;cursor:pointer;text-decoration:none}
+.ft-contact-item:hover{border-color:rgba(200,169,110,0.22);transform:translateX(3px)}
+.ft-ci-icon{width:28px;height:28px;border-radius:6px;background:var(--goldA);display:flex;align-items:center;justify-content:center;font-size:0.85rem;flex-shrink:0}
+.ft-ci-text{}
+.ft-ci-label{font-family:var(--font-mono);font-size:0.52rem;color:var(--text3);letter-spacing:0.09em;text-transform:uppercase}
+.ft-ci-val{font-size:0.74rem;color:var(--text);font-weight:500}
+
+/* Quick links columns — PREMIUM UI */
+.ft-col-title{display:flex;align-items:center;gap:10px;margin-bottom:22px}
+.ft-col-title-line{flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent)}
+.ft-col-title-text{font-family:var(--font-mono);font-size:0.57rem;color:var(--gold);letter-spacing:0.16em;text-transform:uppercase;white-space:nowrap}
+.ft-nav-list{display:flex;flex-direction:column;gap:2px}
+
+/* Premium nav item with left border accent */
+.ft-nav-item{display:flex;align-items:center;gap:0;padding:0;border-radius:8px;overflow:hidden;transition:all 0.2s;cursor:pointer;border:none;background:transparent;width:100%;text-align:left;font-family:var(--font-ui);position:relative}
+.ft-nav-item::before{content:'';width:0;height:100%;background:linear-gradient(180deg,var(--gold),rgba(200,169,110,0.4));position:absolute;left:0;top:0;border-radius:2px 0 0 2px;transition:width 0.22s var(--ease-out)}
+.ft-nav-item:hover::before{width:2px}
+.ft-nav-item-inner{display:flex;align-items:center;justify-content:space-between;width:100%;padding:9px 10px 9px 14px;transition:all 0.2s}
+.ft-nav-item:hover .ft-nav-item-inner{padding-left:18px;background:rgba(200,169,110,0.04);border-radius:8px}
+.ft-nav-item-left{display:flex;align-items:center;gap:9px}
+.ft-nav-glyph{width:18px;height:18px;border-radius:4px;background:var(--bg2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:0.65rem;flex-shrink:0;transition:all 0.2s}
+.ft-nav-item:hover .ft-nav-glyph{background:var(--goldA);border-color:rgba(200,169,110,0.25)}
+.ft-nav-text{font-size:0.77rem;color:var(--text2);transition:color 0.2s;font-weight:500}
+.ft-nav-item:hover .ft-nav-text{color:var(--text)}
+.ft-nav-arrow{font-size:0.55rem;color:var(--text3);transition:all 0.22s;opacity:0}
+.ft-nav-item:hover .ft-nav-arrow{color:var(--gold);opacity:1;transform:translateX(2px)}
+.ft-nav-badge{font-family:var(--font-mono);font-size:0.5rem;padding:2px 6px;border-radius:3px;background:rgba(200,169,110,0.1);color:var(--gold);border:1px solid rgba(200,169,110,0.18);letter-spacing:0.05em;text-transform:uppercase}
+
+/* Social cards */
+.ft-social-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:20px}
+.ft-soc-card{padding:12px;border:1px solid var(--border);border-radius:11px;background:var(--bg2);cursor:pointer;transition:all 0.25s;text-decoration:none;display:flex;flex-direction:column;gap:7px}
+.ft-soc-card:hover{transform:translateY(-3px);box-shadow:0 10px 28px rgba(0,0,0,0.3)}
+.ft-soc-icon-row{display:flex;align-items:center;justify-content:space-between}
+.ft-soc-icon{font-size:1.1rem}
+.ft-soc-ext{font-size:0.5rem;color:var(--text3);font-family:var(--font-mono);letter-spacing:0.08em;opacity:0;transition:opacity 0.2s}
+.ft-soc-card:hover .ft-soc-ext{opacity:1}
+.ft-soc-name{font-size:0.71rem;font-weight:700;color:var(--text)}
+.ft-soc-handle{font-family:var(--font-mono);font-size:0.56rem;color:var(--text3)}
+.ft-soc-card.s-ig:hover{border-color:#dd2a7b;background:rgba(221,42,123,0.05)}
+.ft-soc-card.s-wa:hover{border-color:#25D366;background:rgba(37,211,102,0.05)}
+.ft-soc-card.s-tg:hover{border-color:#0088cc;background:rgba(0,136,204,0.05)}
+.ft-soc-card.s-tw:hover{border-color:#1DA1F2;background:rgba(29,161,242,0.05)}
+
+/* Made in India + bottom */
+.ft-made{font-family:var(--font-mono);font-size:0.6rem;color:var(--text3);display:flex;align-items:center;gap:6px}
+.ft-made-heart{color:var(--red);animation:heartbeat 1.4s ease infinite}
+@keyframes heartbeat{0%,100%{transform:scale(1)}50%{transform:scale(1.2)}}
+
+/* Footer bottom bar */
+.ft-bottom-bar{padding:20px max(18px,5vw)}
+.ft-bottom-inner{max-width:1180px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px}
+.ft-copy{font-size:0.7rem;color:var(--text3);font-family:var(--font-mono)}
+.ft-copy span{color:var(--gold)}
+.ft-legal-row{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.ft-legal-sep{width:1px;height:12px;background:var(--border2);margin:0 2px}
+.ft-legal-pill{padding:5px 12px;border:1px solid var(--border);border-radius:20px;font-size:0.64rem;color:var(--text3);cursor:pointer;transition:all 0.2s;font-family:var(--font-mono);letter-spacing:0.04em;background:transparent}
+.ft-legal-pill:hover{border-color:rgba(200,169,110,0.3);color:var(--gold);background:var(--goldA)}
+
+/* SCROLL TOP */
+#scroll-top{position:fixed;bottom:22px;right:22px;z-index:700;width:42px;height:42px;border-radius:50%;background:var(--bg2);border:1px solid var(--border2);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:1rem;transition:all 0.3s;opacity:0;transform:translateY(14px);pointer-events:none;box-shadow:0 4px 20px rgba(0,0,0,0.4);font-family:var(--font-ui)}
+#scroll-top.vis{opacity:1;transform:none;pointer-events:all}
+#scroll-top:hover{background:var(--goldA);border-color:var(--goldC)}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(70px);z-index:9999;background:var(--bg3);border:1px solid var(--border2);border-radius:10px;padding:12px 18px;display:flex;align-items:center;gap:10px;font-size:0.78rem;color:var(--text);opacity:0;transition:all 0.35s var(--ease-spring);pointer-events:none;white-space:nowrap;box-shadow:0 8px 32px rgba(0,0,0,0.5)}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);pointer-events:all}
+
+/* REVEAL */
+.reveal{opacity:0;transform:translateY(26px);transition:opacity 0.68s ease,transform 0.68s ease}
+.reveal.visible{opacity:1;transform:none}
+.rd1{transition-delay:0.1s}.rd2{transition-delay:0.2s}.rd3{transition-delay:0.3s}.rd4{transition-delay:0.4s}
+
+/* COURSES PAGE */
+#page-courses{padding-top:var(--nav-h);background:var(--bg)}
+.pg-hero{padding:60px max(18px,5vw) 40px;background:var(--bg2);border-bottom:1px solid var(--border);position:relative;overflow:hidden}
+.pg-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 600px 300px at 60% 50%,rgba(200,169,110,0.06),transparent);pointer-events:none}
+.pg-hero-inner{max-width:1180px;margin:0 auto;position:relative;z-index:1}
+.pg-back{display:inline-flex;align-items:center;gap:7px;font-family:var(--font-mono);font-size:0.62rem;color:var(--text3);letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;margin-bottom:24px;transition:color 0.2s;background:none;border:none;padding:0}
+.pg-back:hover{color:var(--gold)}
+.pg-hero-h{font-family:var(--font-display);font-size:clamp(2.2rem,4vw,3.4rem);font-weight:900;color:var(--text);margin-bottom:10px}
+.pg-hero-h em{color:transparent;background:linear-gradient(120deg,var(--gold2),var(--gold));-webkit-background-clip:text;background-clip:text;font-style:italic}
+.pg-hero-p{font-size:0.88rem;color:var(--text2);max-width:520px;line-height:1.8;margin-bottom:32px}
+.pg-outcomes{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:32px}
+.po-item{background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:18px 20px}
+.po-label-row{display:flex;justify-content:space-between;margin-bottom:8px;align-items:center}
+.po-name{font-size:0.78rem;color:var(--text2);font-weight:500}
+.po-pct{font-family:var(--font-mono);font-size:0.72rem;color:var(--gold)}
+.po-track{height:3px;background:var(--bg4);border-radius:4px;overflow:hidden}
+.po-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--gold),rgba(200,169,110,0.35));animation:fillA 1.8s var(--ease-out) both}
+@keyframes fillA{from{width:0%}to{width:var(--p)}}
+.courses-main{max-width:1180px;margin:0 auto;padding:40px max(18px,5vw) 80px}
+.filter-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.f-btn{padding:7px 16px;border-radius:20px;border:1px solid var(--border);background:transparent;font-family:var(--font-ui);font-size:0.72rem;font-weight:600;color:var(--text3);cursor:pointer;transition:all 0.2s}
+.f-btn:hover{border-color:rgba(200,169,110,0.3);color:var(--text2)}
+.f-btn.active{background:var(--goldA);border-color:rgba(200,169,110,0.3);color:var(--gold)}
+.search-row{display:flex;align-items:center;gap:14px;margin-bottom:32px;flex-wrap:wrap}
+.search-box{display:flex;gap:10px;align-items:center;background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:10px 16px;flex:1;max-width:360px}
+.search-box input{flex:1;background:none;border:none;outline:none;color:var(--text);font-family:var(--font-ui);font-size:0.82rem}
+.search-box input::placeholder{color:var(--text3)}
+.results-lbl{font-family:var(--font-mono);font-size:0.65rem;color:var(--text3);letter-spacing:0.05em}
+.cat-section{margin-bottom:52px}
+.cat-hdr{display:flex;align-items:center;gap:14px;margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid var(--border)}
+.cat-emoji{font-size:1.3rem}
+.cat-name-lbl{font-family:var(--font-display);font-size:1.1rem;font-weight:700;color:var(--text)}
+.cat-count-pill{font-family:var(--font-mono);font-size:0.6rem;color:var(--text3);background:var(--bg3);border:1px solid var(--border);padding:2px 8px;border-radius:4px}
+.courses-grid-inner{display:grid;grid-template-columns:repeat(auto-fill,minmax(248px,1fr));gap:13px}
+.c-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:18px;cursor:pointer;transition:all 0.25s;position:relative;overflow:hidden;display:flex;flex-direction:column;gap:9px}
+.c-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(200,169,110,0.18),transparent);opacity:0;transition:opacity 0.3s}
+.c-card:hover{border-color:rgba(200,169,110,0.22);transform:translateY(-3px);box-shadow:0 14px 42px rgba(0,0,0,0.38)}
+.c-card:hover::before{opacity:1}
+.c-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+.c-emoji{font-size:1.5rem;line-height:1}
+.c-badge{font-family:var(--font-mono);font-size:0.54rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--gold);background:var(--goldA);border:1px solid rgba(200,169,110,0.18);padding:2px 7px;border-radius:3px;white-space:nowrap;flex-shrink:0}
+.c-title{font-family:var(--font-display);font-size:0.9rem;font-weight:700;color:var(--text);line-height:1.3}
+.c-meta{display:flex;gap:10px;flex-wrap:wrap}
+.c-meta span{font-family:var(--font-mono);font-size:0.6rem;color:var(--text3)}
+.c-preview-tag{display:inline-flex;align-items:center;gap:5px;font-family:var(--font-mono);font-size:0.58rem;color:var(--green);background:rgba(34,197,94,0.07);border:1px solid rgba(34,197,94,0.15);padding:2px 7px;border-radius:3px;letter-spacing:0.06em}
+.c-footer{margin-top:auto;display:flex;align-items:center;justify-content:space-between;padding-top:10px;border-top:1px solid var(--border)}
+.c-price{font-family:var(--font-display);font-size:1.1rem;font-weight:900;color:var(--gold)}
+.c-btn{padding:7px 13px;background:var(--goldA);color:var(--gold);border:1px solid rgba(200,169,110,0.2);border-radius:6px;font-size:0.69rem;font-weight:700;cursor:pointer;transition:all 0.2s;white-space:nowrap;font-family:var(--font-ui)}
+.c-btn:hover{background:var(--goldB);border-color:rgba(200,169,110,0.35)}
+.empty-state{text-align:center;padding:60px 20px;color:var(--text3);grid-column:1/-1}
+.empty-state .es-icon{font-size:3rem;margin-bottom:12px}
+
+/* BLOG PAGE */
+#page-blog{padding-top:var(--nav-h);background:var(--bg)}
+.blog-hero{padding:70px max(18px,5vw) 50px;background:var(--bg2);border-bottom:1px solid var(--border);position:relative;overflow:hidden}
+.blog-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 700px 400px at 70% 50%,rgba(200,169,110,0.07),transparent);pointer-events:none}
+.blog-hero-inner{max-width:1180px;margin:0 auto;position:relative;z-index:1;display:grid;grid-template-columns:1fr auto;align-items:center;gap:40px}
+.blog-hero-eyebrow{font-family:var(--font-mono);font-size:0.6rem;color:var(--gold);letter-spacing:0.2em;text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.blog-hero-eyebrow::before{content:'';width:24px;height:1px;background:var(--gold)}
+.blog-hero-h{font-family:var(--font-display);font-size:clamp(2.4rem,4.5vw,3.8rem);font-weight:900;line-height:1.05;margin-bottom:14px;color:var(--text)}
+.blog-hero-h em{color:transparent;background:linear-gradient(120deg,var(--gold3),var(--gold));-webkit-background-clip:text;background-clip:text;font-style:italic}
+.blog-hero-p{font-size:0.88rem;color:var(--text2);line-height:1.9;max-width:520px;margin-bottom:28px}
+.blog-hero-stats{display:flex;gap:32px;flex-wrap:wrap}
+.bhs-item{display:flex;flex-direction:column;gap:3px}
+.bhs-n{font-family:var(--font-display);font-size:1.8rem;font-weight:900;color:var(--gold);line-height:1}
+.bhs-l{font-size:0.65rem;color:var(--text3);letter-spacing:0.04em}
+.blog-logo-wrap{display:flex;flex-direction:column;align-items:center;gap:10px}
+.blog-logo-img{width:90px;height:90px;object-fit:contain;border-radius:20px;box-shadow:0 0 60px rgba(200,169,110,0.25),0 20px 40px rgba(0,0,0,0.4);border:1px solid rgba(200,169,110,0.2)}
+.blog-logo-name{font-family:var(--font-display);font-size:1rem;font-weight:900;color:transparent;background:linear-gradient(120deg,var(--gold2),var(--gold));-webkit-background-clip:text;background-clip:text}
+.blog-main{max-width:1180px;margin:0 auto;padding:50px max(18px,5vw) 80px}
+.blog-cat-nav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:40px;padding-bottom:20px;border-bottom:1px solid var(--border)}
+.blog-cat-btn{padding:8px 18px;border-radius:20px;border:1px solid var(--border);background:transparent;font-family:var(--font-ui);font-size:0.73rem;font-weight:600;color:var(--text3);cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:6px}
+.blog-cat-btn:hover{border-color:rgba(200,169,110,0.3);color:var(--text2)}
+.blog-cat-btn.active{background:var(--goldA);border-color:rgba(200,169,110,0.35);color:var(--gold)}
+.blog-section{margin-bottom:64px}
+.blog-section-header{display:flex;align-items:center;gap:16px;margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border);position:relative}
+.blog-section-header::after{content:'';position:absolute;bottom:-1px;left:0;width:60px;height:2px;background:var(--gold);border-radius:2px}
+.bsh-emoji{font-size:1.5rem}
+.bsh-info{flex:1}
+.bsh-name{font-family:var(--font-display);font-size:1.25rem;font-weight:700;color:var(--text);margin-bottom:2px}
+.bsh-count{font-family:var(--font-mono);font-size:0.6rem;color:var(--text3);letter-spacing:0.08em}
+.blog-cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
+.blog-card{background:var(--bg2);border:1px solid var(--border);border-radius:16px;overflow:hidden;transition:all 0.3s;position:relative;display:flex;flex-direction:column}
+.blog-card:hover{border-color:rgba(200,169,110,0.25);transform:translateY(-4px);box-shadow:0 18px 50px rgba(0,0,0,0.4)}
+.blog-card-accent{height:3px;background:linear-gradient(90deg,var(--bc-color,var(--gold)),transparent)}
+.blog-card-head{padding:20px 20px 0;display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.blog-card-icon{font-size:2rem;line-height:1;flex-shrink:0}
+.blog-card-badges{display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+.blog-card-badge{font-family:var(--font-mono);font-size:0.52rem;letter-spacing:0.08em;text-transform:uppercase;padding:3px 8px;border-radius:4px;background:var(--goldA);color:var(--gold);border:1px solid rgba(200,169,110,0.18);white-space:nowrap}
+.blog-card-new{background:rgba(34,197,94,0.08);color:var(--green);border-color:rgba(34,197,94,0.18)}
+.blog-card-body{padding:14px 20px;flex:1}
+.blog-card-title{font-family:var(--font-display);font-size:1rem;font-weight:700;color:var(--text);line-height:1.3;margin-bottom:8px}
+.blog-card-desc{font-size:0.76rem;color:var(--text2);line-height:1.78;margin-bottom:14px}
+.blog-card-tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:14px}
+.blog-card-tag{font-family:var(--font-mono);font-size:0.55rem;color:var(--text3);background:var(--bg3);border:1px solid var(--border);padding:2px 7px;border-radius:3px;letter-spacing:0.05em}
+.blog-card-meta{display:flex;gap:12px;flex-wrap:wrap;padding:12px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);margin-bottom:14px}
+.blog-card-meta-item{display:flex;align-items:center;gap:5px;font-family:var(--font-mono);font-size:0.6rem;color:var(--text3)}
+.blog-card-skills{list-style:none;display:flex;flex-direction:column;gap:4px}
+.blog-card-skills li{font-size:0.73rem;color:var(--text2);display:flex;align-items:center;gap:6px}
+.blog-card-skills li::before{content:"✓";color:var(--bc-color,var(--gold));font-size:0.6rem;font-weight:800;flex-shrink:0}
+.blog-card-footer{padding:14px 20px 18px;display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:auto}
+.blog-card-price{font-family:var(--font-display);font-size:1.3rem;font-weight:900;color:var(--bc-color,var(--gold))}
+.blog-card-lpa{font-family:var(--font-mono);font-size:0.6rem;color:var(--green);background:rgba(34,197,94,0.07);border:1px solid rgba(34,197,94,0.15);padding:3px 8px;border-radius:4px}
+.blog-enroll-btn{padding:9px 18px;background:var(--goldA);color:var(--gold);border:1px solid rgba(200,169,110,0.22);border-radius:8px;font-size:0.72rem;font-weight:700;cursor:pointer;transition:all 0.2s;font-family:var(--font-ui);white-space:nowrap}
+.blog-enroll-btn:hover{background:var(--goldB)}
+.blog-preview-btn{padding:9px 14px;background:transparent;color:var(--text3);border:1px solid var(--border);border-radius:8px;font-size:0.7rem;font-weight:600;cursor:pointer;transition:all 0.2s;font-family:var(--font-ui);display:flex;align-items:center;gap:5px}
+.blog-preview-btn:hover{border-color:rgba(200,169,110,0.28);color:var(--gold)}
+
+/* RESPONSIVE */
+@media(max-width:980px){
+  .hero-inner{grid-template-columns:1fr;gap:52px}
+  .hero-right{display:none}
+  .about-grid{grid-template-columns:1fr}
+  .nav-links{display:none}
+  .hamburger{display:flex}
+  .nav-ghost{display:none}
+  .how-steps{grid-template-columns:1fr 1fr}
+  .stats-grid{grid-template-columns:1fr 1fr}
+  .pg-outcomes{grid-template-columns:1fr}
+  .ft-main-inner{grid-template-columns:1fr 1fr}
+  .blog-hero-inner{grid-template-columns:1fr}
+  .blog-logo-wrap{display:none}
+  .ft-cta-inner{flex-direction:column;align-items:flex-start}
+}
+@media(max-width:600px){
+  section{padding:70px 16px}
+  #stats{padding:60px 16px}
+  .hero-stats{grid-template-columns:1fr 1fr}
+  .how-steps{grid-template-columns:1fr 1fr}
+  .how-line{display:none}
+  .bm-skills-grid{grid-template-columns:1fr}
+  .vm-box{max-height:100vh;border-radius:0;margin:0}
+  .blog-cards-grid{grid-template-columns:1fr}
+  .ft-social-grid{grid-template-columns:1fr 1fr}
+  .ft-main-inner{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body><div id="cursor-glow"></div>
+<div id="cursor-dot"></div>
+
+<!-- SPLASH -->
+<div id="splash">
+  <div class="sp-logo-wrap">
+    <img class="sp-logo-img" src="https://raw.githubusercontent.com/Biluxe10/biluxe10-assets/main/bundles/Screenshot_20260104-140226.jpg" alt="Biluxe10 Logo" onerror="this.style.display='none'">
+    <span class="sp-wordmark">Biluxe<sup>10</sup></span>
+  </div>
+  <div class="sp-tagline">Advanced Ed-Tech · India</div>
+  <div class="sp-bar"><div class="sp-bar-track"><div class="sp-bar-fill"></div></div></div>
+</div>
+
+<!-- COOKIE -->
+<div id="cookie">
+  <div class="ck-t">We use cookies 🍪</div>
+  <p class="ck-d">We use cookies to deliver a better experience. <a href="#" style="color:var(--gold)" onclick="openLegal('privacy');return false">Privacy Policy</a>.</p>
+  <div class="ck-btns">
+    <button class="ck-yes" onclick="dismissCookie()">Accept All</button>
+    <button class="ck-no" onclick="dismissCookie()">Decline</button>
+  </div>
+</div>
+
+<!-- SCROLL TOP -->
+<button id="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Back to top">↑</button>
+
+<!-- TOAST -->
+<div class="toast" id="toast"><span id="toastIcon">✓</span><span id="toastMsg"></span></div>
+
+<!-- FULLSCREEN CLOSE OVERLAY -->
+<button class="fs-close-overlay" id="fsCloseBtn" onclick="exitFullscreen()">✕</button>
+
+<!-- NAV -->
+<nav id="navbar">
+  <div class="nav-logo" onclick="showPage('home')">
+    <img src="https://raw.githubusercontent.com/Biluxe10/biluxe10-assets/main/bundles/Screenshot_20260104-140226.jpg" alt="Biluxe10" onerror="this.style.display='none'">
+    <span class="nav-logo-text">Biluxe<sup>10</sup></span>
+  </div>
+  <div class="nav-links">
+    <a onclick="showPage('home');scrollToSec('hero')">Home</a>
+    <a onclick="showPage('courses')">Courses</a>
+    <a onclick="showPage('home');scrollToSec('bundles')">Bundles</a>
+    <a onclick="showPage('blog')">Blog</a>
+    <a onclick="showPage('home');scrollToSec('about')">About</a>
+    <a onclick="showPage('home');scrollToSec('faq')">FAQ</a>
+  </div>
+  <div class="nav-right">
+    <button class="nav-ghost" onclick="location.href='auth.html'">Sign In</button>
+    <button class="nav-cta" onclick="location.href='auth.html'">Sign Up Free →</button>
+  </div>
+  <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- MOBILE MENU -->
+<div id="mobile-menu">
+  <div class="mm-inner">
+    <div class="mm-label">Navigate</div>
+    <div class="mm-links">
+      <button class="mm-link" onclick="showPage('home');closeMenu();scrollToSec('hero')"><span>🏠 Home</span><span class="arr">›</span></button>
+      <button class="mm-link" onclick="showPage('courses');closeMenu()"><span>📚 Courses</span><span class="arr">›</span></button>
+      <button class="mm-link" onclick="showPage('home');closeMenu();scrollToSec('bundles')"><span>🚀 Bundles</span><span class="arr">›</span></button>
+      <button class="mm-link" onclick="showPage('blog');closeMenu()"><span>✍️ Blog</span><span class="arr">›</span></button>
+      <button class="mm-link" onclick="showPage('home');closeMenu();scrollToSec('about')"><span>🏢 About</span><span class="arr">›</span></button>
+      <button class="mm-link" onclick="showPage('home');closeMenu();scrollToSec('faq')"><span>❓ FAQ</span><span class="arr">›</span></button>
+    </div>
+    <div class="mm-auth">
+      <button class="mm-btn-p" onclick="location.href='auth.html'">Sign Up Free →</button>
+      <button class="mm-btn-s" onclick="location.href='auth.html'">Sign In</button>
+    </div>
+  </div>
+</div>
+
+<!-- BUNDLE MODAL -->
+<div id="bundle-modal">
+  <div class="bm-bg" onclick="closeBundleModal()"></div>
+  <div class="bm-card" id="bm-inner">
+    <button class="bm-close" onclick="closeBundleModal()">✕</button>
+  </div>
+</div>
+
+<!-- VIDEO MODAL - FULLSCREEN CAPABLE -->
+<div id="video-modal" onclick="handleVmBgClick(event)">
+  <div class="vm-box" onclick="event.stopPropagation()">
+    <div class="vm-header">
+      <div>
+        <div class="vm-title" id="vmTitle">Course Title</div>
+        <div class="vm-cat" id="vmCat">Category</div>
+      </div>
+      <div class="vm-header-right">
+        <button class="vm-fs-btn" onclick="toggleFullscreen()" title="Toggle Fullscreen">⛶</button>
+        <button class="vm-close" onclick="closeVideoModal()">✕</button>
+      </div>
+    </div>
+    <div class="vm-player-wrap" id="vmPlayerWrap" oncontextmenu="return false">
+      <div class="player-ratio">
+        <div id="vmPlayerContainer"></div>
+        <div class="video-watermark" id="vmWatermark">BILUXE10</div>
+        <div class="preview-timer hidden" id="vmTimer">⏱ 2:00</div>
+        <div class="vm-overlay" id="vmPreviewOverlay">
+          <div class="vo-icon">🔒</div>
+          <div class="vo-title" style="color:var(--gold)">Preview Ended</div>
+          <div class="vo-desc">You've watched the 2-minute free preview. Enroll to unlock the full course.</div>
+          <div class="vo-cta">
+            <button class="vo-btn-p" onclick="closeVideoModal();location.href='auth.html'">Enroll Now →</button>
+            <button class="vo-btn-s" onclick="closeVideoModal()">Browse Courses</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="vm-info">
+      <div class="vm-meta-row" id="vmMetaRow"></div>
+      <div class="vm-enroll-cta" id="vmEnrollCta">
+        <div class="vec-left">
+          <div class="vec-title">Get Full Access</div>
+          <div class="vec-sub">Certificate · Project files · Lifetime access</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+          <div class="vec-price" id="vmPrice">₹999</div>
+          <button class="vec-btn" onclick="closeVideoModal();location.href='auth.html'">Enroll Now →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- LEGAL MODAL — CREATIVE -->
+<div id="legal-modal" onclick="handleLmBgClick(event)">
+  <div class="lm-box" onclick="event.stopPropagation()">
+    <div class="lm-deco-bar"></div>
+    <div class="lm-header">
+      <div class="lm-header-left">
+        <div class="lm-icon-wrap" id="lmIconWrap" style="background:var(--goldA);border:1px solid rgba(200,169,110,0.2)">🔒</div>
+        <div>
+          <div class="lm-title" id="lmTitle">Legal</div>
+          <div class="lm-subtitle" id="lmSubtitle">Biluxe10 Advanced Ed-Tech</div>
+        </div>
+      </div>
+      <button class="lm-close" onclick="closeLegal()">✕</button>
+    </div>
+    <div class="lm-body" id="lmBody"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════
+     PAGE: HOME
+═══════════════════ -->
+<div id="page-home" class="page active">
+
+  <!-- HERO -->
+  <section id="hero">
+    <div class="hero-bg-grid"></div>
+    <div class="hero-blob1"></div>
+    <div class="hero-blob2"></div>
+    <div class="hero-inner">
+      <div class="hero-left">
+        <div class="hero-pill"><span class="pill-dot"></span>India's Advanced Ed-Tech Platform</div>
+        <h1 class="hero-h1">Learn Digital Skills.<br><span class="line2">Build Your Career.</span></h1>
+        <p class="hero-p">Structured courses in AI, Marketing, and Development — with real projects, industry certificates, and career support. Built for India's next generation of professionals.</p>
+        <div class="hero-actions">
+          <button class="btn-gold" onclick="scrollToSec('bundles')">Explore Bundles</button>
+          <button class="btn-outline" onclick="showPage('courses')">Browse Courses →</button>
+        </div>
+        <div class="hero-stats">
+          <div class="h-stat reveal"><div class="h-stat-n">Growing</div><div class="h-stat-l">Learner Community</div></div>
+          <div class="h-stat reveal rd1"><div class="h-stat-n">82+</div><div class="h-stat-l">Expert Courses</div></div>
+          <div class="h-stat reveal rd2"><div class="h-stat-n">4.9★</div><div class="h-stat-l">Average Rating</div></div>
+          <div class="h-stat reveal rd3"><div class="h-stat-n">95%</div><div class="h-stat-l">Completion Rate</div></div>
+        </div>
+      </div>
+      <div class="hero-right">
+        <div class="hero-live"><div class="live-dot"></div>LIVE · 127 enrolled today</div>
+        <div class="bpc">
+          <div class="bpc-head">
+            <span class="bpc-label">Learning Bundles</span>
+            <div class="bpc-dots-wrap" id="bpcDots"></div>
+          </div>
+          <div class="bpc-overflow">
+            <div class="bpc-track" id="bpcTrack"></div>
+          </div>
+          <div class="bpc-foot">
+            <button class="bpc-arr" onclick="bpcSlide(-1)">←</button>
+            <button class="bpc-arr" onclick="bpcSlide(1)">→</button>
+          </div>
+        </div>
+        <div class="hero-badge">
+          <div class="hb-icon">🎓</div>
+          <div class="hb-t"><strong>Industry Certificate</strong>Included with every bundle</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MARQUEE -->
+  <div class="marquee-wrap" aria-hidden="true">
+    <div class="mq-inner" id="mqInner">
+      <div class="mq-group" id="mqG1"></div>
+      <div class="mq-group" id="mqG2"></div>
+    </div>
+  </div>
+
+  <!-- WHY -->
+  <section id="why">
+    <div class="container">
+      <div class="sec-eyebrow">Why Biluxe10</div>
+      <h2 class="sec-h reveal">What makes us <em>different</em></h2>
+      <p class="sec-p reveal">We built Biluxe10 to solve a real problem — most online courses don't help you actually get a job. We do.</p>
+      <div class="why-grid">
+        <div class="why-card reveal"><div class="why-num">01</div><div class="why-icon">📁</div><div class="why-t">Project-Based Learning</div><div class="why-d">Build real portfolio projects as you learn — not just watch videos. Employers want proof, not certificates alone.</div></div>
+        <div class="why-card reveal rd1"><div class="why-num">02</div><div class="why-icon">💼</div><div class="why-t">Career Support</div><div class="why-d">Resume review, LinkedIn profile help, and mock interview prep. We stay with you until you land your role.</div></div>
+        <div class="why-card reveal rd2"><div class="why-num">03</div><div class="why-icon">♾️</div><div class="why-t">Lifetime Access</div><div class="why-d">One purchase. You get every future update, new modules, and community access — permanently.</div></div>
+        <div class="why-card reveal rd3"><div class="why-num">04</div><div class="why-icon">✅</div><div class="why-t">Industry Mentors</div><div class="why-d">Learn from professionals with 10+ years at top companies. Weekly live doubt sessions included.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BUNDLES -->
+  <section id="bundles">
+    <div class="container">
+      <div class="sec-eyebrow">Learning Bundles</div>
+      <h2 class="sec-h reveal">Choose your <em>career path</em></h2>
+      <p class="sec-p reveal">Nine structured bundles with clear salary targets. Each includes real projects, certificate, and career support.</p>
+      <div class="bc-outer">
+        <div class="bc-scroll">
+          <div class="bc-track" id="bcTrack"></div>
+        </div>
+        <div class="bc-controls">
+          <button class="bc-btn" onclick="bcSlide(-1)">←</button>
+          <div class="bc-dots" id="bcDots"></div>
+          <button class="bc-btn" onclick="bcSlide(1)">→</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW -->
+  <section id="how">
+    <div class="container">
+      <div class="sec-eyebrow" style="justify-content:center;margin:0 auto 14px">How It Works</div>
+      <h2 class="sec-h reveal" style="text-align:center;margin-bottom:0">Four steps to your <em>career goal</em></h2>
+      <div class="how-steps">
+        <div class="how-line"></div>
+        <div class="how-step reveal"><div class="how-circle">01</div><div class="how-t">Sign Up Free</div><div class="how-d">Create your account in under 2 minutes. No payment required to get started.</div></div>
+        <div class="how-step reveal rd1"><div class="how-circle">02</div><div class="how-t">Choose Your Path</div><div class="how-d">Pick Learner or Partner. Both have real earning potential.</div></div>
+        <div class="how-step reveal rd2"><div class="how-circle">03</div><div class="how-t">Learn & Build</div><div class="how-d">Video lessons, hands-on projects, and weekly live mentorship sessions.</div></div>
+        <div class="how-step reveal rd3"><div class="how-circle">04</div><div class="how-t">Get Certified</div><div class="how-d">Earn your certificate and get career support — resume, LinkedIn, and mock interview prep.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <section id="stats">
+    <div class="container">
+      <div class="stats-grid">
+        <div class="stat-cell reveal"><div class="stat-n">82+</div><div class="stat-l">Expert Courses</div></div>
+        <div class="stat-cell reveal rd1"><div class="stat-n">50+</div><div class="stat-l">Industry Mentors</div></div>
+        <div class="stat-cell reveal rd2"><div class="stat-n">95%</div><div class="stat-l">Completion Rate</div></div>
+        <div class="stat-cell reveal rd3"><div class="stat-n">4.9★</div><div class="stat-l">Learner Rating</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section id="testimonials">
+    <div class="container">
+      <div class="sec-eyebrow">Learner Stories</div>
+      <h2 class="sec-h reveal">Real results from <em>real learners</em></h2>
+      <div class="t-grid">
+        <div class="t-card reveal"><div class="t-stars">★★★★★</div><p class="t-text">"The LEGEND bundle changed my career trajectory completely. Got placed as an ML Engineer within 3 months."</p><div class="t-author"><div class="t-av">PS</div><div><div class="t-name">Priya S.</div><div class="t-role">ML Engineer · Bengaluru</div></div><span class="t-badge">₹15 LPA</span></div></div>
+        <div class="t-card reveal rd1"><div class="t-stars">★★★★★</div><p class="t-text">"The Freelance Formula course got me my first Fiverr client within 2 weeks. Now earning steadily from home."</p><div class="t-author"><div class="t-av">RM</div><div><div class="t-name">Rahul M.</div><div class="t-role">Freelancer · Pune</div></div><span class="t-badge">₹80K/mo</span></div></div>
+        <div class="t-card reveal rd2"><div class="t-stars">★★★★★</div><p class="t-text">"The career support team was genuinely helpful at every stage. Mock interviews prepared me perfectly."</p><div class="t-author"><div class="t-av">AK</div><div><div class="t-name">Ananya K.</div><div class="t-role">Marketing Exec · Hyderabad</div></div><span class="t-badge">Placed</span></div></div>
+        <div class="t-card reveal rd3"><div class="t-stars">★★★★★</div><p class="t-text">"MERN stack project learning is genuinely practical. I had a working e-commerce project before finishing."</p><div class="t-author"><div class="t-av">VT</div><div><div class="t-name">Vikram T.</div><div class="t-role">Full-Stack Dev · Chennai</div></div><span class="t-badge">₹7 LPA</span></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="container">
+      <div class="about-grid">
+        <div>
+          <div class="sec-eyebrow">About Us</div>
+          <h2 class="sec-h reveal">Built for India's <em>next generation</em></h2>
+          <p style="font-size:0.88rem;color:var(--text2);line-height:1.9;margin-bottom:20px;max-width:480px" class="reveal">Biluxe10 is an ed-tech platform built with a single focus: make quality digital skill development accessible and outcome-driven. We're a career launchpad for students, working professionals, and anyone who wants to build something real.</p>
+          <p style="font-family:var(--font-mono);font-size:0.74rem;color:var(--gold);border-left:2px solid var(--gold);padding-left:14px;line-height:1.7;margin-bottom:30px" class="reveal">"To empower 1 million Indians with job-ready skills by 2029."</p>
+          <table class="diff-table reveal">
+            <tr><th>Traditional Ed-Tech</th><th>Biluxe10</th></tr>
+            <tr><td>Theory-heavy content</td><td>Project-based curriculum</td></tr>
+            <tr><td>No career support</td><td>Resume + LinkedIn + mock interviews</td></tr>
+            <tr><td>One-time access</td><td>Lifetime access + updates</td></tr>
+            <tr><td>No salary targets</td><td>Clear LPA targets per bundle</td></tr>
+          </table>
+        </div>
+        <div>
+          <div class="team-stack reveal">
+            <div class="team-item"><div class="team-ico">👨‍💼</div><div><div class="team-n">Founder &amp; CEO</div><div class="team-r">Years of experience in ed-tech &amp; digital marketing</div></div></div>
+            <div class="team-item"><div class="team-ico">👩‍🏫</div><div><div class="team-n">Head of Curriculum</div><div class="team-r">Ex-Google · AI/ML Specialist</div></div></div>
+            <div class="team-item"><div class="team-ico">👨‍🏫</div><div><div class="team-n">Mentorship Panel</div><div class="team-r">Experts from Amazon, Microsoft, Flipkart</div></div></div>
+          </div>
+          <div class="about-nums">
+            <div class="an reveal"><div class="an-n">82+</div><div class="an-l">Job-Ready Courses</div></div>
+            <div class="an reveal rd1"><div class="an-n">50+</div><div class="an-l">Industry Mentors</div></div>
+            <div class="an reveal rd2"><div class="an-n">95%</div><div class="an-l">Completion Rate</div></div>
+            <div class="an reveal rd3"><div class="an-n">4.9★</div><div class="an-l">Learner Rating</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq">
+    <div class="container">
+      <div class="sec-eyebrow" style="justify-content:center;margin:0 auto 14px">FAQ</div>
+      <h2 class="sec-h reveal" style="text-align:center">Common <em>questions</em></h2>
+      <div class="faq-inner">
+        <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)">How long does it take to get a reply? <span class="faq-icon">+</span></button><div class="faq-a"><p>Within 12 hours — usually 2 to 4 hours. Our support team is active 9 AM to 9 PM IST, Monday to Saturday, via email and Telegram.</p></div></div>
+        <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)">Can I get a demo before enrolling? <span class="faq-icon">+</span></button><div class="faq-a"><p>Yes! Each course on our platform has a free 2-minute preview built in. Just click "Preview 2 min" on any course card — no login required.</p></div></div>
+        <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)">Do I get lifetime access? <span class="faq-icon">+</span></button><div class="faq-a"><p>Yes. One payment gives you permanent access — all future updates, new modules, and community access are included.</p></div></div>
+        <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)">Are the certificates recognised by employers? <span class="faq-icon">+</span></button><div class="faq-a"><p>Our certificates demonstrate real, project-based skills. They are recognised by companies across India and are supported by your actual portfolio work — which matters more to hiring managers.</p></div></div>
+        <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)">What career support do you provide? <span class="faq-icon">+</span></button><div class="faq-a"><p>Resume review, LinkedIn profile optimisation, and mock interview practice. Our team supports you actively until you're placed — this is included in every bundle.</p></div></div>
+        <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)">I'm facing a technical issue. Who do I contact? <span class="faq-icon">+</span></button><div class="faq-a"><p>WhatsApp us at +91 90192 54743 or email help.biluxe10@gmail.com with a screenshot. Our team will resolve it quickly.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ FOOTER — PREMIUM CREATIVE ═══ -->
+  <footer>
+    <!-- CTA Band -->
+    <div class="ft-cta-band">
+      <div class="ft-cta-inner">
+        <div class="ft-cta-text">
+          <h3>Ready to start your career journey?</h3>
+          <p>Join thousands of learners building real skills with Biluxe10.</p>
+        </div>
+        <div class="ft-cta-actions">
+          <button class="ft-cta-btn-p" onclick="location.href='auth.html'">Sign Up Free →</button>
+          <button class="ft-cta-btn-s" onclick="showPage('courses')">Browse Courses</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Footer Grid -->
+    <div class="ft-main">
+      <div class="ft-main-inner">
+
+        <!-- Brand Column -->
+        <div class="ft-brand">
+          <div class="ft-brand-logo">
+            <img src="https://raw.githubusercontent.com/Biluxe10/biluxe10-assets/main/bundles/Screenshot_20260104-140226.jpg" alt="Biluxe10" onerror="this.style.display='none'" style="width:38px;height:38px;object-fit:contain;border-radius:9px">
+            <span class="ft-brand-name">Biluxe<sup>10</sup></span>
+          </div>
+          <div class="ft-brand-tagline">Advanced Ed-Tech · India</div>
+          <p class="ft-brand-desc">An ed-tech platform built to make quality digital skill development accessible, structured, and outcome-focused for India's next generation.</p>
+          <div class="ft-contact-stack">
+            <a href="mailto:biluxe10@gmail.com" class="ft-contact-item">
+              <div class="ft-ci-icon">📧</div>
+              <div class="ft-ci-text"><div class="ft-ci-label">General</div><div class="ft-ci-val">biluxe10@gmail.com</div></div>
+            </a>
+            <a href="mailto:help.biluxe10@gmail.com" class="ft-contact-item">
+              <div class="ft-ci-icon">🆘</div>
+              <div class="ft-ci-text"><div class="ft-ci-label">Support</div><div class="ft-ci-val">help.biluxe10@gmail.com</div></div>
+            </a>
+            <a href="https://wa.me/919019254743" class="ft-contact-item" target="_blank" rel="noopener">
+              <div class="ft-ci-icon">💬</div>
+              <div class="ft-ci-text"><div class="ft-ci-label">WhatsApp</div><div class="ft-ci-val">+91 90192 54743</div></div>
+            </a>
+          </div>
+        </div>
+
+        <!-- Quick Links — Explore -->
+        <div>
+          <div class="ft-col-title">
+            <div class="ft-col-title-text">Explore</div>
+            <div class="ft-col-title-line"></div>
+          </div>
+          <div class="ft-nav-list">
+            <button class="ft-nav-item" onclick="showPage('home');scrollToSec('hero')">
+              <div class="ft-nav-item-inner">
+                <div class="ft-nav-item-left">
+                  <div class="ft-nav-glyph">⌂</div>
+                  <span class="ft-nav-text">Home</span>
+                </div>
+                <span class="ft-nav-arrow">›</span>
+              </div>
+            </button>
+            <button class="ft-nav-item" onclick="showPage('courses')">
+              <div class="ft-nav-item-inner">
+                <div class="ft-nav-item-left">
+                  <div class="ft-nav-glyph">◫</div>
+                  <span class="ft-nav-text">All Courses</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:6px">
+                  <span class="ft-nav-badge">82+</span>
+                  <span class="ft-nav-arrow">›</span>
+                </div>
+              </div>
+            </button>
+            <button class="ft-nav-item" onclick="showPage('home');scrollToSec('bundles')">
+              <div class="ft-nav-item-inner">
+                <div class="ft-nav-item-left">
+                  <div class="ft-nav-glyph">◈</div>
+                  <span class="ft-nav-text">Bundles & Pricing</span>
+                </div>
+                <span class="ft-nav-arrow">›</span>
+              </div>
+            </button>
+            <button class="ft-nav-item" onclick="showPage('blog')">
+              <div class="ft-nav-item-inner">
+                <div class="ft-nav-item-left">
+                  <div class="ft-nav-glyph">✦</div>
+                  <span class="ft-nav-text">Course Blog</span>
+                </div>
+                <span class="ft-nav-arrow">›</span>
+              </div>
+            </button>
+            <button class="ft-nav-item" onclick="showPage('home');scrollToSec('about')">
+              <div class="ft-nav-item-inner">
+                <div class="ft-nav-item-left">
+                  <div class="ft-nav-glyph">◎</div>
+                  <span class="ft-nav-text">About Biluxe10</span>
+                </div>
+                <span class="ft-nav-arrow">›</span>
+              </div>
+            </button>
+            <button class="ft-nav-item" onclick="showPage('home');scrollToSec('faq')">
+              <div class="ft-nav-item-inner">
+                <div class="ft-nav-item-left">
+                  <div class="ft-nav-glyph">?</div>
+                  <span class="ft-nav-text">FAQ</span>
+                </div>
+                <span class="ft-nav-arrow">›</span>
+              </div>
+            </button>
+            <button class="ft-nav-item" onclick="location.href='auth.html'">
+              <div class="ft-nav-item-inner">
+                <div class="ft-nav-item-left">
+                  <div class="ft-nav-glyph">→</div>
+                  <span class="ft-nav-text">Sign Up / Login</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:6px">
+                  <span class="ft-nav-badge">Free</span>
+                  <span class="ft-nav-arrow">›</span>
+                </div>
+              </div>
+            </button>
+          </div>
+        </div>
+
+        <!-- Quick Links — Legal -->
+        <div>
+          <div class="ft-col-title">
+            <div class="ft-col-title-text">Legal</div>
+            <div class="ft-col-title-line"></div>
+          </div>
+          <div class="ft-nav-list">
+            <button class="ft-nav-item" onclick="openLegal('privacy')">
+              <div class="ft-nav-item-inner">
+                <div class="ft-nav-item-left">
+                  <div class="ft-nav-glyph" style="font-size:0.75rem">⊛</div>
+                  <span class="ft-nav-text">Privacy Policy</span>
+                </div>
+                <span class="ft-nav-arrow">›</span>
+              </div>
+            </button>
+            <button class="ft-nav-item" onclick="openLegal('terms')">
+              <div class="ft-nav-item-inner">
+                <div class="ft-nav-item-left">
+                  <div class="ft-nav-glyph" style="font-size:0.75rem">≡</div>
+                  <span class="ft-nav-text">Terms & Conditions</span>
+                </div>
+                <span class="ft-nav-arrow">›</span>
+              </div>
+            </button>
+            <button class="ft-nav-item" onclick="openLegal('disclaimer')">
+              <div class="ft-nav-item-inner">
+                <div class="ft-nav-item-left">
+                  <div class="ft-nav-glyph" style="font-size:0.75rem">△</div>
+                  <span class="ft-nav-text">Disclaimer</span>
+                </div>
+                <span class="ft-nav-arrow">›</span>
+              </div>
+            </button>
+            <button class="ft-nav-item" onclick="openLegal('refund')">
+              <div class="ft-nav-item-inner">
+                <div class="ft-nav-item-left">
+                  <div class="ft-nav-glyph" style="font-size:0.75rem">↺</div>
+                  <span class="ft-nav-text">Refund Policy</span>
+                </div>
+                <span class="ft-nav-arrow">›</span>
+              </div>
+            </button>
+            <button class="ft-nav-item" onclick="openLegal('affiliate')">
+              <div class="ft-nav-item-inner">
+                <div class="ft-nav-item-left">
+                  <div class="ft-nav-glyph" style="font-size:0.75rem">◆</div>
+                  <span class="ft-nav-text">Affiliate Terms</span>
+                </div>
+                <span class="ft-nav-arrow">›</span>
+              </div>
+            </button>
+          </div>
+
+          <!-- Location badge -->
+          <div style="margin-top:20px;padding:12px 14px;background:var(--bg2);border:1px solid var(--border);border-radius:10px">
+            <div style="font-family:var(--font-mono);font-size:0.55rem;color:var(--text3);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:5px">Registered</div>
+            <div style="font-size:0.76rem;color:var(--text2);line-height:1.65">Biluxe10 Advanced Ed-Tech<br><span style="color:var(--text3)">Hyderabad–Gulbarga, Karnataka, India</span></div>
+          </div>
+        </div>
+
+        <!-- Social & Connect -->
+        <div>
+          <div class="ft-col-title">
+            <div class="ft-col-title-text">Connect</div>
+            <div class="ft-col-title-line"></div>
+          </div>
+          <div class="ft-social-grid">
+            <a href="https://instagram.com/bilu_xe10" class="ft-soc-card s-ig" target="_blank" rel="noopener">
+              <div class="ft-soc-icon-row"><div class="ft-soc-icon">📸</div><div class="ft-soc-ext">↗ OPEN</div></div>
+              <div class="ft-soc-name">Instagram</div>
+              <div class="ft-soc-handle">@bilu_xe10</div>
+            </a>
+            <a href="https://wa.me/919019254743" class="ft-soc-card s-wa" target="_blank" rel="noopener">
+              <div class="ft-soc-icon-row"><div class="ft-soc-icon">💬</div><div class="ft-soc-ext">↗ CHAT</div></div>
+              <div class="ft-soc-name">WhatsApp</div>
+              <div class="ft-soc-handle">Chat Now</div>
+            </a>
+            <a href="https://t.me/biluxe10_support" class="ft-soc-card s-tg" target="_blank" rel="noopener">
+              <div class="ft-soc-icon-row"><div class="ft-soc-icon">✈️</div><div class="ft-soc-ext">↗ JOIN</div></div>
+              <div class="ft-soc-name">Telegram</div>
+              <div class="ft-soc-handle">Community</div>
+            </a>
+            <a href="https://twitter.com/biluxe10" class="ft-soc-card s-tw" target="_blank" rel="noopener">
+              <div class="ft-soc-icon-row"><div class="ft-soc-icon">𝕏</div><div class="ft-soc-ext">↗ FOLLOW</div></div>
+              <div class="ft-soc-name">Twitter/X</div>
+              <div class="ft-soc-handle">@biluxe10</div>
+            </a>
+          </div>
+          <div class="ft-made">
+            <span>Made with</span><span class="ft-made-heart">♥</span><span>in India</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Bottom Bar -->
+    <div class="ft-bottom-bar">
+      <div class="ft-bottom-inner">
+        <div class="ft-copy">© 2026 <span>Biluxe10</span> Advanced Ed-Tech · Hyderabad–Gulbarga, Karnataka, India</div>
+        <div class="ft-legal-row">
+          <button class="ft-legal-pill" onclick="openLegal('privacy')">Privacy</button>
+          <div class="ft-legal-sep"></div>
+          <button class="ft-legal-pill" onclick="openLegal('terms')">Terms</button>
+          <div class="ft-legal-sep"></div>
+          <button class="ft-legal-pill" onclick="openLegal('disclaimer')">Disclaimer</button>
+          <div class="ft-legal-sep"></div>
+          <button class="ft-legal-pill" onclick="openLegal('refund')">Refund</button>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</div><!-- /page-home -->
+
+<div id="page-courses" class="page"><div id="page-courses-inner"></div></div>
+<div id="page-blog" class="page"><div id="page-blog-inner"></div></div><script>
+/* ════════════ DATA ════════════ */
+const GH_RAW='https://raw.githubusercontent.com/Biluxe10/biluxe10-assets/main/bundles/';
+const LOGO_URL='https://raw.githubusercontent.com/Biluxe10/biluxe10-assets/main/bundles/Screenshot_20260104-140226.jpg';
+
+const bundles=[
+  {idx:0,icon:'🌟',tier:'Starter',name:'Starter Bundle',price:'₹499',lpa:'Target: ₹3 LPA',theme:'bth-gold',tc:'var(--gold)',img:GH_RAW+'1776792956316 (1).png',skills:['Digital Entrepreneurship','Canva Design','WhatsApp Business','ChatGPT Basics','Personal Branding','Freelancing 101'],perks:['Lifetime Access','Industry Certificate','Community Telegram Group','Career Support Included']},
+  {idx:1,icon:'🚀',tier:'Pro',name:'Pro Bundle',price:'₹999',lpa:'Target: ₹3–4 LPA',theme:'bth-slate',tc:'#7CB9E8',img:GH_RAW+'1776793161257.png',skills:['Affiliate Marketing','SEO & Google Ads','Social Media Growth','Freelancing','Content Creation','Email Marketing'],perks:['Lifetime Access','Industry Certificate','Weekly Live Sessions','Career Support Included']},
+  {idx:2,icon:'🎨',tier:'Professional',name:'Professional Bundle',price:'₹2,499',lpa:'Target: ₹3–4 LPA',theme:'bth-violet',tc:'#A78BFA',img:GH_RAW+'1776793252294.png',skills:['UI/UX Design','No-Code Tools','Video Editing','E-commerce','Figma Mastery','Brand Strategy'],perks:['Lifetime Access','Industry Certificate','Portfolio Review','Career Support Included']},
+  {idx:3,icon:'📊',tier:'Elite',name:'Elite Bundle',price:'₹3,699',lpa:'Target: ₹4–6 LPA',theme:'bth-green',tc:'#34D399',img:GH_RAW+'1776793943019.png',skills:['Excel & SQL','Power BI','Python for Data','Business Analytics','Tableau','Dashboard Design'],perks:['Lifetime Access','Industry Certificate','Mock Interview Prep','Career Support Included']},
+  {idx:4,icon:'💻',tier:'Premium',name:'Premium Bundle',price:'₹4,999',lpa:'Target: ₹6–8 LPA',theme:'bth-blue',tc:'#60A5FA',img:GH_RAW+'1776794196782.png',skills:['Full-Stack MERN','Git & GitHub','E-commerce Project','Job Preparation','REST APIs','Deployment'],perks:['Lifetime Access','Industry Certificate','Resume Review','Career Support Included']},
+  {idx:5,icon:'☁️',tier:'Master',name:'Master Bundle',price:'₹6,999',lpa:'Target: ₹8–12 LPA',theme:'bth-cloud',tc:'#7DD3FC',img:GH_RAW+'1776794316762.png',skills:['AWS Cloud','Docker & Kubernetes','CI/CD Pipelines','Cybersecurity','System Design','DevOps'],perks:['Lifetime Access','Industry Certificate','LinkedIn Optimisation','Career Support Included']},
+  {idx:6,icon:'🤖',tier:'Elite Pro',name:'Elite Pro Bundle',price:'₹11,999',lpa:'Target: ₹12–16 LPA',theme:'bth-orange',tc:'#FB923C',img:GH_RAW+'1776794484559.png',skills:['Data Science & ML','Deep Learning','NLP','MLOps','Feature Engineering','Model Deployment'],perks:['Lifetime Access','Industry Certificate','Expert Mentoring','Career Support Included']},
+  {idx:7,icon:'🧠',tier:'Legend',name:'Legend Bundle',price:'₹15,999',lpa:'Target: ₹14–18 LPA',theme:'bth-pink',tc:'#F472B6',img:GH_RAW+'1776794544438.png',skills:['Generative AI','LangChain & RAG','Agentic AI','Prompt Engineering','Vector Databases','AI Product'],perks:['Lifetime Access','Industry Certificate','1-on-1 Mentoring','Career Support Included']},
+  {idx:8,icon:'👑',tier:'Ultimate',name:'Ultimate Bundle',price:'₹23,999',lpa:'Target: ₹16–25 LPA',theme:'bth-crown',tc:'var(--gold3)',img:GH_RAW+'1776794673990.png',skills:['AI Product Management','Leadership & Ethics','14+ Specializations','Executive Mentoring','Capstone Project','Placement Drive'],perks:['Lifetime Access','Industry Certificate','Executive Mentoring','Placement Drive Access']}
+];
+
+const CATEGORIES=[
+  {id:'starter',label:'🚀 Digital Entrepreneurship Starter',emoji:'🚀',color:'#C8A96E',bundleIdx:0,courses:[
+    {id:'s1',title:'Digital Entrepreneurship Basics',price:'₹499',hrs:'4 hrs',badge:'Starter',url:'https://youtu.be/x5hf-1Nj-ck',previewStart:120,desc:'Learn the foundations of building a digital business from scratch.'},
+    {id:'s2',title:'Canva & Content Creation',price:'₹699',hrs:'3 hrs',badge:'Popular',url:'https://youtu.be/x7-XSJHcaVI',previewStart:120,desc:'Design professional posts and brand kits using Canva.'},
+    {id:'s3',title:'WhatsApp Business Marketing',price:'₹799',hrs:'3 hrs',badge:'Hot',url:'https://youtu.be/PlVxtty0wrI',previewStart:120,desc:'Master WhatsApp Business to build customer relationships and drive sales.'},
+    {id:'s4',title:'ChatGPT for Daily Work',price:'₹799',hrs:'3 hrs',badge:'Trending',url:'https://youtu.be/IcCAEudzEDw',previewStart:120,desc:'Use ChatGPT and AI tools to 10x your productivity.'}
+  ]},
+  {id:'digital',label:'📈 Digital Marketing Mastery',emoji:'📈',color:'#7CB9E8',bundleIdx:1,courses:[
+    {id:'d1',title:'Affiliate Marketing Mastery',price:'₹1,499',hrs:'8 hrs',badge:'Hot',url:'https://youtu.be/TF3BhN_dTdo',previewStart:120,desc:'Build a passive income stream through affiliate marketing.'},
+    {id:'d2',title:'SEO & Blogging',price:'₹899',hrs:'5 hrs',badge:'SEO',url:'https://youtu.be/pDUMhloKybU',previewStart:120,desc:'Rank on Google and drive organic traffic.'},
+    {id:'d3',title:'Social Media Management',price:'₹1,299',hrs:'6 hrs',badge:'Popular',url:'https://youtu.be/9WVGLqiHVuk',previewStart:120,desc:'Manage brand accounts and grow followers across platforms.'},
+    {id:'d4',title:'Email Marketing',price:'₹999',hrs:'4 hrs',badge:'New',url:'https://www.youtube.com/live/yn6L7q4V1xg',previewStart:120,desc:'Build high-converting email funnels and automate campaigns.'},
+    {id:'d5',title:'Google Ads Complete',price:'₹1,399',hrs:'7 hrs',badge:'Ads',url:'https://youtu.be/autzRHtt-RM',previewStart:120,desc:'Create and optimize Google Search and Shopping campaigns.'},
+    {id:'d6',title:'Facebook Ads Mastery',price:'₹1,399',hrs:'7 hrs',badge:'Ads',url:'https://youtu.be/WNiU5ZxazI4',previewStart:120,desc:'Launch Meta ad campaigns and scale ROAS profitably.'},
+    {id:'d7',title:'Freelancing Mastery',price:'₹1,599',hrs:'9 hrs',badge:'Best',url:'https://youtu.be/gMmTpoiITM4',previewStart:120,desc:'Land your first client on Fiverr, Upwork and LinkedIn.'}
+  ]},
+  {id:'creative',label:'🎨 Creative, Design & E-commerce',emoji:'🎨',color:'#A78BFA',bundleIdx:2,courses:[
+    {id:'c1',title:'UI/UX Design Complete',price:'₹1,299',hrs:'12 hrs',badge:'Creative',url:'https://youtube.com/playlist?list=PL7ZIgV4R67IOMRiW_Q7vZqLulb0xyKDHD',previewStart:120,desc:'Design user-centred interfaces using Figma.'},
+    {id:'c2',title:'No Code Web Development',price:'₹1,099',hrs:'6 hrs',badge:'No-Code',url:'https://youtu.be/9nIwTjG2fdI',previewStart:120,desc:'Build websites without code using Webflow and Framer.'},
+    {id:'c3',title:'Video Editing with CapCut',price:'₹899',hrs:'5 hrs',badge:'Video',url:'https://youtu.be/nXeslaOL_BE',previewStart:120,desc:'Edit professional videos for YouTube and Instagram.'},
+    {id:'c4',title:'Podcast & Audio Production',price:'₹999',hrs:'4 hrs',badge:'Audio',url:'https://www.youtube.com/live/cGWFvYknE7o',previewStart:120,desc:'Record and publish a professional podcast series.'},
+    {id:'c5',title:'Ecommerce Complete Course',price:'₹1,299',hrs:'8 hrs',badge:'Commerce',url:'https://youtu.be/5d9jtO0uOpk',previewStart:120,desc:'Build a full e-commerce store and run your first ad.'},
+    {id:'c6',title:'Dropshipping & Print on Demand',price:'₹1,199',hrs:'6 hrs',badge:'Dropship',url:'https://youtu.be/thYCp3y1Yuw',previewStart:120,desc:'Start a dropshipping business with zero inventory.'}
+  ]},
+  {id:'data',label:'📊 Data Analytics & Business',emoji:'📊',color:'#34D399',bundleIdx:3,courses:[
+    {id:'da1',title:'Excel for Data Analysis',price:'₹1,299',hrs:'8 hrs',badge:'Analytics',url:'https://youtu.be/Kjz_DDO4Fzs',previewStart:120,desc:'Master Excel functions and dashboards for business.'},
+    {id:'da2',title:'SQL for Beginners',price:'₹999',hrs:'6 hrs',badge:'SQL',url:'https://youtu.be/7azCOKryADA',previewStart:120,desc:'Write SQL queries to extract and analyze data.'},
+    {id:'da3',title:'Power BI & Tableau',price:'₹1,399',hrs:'9 hrs',badge:'BI',url:'https://youtu.be/Gmk3DWOxVKQ',previewStart:120,desc:'Build interactive dashboards and visualizations.'},
+    {id:'da4',title:'Python Basics',price:'₹1,199',hrs:'7 hrs',badge:'Python',url:'https://youtu.be/LgW6Vla0kXA',previewStart:120,desc:'Learn Python programming from zero.'},
+    {id:'da5',title:'Business Analytics',price:'₹1,099',hrs:'5 hrs',badge:'Business',url:'https://youtu.be/cCTuOBOqSaM',previewStart:120,desc:'Use data to drive business strategy.'},
+    {id:'da6',title:'Financial Accounting Basics',price:'₹899',hrs:'4 hrs',badge:'Finance',url:'https://youtu.be/vO09q2V8TGQ',previewStart:120,desc:'Understand balance sheets and P&L statements.'}
+  ]},
+  {id:'dev',label:'💻 Full Stack Web Development',emoji:'💻',color:'#60A5FA',bundleIdx:4,courses:[
+    {id:'dev1',title:'HTML, CSS & JavaScript',price:'₹1,499',hrs:'14 hrs',badge:'Foundations',url:'https://youtube.com/playlist?list=PLMxec9nlD1X1_xQlC-REYdCvw8pdoQa0h',previewStart:120,desc:'Build the foundation of web development.'},
+    {id:'dev2',title:'React.js Complete',price:'₹1,699',hrs:'12 hrs',badge:'Frontend',url:'https://youtu.be/Wt3isV2irrA',previewStart:120,desc:'Build fast interfaces with React hooks and APIs.'},
+    {id:'dev3',title:'Node.js & Express',price:'₹1,499',hrs:'10 hrs',badge:'Backend',url:'https://youtu.be/PCcMF1xTQO0',previewStart:120,desc:'Create scalable server-side apps and REST APIs.'},
+    {id:'dev4',title:'MongoDB Full Course',price:'₹1,199',hrs:'7 hrs',badge:'Database',url:'https://youtu.be/5AfUgOYEiwQ',previewStart:120,desc:'Work with NoSQL databases and MongoDB Atlas.'},
+    {id:'dev5',title:'Databases In-Depth',price:'₹1,199',hrs:'8 hrs',badge:'Database',url:'https://youtu.be/pPqazMTzNOM',previewStart:120,desc:'Deep-dive into relational and NoSQL databases.'},
+    {id:'dev6',title:'REST APIs (Backend)',price:'₹1,299',hrs:'6 hrs',badge:'API',url:'https://youtu.be/6SJQ5eOChrA',previewStart:120,desc:'Design production-ready REST APIs.'},
+    {id:'dev7',title:'Git & Version Control',price:'₹799',hrs:'3 hrs',badge:'Git',url:'https://youtu.be/mAFoROnOfHs',previewStart:120,desc:'Master Git workflows and GitHub collaboration.'},
+    {id:'dev8',title:'E-commerce Project',price:'₹1,499',hrs:'10 hrs',badge:'Project',url:'https://youtu.be/el5bTI6GBQ8',previewStart:120,desc:'Build a full-stack MERN e-commerce app.'},
+    {id:'dev9',title:'Job Preparation Roadmap',price:'₹999',hrs:'5 hrs',badge:'Career',url:'https://youtu.be/-4e3ewcTupM',previewStart:120,desc:'Navigate interviews and land your first tech job.'}
+  ]},
+  {id:'devops',label:'☁ DevOps, Cloud & Security',emoji:'☁',color:'#7DD3FC',bundleIdx:5,courses:[
+    {id:'do1',title:'AWS Cloud Practitioner',price:'₹1,799',hrs:'12 hrs',badge:'AWS',url:'https://youtu.be/a8FFknuJwB0',previewStart:120,desc:'Get AWS certified with core cloud concepts.'},
+    {id:'do2',title:'Docker & Kubernetes',price:'₹1,699',hrs:'14 hrs',badge:'DevOps',url:'https://youtube.com/playlist?list=PLhNrFKat_aeLmPHBkS42O1pdN8Pt-tfF9',previewStart:120,desc:'Containerize and orchestrate applications at scale.'},
+    {id:'do3',title:'CI/CD Pipelines',price:'₹1,399',hrs:'8 hrs',badge:'CI/CD',url:'https://youtu.be/Ke_Wr5zPE0A',previewStart:120,desc:'Build automated deployment pipelines.'},
+    {id:'do4',title:'Linux for DevOps',price:'₹1,199',hrs:'7 hrs',badge:'Linux',url:'https://youtu.be/e01GGTKmtpc',previewStart:120,desc:'Command the terminal and manage servers.'},
+    {id:'do5',title:'Cybersecurity Fundamentals',price:'₹1,499',hrs:'10 hrs',badge:'Security',url:'https://www.youtube.com/live/z2hVCeiwvGk',previewStart:120,desc:'Understand threats, encryption, and security.'},
+    {id:'do6',title:'Ethical Hacking',price:'₹1,699',hrs:'12 hrs',badge:'Hacking',url:'https://youtu.be/2eLJNBroFrg',previewStart:120,desc:'Learn penetration testing and ethical hacking.'},
+    {id:'do7',title:'Cloud Security',price:'₹1,499',hrs:'8 hrs',badge:'Cloud',url:'https://youtu.be/a58CqpP6vEw',previewStart:120,desc:'Secure cloud infrastructure with IAM and zero-trust.'},
+    {id:'do8',title:'DevOps Project',price:'₹1,299',hrs:'6 hrs',badge:'Project',url:'https://youtu.be/H5FAxTBuNM8',previewStart:120,desc:'End-to-end DevOps project with real deployment.'}
+  ]},
+  {id:'ai-ml',label:'🧠 AI & Machine Learning',emoji:'🧠',color:'#FB923C',bundleIdx:6,courses:[
+    {id:'ml1',title:'Python for Data Science',price:'₹1,499',hrs:'10 hrs',badge:'Python',url:'https://youtu.be/CMEWVn1uZpQ',previewStart:120,desc:'Master NumPy, Pandas, Matplotlib for data science.'},
+    {id:'ml2',title:'Machine Learning Fundamentals',price:'₹1,699',hrs:'12 hrs',badge:'ML',url:'https://youtu.be/hR-tMLTMw0s',previewStart:120,desc:'Supervised and unsupervised learning with scikit-learn.'},
+    {id:'ml3',title:'Deep Learning & Neural Networks',price:'₹1,899',hrs:'14 hrs',badge:'DL',url:'https://youtu.be/G1P2IaBcXx8',previewStart:120,desc:'Build neural networks with TensorFlow and PyTorch.'},
+    {id:'ml4',title:'Natural Language Processing',price:'₹1,799',hrs:'12 hrs',badge:'NLP',url:'https://www.youtube.com/live/BCLjPLeVCBY',previewStart:120,desc:'Text classification, sentiment, and transformers.'},
+    {id:'ml5',title:'Computer Vision',price:'₹1,799',hrs:'12 hrs',badge:'CV',url:'https://youtube.com/playlist?list=PLPTV0NXA_ZSgmWYoSpY_2EJzPJjkke4Az',previewStart:120,desc:'Object detection, CNNs, and OpenCV.'},
+    {id:'ml6',title:'Big Data Engineering',price:'₹1,699',hrs:'11 hrs',badge:'BigData',url:'https://youtu.be/H5SHmiKTFsM',previewStart:120,desc:'Process data with Apache Spark and Hadoop.'},
+    {id:'ml7',title:'Data Engineering',price:'₹1,599',hrs:'10 hrs',badge:'Data',url:'https://youtu.be/hf2go3E2m8g',previewStart:120,desc:'Build ETL pipelines with Airflow, dbt, BigQuery.'},
+    {id:'ml8',title:'MLOps Fundamentals',price:'₹1,699',hrs:'10 hrs',badge:'MLOps',url:'https://youtu.be/dPmH3G9NQtY',previewStart:120,desc:'Deploy and monitor ML models in production.'},
+    {id:'ml9',title:'End-to-End ML Project',price:'₹1,499',hrs:'8 hrs',badge:'Project',url:'https://youtu.be/o6vbe5G7xNo',previewStart:120,desc:'Full ML project from data to deployed API.'},
+    {id:'ml10',title:'Data Science Interview Prep',price:'₹999',hrs:'5 hrs',badge:'Interview',url:'https://youtu.be/A3ZSv6IqXY8',previewStart:120,desc:'Master statistics, coding, and case studies.'}
+  ]},
+  {id:'genai',label:'✨ Generative AI & LLMs',emoji:'✨',color:'#F472B6',bundleIdx:7,courses:[
+    {id:'g1',title:'Generative AI & LLMs',price:'₹1,899',hrs:'12 hrs',badge:'GenAI',url:'https://youtu.be/d4yCWBGFCEs',previewStart:120,desc:'Understand how large language models work.'},
+    {id:'g2',title:'Agentic AI Development',price:'₹2,099',hrs:'14 hrs',badge:'Agents',url:'https://www.youtube.com/live/-rUKr8JDits',previewStart:120,desc:'Build autonomous AI agents with multi-step reasoning.'},
+    {id:'g3',title:'LangChain & LlamaIndex',price:'₹1,799',hrs:'10 hrs',badge:'LangChain',url:'https://youtu.be/-8IUWRtznX8',previewStart:120,desc:'Build LLM-powered apps with chains and memory.'},
+    {id:'g4',title:'Vector Databases',price:'₹1,499',hrs:'7 hrs',badge:'VectorDB',url:'https://youtu.be/8KrTO9bS91s',previewStart:120,desc:'Store embeddings with Pinecone and Weaviate.'},
+    {id:'g5',title:'AI Agents for Business',price:'₹1,699',hrs:'9 hrs',badge:'AI Biz',url:'https://youtu.be/EsTrWCV0Ph4',previewStart:120,desc:'Deploy AI agents for customer support and research.'},
+    {id:'g6',title:'LLM Fine-Tuning',price:'₹1,999',hrs:'12 hrs',badge:'Fine-Tune',url:'https://youtu.be/iOdFUJiB0Zc',previewStart:120,desc:'Fine-tune open-source models like LLaMA and Mistral.'},
+    {id:'g7',title:'RAG Implementation',price:'₹1,699',hrs:'9 hrs',badge:'RAG',url:'https://youtu.be/o126p1QN_RI',previewStart:120,desc:'Build retrieval-augmented generation pipelines.'},
+    {id:'g8',title:'Multi-Agent Systems',price:'₹1,899',hrs:'11 hrs',badge:'Multi-Agent',url:'https://youtu.be/rHtRWyxVQps',previewStart:120,desc:'Orchestrate multiple AI agents to solve complex problems.'},
+    {id:'g9',title:'AI Safety & Governance',price:'₹1,299',hrs:'6 hrs',badge:'Safety',url:'https://youtu.be/b6HwyKFShek',previewStart:120,desc:'AI alignment, bias, and regulatory frameworks.'},
+    {id:'g10',title:'AI Agents Capstone Project',price:'₹1,999',hrs:'10 hrs',badge:'Capstone',url:'https://youtu.be/HVi0F3YT13I',previewStart:120,desc:'Build a complete agentic AI product end-to-end.'},
+    {id:'g11',title:'Prompt Engineering Mastery',price:'₹1,299',hrs:'6 hrs',badge:'Prompts',url:'https://youtu.be/YhRfgYH_AoU',previewStart:120,desc:'Write prompts that reliably get great results.'},
+    {id:'g12',title:'AI API Integration',price:'₹1,499',hrs:'8 hrs',badge:'API',url:'https://youtu.be/xcP9NE6C5EI',previewStart:120,desc:'Integrate OpenAI, Anthropic, Gemini APIs.'}
+  ]},
+  {id:'career',label:'🎯 AI Career, Industry & Research',emoji:'🎯',color:'#F0D9A8',bundleIdx:8,courses:[
+    {id:'cr1',title:'AI Product Management',price:'₹1,699',hrs:'9 hrs',badge:'PM',url:'https://youtu.be/IfW1FMDkw4k',previewStart:120,desc:'Lead AI product teams from ideation to launch.'},
+    {id:'cr2',title:'AI Strategy & Roadmap',price:'₹1,599',hrs:'8 hrs',badge:'Strategy',url:'https://youtu.be/zwUSZD3t_BU',previewStart:120,desc:'Build enterprise AI strategy and governance.'},
+    {id:'cr3',title:'AI Team Leadership',price:'₹1,499',hrs:'7 hrs',badge:'Leadership',url:'https://www.youtube.com/live/1NMM9Q_TjxE',previewStart:120,desc:'Lead data science and ML teams effectively.'},
+    {id:'cr4',title:'AI Project Management',price:'₹1,399',hrs:'6 hrs',badge:'PM',url:'https://youtu.be/lADZ6Pxy9m8',previewStart:120,desc:'Manage AI projects with agile frameworks.'},
+    {id:'cr5',title:'AI Ethics & Governance',price:'₹1,299',hrs:'5 hrs',badge:'Ethics',url:'https://youtu.be/VugSwwHaOgQ',previewStart:120,desc:'Navigate bias, fairness, and AI Act compliance.'},
+    {id:'cr6',title:'AI Career Mastery',price:'₹1,499',hrs:'7 hrs',badge:'Career',url:'https://youtu.be/aIuPQjPQEb4',previewStart:120,desc:'Map your AI career path and land your role.'},
+    {id:'cr7',title:'Resume & LinkedIn for AI',price:'₹799',hrs:'3 hrs',badge:'Resume',url:'https://youtu.be/qCZlSCmphMM',previewStart:120,desc:'Write an ATS-optimised resume for AI roles.'},
+    {id:'cr8',title:'Salary Negotiation',price:'₹699',hrs:'2 hrs',badge:'Salary',url:'https://youtu.be/vLbrwSzXUro',previewStart:120,desc:'Negotiate your offer with scripts and strategy.'},
+    {id:'cr9',title:'Freelancing & Consulting for AI',price:'₹1,299',hrs:'6 hrs',badge:'Freelance',url:'https://youtu.be/Ozp3k4qzmHo',previewStart:120,desc:'Build an AI consulting practice from scratch.'},
+    {id:'cr10',title:'AI for Finance & Banking',price:'₹1,499',hrs:'8 hrs',badge:'Finance',url:'https://youtu.be/Nh7OhW7ZcIU',previewStart:120,desc:'Apply ML to fraud detection and credit scoring.'},
+    {id:'cr11',title:'AI for Healthcare',price:'₹1,499',hrs:'8 hrs',badge:'Health',url:'https://youtu.be/eZFtf69sido',previewStart:120,desc:'Build AI models for medical imaging and diagnostics.'},
+    {id:'cr12',title:'AI for E-commerce & Retail',price:'₹1,299',hrs:'6 hrs',badge:'Retail',url:'https://youtu.be/plo5kk_MzL4',previewStart:120,desc:'Recommendation engines and demand forecasting.'},
+    {id:'cr13',title:'AI for Manufacturing',price:'₹1,299',hrs:'6 hrs',badge:'Industry',url:'https://youtu.be/bNiThiN8cLg',previewStart:120,desc:'Predictive maintenance and quality control.'},
+    {id:'cr14',title:'Edge AI & TinyML',price:'₹1,699',hrs:'10 hrs',badge:'Edge AI',url:'https://youtube.com/playlist?list=PL7VEa1KauMQppUExiIOfxxk_2ta94EEpd',previewStart:120,desc:'Deploy ML models on microcontrollers.'},
+    {id:'cr15',title:'AI Model Optimization',price:'₹1,599',hrs:'8 hrs',badge:'Optimization',url:'https://youtu.be/zqoJCOgMd_4',previewStart:120,desc:'Quantize and prune models for faster inference.'},
+    {id:'cr16',title:'Federated Learning',price:'₹1,799',hrs:'10 hrs',badge:'Fed Learn',url:'https://youtube.com/playlist?list=PLNG4feLHqCWkdlSrEL2xbCtGa6QBxlUZb',previewStart:120,desc:'Train ML on decentralized data at scale.'},
+    {id:'cr17',title:'Graph Neural Networks',price:'₹1,799',hrs:'10 hrs',badge:'GNN',url:'https://youtube.com/playlist?list=PLPTV0NXA_ZSg4Pimkso0nHxwYMB6IGX7l',previewStart:120,desc:'GNNs for social networks and fraud detection.'},
+    {id:'cr18',title:'Reinforcement Learning',price:'₹1,899',hrs:'12 hrs',badge:'RL',url:'https://youtu.be/VnpRp7ZglfA',previewStart:120,desc:'Train agents with Q-learning and policy gradients.'},
+    {id:'cr19',title:'Time Series Forecasting',price:'₹1,499',hrs:'7 hrs',badge:'Time Series',url:'https://youtu.be/qx5055j0U6c',previewStart:120,desc:'Forecast demand with ARIMA, LSTM, and Prophet.'},
+    {id:'cr20',title:'Recommendation Systems',price:'₹1,499',hrs:'7 hrs',badge:'RecSys',url:'https://youtu.be/F2tn-BviO_U',previewStart:120,desc:'Build collaborative and hybrid recommenders.'},
+    {id:'cr21',title:'AI Research Paper Implementation',price:'₹1,699',hrs:'9 hrs',badge:'Research',url:'https://youtu.be/onU5Hbb3qao',previewStart:120,desc:'Implement landmark AI papers — GPT, DDPM, and more.'},
+    {id:'cr22',title:'Building AI Startups',price:'₹1,899',hrs:'10 hrs',badge:'Startup',url:'https://youtu.be/zO1098PFOw8',previewStart:120,desc:'Launch an AI startup from ideation to fundraising.'}
+  ]}
+];
+
+/* ════════════ LEGAL CONTENT — CREATIVE ════════════ */
+const legalContent={
+  disclaimer:{
+    icon:'△',iconBg:'rgba(251,146,60,0.1)',iconBorder:'rgba(251,146,60,0.2)',
+    title:'Disclaimer',subtitle:'Educational Purpose Statement · April 2026',
+    sections:[
+      {title:'Educational Purpose Only',body:'<p>All courses, bundles, and content provided by Biluxe10 are for general educational and skill-development purposes only. Completion of any course does not guarantee job placement, income, employment, or any specific outcome.</p>'},
+      {title:'Earnings & Salary Disclaimer',body:'<p>Salary targets mentioned (e.g., "₹3 LPA target", "₹16–25 LPA") are illustrative estimates based on industry benchmarks and are <strong>not guarantees</strong> of actual earnings. Individual results will vary depending on effort, prior experience, market conditions, and numerous other factors outside Biluxe10\'s control.</p><div class="lm-highlight-box">Past learner outcomes do not predict or guarantee future results. Biluxe10 makes no financial promises.</div>'},
+      {title:'No Professional Advice',body:'<p>Nothing on this platform constitutes legal, financial, medical, or career advice. Always consult a qualified professional before making important decisions based on educational content.</p>'},
+      {title:'Third-Party Content',body:'<p>Some courses may reference third-party tools, platforms, or services. Biluxe10 does not endorse or take responsibility for third-party products or services mentioned in course content.</p>'},
+      {title:'No Warranty',body:'<p>All courses and materials are provided "as is" without any warranty, express or implied. Biluxe10 reserves the right to update, modify, or discontinue any course content at any time.</p>'},
+      {title:'Affiliate Program Disclaimer',body:'<p>Biluxe10 operates an affiliate/referral programme. Commission percentages and earning potential are subject to change. Affiliate earnings are not guaranteed and depend entirely on individual performance.</p>'}
+    ]
+  },
+  privacy:{
+    icon:'⊛',iconBg:'rgba(96,165,250,0.1)',iconBorder:'rgba(96,165,250,0.2)',
+    title:'Privacy Policy',subtitle:'Data Protection & Usage · April 2026',
+    sections:[
+      {title:'Information We Collect',body:'<p>When you sign up or use Biluxe10, we collect:</p><ul><li>Name, email address, and phone number</li><li>Secure hashed password</li><li>Device ID and browser type</li><li>Course progress and completion data</li><li>Payment verification status (not card details)</li></ul>'},
+      {title:'How We Use Your Information',body:'<ul><li>To create and manage your account</li><li>To verify payments and grant course access</li><li>To track course progress and issue certificates</li><li>To calculate affiliate commissions accurately</li><li>To send course updates and support communications</li><li>To prevent fraud and enforce our Terms</li></ul>'},
+      {title:'Data Sharing',body:'<p>We <strong>never sell or rent</strong> your personal data to third parties. Data may be shared only with essential service providers (e.g., Firebase/Google for authentication and database hosting) under strict confidentiality obligations.</p>'},
+      {title:'Data Security',body:'<p>Your data is stored on Firebase Firestore with industry-standard encryption. Passwords are hashed and never stored in plain text. We use HTTPS across all pages.</p>'},
+      {title:'Cookies',body:'<p>We use cookies to maintain your session, remember your preferences, and improve platform performance. You may decline non-essential cookies via the cookie banner.</p>'},
+      {title:'Your Rights',body:'<ul><li>Request access to your personal data</li><li>Request correction of inaccurate data</li><li>Request deletion of your account and data</li><li>Withdraw consent at any time</li></ul><p>Contact us at <a href="mailto:help.biluxe10@gmail.com" style="color:var(--gold)">help.biluxe10@gmail.com</a> for any privacy requests.</p>'}
+    ]
+  },
+  terms:{
+    icon:'≡',iconBg:'rgba(167,139,250,0.1)',iconBorder:'rgba(167,139,250,0.2)',
+    title:'Terms & Conditions',subtitle:'Platform Usage Agreement · April 2026',
+    sections:[
+      {title:'Acceptance of Terms',body:'<p>By accessing or using Biluxe10 — whether via web, app, or any other interface — you agree to be bound by these Terms & Conditions. If you do not agree, please do not use our platform.</p>'},
+      {title:'Account Registration',body:'<ul><li>One account per device (device-locked access)</li><li>Sharing login credentials is strictly prohibited</li><li>You must provide accurate registration information</li><li>You are responsible for all activity under your account</li></ul>'},
+      {title:'Payment & Access',body:'<p>All payments are one-time unless otherwise stated. Access is granted after payment verification (2–6 hours). Biluxe10 reserves the right to revoke access for Terms violations without refund.</p>'},
+      {title:'Refund Policy',body:'<p>All sales are final once dashboard access is granted. No refunds are provided after access has been given. Please preview courses (2-minute free preview) before purchasing.</p><div class="lm-highlight-box">Preview every course for free before enrolling — use the "Preview 2 min" button on any course card.</div>'},
+      {title:'Intellectual Property',body:'<p>All course content, videos, materials, and platform design are the exclusive intellectual property of Biluxe10. You may not reproduce, redistribute, or resell any content without written permission.</p>'},
+      {title:'Affiliate Programme Terms',body:'<ul><li>Learner path: 65% direct + 10% passive commission</li><li>Partner path: 40% direct commission only</li><li>Minimum withdrawal threshold: ₹500</li><li>Commissions are paid within 7 business days of request</li><li>Fraudulent referrals result in immediate account termination</li></ul>'},
+      {title:'Termination',body:'<p>Biluxe10 reserves the right to suspend or terminate any account that violates these Terms, engages in fraudulent activity, or misuses the platform — without prior notice or refund.</p>'}
+    ]
+  },
+  refund:{
+    icon:'↺',iconBg:'rgba(52,211,153,0.1)',iconBorder:'rgba(52,211,153,0.2)',
+    title:'Refund Policy',subtitle:'Purchase & Access Terms · April 2026',
+    sections:[
+      {title:'No Refund After Access',body:'<p>All purchases on Biluxe10 are final once access to the dashboard or course content has been granted. We do not offer refunds after digital access is provided.</p>'},
+      {title:'Why No Refunds?',body:'<p>Digital products cannot be "returned" once accessed. To protect learners from making uninformed purchases, we provide a <strong>free 2-minute preview</strong> for every course before you buy.</p><div class="lm-highlight-box">Always use the free preview before purchasing. This is your opportunity to evaluate the course quality.</div>'},
+      {title:'Payment Verification Issues',body:'<p>If payment was deducted but access was not granted within 6 hours, contact us immediately at help.biluxe10@gmail.com with your payment screenshot. We will resolve it within 24 hours.</p>'},
+      {title:'Duplicate Payments',body:'<p>In the rare case of a duplicate charge (same amount charged twice), we will refund the duplicate payment within 5–7 business days after verification.</p>'},
+      {title:'Contact for Payment Issues',body:'<p>For any payment disputes or concerns, reach us at:</p><ul><li>Email: help.biluxe10@gmail.com</li><li>WhatsApp: +91 90192 54743</li></ul>'}
+    ]
+  },
+  affiliate:{
+    icon:'◆',iconBg:'rgba(200,169,110,0.1)',iconBorder:'rgba(200,169,110,0.2)',
+    title:'Affiliate Programme Terms',subtitle:'Earn While You Learn · April 2026',
+    sections:[
+      {title:'Programme Overview',body:'<p>Biluxe10 operates an affiliate/referral programme allowing enrolled learners and registered partners to earn commissions by referring new customers.</p>'},
+      {title:'Learner Path Commissions',body:'<ul><li><strong>Direct referral:</strong> 65% of the referred sale value</li><li><strong>Passive (2nd level):</strong> 10% of sales made by your direct referrals</li><li>Learner path is available to enrolled students only</li></ul>'},
+      {title:'Partner Path Commissions',body:'<ul><li><strong>Direct referral:</strong> 40% of the referred sale value</li><li>No passive/2nd-level commissions on Partner path</li><li>Partner path is for promotion-only participants</li></ul>'},
+      {title:'Payment Terms',body:'<ul><li>Minimum withdrawal: ₹500</li><li>Withdrawals processed within 7 business days</li><li>Commissions are tracked via your unique referral link</li></ul>'},
+      {title:'Prohibited Activities',body:'<ul><li>Self-referrals or fake account creation</li><li>Misleading advertising or spam</li><li>Offering refunds or discounts on behalf of Biluxe10</li><li>Using Biluxe10 branding without written permission</li></ul><div class="lm-highlight-box">Violation of affiliate terms results in immediate account suspension and forfeiture of pending commissions.</div>'}
+    ]
+  }
+};
+
+/* ════════════ PAGE ROUTING ════════════ */
+let currentPage='home';
+function showPage(p){
+  document.querySelectorAll('.page').forEach(el=>el.classList.remove('active'));
+  document.getElementById('page-'+p).classList.add('active');
+  currentPage=p;
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(p==='courses') renderCoursesPage();
+  if(p==='blog') renderBlogPage();
+  if(p==='home') setTimeout(()=>observeReveal(),100);
+}
+function scrollToSec(id){
+  setTimeout(()=>{
+    const el=document.getElementById(id);
+    if(el) el.scrollIntoView({behavior:'smooth'});
+  },100);
+}
+
+/* ════════════ CURSOR ════════════ */
+const glow=document.getElementById('cursor-glow'),dot=document.getElementById('cursor-dot');
+let mx=0,my=0,gx=0,gy=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;dot.style.left=mx+'px';dot.style.top=my+'px'});
+(function animC(){gx+=(mx-gx)*0.06;gy+=(my-gy)*0.06;glow.style.left=gx+'px';glow.style.top=gy+'px';requestAnimationFrame(animC)})();
+
+/* ════════════ SPLASH ════════════ */
+window.addEventListener('load',()=>{
+  setTimeout(()=>{
+    document.getElementById('splash').classList.add('hide');
+    setTimeout(()=>document.getElementById('cookie').classList.add('show'),700);
+  },2900);
+});
+function dismissCookie(){document.getElementById('cookie').style.display='none'}
+
+/* ════════════ SCROLL ════════════ */
+window.addEventListener('scroll',()=>{
+  document.getElementById('navbar').classList.toggle('scrolled',scrollY>50);
+  document.getElementById('scroll-top').classList.toggle('vis',scrollY>280);
+});
+
+/* ════════════ TOAST ════════════ */
+let toastT=null;
+function showToast(icon,msg){
+  document.getElementById('toastIcon').textContent=icon;
+  document.getElementById('toastMsg').textContent=msg;
+  const t=document.getElementById('toast');
+  t.classList.add('show');
+  clearTimeout(toastT);
+  toastT=setTimeout(()=>t.classList.remove('show'),3400);
+}
+
+/* ════════════ HAMBURGER ════════════ */
+let mmOpen=false;
+function toggleMenu(){
+  mmOpen=!mmOpen;
+  document.getElementById('mobile-menu').classList.toggle('open',mmOpen);
+  document.getElementById('hamburger').classList.toggle('open',mmOpen);
+  document.body.style.overflow=mmOpen?'hidden':'';
+}
+function closeMenu(){
+  mmOpen=false;
+  document.getElementById('mobile-menu').classList.remove('open');
+  document.getElementById('hamburger').classList.remove('open');
+  document.body.style.overflow='';
+}
+
+/* ════════════ BUNDLE MODAL ════════════ */
+function openModal(i){
+  const b=bundles[i];
+  const modal=document.getElementById('bundle-modal');
+  const inner=document.getElementById('bm-inner');
+  inner.innerHTML=`
+    <button class="bm-close" onclick="closeBundleModal()">✕</button>
+    <div class="bm-img-wrap">
+      <img class="bm-img" src="${b.img}" alt="${b.name}" onerror="this.style.display='none'">
+      <div class="bm-img-grad"></div>
+      <div class="bm-img-overlay">
+        <div class="bm-tier-pill" style="background:${b.tc}22;color:${b.tc};border:1px solid ${b.tc}44">${b.tier}</div>
+        <div class="bm-img-title">${b.name}</div>
+      </div>
+    </div>
+    <div class="bm-body-inner">
+      <div class="bm-price-row"><div class="bm-price" style="color:${b.tc}">${b.price}</div></div>
+      <div class="bm-lpa-badge">🎯 ${b.lpa}</div>
+      <div class="bm-section-h">Skills You'll Master</div>
+      <div class="bm-skills-grid">${b.skills.map(s=>`<div class="bm-skill-chip">${s}</div>`).join('')}</div>
+      <div class="bm-section-h">What's Included</div>
+      <div class="bm-perks">${b.perks.map(p=>`<div class="bm-perk"><span class="bm-perk-icon" style="color:${b.tc}">✓</span>${p}</div>`).join('')}</div>
+      <button class="bm-enroll-btn" style="background:${b.tc};color:#07070A;box-shadow:0 4px 22px ${b.tc}35" onclick="location.href='auth.html'">Enroll in ${b.tier} Bundle →</button>
+    </div>`;
+  modal.classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeBundleModal(){
+  document.getElementById('bundle-modal').classList.remove('open');
+  document.body.style.overflow='';
+}
+
+/* ════════════ HERO BPC CAROUSEL ════════════ */
+let bpcPos=0;
+function buildBpc(){
+  const bpcTrack=document.getElementById('bpcTrack');
+  const bpcDotsEl=document.getElementById('bpcDots');
+  if(!bpcTrack||!bpcDotsEl)return;
+  bpcTrack.innerHTML='';
+  bundles.forEach((b,i)=>{
+    const slide=document.createElement('div');
+    slide.className='bpc-slide';
+    slide.innerHTML=`
+      <div class="bpc-img-zone">
+        <img src="${b.img}" alt="${b.name}" loading="lazy" onerror="this.parentElement.style.background='linear-gradient(135deg,var(--bg3),var(--bg4))'">
+        <div class="bpc-img-grad"></div>
+        <div class="bpc-img-tier">${b.icon} ${b.tier}</div>
+        <div class="bpc-img-price">${b.price}</div>
+      </div>
+      <div class="bpc-content">
+        <div class="bpc-name">${b.name}</div>
+        <span class="bpc-lpa">${b.lpa}</span>
+        <ul class="bpc-skills">${b.skills.slice(0,3).map(s=>`<li>${s}</li>`).join('')}</ul>
+        <button class="bpc-open" onclick="openModal(${i})">View Full Details →</button>
+      </div>`;
+    bpcTrack.appendChild(slide);
+  });
+  bpcDotsEl.innerHTML='';
+  bundles.forEach((_,i)=>{
+    const d=document.createElement('div');
+    d.className='bpc-dot'+(i===0?' on':'');
+    d.onclick=()=>{bpcPos=i;updateBpc()};
+    bpcDotsEl.appendChild(d);
+  });
+}
+function bpcSlide(dir){bpcPos=(bpcPos+dir+bundles.length)%bundles.length;updateBpc()}
+function updateBpc(){
+  const t=document.getElementById('bpcTrack');
+  if(t) t.style.transform=`translateX(-${bpcPos*100}%)`;
+  document.querySelectorAll('.bpc-dot').forEach((d,i)=>d.classList.toggle('on',i===bpcPos));
+}
+buildBpc();
+setInterval(()=>bpcSlide(1),3000);
+
+/* ════════════ BUNDLE MAIN CAROUSEL ════════════ */
+let bcPos=0;
+function buildBundleCards(){
+  const bcTrack=document.getElementById('bcTrack');
+  const bcDotsEl=document.getElementById('bcDots');
+  if(!bcTrack||!bcDotsEl)return;
+  bcTrack.innerHTML='';
+  bundles.forEach((b,i)=>{
+    const card=document.createElement('div');
+    card.className=`bcard ${b.theme}`;
+    card.innerHTML=`
+      <div class="bcard-accent-line"></div>
+      <div class="bcard-img">
+        <img src="${b.img}" alt="${b.name}" loading="lazy" onerror="this.style.opacity=0">
+        <div class="bcard-img-overlay"></div>
+        <div class="bcard-tier-tag">${b.icon} ${b.tier}</div>
+        <div class="bcard-price-tag">${b.price}</div>
+        <div class="bcard-lpa-tag">${b.lpa}</div>
+      </div>
+      <div class="bcard-body">
+        <div class="bcard-name">${b.name}</div>
+        <ul class="bcard-skills">${b.skills.slice(0,4).map(s=>`<li>${s}</li>`).join('')}</ul>
+      </div>
+      <div class="bcard-footer">
+        <button class="bcard-enroll" onclick="location.href='auth.html'">Enroll Now →</button>
+        <button class="bcard-detail" onclick="openModal(${i})">Details</button>
+      </div>`;
+    bcTrack.appendChild(card);
+  });
+  bcDotsEl.innerHTML='';
+  bundles.forEach((_,i)=>{
+    const d=document.createElement('div');
+    d.className='bc-dot-i'+(i===0?' on':'');
+    d.onclick=()=>{bcPos=i;updateBc()};
+    bcDotsEl.appendChild(d);
+  });
+  updateBc();
+}
+function bcSlide(dir){
+  const trk=document.getElementById('bcTrack');
+  if(!trk)return;
+  const vis=Math.max(1,Math.floor(trk.parentElement.offsetWidth/(316+14)));
+  const max=Math.max(0,bundles.length-vis);
+  bcPos=Math.max(0,Math.min(bcPos+dir,max));
+  updateBc();
+}
+function updateBc(){
+  const t=document.getElementById('bcTrack');
+  if(t) t.style.transform=`translateX(-${bcPos*(316+14)}px)`;
+  document.querySelectorAll('.bc-dot-i').forEach((d,i)=>d.classList.toggle('on',i===bcPos));
+}
+buildBundleCards();
+setInterval(()=>{
+  const trk=document.getElementById('bcTrack');
+  if(!trk)return;
+  const vis=Math.max(1,Math.floor(trk.parentElement.offsetWidth/(316+14)));
+  const max=Math.max(0,bundles.length-vis);
+  bcPos=(bcPos>=max)?0:bcPos+1;updateBc();
+},3500);
+
+/* ════════════ MARQUEE ════════════ */
+const mqTerms=['Python','Meta Ads','ChatGPT','Canva','SQL','Tableau','Power BI','React','Node.js','AWS','Docker','Figma','LangChain','TensorFlow','MongoDB','Git','SEO','UI/UX','LangGraph','Kubernetes'];
+[document.getElementById('mqG1'),document.getElementById('mqG2')].forEach(g=>{
+  if(!g)return;
+  mqTerms.forEach(t=>{const s=document.createElement('span');s.className='mq-chip';s.innerHTML=`<span class="mq-chip-dot"></span>${t}`;g.appendChild(s)});
+});
+
+/* ════════════ VIDEO PLAYER + FULLSCREEN ════════════ */
+function extractVideoId(url){
+  if(!url)return null;
+  if(url.includes('playlist?list=')){const m=url.match(/list=([^&]+)/);return m?{type:'playlist',id:m[1]}:null}
+  const pts=[/youtu\.be\/([^?&\n]+)/,/youtube\.com\/watch\?v=([^&\n]+)/,/youtube\.com\/live\/([^?&\n]+)/,/youtube\.com\/embed\/([^?&\n]+)/];
+  for(const p of pts){const m=url.match(p);if(m)return{type:'video',id:m[1].split('?')[0]}}
+  return null;
+}
+function buildEmbedUrl(parsed,startSec){
+  if(!parsed)return'';
+  const start=Math.max(0,Math.floor(startSec||0));
+  const p=new URLSearchParams({autoplay:'1',rel:'0',modestbranding:'1',iv_load_policy:'3',controls:'1',fs:'1',cc_load_policy:'0',playsinline:'1',enablejsapi:'1',origin:window.location.origin||'https://biluxe10.com',start:String(start)});
+  if(parsed.type==='playlist'){p.set('listType','playlist');p.set('list',parsed.id);return`https://www.youtube-nocookie.com/embed/videoseries?${p}`}
+  return`https://www.youtube-nocookie.com/embed/${parsed.id}?${p}`;
+}
+
+let vmTimer=null,vmSeconds=120;
+let isFullscreen=false;
+
+function toggleFullscreen(){
+  const wrap=document.getElementById('vmPlayerWrap');
+  const fsBtn=document.getElementById('fsCloseBtn');
+  if(!isFullscreen){
+    wrap.classList.add('fullscreen-mode');
+    fsBtn.classList.add('show');
+    document.body.style.overflow='hidden';
+    isFullscreen=true;
+  } else {
+    exitFullscreen();
+  }
+}
+function exitFullscreen(){
+  const wrap=document.getElementById('vmPlayerWrap');
+  const fsBtn=document.getElementById('fsCloseBtn');
+  wrap.classList.remove('fullscreen-mode');
+  fsBtn.classList.remove('show');
+  if(document.getElementById('video-modal').classList.contains('open')){
+    document.body.style.overflow='hidden';
+  }
+  isFullscreen=false;
+}
+
+function openCourse(id,catId){
+  const cat=CATEGORIES.find(c=>c.id===catId)||CATEGORIES.find(c=>c.courses.some(x=>x.id===id));
+  if(!cat)return;
+  const course=cat.courses.find(c=>c.id===id);
+  if(!course)return;
+  document.getElementById('vmTitle').textContent=course.title;
+  document.getElementById('vmCat').textContent=cat.label;
+  document.getElementById('vmPrice').textContent=course.price;
+  document.getElementById('vmMetaRow').innerHTML=`
+    <div class="vm-chip"><span>⏱</span>${course.hrs}</div>
+    <div class="vm-chip"><span>🎓</span>Certificate Included</div>
+    <div class="vm-chip"><span>♾</span>Lifetime Access</div>
+    <div class="vm-chip"><span>📱</span>Self-Paced</div>`;
+  document.getElementById('vmEnrollCta').style.display='';
+  document.getElementById('vmPreviewOverlay').classList.remove('show');
+  document.getElementById('vmTimer').classList.remove('hidden');
+  document.getElementById('video-modal').classList.add('open');
+  document.body.style.overflow='hidden';
+  clearInterval(vmTimer);
+  const container=document.getElementById('vmPlayerContainer');
+  container.innerHTML='';
+  const parsed=extractVideoId(course.url);
+  if(!parsed)return;
+  const iframe=document.createElement('iframe');
+  iframe.src=buildEmbedUrl(parsed,course.previewStart||120);
+  iframe.allow='autoplay;encrypted-media;fullscreen';
+  iframe.allowFullscreen=true;
+  iframe.setAttribute('allowfullscreen','true');
+  iframe.setAttribute('sandbox','allow-scripts allow-same-origin allow-presentation allow-popups');
+  iframe.style.cssText='position:absolute;top:0;left:0;width:100%;height:100%;border:none';
+  container.appendChild(iframe);
+  vmSeconds=120;
+  updateVmTimer();
+  vmTimer=setInterval(()=>{
+    vmSeconds--;updateVmTimer();
+    if(vmSeconds<=0){
+      clearInterval(vmTimer);
+      container.innerHTML='';
+      document.getElementById('vmTimer').classList.add('hidden');
+      document.getElementById('vmPreviewOverlay').classList.add('show');
+      if(isFullscreen)exitFullscreen();
+    }
+  },1000);
+}
+function updateVmTimer(){
+  const m=Math.floor(vmSeconds/60),s=vmSeconds%60;
+  const el=document.getElementById('vmTimer');
+  if(el) el.textContent=`⏱ ${m}:${String(s).padStart(2,'0')}`;
+}
+function closeVideoModal(){
+  clearInterval(vmTimer);
+  if(isFullscreen)exitFullscreen();
+  document.getElementById('video-modal').classList.remove('open');
+  document.body.style.overflow='';
+  document.getElementById('vmPlayerContainer').innerHTML='';
+}
+function handleVmBgClick(e){if(e.target===document.getElementById('video-modal'))closeVideoModal()}
+
+/* ════════════ FAQ ════════════ */
+function toggleFaq(btn){
+  const item=btn.closest('.faq-item');
+  const isOpen=item.classList.contains('open');
+  document.querySelectorAll('.faq-item.open').forEach(el=>el.classList.remove('open'));
+  if(!isOpen)item.classList.add('open');
+}
+
+/* ════════════ REVEAL ════════════ */
+function observeReveal(){
+  const obs=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target)}});
+  },{threshold:0.07});
+  document.querySelectorAll('.reveal:not(.visible)').forEach(el=>obs.observe(el));
+}
+
+/* ════════════ LEGAL MODAL — CREATIVE ════════════ */
+function openLegal(type){
+  const content=legalContent[type];
+  if(!content)return;
+  document.getElementById('lmTitle').textContent=content.title;
+  document.getElementById('lmSubtitle').textContent=content.subtitle;
+  const iconWrap=document.getElementById('lmIconWrap');
+  iconWrap.textContent=content.icon;
+  iconWrap.style.background=content.iconBg;
+  iconWrap.style.border=`1px solid ${content.iconBorder}`;
+
+  const metaStrip=`
+    <div class="lm-meta-strip">
+      <div class="lm-meta-item"><span>📅</span> Last Updated: April 2026</div>
+      <div class="lm-meta-item"><span>🏢</span> Biluxe10 Advanced Ed-Tech</div>
+      <div class="lm-meta-item"><span>📍</span> Hyderabad–Gulbarga, KA, India</div>
+    </div>`;
+
+  const sectionsHTML=content.sections.map((s,i)=>`
+    <div class="lm-section${i===0?' expanded':''}">
+      <div class="lm-section-header" onclick="toggleLmSection(this)">
+        <span class="lm-section-num">${String(i+1).padStart(2,'0')}</span>
+        <span class="lm-section-title">${s.title}</span>
+        <span class="lm-section-arrow">›</span>
+      </div>
+      <div class="lm-section-body">
+        <div class="lm-section-content">${s.body}</div>
+      </div>
+    </div>`).join('');
+
+  const contactFooter=`
+    <div class="lm-contact-footer">
+      <div class="lm-contact-icon">📬</div>
+      <div class="lm-contact-info">
+        <div class="lm-contact-label">Questions? Contact Us</div>
+        <div class="lm-contact-val">
+          <a href="mailto:help.biluxe10@gmail.com">help.biluxe10@gmail.com</a> &nbsp;·&nbsp; WhatsApp: +91 90192 54743
+        </div>
+      </div>
+    </div>`;
+
+  document.getElementById('lmBody').innerHTML=metaStrip+sectionsHTML+contactFooter;
+  document.getElementById('legal-modal').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function toggleLmSection(header){
+  const section=header.closest('.lm-section');
+  section.classList.toggle('expanded');
+}
+function closeLegal(){
+  document.getElementById('legal-modal').classList.remove('open');
+  document.body.style.overflow='';
+}
+function handleLmBgClick(e){if(e.target===document.getElementById('legal-modal'))closeLegal()}
+
+/* ════════════ KEYBOARD ════════════ */
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){
+    if(isFullscreen){exitFullscreen();return;}
+    closeBundleModal();closeVideoModal();closeLegal();
+  }
+});
+
+/* ════════════ COURSES PAGE ════════════ */
+let coursesRendered=false,cFilter='all',cSearch='';
+function renderCoursesPage(){
+  const wrapper=document.getElementById('page-courses-inner');
+  if(!wrapper)return;
+  if(coursesRendered){refreshCoursesContent();return;}
+  coursesRendered=true;
+  wrapper.innerHTML=`
+    <div class="pg-hero">
+      <div class="pg-hero-inner">
+        <button class="pg-back" onclick="showPage('home')">← Back to Home</button>
+        <div class="pg-hero-h">All <em>82 Courses</em></div>
+        <p class="pg-hero-p">Browse every course across 9 categories. Each comes with a 2-minute free preview — no account needed.</p>
+        <div class="pg-outcomes">
+          <div class="po-item"><div class="po-label-row"><span class="po-name">Job Placement Rate</span><span class="po-pct">87%</span></div><div class="po-track"><div class="po-fill" style="--p:87%"></div></div></div>
+          <div class="po-item"><div class="po-label-row"><span class="po-name">Learner Satisfaction</span><span class="po-pct">97%</span></div><div class="po-track"><div class="po-fill" style="--p:97%"></div></div></div>
+          <div class="po-item"><div class="po-label-row"><span class="po-name">Course Completion</span><span class="po-pct">95%</span></div><div class="po-track"><div class="po-fill" style="--p:95%"></div></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="courses-main">
+      <div class="filter-row" id="cFilterRow">
+        <button class="f-btn active" onclick="setCFilter('all',this)">All</button>
+        ${CATEGORIES.map(c=>`<button class="f-btn" onclick="setCFilter('${c.id}',this)">${c.emoji} ${c.id.charAt(0).toUpperCase()+c.id.slice(1).replace('-',' ')}</button>`).join('')}
+      </div>
+      <div class="search-row">
+        <div class="search-box"><span>🔍</span><input type="text" id="cSearchInput" placeholder="Search courses..." oninput="setCSearch(this.value)"></div>
+        <div class="results-lbl" id="cResultsLbl">82 courses</div>
+      </div>
+      <div id="coursesContent"></div>
+    </div>`;
+  refreshCoursesContent();
+}
+function setCFilter(f,btn){
+  cFilter=f;cSearch='';
+  const inp=document.getElementById('cSearchInput');
+  if(inp) inp.value='';
+  document.querySelectorAll('#cFilterRow .f-btn').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  refreshCoursesContent();
+}
+function setCSearch(q){cSearch=q;refreshCoursesContent();}
+function refreshCoursesContent(){
+  const container=document.getElementById('coursesContent');
+  if(!container)return;
+  container.innerHTML='';
+  let total=0;
+  const filtered=CATEGORIES.map(cat=>{
+    const cs=cat.courses.filter(c=>(cFilter==='all'||cat.id===cFilter)&&(!cSearch||c.title.toLowerCase().includes(cSearch.toLowerCase())));
+    return{...cat,courses:cs};
+  }).filter(cat=>cat.courses.length>0);
+  if(!filtered.length){
+    container.innerHTML=`<div class="empty-state"><div class="es-icon">🔍</div><p>No courses found.</p></div>`;
+    const rl=document.getElementById('cResultsLbl');if(rl)rl.textContent='0 courses';
+    return;
+  }
+  filtered.forEach(cat=>{
+    total+=cat.courses.length;
+    const wrap=document.createElement('div');
+    wrap.className='cat-section';
+    wrap.innerHTML=`
+      <div class="cat-hdr">
+        <div class="cat-emoji">${cat.emoji}</div>
+        <div class="cat-name-lbl">${cat.label.replace(/^[^\s]+\s/,'')}</div>
+        <div class="cat-count-pill">${cat.courses.length} courses</div>
+      </div>
+      <div class="courses-grid-inner" id="cgrid-${cat.id}"></div>`;
+    const grid=wrap.querySelector(`#cgrid-${cat.id}`);
+    cat.courses.forEach((c,i)=>{
+      const card=document.createElement('div');
+      card.className='c-card';
+      card.style.transitionDelay=`${(i%4)*0.055}s`;
+      card.innerHTML=`
+        <div class="c-card-top"><div class="c-emoji">${cat.emoji}</div><span class="c-badge">${c.badge}</span></div>
+        <div class="c-title">${c.title}</div>
+        <div class="c-meta"><span>⏱ ${c.hrs}</span><span>🎓 Certificate</span><span>Self-paced</span></div>
+        <div class="c-preview-tag">▶ 2 min free preview</div>
+        <div class="c-footer">
+          <div class="c-price">${c.price}</div>
+          <button class="c-btn" onclick="openCourse('${c.id}','${cat.id}')">Preview →</button>
+        </div>`;
+      grid.appendChild(card);
+    });
+    container.appendChild(wrap);
+  });
+  const rl=document.getElementById('cResultsLbl');
+  if(rl) rl.textContent=`${total} course${total!==1?'s':''}`;
+}
+
+/* ════════════ BLOG PAGE ════════════ */
+let blogRendered=false,blogFilter='all';
+const BLOG_TAGS={starter:['beginner','entrepreneurship','no-experience'],digital:['marketing','growth','organic','paid-ads'],creative:['design','creative','visual','ecommerce'],data:['analytics','excel','python','business'],dev:['coding','web','mern','backend'],devops:['cloud','aws','docker','security'],'ai-ml':['machine-learning','python','deep-learning'],genai:['llm','ai','gpt','langchain'],career:['career','leadership','industry','research']};
+
+function renderBlogPage(){
+  const wrapper=document.getElementById('page-blog-inner');
+  if(!wrapper)return;
+  if(blogRendered){refreshBlogContent();return;}
+  blogRendered=true;
+  wrapper.innerHTML=`
+    <div class="blog-hero">
+      <div class="blog-hero-inner">
+        <div>
+          <div class="blog-hero-eyebrow">Course Catalogue · 82 Courses</div>
+          <h1 class="blog-hero-h">Master In-Demand<br><em>Digital Skills</em></h1>
+          <p class="blog-hero-p">An in-depth look at every course on Biluxe10. Browse detailed descriptions, skill outcomes, and career paths.</p>
+          <div class="blog-hero-stats">
+            <div class="bhs-item"><div class="bhs-n">82+</div><div class="bhs-l">Courses Available</div></div>
+            <div class="bhs-item"><div class="bhs-n">9</div><div class="bhs-l">Skill Categories</div></div>
+            <div class="bhs-item"><div class="bhs-n">₹499</div><div class="bhs-l">Starting From</div></div>
+            <div class="bhs-item"><div class="bhs-n">4.9★</div><div class="bhs-l">Average Rating</div></div>
+          </div>
+        </div>
+        <div class="blog-logo-wrap">
+          <img class="blog-logo-img" src="${LOGO_URL}" alt="Biluxe10" onerror="this.style.display='none'">
+          <div class="blog-logo-name">Biluxe10</div>
+        </div>
+      </div>
+    </div>
+    <div class="blog-main">
+      <button class="pg-back" onclick="showPage('home')" style="margin-bottom:28px">← Back to Home</button>
+      <div class="blog-cat-nav" id="blogCatNav">
+        <button class="blog-cat-btn active" onclick="setBlogFilter('all',this)">🌐 All Categories</button>
+        ${CATEGORIES.map(c=>`<button class="blog-cat-btn" onclick="setBlogFilter('${c.id}',this)">${c.emoji} ${c.label.replace(/^[^\s]+\s/,'')}</button>`).join('')}
+      </div>
+      <div id="blogContent"></div>
+    </div>`;
+  refreshBlogContent();
+}
+function setBlogFilter(f,btn){
+  blogFilter=f;
+  document.querySelectorAll('.blog-cat-btn').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  refreshBlogContent();
+}
+function refreshBlogContent(){
+  const container=document.getElementById('blogContent');
+  if(!container)return;
+  container.innerHTML='';
+  const filtered=CATEGORIES.filter(c=>blogFilter==='all'||c.id===blogFilter);
+  filtered.forEach(cat=>{
+    const section=document.createElement('div');
+    section.className='blog-section';
+    section.innerHTML=`
+      <div class="blog-section-header">
+        <div class="bsh-emoji">${cat.emoji}</div>
+        <div class="bsh-info">
+          <div class="bsh-name">${cat.label.replace(/^[^\s]+\s/,'')}</div>
+          <div class="bsh-count">${cat.courses.length} courses available · ${bundles[cat.bundleIdx]?bundles[cat.bundleIdx].price+' bundle':''}</div>
+        </div>
+        ${bundles[cat.bundleIdx]?`<button onclick="openModal(${cat.bundleIdx})" style="padding:8px 16px;background:var(--goldA);color:var(--gold);border:1px solid rgba(200,169,110,0.22);border-radius:8px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:var(--font-ui)">View Bundle →</button>`:''}
+      </div>
+      <div class="blog-cards-grid" id="blogGrid-${cat.id}"></div>`;
+    const grid=section.querySelector(`#blogGrid-${cat.id}`);
+    cat.courses.forEach((c,i)=>{
+      const card=document.createElement('div');
+      card.className='blog-card';
+      card.style.setProperty('--bc-color',cat.color);
+      const isNew=i===0;
+      const catTags=(BLOG_TAGS[cat.id]||[]).slice(0,3).map(t=>`<span class="blog-card-tag">${t}</span>`).join('');
+      card.innerHTML=`
+        <div class="blog-card-accent"></div>
+        <div class="blog-card-head">
+          <div class="blog-card-icon">${cat.emoji}</div>
+          <div class="blog-card-badges">
+            <span class="blog-card-badge">${c.badge}</span>
+            ${isNew?'<span class="blog-card-badge blog-card-new">✨ Featured</span>':''}
+          </div>
+        </div>
+        <div class="blog-card-body">
+          <div class="blog-card-title">${c.title}</div>
+          <div class="blog-card-desc">${c.desc}</div>
+          <div class="blog-card-tags">${catTags}</div>
+          <div class="blog-card-meta">
+            <div class="blog-card-meta-item">⏱ ${c.hrs}</div>
+            <div class="blog-card-meta-item">🎓 Certificate</div>
+            <div class="blog-card-meta-item">♾ Lifetime Access</div>
+            <div class="blog-card-meta-item">📱 Self-Paced</div>
+          </div>
+          <ul class="blog-card-skills">
+            ${bundles[cat.bundleIdx]?bundles[cat.bundleIdx].skills.slice(0,3).map(s=>`<li>${s}</li>`).join(''):''}
+          </ul>
+        </div>
+        <div class="blog-card-footer">
+          <div>
+            <div class="blog-card-price">${c.price}</div>
+            ${bundles[cat.bundleIdx]?`<div class="blog-card-lpa">${bundles[cat.bundleIdx].lpa}</div>`:''}
+          </div>
+          <div style="display:flex;gap:7px;flex-wrap:wrap">
+            <button class="blog-preview-btn" onclick="openCourse('${c.id}','${cat.id}')">▶ Preview</button>
+            <button class="blog-enroll-btn" onclick="location.href='auth.html'">Enroll →</button>
+          </div>
+        </div>`;
+      grid.appendChild(card);
+    });
+    container.appendChild(section);
+  });
+}
+
+/* ════════════ INIT ════════════ */
+document.addEventListener('DOMContentLoaded',()=>{
+  observeReveal();
+});
+</script>
+</body>
+</html>
