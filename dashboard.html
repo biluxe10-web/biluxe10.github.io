@@ -1,0 +1,1779 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+    <title>Biluxe10 — Professional Learning Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,700;0,9..144,900;1,9..144,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+    <script>
+        // Environment Variables from Vercel
+        const ENV = {
+            TELEGRAM_BOT_ID: localStorage.getItem('TELEGRAM_BOT_ID') || '7777777777:AAHxxxxxxxxxx',
+            TELEGRAM_BOT_TOKEN: localStorage.getItem('TELEGRAM_BOT_TOKEN') || 'your-bot-token-here'
+        };
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDxxkC9iD1V1w-53Kf4oBrHEXlBLvCc7sE",
+            authDomain: "biluxe10-3e894.firebaseapp.com",
+            projectId: "biluxe10-3e894",
+            storageBucket: "biluxe10-3e894.appspot.com",
+            messagingSenderId: "804749588233",
+            appId: "1:804749588233:web:7777648c0c7834733c05d8"
+        };
+
+        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+        const AUTH = firebase.auth();
+        const DB = firebase.firestore();
+    </script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg: #07070A;
+            --bg2: #0D0D12;
+            --bg3: #121218;
+            --bg4: #18181F;
+            --bg5: #1E1E28;
+            --border: rgba(255,255,255,0.055);
+            --border2: rgba(255,255,255,0.1);
+            --border3: rgba(255,255,255,0.16);
+            --gold: #C8A96E;
+            --gold2: #E2C48A;
+            --gold3: #F0D9A8;
+            --gA: rgba(200,169,110,0.08);
+            --gB: rgba(200,169,110,0.15);
+            --gC: rgba(200,169,110,0.04);
+            --green: #22C55E;
+            --grA: rgba(34,197,94,0.1);
+            --grB: rgba(34,197,94,0.18);
+            --red: #EF4444;
+            --reA: rgba(239,68,68,0.1);
+            --blue: #60A5FA;
+            --blA: rgba(96,165,250,0.1);
+            --vio: #A78BFA;
+            --viA: rgba(167,139,250,0.1);
+            --amber: #F59E0B;
+            --amA: rgba(245,158,11,0.1);
+            --cyan: #22D3EE;
+            --cyA: rgba(34,211,238,0.1);
+            --ink: #07070A;
+            --text: #EDEDF0;
+            --t2: #9B9BA8;
+            --t3: #4B4B5A;
+            --t4: #2A2A35;
+            --fd: 'Fraunces', serif;
+            --fb: 'Plus Jakarta Sans', sans-serif;
+            --fm: 'JetBrains Mono', monospace;
+            --ease: cubic-bezier(0.16,1,0.3,1);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: var(--fb);
+            line-height: 1.6;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* HEADER */
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(7,7,10,0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: var(--fd);
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: var(--gold);
+            letter-spacing: -0.03em;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            background: var(--gold);
+            color: var(--ink);
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: var(--fb);
+        }
+
+        .btn:hover {
+            background: var(--gold2);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: var(--bg3);
+            color: var(--text);
+            border: 1px solid var(--border2);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg4);
+            border-color: var(--border3);
+        }
+
+        .btn-sm {
+            padding: 8px 16px;
+            font-size: 0.75rem;
+        }
+
+        /* MAIN CONTAINER */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 32px 24px;
+        }
+
+        /* SECTION */
+        .section {
+            margin-bottom: 48px;
+        }
+
+        .section-title {
+            font-family: var(--fd);
+            font-size: clamp(1.5rem, 4vw, 2.2rem);
+            font-weight: 900;
+            color: var(--text);
+            margin-bottom: 24px;
+            letter-spacing: -0.02em;
+        }
+
+        /* GRID */
+        .grid {
+            display: grid;
+            gap: 24px;
+        }
+
+        .grid-2 {
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        }
+
+        .grid-3 {
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        }
+
+        /* CARDS */
+        .card {
+            background: linear-gradient(135deg, var(--bg3), var(--bg2));
+            border: 1px solid var(--border2);
+            border-radius: 12px;
+            padding: 24px;
+            transition: all 0.3s var(--ease);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            border-color: var(--border3);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(200,169,110,0.1);
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: var(--text);
+        }
+
+        .card-subtitle {
+            font-size: 0.85rem;
+            color: var(--t2);
+            margin-bottom: 16px;
+        }
+
+        /* COURSE CARD */
+        .course-card {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .course-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+        }
+
+        .course-meta {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            background: var(--gB);
+            border: 1px solid var(--gold);
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--gold);
+        }
+
+        .badge.green {
+            background: var(--grB);
+            border-color: var(--green);
+            color: var(--green);
+        }
+
+        .badge.amber {
+            background: var(--amA);
+            border-color: var(--amber);
+            color: var(--amber);
+        }
+
+        .badge.red {
+            background: var(--reA);
+            border-color: var(--red);
+            color: var(--red);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: var(--bg5);
+            border-radius: 3px;
+            overflow: hidden;
+            margin: 16px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--gold), var(--gold2));
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            font-size: 0.8rem;
+            color: var(--t2);
+            margin-top: 8px;
+        }
+
+        /* VIDEO PLAYER */
+        .video-player {
+            position: relative;
+            background: var(--bg4);
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 16px;
+        }
+
+        .video-container {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%;
+            background: var(--ink);
+        }
+
+        .video-element {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--ink);
+        }
+
+        video {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .controls {
+            background: rgba(7,7,10,0.95);
+            padding: 16px;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .control-group {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .seek-bar {
+            flex: 1;
+            min-width: 200px;
+            height: 4px;
+            background: var(--bg5);
+            border-radius: 2px;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .seek-progress {
+            height: 100%;
+            background: var(--gold);
+            border-radius: 2px;
+            position: relative;
+        }
+
+        .seek-tooltip {
+            position: absolute;
+            bottom: 12px;
+            background: var(--bg3);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            white-space: nowrap;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s;
+            border: 1px solid var(--border2);
+        }
+
+        .seek-bar:hover .seek-tooltip {
+            opacity: 1;
+        }
+
+        .time-display {
+            font-family: var(--fm);
+            font-size: 0.8rem;
+            color: var(--t2);
+            min-width: 100px;
+        }
+
+        .control-btn {
+            width: 36px;
+            height: 36px;
+            border: none;
+            background: var(--bg5);
+            border-radius: 6px;
+            color: var(--gold);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            font-size: 1.1rem;
+        }
+
+        .control-btn:hover {
+            background: var(--gold);
+            color: var(--ink);
+        }
+
+        /* PROJECT SUBMISSION FORM */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text);
+            font-size: 0.95rem;
+        }
+
+        .form-required {
+            color: var(--red);
+            margin-left: 4px;
+        }
+
+        .form-input,
+        .form-textarea,
+        .form-select {
+            width: 100%;
+            padding: 12px 16px;
+            background: var(--bg4);
+            border: 1px solid var(--border2);
+            border-radius: 8px;
+            color: var(--text);
+            font-family: var(--fb);
+            font-size: 0.95rem;
+            transition: all 0.2s;
+        }
+
+        .form-input:focus,
+        .form-textarea:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(200,169,110,0.1);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .form-hint {
+            font-size: 0.8rem;
+            color: var(--t2);
+            margin-top: 6px;
+        }
+
+        /* MY PROJECTS SECTION */
+        .project-item {
+            background: linear-gradient(135deg, var(--bg3), var(--bg2));
+            border: 1px solid var(--border2);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+            transition: all 0.3s;
+        }
+
+        .project-item:hover {
+            border-color: var(--border3);
+            box-shadow: 0 8px 20px rgba(200,169,110,0.08);
+        }
+
+        .project-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 12px;
+        }
+
+        .project-title {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--text);
+        }
+
+        .project-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
+            background: var(--amA);
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .project-status.pending {
+            background: var(--amA);
+            color: var(--amber);
+        }
+
+        .project-status.approved {
+            background: var(--grB);
+            color: var(--green);
+        }
+
+        .project-status.rejected {
+            background: var(--reA);
+            color: var(--red);
+        }
+
+        .project-meta {
+            font-size: 0.85rem;
+            color: var(--t2);
+            margin-bottom: 12px;
+        }
+
+        .project-links {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+
+        .link-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 14px;
+            background: var(--bg5);
+            border: 1px solid var(--border2);
+            border-radius: 6px;
+            color: var(--gold);
+            text-decoration: none;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .link-btn:hover {
+            background: var(--gold);
+            color: var(--ink);
+            border-color: var(--gold);
+        }
+
+        .project-feedback {
+            background: var(--reA);
+            border: 1px solid var(--red);
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-top: 12px;
+            color: var(--text);
+            font-size: 0.85rem;
+        }
+
+        /* CERTIFICATE SECTION */
+        .cert-section {
+            background: linear-gradient(135deg, rgba(200,169,110,0.1), rgba(167,139,250,0.05));
+            border: 1px solid var(--gold);
+            border-radius: 12px;
+            padding: 24px;
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .cert-status {
+            font-size: 0.95rem;
+            color: var(--t2);
+            margin-bottom: 16px;
+        }
+
+        .cert-requirements {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .requirement {
+            background: var(--bg4);
+            border: 1px solid var(--border2);
+            border-radius: 8px;
+            padding: 12px;
+            font-size: 0.85rem;
+        }
+
+        .requirement.met {
+            border-color: var(--green);
+            background: var(--grA);
+        }
+
+        .requirement.unmet {
+            border-color: var(--red);
+            background: var(--reA);
+        }
+
+        .requirement-icon {
+            font-size: 1.4rem;
+            margin-bottom: 6px;
+        }
+
+        .cert-btn {
+            padding: 12px 32px;
+            background: linear-gradient(135deg, var(--gold), var(--gold2));
+            color: var(--ink);
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: var(--fb);
+        }
+
+        .cert-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .cert-btn:not(:disabled):hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(200,169,110,0.3);
+        }
+
+        /* MODAL */
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(7,7,10,0.8);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, var(--bg3), var(--bg2));
+            border: 1px solid var(--border2);
+            border-radius: 16px;
+            padding: 32px;
+            max-width: 600px;
+            width: 90vw;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .modal-title {
+            font-family: var(--fd);
+            font-size: 1.4rem;
+            font-weight: 900;
+            color: var(--text);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--t2);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .modal-close:hover {
+            color: var(--text);
+        }
+
+        /* ADMIN PANEL */
+        .admin-section {
+            background: linear-gradient(135deg, rgba(239,68,68,0.05), rgba(245,158,11,0.05));
+            border: 1px solid var(--amber);
+            border-radius: 12px;
+            padding: 24px;
+            margin-top: 32px;
+        }
+
+        .admin-title {
+            font-family: var(--fd);
+            font-size: 1.3rem;
+            font-weight: 900;
+            color: var(--amber);
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .submission-review {
+            background: var(--bg4);
+            border: 1px solid var(--border2);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .reviewer-name {
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .score-inputs {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .score-input {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .score-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--t2);
+        }
+
+        .score-field {
+            width: 100%;
+            padding: 8px 12px;
+            background: var(--bg5);
+            border: 1px solid var(--border2);
+            border-radius: 6px;
+            color: var(--text);
+        }
+
+        /* CERTIFICATE PREVIEW */
+        .certificate {
+            background: linear-gradient(135deg, #FFF8DC, #F5E6D3);
+            color: #333;
+            border: 3px solid #C8A96E;
+            border-radius: 4px;
+            padding: 40px;
+            text-align: center;
+            font-family: 'Georgia', serif;
+            max-width: 600px;
+            margin: 0 auto;
+            aspect-ratio: 1 / 1.4;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+        }
+
+        .cert-label {
+            font-size: 1.2rem;
+            font-weight: 600;
+            letter-spacing: 3px;
+            color: #8B7355;
+        }
+
+        .cert-name {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #000;
+            margin: 20px 0;
+        }
+
+        .cert-course {
+            font-size: 1.1rem;
+            color: #444;
+            margin: 10px 0;
+        }
+
+        .cert-grade {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #C8A96E;
+            margin: 20px 0;
+        }
+
+        .cert-date {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .cert-id {
+            font-family: var(--fm);
+            font-size: 0.7rem;
+            color: #999;
+            margin-top: 20px;
+        }
+
+        /* FOOTER */
+        footer {
+            background: rgba(7,7,10,0.8);
+            border-top: 1px solid var(--border);
+            padding: 32px 24px;
+            margin-top: 64px;
+            text-align: center;
+            color: var(--t2);
+            font-size: 0.8rem;
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: var(--gold);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .footer-links a:hover {
+            color: var(--gold2);
+        }
+
+        .footer-disclaimer {
+            line-height: 1.8;
+            max-width: 800px;
+            margin: 16px auto;
+        }
+
+        /* VERIFICATION PAGE */
+        .verify-container {
+            max-width: 500px;
+            margin: 64px auto;
+            padding: 32px;
+            background: linear-gradient(135deg, var(--bg3), var(--bg2));
+            border: 1px solid var(--border2);
+            border-radius: 12px;
+        }
+
+        .verify-title {
+            font-family: var(--fd);
+            font-size: 1.8rem;
+            font-weight: 900;
+            margin-bottom: 24px;
+            text-align: center;
+            color: var(--gold);
+        }
+
+        .verify-result {
+            background: var(--grB);
+            border: 1px solid var(--green);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 24px;
+            display: none;
+        }
+
+        .verify-result.error {
+            background: var(--reA);
+            border-color: var(--red);
+        }
+
+        .verify-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: var(--green);
+            color: white;
+            border-radius: 6px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .verify-result.error .verify-badge {
+            background: var(--red);
+        }
+
+        .verify-details {
+            display: grid;
+            gap: 12px;
+            font-size: 0.95rem;
+        }
+
+        .verify-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .verify-row:last-child {
+            border-bottom: none;
+        }
+
+        .verify-label {
+            color: var(--t2);
+            font-weight: 600;
+        }
+
+        .verify-value {
+            color: var(--text);
+            font-weight: 700;
+        }
+
+        /* TOAST NOTIFICATION */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: var(--bg3);
+            border: 1px solid var(--border2);
+            border-radius: 8px;
+            padding: 16px 24px;
+            color: var(--text);
+            font-size: 0.9rem;
+            z-index: 2000;
+            animation: slideIn 0.3s var(--ease);
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px 16px;
+            }
+
+            .header {
+                padding: 12px 16px;
+            }
+
+            .section-title {
+                font-size: 1.3rem;
+            }
+
+            .modal-content {
+                padding: 24px;
+            }
+
+            .controls {
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .seek-bar {
+                min-width: 100%;
+            }
+
+            .time-display {
+                width: 100%;
+                text-align: center;
+            }
+
+            .score-inputs {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- HEADER -->
+    <div class="header">
+        <div class="logo">biluxe10</div>
+        <div class="header-actions">
+            <button class="btn btn-secondary btn-sm" onclick="switchPage('verify')">🔍 Verify Certificate</button>
+            <button class="btn btn-secondary btn-sm" onclick="switchPage('dashboard')">Dashboard</button>
+            <button class="btn btn-secondary btn-sm" onclick="logoutUser()">Logout</button>
+        </div>
+    </div>
+
+    <!-- DASHBOARD PAGE -->
+    <div id="dashboard-page" class="page-view">
+        <div class="container">
+            <!-- COURSES SECTION -->
+            <div class="section">
+                <h2 class="section-title">📚 Your Courses</h2>
+                <div class="grid grid-2">
+                    <div class="card course-card">
+                        <div class="course-header">
+                            <div>
+                                <h3 class="card-title">Web Development Fundamentals</h3>
+                                <p class="card-subtitle">Master HTML, CSS, and JavaScript</p>
+                            </div>
+                            <div class="course-meta">
+                                <span class="badge">8 videos</span>
+                            </div>
+                        </div>
+
+                        <!-- VIDEO PLAYER -->
+                        <div class="video-player">
+                            <div class="video-container">
+                                <div class="video-element">
+                                    <video id="video1" preload="metadata">
+                                        <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+                                    </video>
+                                </div>
+                            </div>
+                            <div class="controls">
+                                <button class="control-btn" onclick="togglePlay('video1')">▶</button>
+                                <button class="control-btn" onclick="skipVideo('video1', -15)">⏪ 15s</button>
+                                <div class="seek-bar" id="seek1" onclick="seekVideo(event, 'video1')">
+                                    <div class="seek-progress" id="progress1"></div>
+                                    <div class="seek-tooltip" id="tooltip1">00:00</div>
+                                </div>
+                                <button class="control-btn" onclick="skipVideo('video1', 15)">15s ⏩</button>
+                                <div class="time-display"><span id="time1">0:00</span> / <span id="duration1">0:00</span></div>
+                                <button class="control-btn" onclick="toggleFullscreen('video1')">⛶</button>
+                            </div>
+                        </div>
+
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progress-course1" style="width: 0%"></div>
+                        </div>
+                        <div class="progress-text">Watch Progress: <span id="watchPercent1">0</span>%</div>
+
+                        <div class="course-meta" style="margin-top: 16px;">
+                            <span class="badge">▶ Currently watching</span>
+                            <span class="badge green" id="cert-badge1">🔓 Complete to unlock certificate</span>
+                        </div>
+                    </div>
+
+                    <div class="card course-card">
+                        <div class="course-header">
+                            <div>
+                                <h3 class="card-title">Advanced React Patterns</h3>
+                                <p class="card-subtitle">Build scalable applications</p>
+                            </div>
+                            <div class="course-meta">
+                                <span class="badge">10 videos</span>
+                            </div>
+                        </div>
+
+                        <div class="video-player">
+                            <div class="video-container">
+                                <div class="video-element">
+                                    <video id="video2" preload="metadata">
+                                        <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+                                    </video>
+                                </div>
+                            </div>
+                            <div class="controls">
+                                <button class="control-btn" onclick="togglePlay('video2')">▶</button>
+                                <button class="control-btn" onclick="skipVideo('video2', -15)">⏪ 15s</button>
+                                <div class="seek-bar" id="seek2" onclick="seekVideo(event, 'video2')">
+                                    <div class="seek-progress" id="progress2"></div>
+                                    <div class="seek-tooltip" id="tooltip2">00:00</div>
+                                </div>
+                                <button class="control-btn" onclick="skipVideo('video2', 15)">15s ⏩</button>
+                                <div class="time-display"><span id="time2">0:00</span> / <span id="duration2">0:00</span></div>
+                                <button class="control-btn" onclick="toggleFullscreen('video2')">⛶</button>
+                            </div>
+                        </div>
+
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progress-course2" style="width: 45%"></div>
+                        </div>
+                        <div class="progress-text">Watch Progress: <span id="watchPercent2">45</span>%</div>
+
+                        <div class="course-meta" style="margin-top: 16px;">
+                            <span class="badge">▶ In progress</span>
+                            <span class="badge amber">🔒 45% complete</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PROJECT SUBMISSION SECTION -->
+            <div class="section">
+                <h2 class="section-title">🚀 Submit Your Project</h2>
+                <div class="card">
+                    <form id="projectForm" onsubmit="submitProject(event)">
+                        <div class="form-group">
+                            <label class="form-label">
+                                Project Title
+                                <span class="form-required">*</span>
+                            </label>
+                            <input 
+                                type="text" 
+                                class="form-input" 
+                                id="projectTitle"
+                                placeholder="e.g., E-commerce Platform"
+                                required
+                            >
+                            <div class="form-hint">Give your project a meaningful name</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">
+                                Project Live Link
+                                <span class="form-required">*</span>
+                            </label>
+                            <input 
+                                type="url" 
+                                class="form-input" 
+                                id="projectLink"
+                                placeholder="https://your-project.vercel.app"
+                                required
+                            >
+                            <div class="form-hint">Must be a working, publicly accessible URL</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">
+                                GitHub Repository Link
+                                <span class="form-required" style="color: var(--t2);">optional</span>
+                            </label>
+                            <input 
+                                type="url" 
+                                class="form-input" 
+                                id="githubLink"
+                                placeholder="https://github.com/username/repo"
+                            >
+                            <div class="form-hint">Link to your GitHub repository (optional but recommended)</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">
+                                Project Description
+                                <span class="form-required">*</span>
+                            </label>
+                            <textarea 
+                                class="form-textarea" 
+                                id="projectDescription"
+                                placeholder="Describe what your project does, technologies used, and key features..."
+                                required
+                            ></textarea>
+                            <div class="form-hint">Help reviewers understand your project implementation</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">
+                                Course
+                                <span class="form-required">*</span>
+                            </label>
+                            <select class="form-select" id="projectCourse" required>
+                                <option value="">Select a course...</option>
+                                <option value="web-dev">Web Development Fundamentals</option>
+                                <option value="react">Advanced React Patterns</option>
+                                <option value="python">Python for AI & Machine Learning</option>
+                            </select>
+                        </div>
+
+                        <button type="submit" class="btn" style="width: 100%; margin-top: 16px;">
+                            ✅ Submit Project for Review
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- MY PROJECTS SECTION -->
+            <div class="section">
+                <h2 class="section-title">📋 My Projects</h2>
+                <div id="projectsList" style="display: none;">
+                    <!-- Projects will be populated here -->
+                </div>
+                <div id="noProjects" style="text-align: center; padding: 40px; color: var(--t2);">
+                    <p style="font-size: 1rem; margin-bottom: 8px;">No projects submitted yet</p>
+                    <p style="font-size: 0.85rem;">Submit your first project above to get started!</p>
+                </div>
+            </div>
+
+            <!-- CERTIFICATE SECTION -->
+            <div class="section">
+                <h2 class="section-title">🎓 Certificate Status</h2>
+                <div class="cert-section">
+                    <p class="cert-status">Your certificate requirements:</p>
+                    <div class="cert-requirements">
+                        <div class="requirement unmet" id="req-watch">
+                            <div class="requirement-icon">📺</div>
+                            <div>Watch 100%</div>
+                            <div style="font-size: 0.75rem; color: var(--t2); margin-top: 4px;" id="watch-status">0%</div>
+                        </div>
+                        <div class="requirement unmet" id="req-project">
+                            <div class="requirement-icon">✏️</div>
+                            <div>Project Approved</div>
+                            <div style="font-size: 0.75rem; color: var(--t2); margin-top: 4px;">Pending</div>
+                        </div>
+                    </div>
+                    <button class="cert-btn" id="certBtn" disabled onclick="downloadCertificate()">
+                        🏆 Download Certificate
+                    </button>
+                    <p style="margin-top: 16px; font-size: 0.8rem; color: var(--t2);">
+                        Complete all requirements to unlock your certificate
+                    </p>
+                </div>
+            </div>
+
+            <!-- ADMIN PANEL -->
+            <div class="admin-section" id="adminPanel" style="display: none;">
+                <h3 class="admin-title">⚙️ Admin Panel - Project Reviews</h3>
+                <div id="adminSubmissions"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CERTIFICATE VERIFICATION PAGE -->
+    <div id="verify-page" class="page-view" style="display: none;">
+        <div class="verify-container">
+            <h2 class="verify-title">🔍 Verify Certificate</h2>
+            <p style="text-align: center; color: var(--t2); margin-bottom: 24px;">
+                Enter a certificate ID to verify its authenticity
+            </p>
+
+            <div class="form-group">
+                <input 
+                    type="text" 
+                    class="form-input" 
+                    id="verifyCertId"
+                    placeholder="Enter Certificate ID (e.g., CERT-2024-001)"
+                    onkeypress="if(event.key==='Enter') verifyCert()"
+                >
+            </div>
+
+            <button class="btn" style="width: 100%;" onclick="verifyCert()">
+                Verify Certificate
+            </button>
+
+            <div id="verifyResult" class="verify-result">
+                <div class="verify-badge">✅ Certificate Verified</div>
+                <div class="verify-details">
+                    <div class="verify-row">
+                        <span class="verify-label">Name:</span>
+                        <span class="verify-value" id="verifyName">—</span>
+                    </div>
+                    <div class="verify-row">
+                        <span class="verify-label">Course:</span>
+                        <span class="verify-value" id="verifyCourse">—</span>
+                    </div>
+                    <div class="verify-row">
+                        <span class="verify-label">Grade:</span>
+                        <span class="verify-value" id="verifyGrade">—</span>
+                    </div>
+                    <div class="verify-row">
+                        <span class="verify-label">Date Issued:</span>
+                        <span class="verify-value" id="verifyDate">—</span>
+                    </div>
+                    <div class="verify-row">
+                        <span class="verify-label">Status:</span>
+                        <span class="verify-value" id="verifyStatus">—</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="#" onclick="switchPage('dashboard'); return false;">Dashboard</a>
+                <a href="#" onclick="switchPage('verify'); return false;">Verify Certificate</a>
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+                <a href="#">Contact Us</a>
+            </div>
+            <div class="footer-disclaimer">
+                <strong>Disclaimer:</strong> Biluxe10 provides curated learning paths and project-based evaluation services. 
+                We do not claim ownership of third-party content, video resources, or technologies referenced in our courses. 
+                All rights to third-party materials belong to their respective owners. Our certification represents completion 
+                of our course requirements and evaluation criteria, not endorsement by any third party.
+            </div>
+            <div style="margin-top: 16px; color: var(--t3);">
+                © 2024 Biluxe10. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <!-- SCRIPTS -->
+    <script>
+        // DATA STORAGE
+        const userProjects = JSON.parse(localStorage.getItem('userProjects') || '[]');
+        const certificates = JSON.parse(localStorage.getItem('certificates') || '[]');
+        const videoProgress = JSON.parse(localStorage.getItem('videoProgress') || '{}');
+        const adminReviews = JSON.parse(localStorage.getItem('adminReviews') || '{}');
+
+        // PAGE ROUTING
+        function switchPage(page) {
+            document.querySelectorAll('.page-view').forEach(p => p.style.display = 'none');
+            document.getElementById(page + '-page').style.display = 'block';
+            window.scrollTo(0, 0);
+        }
+
+        // VIDEO CONTROLS
+        function initVideoControls(videoId) {
+            const video = document.getElementById(videoId);
+            if (!video) return;
+
+            video.addEventListener('loadedmetadata', () => {
+                updateDuration(videoId);
+            });
+
+            video.addEventListener('timeupdate', () => {
+                updateProgress(videoId);
+                updateTime(videoId);
+                saveVideoProgress(videoId);
+            });
+
+            video.addEventListener('play', () => {
+                const btn = event.target.parentElement.querySelector('.control-btn');
+                if (btn) btn.textContent = '⏸';
+            });
+
+            video.addEventListener('pause', () => {
+                const btn = event.target.parentElement.querySelector('.control-btn');
+                if (btn) btn.textContent = '▶';
+            });
+
+            restoreVideoProgress(videoId);
+        }
+
+        function togglePlay(videoId) {
+            const video = document.getElementById(videoId);
+            if (video.paused) {
+                video.play();
+            } else {
+                video.pause();
+            }
+        }
+
+        function skipVideo(videoId, seconds) {
+            const video = document.getElementById(videoId);
+            video.currentTime = Math.max(0, Math.min(video.duration, video.currentTime + seconds));
+        }
+
+        function seekVideo(event, videoId) {
+            const video = document.getElementById(videoId);
+            const seekBar = event.currentTarget;
+            const rect = seekBar.getBoundingClientRect();
+            const x = event.clientX - rect.left;
+            const percent = x / rect.width;
+            video.currentTime = percent * video.duration;
+        }
+
+        function updateProgress(videoId) {
+            const video = document.getElementById(videoId);
+            if (!video) return;
+            
+            const percent = (video.currentTime / video.duration) * 100;
+            const progressEl = document.getElementById('progress' + videoId.replace('video', ''));
+            if (progressEl) progressEl.style.width = percent + '%';
+
+            // Update course progress
+            const courseNum = videoId.replace('video', '');
+            updateCourseProgress(courseNum);
+            updateCertificateStatus();
+        }
+
+        function updateDuration(videoId) {
+            const video = document.getElementById(videoId);
+            const num = videoId.replace('video', '');
+            const duration = formatTime(video.duration);
+            document.getElementById('duration' + num).textContent = duration;
+        }
+
+        function updateTime(videoId) {
+            const video = document.getElementById(videoId);
+            const num = videoId.replace('video', '');
+            const time = formatTime(video.currentTime);
+            document.getElementById('time' + num).textContent = time;
+
+            // Update tooltip
+            const tooltip = document.getElementById('tooltip' + num);
+            if (tooltip) tooltip.textContent = time;
+        }
+
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return mins + ':' + (secs < 10 ? '0' : '') + secs;
+        }
+
+        function toggleFullscreen(videoId) {
+            const video = document.getElementById(videoId);
+            if (video.requestFullscreen) {
+                video.requestFullscreen();
+            }
+        }
+
+        function saveVideoProgress(videoId) {
+            const video = document.getElementById(videoId);
+            videoProgress[videoId] = {
+                currentTime: video.currentTime,
+                duration: video.duration,
+                watchedPercent: (video.currentTime / video.duration) * 100
+            };
+            localStorage.setItem('videoProgress', JSON.stringify(videoProgress));
+        }
+
+        function restoreVideoProgress(videoId) {
+            const video = document.getElementById(videoId);
+            if (videoProgress[videoId]) {
+                video.currentTime = videoProgress[videoId].currentTime;
+            }
+        }
+
+        function updateCourseProgress(courseNum) {
+            const video = document.getElementById('video' + courseNum);
+            if (!video) return;
+            
+            const percent = (video.currentTime / video.duration) * 100;
+            document.getElementById('watchPercent' + courseNum).textContent = Math.floor(percent);
+            document.getElementById('progress-course' + courseNum).style.width = percent + '%';
+
+            // Update badge
+            if (percent >= 100) {
+                document.getElementById('cert-badge' + courseNum).innerHTML = '✅ Watched 100%';
+                document.getElementById('cert-badge' + courseNum).classList.add('green');
+            } else {
+                document.getElementById('cert-badge' + courseNum).classList.remove('green');
+            }
+        }
+
+        // PROJECT SUBMISSION
+        function submitProject(event) {
+            event.preventDefault();
+
+            const project = {
+                id: 'proj-' + Date.now(),
+                title: document.getElementById('projectTitle').value,
+                projectLink: document.getElementById('projectLink').value,
+                githubLink: document.getElementById('githubLink').value || 'Not provided',
+                description: document.getElementById('projectDescription').value,
+                course: document.getElementById('projectCourse').value,
+                status: 'pending',
+                submittedAt: new Date().toLocaleDateString(),
+                feedback: ''
+            };
+
+            userProjects.push(project);
+            localStorage.setItem('userProjects', JSON.stringify(userProjects));
+
+            showToast('✅', 'Project submitted successfully! Waiting for admin review...');
+            document.getElementById('projectForm').reset();
+            displayProjects();
+        }
+
+        function displayProjects() {
+            const list = document.getElementById('projectsList');
+            const noProjects = document.getElementById('noProjects');
+
+            if (userProjects.length === 0) {
+                list.style.display = 'none';
+                noProjects.style.display = 'block';
+                return;
+            }
+
+            list.style.display = 'block';
+            noProjects.style.display = 'none';
+
+            list.innerHTML = userProjects.map(proj => `
+                <div class="project-item">
+                    <div class="project-header">
+                        <div>
+                            <div class="project-title">${proj.title}</div>
+                            <div class="project-meta">Submitted: ${proj.submittedAt} • Course: ${proj.course}</div>
+                        </div>
+                        <div class="project-status ${proj.status}">
+                            ${proj.status === 'pending' ? '🟡 Pending Review' : proj.status === 'approved' ? '🟢 Approved' : '🔴 Rejected'}
+                        </div>
+                    </div>
+
+                    <div class="project-links">
+                        <a href="${proj.projectLink}" target="_blank" class="link-btn">🌐 Live Link</a>
+                        ${proj.githubLink !== 'Not provided' ? `<a href="${proj.githubLink}" target="_blank" class="link-btn">💻 GitHub</a>` : ''}
+                    </div>
+
+                    <div style="background: var(--bg5); padding: 12px; border-radius: 8px; font-size: 0.9rem; color: var(--t2); margin-bottom: 12px; line-height: 1.6;">
+                        ${proj.description}
+                    </div>
+
+                    ${adminReviews[proj.id] ? `
+                        <div style="background: var(--bg4); padding: 12px; border-radius: 8px; margin-bottom: 12px;">
+                            <div style="font-weight: 600; color: var(--text); margin-bottom: 8px;">📊 Evaluation Results:</div>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 8px; font-size: 0.85rem;">
+                                <div><span style="color: var(--t2);">UI/UX:</span> <span style="color: var(--gold); font-weight: 600;">${adminReviews[proj.id].uiScore || 0}/10</span></div>
+                                <div><span style="color: var(--t2);">Functionality:</span> <span style="color: var(--gold); font-weight: 600;">${adminReviews[proj.id].funcScore || 0}/10</span></div>
+                                <div><span style="color: var(--t2);">Code Quality:</span> <span style="color: var(--gold); font-weight: 600;">${adminReviews[proj.id].codeScore || 0}/10</span></div>
+                                <div><span style="color: var(--t2);">Overall Grade:</span> <span style="color: var(--green); font-weight: 600;">${adminReviews[proj.id].grade || 'N/A'}</span></div>
+                            </div>
+                        </div>
+                    ` : ''}
+
+                    ${proj.feedback ? `
+                        <div class="project-feedback">
+                            <strong>Feedback:</strong> ${proj.feedback}
+                        </div>
+                    ` : ''}
+                </div>
+            `).join('');
+        }
+
+        // CERTIFICATE SYSTEM
+        function updateCertificateStatus() {
+            const watch1 = videoProgress['video1']?.watchedPercent || 0;
+            const watch2 = videoProgress['video2']?.watchedPercent || 0;
+            const avgWatch = (watch1 + watch2) / 2;
+
+            const projectApproved = userProjects.some(p => p.status === 'approved');
+
+            // Update requirements
+            if (avgWatch >= 100) {
+                document.getElementById('req-watch').classList.replace('unmet', 'met');
+                document.getElementById('watch-status').textContent = '✅ 100%';
+            } else {
+                document.getElementById('req-watch').classList.replace('met', 'unmet');
+                document.getElementById('watch-status').textContent = Math.floor(avgWatch) + '%';
+            }
+
+            if (projectApproved) {
+                document.getElementById('req-project').classList.replace('unmet', 'met');
+                document.getElementById('req-project').innerHTML = '<div class="requirement-icon">✏️</div><div>Project Approved</div><div style="font-size: 0.75rem; color: var(--t2); margin-top: 4px;">✅ Approved</div>';
+            }
+
+            // Enable certificate download
+            const certBtn = document.getElementById('certBtn');
+            if (avgWatch >= 100 && projectApproved) {
+                certBtn.disabled = false;
+                certBtn.style.cursor = 'pointer';
+            } else {
+                certBtn.disabled = true;
+                certBtn.style.cursor = 'not-allowed';
+            }
+        }
+
+        function downloadCertificate() {
+            const user = JSON.parse(localStorage.getItem('currentUser') || '{"name": "Student"}');
+            const course = 'Web Development Fundamentals';
+            const grade = 'A';
+            const certId = 'CERT-' + Date.now();
+
+            const cert = {
+                id: certId,
+                name: user.name,
+                course: course,
+                grade: grade,
+                issuedDate: new Date().toLocaleDateString(),
+                status: 'verified'
+            };
+
+            certificates.push(cert);
+            localStorage.setItem('certificates', JSON.stringify(certificates));
+
+            // Create certificate HTML
+            const certHtml = `
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { margin: 0; padding: 20px; background: #f5f5f5; font-family: 'Georgia', serif; }
+        .cert-container { width: 900px; height: 630px; margin: 0 auto; background: linear-gradient(135deg, #FFF8DC 0%, #F5E6D3 100%); border: 4px solid #C8A96E; border-radius: 8px; padding: 60px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-around; text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,0.2); }
+        .cert-watermark { position: absolute; font-size: 80px; color: rgba(200,169,110,0.1); z-index: 0; }
+        .cert-content { position: relative; z-index: 1; }
+        .cert-label { font-size: 18px; font-weight: 600; letter-spacing: 4px; color: #8B7355; }
+        .cert-title { font-size: 48px; font-weight: bold; color: #000; margin: 30px 0; }
+        .cert-course { font-size: 20px; color: #444; margin: 15px 0; }
+        .cert-divider { width: 100%; height: 2px; background: linear-gradient(90deg, transparent, #C8A96E, transparent); margin: 25px 0; }
+        .cert-grade { font-size: 32px; font-weight: bold; color: #C8A96E; margin: 20px 0; }
+        .cert-date { font-size: 14px; color: #666; margin: 15px 0; }
+        .cert-id { font-family: 'Courier New', monospace; font-size: 11px; color: #999; margin-top: 30px; letter-spacing: 1px; }
+    </style>
+</head>
+<body>
+    <div class="cert-container">
+        <div class="cert-content">
+            <div class="cert-label">CERTIFICATE OF COMPLETION</div>
+            <div class="cert-title">${user.name}</div>
+            <div class="cert-divider"></div>
+            <div style="color: #666;">has successfully completed the course</div>
+            <div class="cert-course">${course}</div>
+            <div class="cert-grade">Grade: ${grade}</div>
+            <div class="cert-date">Issued: ${cert.issuedDate}</div>
+            <div class="cert-id">Verification ID: ${certId}</div>
+        </div>
+    </div>
+</body>
+</html>
+            `;
+
+            // Download
+            const element = document.createElement('a');
+            element.setAttribute('href', 'data:text/html;charset=utf-8,' + encodeURIComponent(certHtml));
+            element.setAttribute('download', `Certificate_${user.name.replace(' ', '_')}.html`);
+            element.style.display = 'none';
+            document.body.appendChild(element);
+            element.click();
+            document.body.removeChild(element);
+
+            showToast('🎉', 'Certificate downloaded successfully!');
+        }
+
+        // CERTIFICATE VERIFICATION
+        function verifyCert() {
+            const certId = document.getElementById('verifyCertId').value.trim();
+            const result = document.getElementById('verifyResult');
+
+            if (!certId) {
+                showToast('⚠️', 'Please enter a certificate ID');
+                return;
+            }
+
+            const cert = certificates.find(c => c.id === certId);
+
+            if (cert) {
+                result.classList.remove('error');
+                document.getElementById('verifyName').textContent = cert.name;
+                document.getElementById('verifyCourse').textContent = cert.course;
+                document.getElementById('verifyGrade').textContent = cert.grade;
+                document.getElementById('verifyDate').textContent = cert.issuedDate;
+                document.getElementById('verifyStatus').textContent = '✅ Verified';
+                result.style.display = 'block';
+                showToast('✅', 'Certificate verified successfully!');
+            } else {
+                result.classList.add('error');
+                result.innerHTML = `
+                    <div class="verify-badge" style="background: var(--red); color: white;">❌ Invalid Certificate</div>
+                    <div style="text-align: center; padding: 20px; color: var(--red);">
+                        The certificate ID <strong>${certId}</strong> was not found in our system.
+                    </div>
+                `;
+                result.style.display = 'block';
+                showToast('❌', 'Certificate not found');
+            }
+        }
+
+        // ADMIN PANEL
+        function displayAdminPanel() {
+            const isAdmin = localStorage.getItem('isAdmin') === 'true';
+            if (!isAdmin) {
+                document.getElementById('adminPanel').style.display = 'none';
+                return;
+            }
+
+            document.getElementById('adminPanel').style.display = 'block';
+            const adminDiv = document.getElementById('adminSubmissions');
+
+            adminDiv.innerHTML = userProjects.map(proj => `
+                <div class="submission-review">
+                    <div class="review-header">
+                        <div>
+                            <div class="reviewer-name">${proj.title}</div>
+                            <div style="font-size: 0.8rem; color: var(--t2);">Course: ${proj.course} • Status: ${proj.status}</div>
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 12px;">
+                        <a href="${proj.projectLink}" target="_blank" class="link-btn">🌐 View Project</a>
+                        ${proj.githubLink !== 'Not provided' ? `<a href="${proj.githubLink}" target="_blank" class="link-btn">💻 GitHub</a>` : ''}
+                    </div>
+
+                    <div style="background: var(--bg5); padding: 12px; border-radius: 8px; margin-bottom: 16px; font-size: 0.85rem; color: var(--t2); line-height: 1.6;">
+                        ${proj.description}
+                    </div>
+
+                    <div class="score-inputs">
+                        <div class="score-input">
+                            <label class="score-label">UI/UX Score (0-10)</label>
+                            <input type="number" class="score-field" id="ui-${proj.id}" min="0" max="10" value="${adminReviews[proj.id]?.uiScore || 0}">
+                        </div>
+                        <div class="score-input">
+                            <label class="score-label">Functionality (0-10)</label>
+                            <input type="number" class="score-field" id="func-${proj.id}" min="0" max="10" value="${adminReviews[proj.id]?.funcScore || 0}">
+                        </div>
+                        <div class="score-input">
+                            <label class="score-label">Code Quality (0-10)</label>
+                            <input type="number" class="score-field" id="code-${proj.id}" min="0" max="10" value="${adminReviews[proj.id]?.codeScore || 0}">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="score-label">Feedback (optional)</label>
+                        <textarea class="form-textarea" id="feedback-${proj.id}" placeholder="Provide constructive feedback..." style="min-height: 80px;">${proj.feedback || ''}</textarea>
+                    </div>
+
+                    <div style="display: flex; gap: 12px;">
+                        <button class="btn" onclick="approveProject('${proj.id}')">✅ Approve</button>
+                        <button class="btn btn-secondary" onclick="rejectProject('${proj.id}')">❌ Reject</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function approveProject(projId) {
+            const proj = userProjects.find(p => p.id === projId);
+            const uiScore = document.getElementById('ui-' + projId).value;
+            const funcScore = document.getElementById('func-' + projId).value;
+            const codeScore = document.getElementById('code-' + projId).value;
+            const feedback = document.getElementById('feedback-' + projId).value;
+
+            const avg = (parseInt(uiScore) + parseInt(funcScore) + parseInt(codeScore)) / 3;
+            let grade = 'F';
+            if (avg >= 9) grade = 'A+';
+            else if (avg >= 8) grade = 'A';
+            else if (avg >= 7) grade = 'B';
+            else if (avg >= 6) grade = 'C';
+            else if (avg >= 5) grade = 'D';
+
+            adminReviews[projId] = {
+                uiScore: parseInt(uiScore),
+                funcScore: parseInt(funcScore),
+                codeScore: parseInt(codeScore),
+                grade: grade,
+                status: 'approved'
+            };
+
+            proj.status = 'approved';
+            proj.feedback = feedback;
+
+            localStorage.setItem('userProjects', JSON.stringify(userProjects));
+            localStorage.setItem('adminReviews', JSON.stringify(adminReviews));
+
+            showToast('✅', 'Project approved!');
+            displayAdminPanel();
+            displayProjects();
+            updateCertificateStatus();
+        }
+
+        function rejectProject(projId) {
+            const proj = userProjects.find(p => p.id === projId);
+            const feedback = document.getElementById('feedback-' + projId).value;
+
+            proj.status = 'rejected';
+            proj.feedback = feedback || 'Please review and resubmit with improvements.';
+
+            localStorage.setItem('userProjects', JSON.stringify(userProjects));
+
+            showToast('❌', 'Project rejected. Feedback sent to user.');
+            displayAdminPanel();
+            displayProjects();
+        }
+
+        // TOAST NOTIFICATION
+        function showToast(emoji, message) {
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = emoji + ' ' + message;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        // AUTH
+        function logoutUser() {
+            localStorage.removeItem('currentUser');
+            localStorage.removeItem('isAdmin');
+            location.reload();
+        }
+
+        // INITIALIZATION
+        window.addEventListener('load', () => {
+            initVideoControls('video1');
+            initVideoControls('video2');
+            displayProjects();
+            displayAdminPanel();
+            updateCertificateStatus();
+
+            // Simulate admin user for demo
+            if (!localStorage.getItem('currentUser')) {
+                localStorage.setItem('currentUser', JSON.stringify({ name: 'John Doe' }));
+                localStorage.setItem('isAdmin', 'true');
+            }
+        });
+    </script>
+</body>
+</html>
