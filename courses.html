@@ -537,7 +537,7 @@ button,input,select,textarea{font-family:var(--fb)}
             <textarea class="tutor-inp" id="tutorInp" placeholder="Ask anything about your courses…" rows="1" onkeydown="handleTutorKey(event)" oninput="autoResize(this)"></textarea>
             <button class="tutor-send" id="tutorSend" onclick="sendMsg()">▶</button>
           </div>
-          <div style="font-family:var(--fm);font-size:.5rem;color:var(--t3);margin-top:6px;text-align:center">Powered by Groq (Llama 3.1 70B) · Biluxe10 Private</div>
+          <div style="font-family:var(--fm);font-size:.5rem;color:var(--t3);margin-top:6px;text-align:center">Powered by Openrouter (google/gemini-2.0-flash-exp:free) · Biluxe10 Private</div>
         </div>
       </div>
     </div>
@@ -1819,20 +1819,20 @@ async function generateAINotes(){
   try{
     const resp=await fetch('https://api.groq.com/openai/v1/chat/completions',{
       method:'POST',
-      headers:{'Content-Type':'application/json','Authorization':'Bearer '+GROQ_API},
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+Openrouter_api},
       body:JSON.stringify({
-        model:'llama-3.1-70b-versatile',
+        model:'google/gemini-2.0-flash-exp:free',
         messages:[{role:'user',content:`You are an expert educator for Biluxe10 online courses.
 Course: ${currentCourse.title}
 Module: ${currentModule.title}
 Duration: ${currentModule.dur}
 
 Create comprehensive study notes. Include:
-1. Key Concepts (3-5 bullet points)
-2. Detailed Explanation (2-3 paragraphs)
-3. Important Terms & Definitions (3-5 terms)
-4. Practical Tips (3-4 actionable tips)
-5. Practice Questions (3 questions with answers)
+1. Key Concepts (15-25 bullet points)
+2. Detailed Explanation (20-30 paragraphs)
+3. Important Terms & Definitions (35-55 terms)
+4. Practical Tips (35-45actionable tips)
+5. Practice Questions (15 questions with answers)
 6. Summary
 
 Format with clear headers. Make it educational, clear, and practical for Indian students.`}],
@@ -2137,7 +2137,7 @@ function renderProgOverview(){
 
 /* ══ AI TUTOR ══ */
 function initTutor(){
-  addBotMsg(`👋 Welcome to **Biluxe10 AI Tutor**, ${U.name}!\n\nI'm powered by Groq (Llama 3.1 70B) and here to help you with:\n• Understanding course concepts\n• Clearing doubts instantly\n• Practice questions\n• Project guidance\n• Career advice for Indian market\n\nWhat would you like to learn today?`);
+  addBotMsg(`👋 Welcome to **Biluxe10 AI Tutor**, ${U.name}!\n\nI'm powered by openrouter (google/gemini-2.0-flash-exp:free) and here to help you with:\n• Understanding course concepts\n• Clearing doubts instantly\n• Practice questions\n• Project guidance\n• Career advice for Indian market\n\nWhat would you like to learn today?`);
   const chips=$('tutorChips');
   if(chips)chips.innerHTML=['Explain a concept','Practice questions','Help with project','Career guidance','Code review','Exam prep'].map(c=>`<div class="chip" onclick="sendChip('${c}')">${c}</div>`).join('');
 }
@@ -2188,10 +2188,10 @@ ${currentContext?'Current Course: '+currentContext:''}
 Be warm, encouraging, clear, and practical. Use Indian context and examples. Format responses well with headers and bullet points where helpful. When explaining code, use markdown code blocks. Be concise but thorough. Never say you are Claude or any other AI — you are Biluxe10 AI Tutor.`;
 
     const messages=[{role:'system',content:sysPrompt},...chatHistory.slice(-12)];
-    const resp=await fetch('https://api.groq.com/openai/v1/chat/completions',{
+    const resp=await fetch('https://api.openrouter.com/openai/v1/chat/completions',{
       method:'POST',
-      headers:{'Content-Type':'application/json','Authorization':'Bearer '+GROQ_API},
-      body:JSON.stringify({model:'llama-3.1-70b-versatile',messages,max_tokens:1024,temperature:0.75})
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+openrouter_api},
+      body:JSON.stringify({model:'google/gemini-2.0-flash-exp:free',messages,max_tokens:1024,temperature:0.75})
     });
     if(!resp.ok){const err=await resp.json();throw new Error(err.error?.message||'API error '+resp.status);}
     const data=await resp.json();
