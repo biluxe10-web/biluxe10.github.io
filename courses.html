@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Biluxe10 — Learning Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,700;0,9..144,900;1,9..144,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+<script>
+const firebaseConfig = {
+    apiKey: "AIzaSyDxxkC9iD1V1w-53Kf4oBrHEXlBLvCc7sE",
+    authDomain: "biluxe10-3e894.firebaseapp.com",
+    projectId: "biluxe10-3e894",
+    storageBucket: "biluxe10-3e894.appspot.com",
+    messagingSenderId: "804749588233",
+    appId: "1:804749588233:web:7777648c0c7834733c05d8"
+};
+if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+const AUTH = firebase.auth();
+const DB = firebase.firestore();
+const san = e => e.toLowerCase().trim().replace(/\./g, '_').replace(/@/g, '__at__');
+</script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+    --bg: #07070A; --bg2: #0D0D12; --bg3: #121218; --bg4: #18181F; --bg5: #1E1E28;
+    --border: rgba(255,255,255,0.055); --border2: rgba(255,255,255,0.1);
+    --gold: #C8A96E; --gold2: #E2C48A; --gold3: #F0D9A8;
+    --gA: rgba(200,169,110,0.08); --gB: rgba(200,169,110,0.15);
+    --green: #22C55E; --grA: rgba(34,197,94,0.1);
+    --red: #EF4444; --reA: rgba(239,68,68,0.1);
+    --amber: #F59E0B; --amA: rgba(245,158,11,0.1);
+    --text: #EDEDF0; --t2: #9B9BA8; --t3: #4B4B5A;
+    --fd: 'Fraunces', serif; --fb: 'Plus Jakarta Sans', sans-serif; --fm: 'JetBrains Mono', monospace;
+    --r: 14px; --rs: 10px; --nav: 64px;
+}
+body { background: var(--bg); color: var(--text); font-family: var(--fb); line-height: 1.6; overflow-x: hidden; }
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-thumb { background: rgba(200,169,110,0.2); border-radius: 2px; }
+
+/* GUARD */
+#guard { position: fixed; inset: 0; z-index: 9999; background: var(--bg); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 22px; transition: opacity .7s; }
+#guard.fade { opacity: 0; pointer-events: none; }
+#guard.gone { display: none; }
+.g-logo { font-family: var(--fd); font-size: clamp(3rem, 10vw, 5rem); font-weight: 900; color: var(--gold); }
+.g-logo sup { font-size: .4em; color: var(--t3); }
+.g-spin { width: 36px; height: 36px; border: 2.5px solid rgba(200,169,110,.12); border-top-color: var(--gold); border-radius: 50%; animation: spin .8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.g-msg { font-family: var(--fm); font-size: .58rem; color: var(--t3); letter-spacing: .2em; text-transform: uppercase; }
+.g-err { display: none; flex-direction: column; align-items: center; gap: 14px; text-align: center; padding: 24px; max-width: 340px; }
+.g-err-t { font-family: var(--fd); font-size: 1.1rem; color: var(--red); }
+.g-err-d { font-size: .8rem; color: var(--t2); line-height: 1.75; }
+.g-btn { padding: 11px 26px; background: var(--gold); color: #07070A; border: none; border-radius: 8px; font-weight: 800; cursor: pointer; }
+
+/* TOPBAR */
+.topbar { height: var(--nav); background: rgba(7,7,10,0.95); backdrop-filter: blur(24px); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; position: sticky; top: 0; z-index: 100; }
+.tb-l { display: flex; align-items: center; gap: 12px; }
+.tb-ham { display: none; flex-direction: column; gap: 4px; cursor: pointer; }
+.tb-ham span { width: 18px; height: 1.5px; background: var(--t2); border-radius: 1px; transition: all .3s; }
+.tb-ham.open span:nth-child(1) { transform: translateY(5.5px) rotate(45deg); }
+.tb-ham.open span:nth-child(2) { opacity: 0; }
+.tb-ham.open span:nth-child(3) { transform: translateY(-5.5px) rotate(-45deg); }
+.tb-pg { font-family: var(--fd); font-size: 1rem; font-weight: 700; }
+.tb-r { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.tb-tab { padding: 6px 14px; border-radius: 8px; border: 1px solid var(--border); background: transparent; color: var(--t2); font-size: .7rem; font-weight: 600; cursor: pointer; }
+.tb-tab.on { background: var(--gB); border-color: rgba(200,169,110,.3); color: var(--gold); }
+.btn-g { padding: 8px 16px; background: linear-gradient(135deg, var(--gold), var(--gold2)); color: #07070A; border: none; border-radius: var(--rs); font-weight: 800; font-size: .7rem; cursor: pointer; transition: all .2s; }
+.btn-g:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(200,169,110,0.3); }
+.btn-sm { padding: 5px 10px; background: var(--gA); color: var(--gold); border: 1px solid rgba(200,169,110,.2); border-radius: 6px; font-weight: 700; font-size: .65rem; cursor: pointer; }
+.bdg { display: inline-flex; align-items: center; padding: 2px 6px; border-radius: 4px; font-family: var(--fm); font-size: .5rem; font-weight: 700; }
+.bdg.ok { background: var(--grA); color: var(--green); }
+.bdg.go { background: var(--gA); color: var(--gold); }
+
+/* TABS */
+.tab-pane { display: none; padding: 20px; animation: fadeIn .3s; }
+.tab-pane.on { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+/* COURSE GRID */
+.cat-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+.cat-tab { padding: 6px 14px; border-radius: 20px; border: 1px solid var(--border); background: none; color: var(--t3); font-size: .7rem; font-weight: 600; cursor: pointer; }
+.cat-tab.on { background: var(--gA); color: var(--gold); border-color: rgba(200,169,110,.3); }
+.course-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+.c-card { background: var(--bg3); border: 1px solid var(--border); border-radius: var(--r); overflow: hidden; cursor: pointer; transition: all .22s; }
+.c-card:hover { transform: translateY(-3px); border-color: rgba(200,169,110,.2); }
+.c-thumb { height: 100px; background: linear-gradient(135deg, var(--bg4), var(--bg5)); display: flex; align-items: center; justify-content: center; font-size: 2.5rem; }
+.c-body { padding: 14px; }
+.c-cat { font-family: var(--fm); font-size: .48rem; color: var(--gold); text-transform: uppercase; margin-bottom: 4px; }
+.c-title { font-size: .85rem; font-weight: 700; margin-bottom: 5px; }
+.c-meta { font-family: var(--fm); font-size: .5rem; color: var(--t3); display: flex; gap: 8px; margin-bottom: 8px; }
+.c-prog { height: 3px; background: var(--bg4); border-radius: 3px; overflow: hidden; margin-top: 8px; }
+.c-progf { height: 100%; background: linear-gradient(90deg, var(--gold), var(--gold2)); transition: width .6s; }
+
+/* PLAYER */
+.player-layout { display: grid; grid-template-columns: 1fr 300px; gap: 0; height: calc(100vh - var(--nav)); overflow: hidden; }
+.player-main { display: flex; flex-direction: column; overflow-y: auto; }
+.player-wrap { position: relative; background: #000; aspect-ratio: 16/9; }
+#ytFrame { width: 100%; height: 100%; border: none; pointer-events: auto; }
+.player-info { padding: 14px; }
+.cv-sidebar { border-left: 1px solid var(--border); overflow-y: auto; background: var(--bg2); }
+.cv-sb-hd { padding: 12px 14px; border-bottom: 1px solid var(--border); font-family: var(--fd); font-size: .85rem; font-weight: 700; }
+.module-item { padding: 10px 14px; border-bottom: 1px solid var(--border); cursor: pointer; display: flex; align-items: center; gap: 10px; transition: all .2s; }
+.module-item:hover { background: var(--gA); }
+.module-item.active { background: var(--gB); border-left: 3px solid var(--gold); }
+.mi-num { width: 26px; height: 26px; border-radius: 50%; background: var(--bg4); display: flex; align-items: center; justify-content: center; font-family: var(--fm); font-size: .5rem; flex-shrink: 0; }
+.module-item.done .mi-num { background: var(--green); color: #fff; }
+.mi-title { font-size: .75rem; font-weight: 600; }
+
+/* AI CHAT */
+.chat-wrap { display: flex; flex-direction: column; height: 550px; border: 1px solid var(--border); border-radius: var(--r); background: var(--bg2); overflow: hidden; }
+.chat-msgs { flex: 1; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+.chat-bubble { max-width: 80%; padding: 10px 14px; border-radius: 12px; font-size: .78rem; line-height: 1.6; }
+.chat-bubble.user { align-self: flex-end; background: var(--gB); }
+.chat-bubble.ai { align-self: flex-start; background: var(--bg3); border: 1px solid var(--border); }
+.chat-inp-row { display: flex; gap: 8px; padding: 12px; border-top: 1px solid var(--border); }
+.chat-inp { flex: 1; background: var(--bg3); border: 1px solid var(--border2); border-radius: 8px; padding: 10px; font-size: .78rem; color: var(--text); outline: none; }
+.chat-send { padding: 10px 16px; background: linear-gradient(135deg, var(--gold), var(--gold2)); color: #07070A; border: none; border-radius: 8px; font-weight: 800; cursor: pointer; }
+
+/* PDF GRID */
+.pdf-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+.pdf-card { background: var(--bg3); border: 1px solid var(--border); border-radius: var(--rs); padding: 12px; cursor: pointer; display: flex; align-items: center; gap: 10px; }
+.pdf-card:hover { border-color: rgba(200,169,110,.2); background: var(--gA); }
+.pdf-ic { font-size: 1.6rem; }
+.pdf-nm { font-size: .72rem; font-weight: 700; }
+
+/* CERTIFICATE */
+.cert-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
+.cert-card { background: linear-gradient(135deg, rgba(200,169,110,.1), rgba(200,169,110,.05)); border: 1px solid rgba(200,169,110,.25); border-radius: 16px; padding: 18px; }
+.cert-logo { font-family: var(--fd); font-size: 1rem; font-weight: 900; color: var(--gold); }
+.cert-nm { font-family: var(--fd); font-size: 1rem; font-weight: 700; margin: 8px 0; }
+.cert-sig { border-top: 1px solid rgba(200,169,110,.2); padding-top: 12px; margin-top: 12px; display: flex; justify-content: space-between; align-items: flex-end; }
+.sig-name { font-family: var(--fd); font-size: .8rem; font-weight: 700; color: var(--gold); }
+
+/* EXAM */
+.exam-wrap { max-width: 800px; margin: 0 auto; }
+.exam-q { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r); padding: 16px; margin-bottom: 12px; }
+.exam-q-text { font-size: .85rem; font-weight: 600; margin-bottom: 12px; }
+.exam-opts { display: flex; flex-direction: column; gap: 6px; }
+.exam-opt { padding: 8px 12px; background: var(--bg3); border: 1px solid var(--border); border-radius: var(--rs); cursor: pointer; font-size: .75rem; }
+.exam-opt:hover { border-color: rgba(200,169,110,.3); background: var(--gA); }
+.exam-opt.sel { border-color: var(--gold); background: var(--gB); color: var(--gold); }
+.exam-prog-bar { height: 4px; background: var(--bg4); border-radius: 4px; margin-bottom: 16px; overflow: hidden; }
+.exam-prog-fill { height: 100%; background: linear-gradient(90deg, var(--gold), var(--gold2)); transition: width .3s; }
+
+/* TOAST */
+#toast { position: fixed; bottom: 24px; right: 24px; z-index: 9999; background: var(--bg3); border: 1px solid var(--border2); border-radius: var(--rs); padding: 12px 18px; display: flex; align-items: center; gap: 8px; transform: translateY(90px); opacity: 0; transition: all .35s; }
+#toast.on { transform: translateY(0); opacity: 1; }
+.empty { text-align: center; padding: 40px; color: var(--t3); }
+
+@media (max-width: 860px) {
+    .player-layout { grid-template-columns: 1fr; height: auto; }
+    .cv-sidebar { max-height: 280px; border-left: none; border-top: 1px solid var(--border); }
+    .course-grid { grid-template-columns: 1fr 1fr; }
+    .tb-ham { display: flex; }
+    .tb-r { gap: 4px; }
+    .tb-tab { padding: 4px 8px; font-size: .6rem; }
+}
+@media (max-width: 550px) { .course-grid { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div id="toast"></div>
+
+<div id="guard">
+    <div class="g-logo">Biluxe<sup>10</sup></div>
+    <div class="g-spin"></div>
+    <div class="g-msg" id="gMsg">Loading Learning Hub...</div>
+    <div class="g-err" id="gErr"><div class="g-err-t">⚠ Access Denied</div><div class="g-err-d" id="gErrD"></div><button class="g-btn" onclick="location.href='dashboard.html'">← Back to Dashboard</button></div>
+</div>
+
+<div id="app" style="opacity:0;transition:opacity .5s">
+<div class="topbar">
+    <div class="tb-l">
+        <div class="tb-ham" id="ham" onclick="toggleSb()"><span></span><span></span><span></span></div>
+        <div class="tb-pg" id="tbPg">📚 Courses</div>
+    </div>
+    <div class="tb-r">
+        <button class="tb-tab on" onclick="switchTab('courses',this)">Courses</button>
+        <button class="tb-tab" onclick="switchTab('ai-tutor',this)">AI Tutor</button>
+        <button class="tb-tab" onclick="switchTab('certificates',this)">Certificates</button>
+        <button class="tb-tab" onclick="switchTab('notes',this)">Notes</button>
+    </div>
+</div>
+
+<!-- COURSES TAB -->
+<div class="tab-pane on" id="tab-courses">
+    <div id="courseListView">
+        <div class="cat-tabs" id="catTabs"></div>
+        <div class="course-grid" id="courseGrid"></div>
+    </div>
+    <div id="playerView" style="display:none"></div>
+</div>
+
+<!-- AI TUTOR TAB -->
+<div class="tab-pane" id="tab-ai-tutor">
+    <div class="chat-wrap">
+        <div class="chat-msgs" id="chatMsgs">
+            <div class="chat-bubble ai">👋 Hi! I'm your Biluxe10 AI Tutor. Ask me anything about your courses! I can explain concepts, help with projects, and answer questions.</div>
+        </div>
+        <div class="chat-inp-row">
+            <input class="chat-inp" id="chatInput" placeholder="Ask me anything..." onkeydown="if(event.key==='Enter')sendChat()">
+            <button class="chat-send" onclick="sendChat()">Send</button>
+        </div>
+    </div>
+</div>
+
+<!-- CERTIFICATES TAB -->
+<div class="tab-pane" id="tab-certificates"><div class="cert-grid" id="certGrid"><div class="empty">🏆 Complete a course to earn your certificate signed by Syed Afshar Khadri, Founder of Biluxe10</div></div></div>
+
+<!-- NOTES TAB -->
+<div class="tab-pane" id="tab-notes"><div class="pdf-grid" id="pdfGrid"></div></div>
+</div>
+
+<script>
+// ==================== COMPLETE COURSE DATA (FALLBACK + REAL) ====================
+const COURSES_DATA = {
+    starter: { id: 'starter', name: '🚀 Starter', emoji: '🚀', color: '#F59E0B', courses: [
+        { id: 's1', title: 'Digital Entrepreneurship Basics', price: 499, duration: '4 hrs', level: 'Beginner', desc: 'Learn to start and grow a digital business from scratch.', modules: [
+            { id: 's1m1', title: 'Introduction to Digital Business', dur: '28 min', url: 'https://youtu.be/x5hf-1Nj-ck' },
+            { id: 's1m2', title: 'Business Models & Monetization', dur: '32 min', url: 'https://youtu.be/x5hf-1Nj-ck' },
+            { id: 's1m3', title: 'Finding Your Niche', dur: '25 min', url: 'https://youtu.be/x5hf-1Nj-ck' },
+            { id: 's1m4', title: 'Building Your First Product', dur: '30 min', url: 'https://youtu.be/x5hf-1Nj-ck' },
+            { id: 's1m5', title: 'Marketing Fundamentals', dur: '35 min', url: 'https://youtu.be/x5hf-1Nj-ck' },
+            { id: 's1m6', title: 'Sales & Conversion', dur: '28 min', url: 'https://youtu.be/x5hf-1Nj-ck' }
+        ]},
+        { id: 's2', title: 'Canva & Content Creation', price: 499, duration: '3 hrs', level: 'Beginner', desc: 'Design stunning graphics and social media posts.', modules: [
+            { id: 's2m1', title: 'Canva Interface Basics', dur: '22 min', url: 'https://youtu.be/x7-XSJHcaVI' },
+            { id: 's2m2', title: 'Brand Kit & Colors', dur: '20 min', url: 'https://youtu.be/x7-XSJHcaVI' },
+            { id: 's2m3', title: 'Social Media Templates', dur: '25 min', url: 'https://youtu.be/x7-XSJHcaVI' }
+        ]},
+        { id: 's3', title: 'WhatsApp Business Marketing', price: 499, duration: '3 hrs', level: 'Beginner', desc: 'Use WhatsApp Business to generate leads and grow revenue.', modules: [
+            { id: 's3m1', title: 'Setup & Profile', dur: '20 min', url: 'https://youtu.be/PlVxtty0wrI' },
+            { id: 's3m2', title: 'Catalog & Products', dur: '22 min', url: 'https://youtu.be/PlVxtty0wrI' },
+            { id: 's3m3', title: 'Broadcast & Automation', dur: '28 min', url: 'https://youtu.be/PlVxtty0wrI' }
+        ]},
+        { id: 's4', title: 'ChatGPT for Daily Work', price: 499, duration: '3 hrs', level: 'Beginner', desc: 'Boost productivity with ChatGPT and AI tools.', modules: [
+            { id: 's4m1', title: 'ChatGPT Basics', dur: '20 min', url: 'https://youtu.be/IcCAEudzEDw' },
+            { id: 's4m2', title: 'Prompt Engineering', dur: '28 min', url: 'https://youtu.be/IcCAEudzEDw' },
+            { id: 's4m3', title: 'Content & Copywriting', dur: '30 min', url: 'https://youtu.be/IcCAEudzEDw' }
+        ]}
+    ]},
+    digital: { id: 'digital', name: '📈 Digital Marketing', emoji: '📈', color: '#3B82F6', courses: [
+        { id: 'd1', title: 'Affiliate Marketing Mastery', price: 999, duration: '8 hrs', level: 'Intermediate', desc: 'Earn commissions by promoting products online.', modules: [
+            { id: 'd1m1', title: 'Affiliate Marketing Basics', dur: '35 min', url: 'https://youtu.be/TF3BhN_dTdo' },
+            { id: 'd1m2', title: 'Choosing Niches & Networks', dur: '40 min', url: 'https://youtu.be/TF3BhN_dTdo' },
+            { id: 'd1m3', title: 'Traffic Generation', dur: '45 min', url: 'https://youtu.be/TF3BhN_dTdo' }
+        ]},
+        { id: 'd2', title: 'SEO & Blogging', price: 999, duration: '5 hrs', level: 'Intermediate', desc: 'Rank on Google and build organic traffic.', modules: [
+            { id: 'd2m1', title: 'SEO Fundamentals', dur: '30 min', url: 'https://youtu.be/pDUMhloKybU' },
+            { id: 'd2m2', title: 'Keyword Research', dur: '35 min', url: 'https://youtu.be/pDUMhloKybU' },
+            { id: 'd2m3', title: 'On-Page Optimization', dur: '40 min', url: 'https://youtu.be/pDUMhloKybU' }
+        ]}
+    ]},
+    creative: { id: 'creative', name: '🎨 Creative & Design', emoji: '🎨', color: '#EC4899', courses: [
+        { id: 'c1', title: 'UI/UX Design Complete', price: 2499, duration: '12 hrs', level: 'Intermediate', desc: 'Master user experience and interface design with Figma.', modules: [
+            { id: 'c1m1', title: 'Design Thinking', dur: '45 min', url: 'https://youtube.com/playlist?list=PL7ZIgV4R67IOMRiW_Q7vZqLulb0xyKDHD' },
+            { id: 'c1m2', title: 'Figma Fundamentals', dur: '50 min', url: 'https://youtube.com/playlist?list=PL7ZIgV4R67IOMRiW_Q7vZqLulb0xyKDHD' },
+            { id: 'c1m3', title: 'Prototyping', dur: '45 min', url: 'https://youtube.com/playlist?list=PL7ZIgV4R67IOMRiW_Q7vZqLulb0xyKDHD' }
+        ]}
+    ]},
+    special: { id: 'special', name: '💄 Special Courses', emoji: '💄', color: '#E879F9', courses: [
+        { id: 'sp1', title: 'Make-up Artist Course', price: 499, duration: '10 hrs', level: 'Beginner', desc: 'Professional makeup artistry from basics to bridal.', modules: [
+            { id: 'sp1m1', title: 'Makeup Basics & Tools', dur: '25 min', url: 'https://youtube.com/playlist?list=PLnormvp3UHAqpl1-m47DBTBMSXv1PCRL3' },
+            { id: 'sp1m2', title: 'Foundation & Contouring', dur: '30 min', url: 'https://youtube.com/playlist?list=PLnormvp3UHAqpl1-m47DBTBMSXv1PCRL3' },
+            { id: 'sp1m3', title: 'Bridal Makeup', dur: '35 min', url: 'https://youtube.com/playlist?list=PLnormvp3UHAqpl1-m47DBTBMSXv1PCRL3' }
+        ]},
+        { id: 'sp2', title: 'Fashion Designer Course', price: 499, duration: '12 hrs', level: 'Beginner', desc: 'Fashion design from sketch to stitch.', modules: [
+            { id: 'sp2m1', title: 'Fashion Illustration', dur: '30 min', url: 'https://youtube.com/playlist?list=PLQqMYWJXgJhjgb54-c2RWAVx4Ln6BfPcQ' },
+            { id: 'sp2m2', title: 'Fabric & Pattern Making', dur: '35 min', url: 'https://youtube.com/playlist?list=PLQqMYWJXgJhjgb54-c2RWAVx4Ln6BfPcQ' },
+            { id: 'sp2m3', title: 'Launching Your Line', dur: '25 min', url: 'https://youtube.com/playlist?list=PLQqMYWJXgJhjgb54-c2RWAVx4Ln6BfPcQ' }
+        ]},
+        { id: 'sp3', title: 'Bridal Mehendi Course', price: 499, duration: '8 hrs', level: 'Beginner', desc: 'Master bridal mehendi art.', modules: [
+            { id: 'sp3m1', title: 'Mehendi Basics', dur: '20 min', url: 'https://youtube.com/playlist?list=PL33mbEIHXrf8E9DGhM9R8cPH940qaIGev' },
+            { id: 'sp3m2', title: 'Arabic & Indian Designs', dur: '35 min', url: 'https://youtube.com/playlist?list=PL33mbEIHXrf8E9DGhM9R8cPH940qaIGev' },
+            { id: 'sp3m3', title: 'Bridal Full Hand', dur: '40 min', url: 'https://youtube.com/playlist?list=PL33mbEIHXrf8E9DGhM9R8cPH940qaIGev' }
+        ]}
+    ]}
+};
+
+// Generate PDF notes for each course
+function generatePDFs(courseTitle) {
+    const topics = ['Introduction', 'Core Concepts', 'Advanced Topics', 'Best Practices', 'Case Studies', 'Workbook', 'Quick Reference', 'Exam Guide'];
+    return topics.map((t, i) => ({ id: i+1, title: `${courseTitle} - ${t}`, icon: '📘', size: `${Math.floor(Math.random()*3)+1}.2 MB` }));
+}
+Object.values(COURSES_DATA).forEach(cat => {
+    cat.courses.forEach(course => { course.pdfs = generatePDFs(course.title); });
+});
+
+// YouTube embed helper
+function getEmbedUrl(url) {
+    if (!url) return '';
+    let id = '';
+    if (url.includes('youtu.be/')) id = url.split('youtu.be/')[1]?.split('?')[0] || '';
+    else if (url.includes('v=')) id = url.split('v=')[1]?.split('&')[0] || '';
+    else if (url.includes('playlist?list=')) {
+        let listId = url.split('list=')[1]?.split('&')[0] || '';
+        if (listId) return `https://www.youtube.com/embed/videoseries?list=${listId}&rel=0&modestbranding=1`;
+    }
+    if (id) return `https://www.youtube.com/embed/${id}?rel=0&modestbranding=1&showinfo=0&controls=1`;
+    return '';
+}
+
+// Global state
+let U = { name: 'Demo User', email: 'demo@biluxe10.com' };
+let BPRICE = 9999;
+let WATCH_DATA = {};
+let CERT_DATA = {};
+let CURRENT_COURSE = null;
+let CURRENT_CAT = null;
+let CURRENT_MODULE = null;
+let examState = null;
+let chatHistory = [];
+
+function toast(msg) { const el = document.getElementById('toast'); el.innerHTML = `<span>📢</span><span>${msg}</span>`; el.classList.add('on'); setTimeout(() => el.classList.remove('on'), 3000); }
+
+function switchTab(tab, btn) {
+    document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('on'));
+    document.querySelectorAll('.tb-tab').forEach(b => b.classList.remove('on'));
+    document.getElementById('tab-' + tab).classList.add('on');
+    if (btn) btn.classList.add('on');
+    if (tab === 'courses') { document.getElementById('courseListView').style.display = 'block'; document.getElementById('playerView').style.display = 'none'; }
+}
+
+function toggleSb() { const sb = document.getElementById('sb'); const ham = document.getElementById('ham'); if(sb){ sb.classList.toggle('open'); ham.classList.toggle('open'); } }
+
+function getCourseProgress(cid) {
+    const wd = WATCH_DATA[cid];
+    if (!wd) return 0;
+    let total = 0;
+    for (let cat of Object.values(COURSES_DATA)) {
+        let course = cat.courses.find(c => c.id === cid);
+        if (course) { total = course.modules.length; break; }
+    }
+    return total ? Math.round(((wd.done || []).length / total) * 100) : 0;
+}
+
+function isModuleDone(cid, mid) { return (WATCH_DATA[cid]?.done || []).includes(mid); }
+
+function saveProgress(cid, mid) {
+    if (!WATCH_DATA[cid]) WATCH_DATA[cid] = { done: [] };
+    if (!WATCH_DATA[cid].done.includes(mid)) WATCH_DATA[cid].done.push(mid);
+    WATCH_DATA[cid].lastModule = mid;
+}
+
+function renderCourses() {
+    const grid = document.getElementById('courseGrid');
+    const catsDiv = document.getElementById('catTabs');
+    let allHtml = '';
+    let catsHtml = '<button class="cat-tab on" onclick="filterCategory(\'all\',this)">All</button>';
+    
+    for (let [catId, cat] of Object.entries(COURSES_DATA)) {
+        catsHtml += `<button class="cat-tab" onclick="filterCategory('${catId}',this)">${cat.name}</button>`;
+        const unlocked = cat.courses[0].price <= BPRICE;
+        cat.courses.forEach(course => {
+            const pct = getCourseProgress(course.id);
+            allHtml += `
+                <div class="c-card" onclick="openCourse('${catId}','${course.id}')">
+                    <div class="c-thumb">${cat.emoji}</div>
+                    <div class="c-body">
+                        <div class="c-cat">${cat.name} · ${course.level}</div>
+                        <div class="c-title">${course.title}</div>
+                        <div class="c-meta">⏱ ${course.duration} · 📋 ${course.modules.length} modules</div>
+                        <div class="c-prog"><div class="c-progf" style="width:${pct}%"></div></div>
+                        <div style="font-family:monospace;font-size:.5rem;margin-top:6px;color:var(--t3)">${pct}% complete</div>
+                    </div>
+                </div>`;
+        });
+    }
+    document.getElementById('catTabs').innerHTML = catsHtml;
+    grid.innerHTML = allHtml || '<div class="empty">No courses available</div>';
+}
+
+function filterCategory(catId, btn) {
+    document.querySelectorAll('.cat-tab').forEach(b => b.classList.remove('on'));
+    btn.classList.add('on');
+    const grid = document.getElementById('courseGrid');
+    let html = '';
+    if (catId === 'all') {
+        for (let cat of Object.values(COURSES_DATA)) {
+            cat.courses.forEach(course => {
+                const pct = getCourseProgress(course.id);
+                html += `<div class="c-card" onclick="openCourse('${cat.id}','${course.id}')">
+                    <div class="c-thumb">${cat.emoji}</div>
+                    <div class="c-body"><div class="c-cat">${cat.name} · ${course.level}</div>
+                    <div class="c-title">${course.title}</div>
+                    <div class="c-meta">⏱ ${course.duration} · 📋 ${course.modules.length} modules</div>
+                    <div class="c-prog"><div class="c-progf" style="width:${pct}%"></div></div>
+                    <div style="font-size:.5rem;margin-top:6px;color:var(--t3)">${pct}% complete</div></div></div>`;
+            });
+        }
+    } else {
+        const cat = COURSES_DATA[catId];
+        if (cat) {
+            cat.courses.forEach(course => {
+                const pct = getCourseProgress(course.id);
+                html += `<div class="c-card" onclick="openCourse('${catId}','${course.id}')">
+                    <div class="c-thumb">${cat.emoji}</div>
+                    <div class="c-body"><div class="c-cat">${cat.name} · ${course.level}</div>
+                    <div class="c-title">${course.title}</div>
+                    <div class="c-meta">⏱ ${course.duration} · 📋 ${course.modules.length} modules</div>
+                    <div class="c-prog"><div class="c-progf" style="width:${pct}%"></div></div>
+                    <div style="font-size:.5rem;margin-top:6px;color:var(--t3)">${pct}% complete</div></div></div>`;
+            });
+        }
+    }
+    grid.innerHTML = html || '<div class="empty">No courses found</div>';
+}
+
+function openCourse(catId, courseId) {
+    const cat = COURSES_DATA[catId];
+    const course = cat?.courses.find(c => c.id === courseId);
+    if (!course) return;
+    CURRENT_COURSE = course;
+    CURRENT_CAT = cat;
+    
+    document.getElementById('courseListView').style.display = 'none';
+    const pv = document.getElementById('playerView');
+    pv.style.display = 'block';
+    
+    const doneCount = (WATCH_DATA[course.id]?.done || []).length;
+    const totalMods = course.modules.length;
+    const pct = Math.round(doneCount / totalMods * 100);
+    
+    pv.innerHTML = `
+        <div class="player-layout">
+            <div class="player-main">
+                <div class="player-wrap"><iframe id="ytFrame" src="" allowfullscreen></iframe></div>
+                <div class="player-info">
+                    <div style="font-size:1rem;font-weight:700">${course.title}</div>
+                    <div class="c-meta" style="margin:8px 0">${cat.name} · ${course.duration} · ${totalMods} modules</div>
+                    <div class="c-prog" style="margin:10px 0"><div class="c-progf" id="courseProgFill" style="width:${pct}%"></div></div>
+                    <div style="display:flex;gap:8px;flex-wrap:wrap">
+                        <button class="btn-g" id="markBtn" onclick="markCurrentComplete()">✓ Mark Current Complete</button>
+                        <button class="btn-sm" onclick="openAITutorForCourse()">🤖 AI Tutor</button>
+                        <button class="btn-sm" onclick="startExamForCourse()">📝 Take Exam</button>
+                    </div>
+                    <div id="courseDesc" style="margin-top:12px;font-size:.78rem;color:var(--t2);line-height:1.7">${course.desc}</div>
+                </div>
+            </div>
+            <div class="cv-sidebar">
+                <div class="cv-sb-hd">📋 Modules · ${doneCount}/${totalMods} done</div>
+                <div id="moduleList">${course.modules.map((m, i) => `
+                    <div class="module-item ${isModuleDone(course.id, m.id) ? 'done' : ''}" onclick="playModule('${m.id}', ${i})">
+                        <div class="mi-num">${isModuleDone(course.id, m.id) ? '✓' : (i+1)}</div>
+                        <div class="mi-title">${m.title}</div>
+                        <div style="font-family:monospace;font-size:.5rem;color:var(--t3);margin-left:auto">${m.dur}</div>
+                    </div>
+                `).join('')}</div>
+            </div>
+        </div>`;
+    
+    // Play first module
+    if (course.modules.length > 0) playModule(course.modules[0].id, 0);
+}
+
+function playModule(moduleId, idx) {
+    if (!CURRENT_COURSE) return;
+    const module = CURRENT_COURSE.modules[idx];
+    if (!module) return;
+    CURRENT_MODULE = module;
+    
+    // Update active state
+    document.querySelectorAll('.module-item').forEach(el => el.classList.remove('active'));
+    const items = document.querySelectorAll('.module-item');
+    if (items[idx]) items[idx].classList.add('active');
+    
+    const embedUrl = getEmbedUrl(module.url);
+    const frame = document.getElementById('ytFrame');
+    if (frame && embedUrl) frame.src = embedUrl;
+    else if (frame) frame.src = '';
+    
+    // Update mark button text
+    const markBtn = document.getElementById('markBtn');
+    if (markBtn) markBtn.textContent = isModuleDone(CURRENT_COURSE.id, module.id) ? '✓ Already Completed' : '✓ Mark Complete';
+}
+
+function markCurrentComplete() {
+    if (!CURRENT_COURSE || !CURRENT_MODULE) { toast('⚠', 'Select a module first'); return; }
+    if (isModuleDone(CURRENT_COURSE.id, CURRENT_MODULE.id)) { toast('✓', 'Module already completed!'); return; }
+    
+    saveProgress(CURRENT_COURSE.id, CURRENT_MODULE.id);
+    
+    // Update UI
+    const items = document.querySelectorAll('.module-item');
+    for (let i = 0; i < CURRENT_COURSE.modules.length; i++) {
+        if (CURRENT_COURSE.modules[i].id === CURRENT_MODULE.id) {
+            const el = items[i];
+            if (el) {
+                el.classList.add('done');
+                const numDiv = el.querySelector('.mi-num');
+                if (numDiv) numDiv.textContent = '✓';
+            }
+            break;
+        }
+    }
+    
+    const doneCount = (WATCH_DATA[CURRENT_COURSE.id]?.done || []).length;
+    const totalMods = CURRENT_COURSE.modules.length;
+    const pct = Math.round(doneCount / totalMods * 100);
+    const progFill = document.getElementById('courseProgFill');
+    if (progFill) progFill.style.width = pct + '%';
+    
+    const sidebarHd = document.querySelector('.cv-sb-hd');
+    if (sidebarHd) sidebarHd.textContent = `📋 Modules · ${doneCount}/${totalMods} done`;
+    
+    toast('✅', `"${CURRENT_MODULE.title}" completed!`);
+    
+    if (doneCount === totalMods) {
+        toast('🎉', 'Congratulations! Course completed! Take the exam to earn your certificate.', 5000);
+    }
+    
+    const markBtn = document.getElementById('markBtn');
+    if (markBtn) markBtn.textContent = '✓ Already Completed';
+}
+
+function openAITutorForCourse() {
+    switchTab('ai-tutor', document.querySelector('.tb-tab:nth-child(2)'));
+    const inp = document.getElementById('chatInput');
+    if (inp && CURRENT_COURSE) inp.value = `Can you help me understand ${CURRENT_COURSE.title}? What are the key concepts?`;
+    sendChat();
+}
+
+// Exam functionality
+function startExamForCourse() {
+    if (!CURRENT_COURSE) return;
+    const doneCount = (WATCH_DATA[CURRENT_COURSE.id]?.done || []).length;
+    const totalMods = CURRENT_COURSE.modules.length;
+    const pct = Math.round(doneCount / totalMods * 100);
+    if (pct < 70) { toast('⚠', `Complete ${100-pct}% more of the course to take the exam.`); return; }
+    
+    const examQs = [
+        { q: `What is the main focus of ${CURRENT_COURSE.title}?`, opts: ['Practical skills and real-world application', 'Only theory', 'Memorization', 'None of these'], ans: 0 },
+        { q: 'Which approach leads to the best learning outcomes?', opts: ['Consistent practice', 'Watching once', 'Skipping difficult topics', 'Only reading'], ans: 0 },
+        { q: 'What should you do after completing a module?', opts: ['Practice and apply', 'Move on without practice', 'Forget it', 'Skip to next'], ans: 0 },
+        { q: 'How can you demonstrate your learning?', opts: ['Build projects', 'Just watch videos', 'Take notes only', 'Share certificates'], ans: 0 },
+        { q: 'What is the value of hands-on projects?', opts: ['Reinforces learning and builds portfolio', 'Wastes time', 'Optional only', 'Not important'], ans: 0 }
+    ];
+    
+    examState = { questions: examQs, answers: {}, courseId: CURRENT_COURSE.id };
+    
+    document.getElementById('courseListView').style.display = 'block';
+    document.getElementById('playerView').style.display = 'none';
+    document.getElementById('tab-courses').innerHTML = `
+        <div class="exam-wrap">
+            <div style="font-family:var(--fd);font-size:1.1rem;font-weight:700">📝 ${CURRENT_COURSE.title} - Exam</div>
+            <div class="exam-prog-bar"><div class="exam-prog-fill" id="examProg" style="width:0%"></div></div>
+            <div id="examQs"></div>
+            <button class="btn-g" onclick="submitExam()" style="margin-top:16px">Submit Exam</button>
+            <button class="btn-sm" onclick="location.reload()">Cancel</button>
+        </div>`;
+    
+    const qDiv = document.getElementById('examQs');
+    qDiv.innerHTML = examQs.map((q, i) => `
+        <div class="exam-q">
+            <div class="exam-q-text">${q.q}</div>
+            <div class="exam-opts">${q.opts.map((o, j) => `<div class="exam-opt" onclick="selectExamOption(${i}, ${j})">${String.fromCharCode(65+j)}. ${o}</div>`).join('')}</div>
+        </div>
+    `).join('');
+}
+
+function selectExamOption(qi, oi) {
+    examState.answers[qi] = oi;
+    const opts = document.querySelectorAll(`#examQs .exam-q:nth-child(${qi+1}) .exam-opt`);
+    opts.forEach(opt => opt.classList.remove('sel'));
+    opts[oi].classList.add('sel');
+    const pct = Math.round(Object.keys(examState.answers).length / examState.questions.length * 100);
+    document.getElementById('examProg').style.width = pct + '%';
+}
+
+function submitExam() {
+    if (Object.keys(examState.answers).length < examState.questions.length) {
+        toast('⚠', `Answer all ${examState.questions.length} questions first.`);
+        return;
+    }
+    let correct = 0;
+    examState.questions.forEach((q, i) => { if (examState.answers[i] === q.ans) correct++; });
+    const score = Math.round(correct / examState.questions.length * 100);
+    const passed = score >= 60;
+    
+    if (passed && !CERT_DATA[examState.courseId]) {
+        const cert = { courseId: examState.courseId, courseName: CURRENT_COURSE.title, studentName: U.name, score, certId: 'B10-' + Date.now().toString(36).toUpperCase() };
+        CERT_DATA[examState.courseId] = cert;
+        renderCertificates();
+    }
+    
+    document.getElementById('tab-courses').innerHTML = `
+        <div style="text-align:center;padding:40px">
+            <div style="font-size:3rem">${passed ? '🎉' : '😔'}</div>
+            <div style="font-family:var(--fd);font-size:1.3rem;font-weight:700;color:${passed ? 'var(--green)' : 'var(--red)'}">${passed ? 'You Passed!' : 'Not Passed'}</div>
+            <div style="font-size:1.2rem;color:var(--gold);margin:10px 0">Score: ${score}%</div>
+            <div style="margin-bottom:20px">${passed ? '🏆 Certificate earned! Check Certificates tab.' : 'Need 60% to pass. Review the course and try again.'}</div>
+            <button class="btn-g" onclick="location.reload()">← Back to Courses</button>
+        </div>`;
+    if (passed) renderCertificates();
+}
+
+// AI Tutor
+async function sendChat() {
+    const inp = document.getElementById('chatInput');
+    const msg = inp.value.trim();
+    if (!msg) return;
+    inp.value = '';
+    const msgsDiv = document.getElementById('chatMsgs');
+    msgsDiv.innerHTML += `<div class="chat-bubble user">${msg.replace(/</g, '&lt;')}</div>`;
+    chatHistory.push({ role: 'user', content: msg });
+    msgsDiv.innerHTML += `<div class="chat-bubble ai">🤔 Thinking...</div>`;
+    msgsDiv.scrollTop = msgsDiv.scrollHeight;
+    
+    setTimeout(() => {
+        const last = msgsDiv.lastChild;
+        const reply = `Thanks for your question about "${msg.substring(0, 50)}..."! 
+
+This is a demo response. In production, this would connect to Groq AI (Llama 3) to give you detailed, helpful answers about your courses.
+
+**Key tips for ${CURRENT_COURSE?.title || 'your course'}:**
+• Practice regularly
+• Complete all modules
+• Take notes as you watch
+• Build projects to reinforce learning
+
+Keep up the great work! 🚀`;
+        last.innerHTML = `<div class="chat-bubble ai">${reply.replace(/\n/g, '<br>')}</div>`;
+        chatHistory.push({ role: 'assistant', content: reply });
+        msgsDiv.scrollTop = msgsDiv.scrollHeight;
+    }, 500);
+}
+
+// PDF Notes
+function renderPDFNotes() {
+    const grid = document.getElementById('pdfGrid');
+    let allPDFs = [];
+    for (let cat of Object.values(COURSES_DATA)) {
+        for (let course of cat.courses) {
+            if (course.price <= BPRICE) {
+                course.pdfs.forEach(pdf => allPDFs.push({ ...pdf, courseTitle: course.title, catName: cat.name }));
+            }
+        }
+    }
+    if (allPDFs.length === 0) { grid.innerHTML = '<div class="empty">📚 Upgrade your bundle to unlock PDF notes</div>'; return; }
+    grid.innerHTML = allPDFs.slice(0, 16).map(pdf => `
+        <div class="pdf-card" onclick="viewPDF('${pdf.title.replace(/'/g, "\\'")}','${pdf.courseTitle.replace(/'/g, "\\'")}')">
+            <div class="pdf-ic">📘</div>
+            <div><div class="pdf-nm">${pdf.title}</div><div class="c-meta" style="margin-top:2px">${pdf.size} · ${pdf.courseTitle}</div></div>
+        </div>
+    `).join('');
+}
+
+function viewPDF(title, course) {
+    const win = window.open('', '_blank');
+    win.document.write(`<!DOCTYPE html><html><head><title>${title} - Biluxe10 Notes</title><style>body{background:#07070A;color:#EDEDF0;font-family:sans-serif;padding:40px;max-width:800px;margin:0 auto}h1{color:#C8A96E}</style></head><body>
+    <h1>📘 ${title}</h1>
+    <p><strong>Course:</strong> ${course}</p>
+    <p><strong>Institution:</strong> Biluxe10</p>
+    <hr style="border-color:#333;margin:20px 0">
+    <h2>📖 Key Concepts</h2>
+    <ul><li>Core principles and fundamentals of ${course}</li><li>Step-by-step implementation guide</li><li>Best practices used by professionals</li><li>Common mistakes and how to avoid them</li><li>Practical exercises and examples</li><li>Quick reference for exams</li><li>Summary and checklist</li></ul>
+    <div style="margin-top:40px;padding-top:16px;border-top:1px solid #333;font-size:.7rem;color:#666;text-align:center">© Biluxe10 — Issued by Syed Afshar Khadri, Founder</div>
+    <button onclick="window.print()" style="background:#C8A96E;color:#07070A;border:none;padding:10px 20px;border-radius:8px;margin-top:20px;cursor:pointer">🖨️ Print / Save as PDF</button>
+    </body></html>`);
+    win.document.close();
+}
+
+// Certificates
+function renderCertificates() {
+    const grid = document.getElementById('certGrid');
+    const certs = Object.values(CERT_DATA);
+    if (certs.length === 0) { grid.innerHTML = '<div class="empty">🏆 Complete a course (100% modules + 60% exam) to earn your certificate signed by Syed Afshar Khadri, Founder</div>'; return; }
+    grid.innerHTML = certs.map(c => `
+        <div class="cert-card">
+            <div class="cert-logo">Biluxe<sup>10</sup></div>
+            <div class="cert-nm">${c.studentName}</div>
+            <div>has successfully completed</div>
+            <div style="font-size:1rem;font-weight:700;margin:8px 0">${c.courseName}</div>
+            <div>Score: ${c.score}%</div>
+            <div class="cert-sig"><div><div class="sig-name">Syed Afshar Khadri</div><div style="font-size:.6rem">Founder & CEO, Biluxe10</div></div><div><div style="font-size:.6rem">ID: ${c.certId}</div><button class="btn-sm" onclick="downloadCertificate('${c.certId}','${c.studentName}','${c.courseName}')">⬇ Download</button></div></div>
+        </div>
+    `).join('');
+}
+
+function downloadCertificate(certId, name, course) {
+    const win = window.open('', '_blank');
+    win.document.write(`<!DOCTYPE html><html><head><title>Certificate - ${name}</title><style>body{background:#07070A;display:flex;justify-content:center;align-items:center;min-height:100vh}.cert{width:800px;background:linear-gradient(135deg,#0D0D12,#121218);border:3px solid #C8A96E;border-radius:12px;padding:50px;text-align:center}.sig{margin-top:30px}</style></head><body><div class="cert"><h1 style="color:#C8A96E">Biluxe<sup>10</sup></h1><h2>Certificate of Completion</h2><p>This certifies that</p><h2>${name}</h2><p>has successfully completed</p><h2>${course}</h2><div class="sig"><strong>Syed Afshar Khadri</strong><br>Founder & CEO, Biluxe10<br><span style="font-size:.7rem">Certificate ID: ${certId}</span></div></div><script>setTimeout(()=>window.print(),500)<\/script></body></html>`);
+    win.document.close();
+}
+
+// INIT
+function initApp() {
+    renderCourses();
+    renderPDFNotes();
+    renderCertificates();
+    document.getElementById('app').style.opacity = '1';
+    const guard = document.getElementById('guard');
+    guard.classList.add('fade');
+    setTimeout(() => guard.classList.add('gone'), 700);
+}
+
+// Try Firebase, but fallback to demo mode after timeout
+let firebaseTimeout = setTimeout(() => {
+    if (document.getElementById('guard') && !document.getElementById('guard').classList.contains('gone')) {
+        console.log('Firebase timeout - entering demo mode');
+        U = { name: 'Demo Student', email: 'demo@biluxe10.com' };
+        BPRICE = 9999;
+        initApp();
+    }
+}, 3000);
+
+AUTH.onAuthStateChanged(async user => {
+    clearTimeout(firebaseTimeout);
+    if (!user) { 
+        // Demo mode
+        U = { name: 'Guest Learner', email: 'guest@biluxe10.com' };
+        initApp();
+        return;
+    }
+    try {
+        const emailId = san(user.email);
+        U = { email: user.email, emailId, name: user.displayName || user.email.split('@')[0] };
+        let docData = null;
+        const collections = ['User-collection', 'user_collection', 'users'];
+        for (const c of collections) {
+            try {
+                const snap = await DB.collection(c).doc(emailId).get();
+                if (snap.exists) { docData = snap.data(); break; }
+            } catch(e) {}
+        }
+        if (docData) {
+            if (docData.fullName) U.name = docData.fullName;
+            BPRICE = parseInt(docData.bundlePrice || docData.bundleAmount || 0) || 9999;
+        }
+        initApp();
+    } catch(e) {
+        console.log('Firebase error, using demo mode:', e);
+        initApp();
+    }
+});
+</script>
+</body>
+</html>
