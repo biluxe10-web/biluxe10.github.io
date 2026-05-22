@@ -1,0 +1,2253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Biluxe10 — Learning Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,700;0,9..144,900;1,9..144,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+<script>
+const firebaseConfig={apiKey:"AIzaSyDxxkC9iD1V1w-53Kf4oBrHEXlBLvCc7sE",authDomain:"biluxe10-3e894.firebaseapp.com",projectId:"biluxe10-3e894",storageBucket:"biluxe10-3e894.appspot.com",messagingSenderId:"804749588233",appId:"1:804749588233:web:7777648c0c7834733c05d8"};
+if(!firebase.apps.length)firebase.initializeApp(firebaseConfig);
+const AUTH=firebase.auth(),DB=firebase.firestore();
+const san=e=>e.toLowerCase().trim().replace(/\./g,'_').replace(/@/g,'__at__');
+const GROQ_API='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';
+const TG_BOT='8234849380:AAE8WhIn1eHnsPa2dlYZaTKr8qRAcjtt54o';
+const TG_CHAT='7592977302';
+</script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+--bg:#07070A;--bg2:#0D0D12;--bg3:#121218;--bg4:#18181F;--bg5:#1E1E28;
+--border:rgba(255,255,255,0.055);--border2:rgba(255,255,255,0.1);--border3:rgba(255,255,255,0.16);
+--gold:#C8A96E;--gold2:#E2C48A;--gold3:#F0D9A8;
+--gA:rgba(200,169,110,0.08);--gB:rgba(200,169,110,0.15);--gC:rgba(200,169,110,0.04);
+--green:#22C55E;--grA:rgba(34,197,94,0.1);
+--red:#EF4444;--reA:rgba(239,68,68,0.1);
+--blue:#60A5FA;--blA:rgba(96,165,250,0.1);
+--vio:#A78BFA;--viA:rgba(167,139,250,0.1);
+--amber:#F59E0B;--amA:rgba(245,158,11,0.1);
+--cyan:#22D3EE;--cyA:rgba(34,211,238,0.1);
+--ink:#07070A;--text:#EDEDF0;--t2:#9B9BA8;--t3:#4B4B5A;--t4:#2A2A35;
+--fd:'Fraunces',serif;--fb:'Plus Jakarta Sans',sans-serif;--fm:'JetBrains Mono',monospace;
+--r:14px;--rs:10px;--nav:64px;--sbw:60px;--sbx:240px;
+--ease:cubic-bezier(0.16,1,0.3,1);--spring:cubic-bezier(0.34,1.56,0.64,1);
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--fb);line-height:1.6;overflow-x:hidden;min-height:100vh}
+body.lock{overflow:hidden}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-thumb{background:rgba(200,169,110,0.25);border-radius:2px}
+button,input,select,textarea{font-family:var(--fb)}
+
+/* GUARD */
+#guard{position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;transition:opacity .7s ease}
+#guard.fade{opacity:0;pointer-events:none}
+#guard.gone{display:none}
+.g-logo{font-family:var(--fd);font-size:clamp(2.5rem,8vw,4rem);font-weight:900;color:var(--gold);letter-spacing:-.03em;animation:logoPulse 2s ease infinite}
+@keyframes logoPulse{0%,100%{text-shadow:0 0 30px rgba(200,169,110,0.3)}50%{text-shadow:0 0 60px rgba(200,169,110,0.6)}}
+.g-logo sup{font-size:.4em;color:var(--t3);font-weight:400;vertical-align:super}
+.g-spin{width:32px;height:32px;border:2.5px solid rgba(200,169,110,.12);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.g-msg{font-family:var(--fm);font-size:.58rem;color:var(--t3);letter-spacing:.2em;text-transform:uppercase}
+.g-err{display:none;flex-direction:column;align-items:center;gap:12px;text-align:center;padding:24px;max-width:340px}
+.g-err-t{font-family:var(--fd);font-size:1.1rem;color:var(--red)}
+.g-err-d{font-size:.8rem;color:var(--t2);line-height:1.75}
+.g-btn{padding:11px 26px;background:var(--gold);color:var(--ink);border:none;border-radius:8px;font-weight:800;font-size:.8rem;cursor:pointer}
+
+/* LAYOUT */
+#app{display:flex;min-height:100vh;opacity:0;transition:opacity .5s ease}
+#app.show{opacity:1}
+
+/* SIDEBAR */
+#sb{position:fixed;left:0;top:0;bottom:0;z-index:400;width:var(--sbw);background:rgba(13,13,18,0.97);backdrop-filter:blur(20px);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;transition:width .35s var(--ease)}
+#sb:hover,#sb.open{width:var(--sbx)}
+.sb-top{height:var(--nav);display:flex;align-items:center;padding:0 14px;border-bottom:1px solid var(--border);gap:10px;overflow:hidden;flex-shrink:0}
+.sb-mark{width:30px;height:30px;border-radius:8px;flex-shrink:0;background:linear-gradient(135deg,var(--gold),var(--gold2));display:flex;align-items:center;justify-content:center;font-family:var(--fd);font-size:.65rem;font-weight:900;color:var(--ink)}
+.sb-wordmark{font-family:var(--fd);font-size:1rem;font-weight:900;color:var(--gold);white-space:nowrap;opacity:0;transition:opacity .2s .08s}
+#sb:hover .sb-wordmark,#sb.open .sb-wordmark{opacity:1}
+.sb-nav{flex:1;overflow-y:auto;overflow-x:hidden;padding:10px 0}
+.sb-nav::-webkit-scrollbar{width:0}
+.sb-sec{font-family:var(--fm);font-size:.48rem;color:var(--t3);letter-spacing:.18em;text-transform:uppercase;padding:10px 16px 4px;opacity:0;white-space:nowrap;transition:opacity .15s}
+#sb:hover .sb-sec,#sb.open .sb-sec{opacity:1}
+.si{display:flex;align-items:center;gap:11px;width:100%;padding:10px 14px;border:none;background:none;text-align:left;white-space:nowrap;cursor:pointer;position:relative;transition:all .2s;border-radius:0}
+.si::before{content:'';position:absolute;left:0;top:4px;bottom:4px;width:3px;background:linear-gradient(180deg,var(--gold),var(--gold2));transform:scaleY(0);transition:transform .25s var(--spring);border-radius:0 3px 3px 0}
+.si:hover{background:var(--gA)}
+.si.on{background:var(--gB)}
+.si.on::before{transform:scaleY(1)}
+.si-ic{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.95rem;flex-shrink:0}
+.si-lbl{font-size:.76rem;font-weight:600;color:var(--t2);opacity:0;transition:opacity .15s .06s;flex:1}
+#sb:hover .si-lbl,#sb.open .si-lbl{opacity:1}
+.si.on .si-lbl{color:var(--gold)}
+.sb-div{height:1px;background:var(--border);margin:5px 10px}
+.sb-foot{border-top:1px solid var(--border);padding:8px 0}
+.sb-usr{display:flex;align-items:center;gap:10px;padding:10px 14px;cursor:pointer;transition:background .18s;white-space:nowrap}
+.sb-usr:hover{background:var(--gA)}
+.sb-av{width:30px;height:30px;border-radius:50%;flex-shrink:0;background:linear-gradient(135deg,var(--gold),rgba(200,169,110,.4));display:flex;align-items:center;justify-content:center;font-family:var(--fd);font-size:.8rem;font-weight:700;color:var(--ink);border:2px solid rgba(200,169,110,.22)}
+.sb-uinf{opacity:0;transition:opacity .15s .06s;min-width:0}
+#sb:hover .sb-uinf,#sb.open .sb-uinf{opacity:1}
+.sb-uname{font-size:.73rem;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sb-utier{font-family:var(--fm);font-size:.5rem;color:var(--gold)}
+
+/* MAIN */
+#main{margin-left:var(--sbw);flex:1;display:flex;flex-direction:column;min-height:100vh}
+.topbar{height:var(--nav);background:rgba(7,7,10,0.9);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 20px;position:sticky;top:0;z-index:100;gap:12px}
+.tb-l{display:flex;align-items:center;gap:10px}
+.tb-ham{display:none;flex-direction:column;gap:4px;cursor:pointer;padding:4px}
+.tb-ham span{width:18px;height:1.5px;background:var(--t2);border-radius:1px;transition:all .3s;display:block}
+.tb-ham.open span:nth-child(1){transform:translateY(5.5px) rotate(45deg)}
+.tb-ham.open span:nth-child(2){opacity:0}
+.tb-ham.open span:nth-child(3){transform:translateY(-5.5px) rotate(-45deg)}
+.tb-pg{font-family:var(--fd);font-size:1.05rem;font-weight:700}
+.tb-r{display:flex;align-items:center;gap:8px}
+.tb-pill{padding:4px 11px;background:var(--bg3);border:1px solid var(--border);border-radius:20px;font-family:var(--fm);font-size:.55rem;color:var(--t2)}
+.tb-out{padding:6px 13px;border:1px solid var(--border2);background:transparent;color:var(--t2);border-radius:7px;font-size:.7rem;font-weight:600;cursor:pointer;transition:all .2s}
+.tb-out:hover{border-color:rgba(239,68,68,.4);color:var(--red)}
+
+@media(max-width:860px){
+#sb{width:0!important;transform:translateX(-100%);transition:transform .3s var(--ease)}
+#sb.open{width:var(--sbx)!important;transform:translateX(0)}
+#main{margin-left:0!important}
+.tb-ham{display:flex}
+}
+
+/* PAGES */
+.pg{flex:1;padding:20px;display:none;flex-direction:column;gap:18px;animation:pgIn .3s var(--ease)}
+.pg.on{display:flex}
+@keyframes pgIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* CARDS */
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
+.chd{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:10px}
+.cht{font-family:var(--fd);font-size:.9rem;font-weight:700}
+.bdg{display:inline-flex;align-items:center;padding:3px 8px;border-radius:5px;font-family:var(--fm);font-size:.5rem;font-weight:700}
+.bdg.ok{background:var(--grA);color:var(--green);border:1px solid rgba(34,197,94,.2)}
+.bdg.pn{background:var(--amA);color:var(--amber);border:1px solid rgba(245,158,11,.2)}
+.bdg.bl{background:var(--blA);color:var(--blue);border:1px solid rgba(96,165,250,.2)}
+.bdg.vl{background:var(--viA);color:var(--vio);border:1px solid rgba(167,139,250,.2)}
+.bdg.rd{background:var(--reA);color:var(--red);border:1px solid rgba(239,68,68,.2)}
+.btn-g{padding:9px 18px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--ink);border:none;border-radius:var(--rs);font-weight:800;font-size:.72rem;cursor:pointer;transition:all .2s}
+.btn-g:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(200,169,110,.3)}
+.btn-o{padding:9px 18px;background:transparent;color:var(--t2);border:1px solid var(--border2);border-radius:var(--rs);font-weight:600;font-size:.72rem;cursor:pointer;transition:all .2s}
+.btn-o:hover{border-color:var(--border3);color:var(--text)}
+.btn-sm{padding:6px 13px;background:var(--gA);color:var(--gold);border:1px solid rgba(200,169,110,.2);border-radius:7px;font-weight:700;font-size:.68rem;cursor:pointer;transition:all .2s}
+.btn-sm:hover{background:var(--gB)}
+
+/* TOAST */
+#toast{position:fixed;bottom:20px;right:20px;z-index:9999;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--rs);padding:11px 16px;max-width:280px;display:flex;align-items:center;gap:8px;transform:translateY(80px);opacity:0;transition:all .35s var(--spring);font-size:.74rem;color:var(--text);box-shadow:0 12px 40px rgba(0,0,0,.45)}
+#toast.on{transform:translateY(0);opacity:1}
+
+/* OVERLAY */
+.ov-bg{position:fixed;inset:0;z-index:800;background:rgba(0,0,0,.7);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center}
+.ov-bg.on{display:flex}
+.modal{background:var(--bg2);border:1px solid var(--border2);border-radius:18px;width:min(94vw,660px);max-height:90vh;overflow-y:auto;position:relative}
+.modal-hd{padding:18px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.modal-title{font-family:var(--fd);font-size:1.05rem;font-weight:700}
+.modal-close{width:28px;height:28px;border-radius:50%;background:var(--bg4);border:none;color:var(--t2);font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.modal-close:hover{background:var(--reA);color:var(--red)}
+
+/* BUNDLE GRID */
+.bundle-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px}
+.bcard{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:18px;cursor:pointer;transition:all .25s var(--ease);position:relative;overflow:hidden}
+.bcard::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--bc-color,rgba(200,169,110,0.06)),transparent);opacity:0;transition:opacity .3s}
+.bcard:hover{transform:translateY(-3px);border-color:var(--bc-border,rgba(200,169,110,.22));box-shadow:0 12px 40px rgba(0,0,0,.3)}
+.bcard:hover::before{opacity:1}
+.bcard.locked{opacity:.65;cursor:default}
+.bcard.locked:hover{transform:none}
+.bc-em{font-size:2rem;margin-bottom:10px}
+.bc-name{font-family:var(--fd);font-size:1rem;font-weight:900;margin-bottom:3px}
+.bc-price{font-family:var(--fm);font-size:.6rem;color:var(--t3);margin-bottom:8px}
+.bc-desc{font-size:.72rem;color:var(--t2);line-height:1.6;margin-bottom:12px}
+.bc-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.bc-tag{font-family:var(--fm);font-size:.5rem;padding:3px 8px;border-radius:4px;border:1px solid var(--border)}
+.bc-prog{margin-top:10px}
+.bc-prog-bar{height:3px;background:var(--bg4);border-radius:3px;overflow:hidden}
+.bc-prog-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold2));border-radius:3px;transition:width .8s var(--ease)}
+.bc-prog-lbl{font-family:var(--fm);font-size:.5rem;color:var(--t3);margin-top:4px}
+.bc-lock-ic{position:absolute;top:14px;right:14px;font-size:1rem;opacity:.5}
+
+/* ══ PROTECTED VIDEO PLAYER ══ */
+.cv-player-container{
+  position:relative;
+  width:100%;
+  aspect-ratio:16/9;
+  border-radius:var(--r);
+  overflow:hidden;
+  background:#000;
+  border:1px solid var(--border);
+}
+/* The iframe sits behind everything */
+.cv-player-container iframe{
+  position:absolute;
+  top:0; left:0;
+  width:100%; height:100%;
+  border:none;
+  pointer-events:none; /* blocks all iframe clicks */
+}
+/* Transparent overlay catches ALL clicks/touches */
+.player-shield{
+  position:absolute;
+  inset:0;
+  z-index:10;
+  background:transparent;
+  cursor:default;
+  -webkit-tap-highlight-color:transparent;
+  user-select:none;
+  -webkit-user-select:none;
+}
+/* Play/pause control we control */
+.player-ctrl{
+  position:absolute;
+  bottom:0; left:0; right:0;
+  z-index:20;
+  padding:10px 14px;
+  background:linear-gradient(to top,rgba(0,0,0,.85),transparent);
+  display:flex;
+  align-items:center;
+  gap:10px;
+  opacity:0;
+  transition:opacity .3s;
+}
+.cv-player-container:hover .player-ctrl{opacity:1}
+.ctrl-btn{
+  width:32px;height:32px;
+  border-radius:50%;
+  background:rgba(200,169,110,.9);
+  border:none;
+  color:var(--ink);
+  font-size:.8rem;
+  cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:transform .2s;
+  z-index:21;
+  pointer-events:all;
+}
+.ctrl-btn:hover{transform:scale(1.1)}
+.ctrl-label{font-family:var(--fm);font-size:.55rem;color:rgba(255,255,255,.8);flex:1}
+.ctrl-badge{font-family:var(--fm);font-size:.48rem;color:rgba(200,169,110,.7);background:rgba(0,0,0,.5);padding:3px 7px;border-radius:4px;border:1px solid rgba(200,169,110,.2)}
+/* placeholder when no video */
+.player-placeholder{
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:12px;color:var(--t3);
+  background:var(--bg3);
+}
+.player-placeholder .ph-icon{font-size:2.5rem}
+.player-placeholder .ph-text{font-size:.78rem;font-family:var(--fd);color:var(--t2)}
+
+/* COURSE VIEWER */
+#courseViewer{display:none;flex-direction:column;gap:0}
+#courseViewer.on{display:flex}
+.cv-top{display:flex;align-items:center;gap:10px;padding:14px 20px;background:var(--bg2);border-bottom:1px solid var(--border)}
+.cv-back{padding:6px 13px;background:var(--bg3);border:1px solid var(--border);border-radius:7px;font-size:.72rem;font-weight:600;color:var(--t2);cursor:pointer;transition:all .2s}
+.cv-back:hover{color:var(--text);border-color:var(--border2)}
+.cv-title{font-family:var(--fd);font-size:1rem;font-weight:700;flex:1}
+.cv-body{display:grid;grid-template-columns:1fr 320px;min-height:calc(100vh - var(--nav) - 54px)}
+.cv-player-wrap{padding:18px;display:flex;flex-direction:column;gap:14px;overflow-y:auto}
+.cv-course-title{font-family:var(--fd);font-size:1.1rem;font-weight:700}
+.cv-course-meta{display:flex;gap:10px;flex-wrap:wrap;font-family:var(--fm);font-size:.58rem;color:var(--t3)}
+.cv-course-desc{font-size:.8rem;color:var(--t2);line-height:1.75}
+.cv-actions{display:flex;gap:8px;flex-wrap:wrap}
+.cv-sidebar{border-left:1px solid var(--border);overflow-y:auto;max-height:calc(100vh - var(--nav) - 54px)}
+.cv-sb-hd{padding:12px 14px;border-bottom:1px solid var(--border);font-family:var(--fd);font-size:.85rem;font-weight:700;background:var(--bg2);position:sticky;top:0}
+.module-item{padding:12px 14px;border-bottom:1px solid var(--border);cursor:pointer;transition:all .2s;display:flex;align-items:flex-start;gap:10px}
+.module-item:hover{background:var(--gA)}
+.module-item.active{background:var(--gB);border-left:3px solid var(--gold)}
+.mi-num{width:22px;height:22px;border-radius:50%;background:var(--bg4);display:flex;align-items:center;justify-content:center;font-family:var(--fm);font-size:.5rem;font-weight:700;flex-shrink:0;color:var(--t3)}
+.module-item.done .mi-num{background:var(--green);color:#fff}
+.module-item.active .mi-num{background:var(--gold);color:var(--ink)}
+.mi-info{flex:1;min-width:0}
+.mi-title{font-size:.75rem;font-weight:600;color:var(--text);margin-bottom:2px;line-height:1.4}
+.mi-dur{font-family:var(--fm);font-size:.5rem;color:var(--t3)}
+.mi-check{flex-shrink:0;font-size:.9rem}
+
+/* TAB AREA */
+.cv-tabs{display:flex;gap:0;border-bottom:1px solid var(--border);overflow-x:auto}
+.cv-tab{padding:10px 16px;border:none;background:none;font-size:.75rem;font-weight:600;color:var(--t3);cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;white-space:nowrap}
+.cv-tab.on{color:var(--gold);border-bottom-color:var(--gold)}
+.cv-tab-body{padding:16px}
+.cv-tab-pane{display:none}
+.cv-tab-pane.on{display:block}
+
+/* NOTES */
+.note-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--rs);padding:14px;margin-bottom:10px}
+.ai-note-loading{display:flex;align-items:center;gap:8px;color:var(--t3);font-size:.75rem;padding:12px 0}
+.ai-note-dot{width:6px;height:6px;border-radius:50%;background:var(--gold);animation:noteDot 1.2s ease infinite}
+.ai-note-dot:nth-child(2){animation-delay:.2s}
+.ai-note-dot:nth-child(3){animation-delay:.4s}
+@keyframes noteDot{0%,80%,100%{transform:scale(0.8);opacity:.3}40%{transform:scale(1.2);opacity:1}}
+
+/* AI TUTOR */
+#pg-ai-tutor{background:var(--bg)}
+.tutor-wrap{display:flex;flex-direction:column;height:calc(100vh - var(--nav) - 40px)}
+.tutor-msgs{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px}
+.msg{display:flex;gap:10px;max-width:80%;animation:msgIn .3s var(--ease)}
+@keyframes msgIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.msg.user{align-self:flex-end;flex-direction:row-reverse}
+.msg-av{width:30px;height:30px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:var(--fd);font-size:.75rem;font-weight:700}
+.msg-av.bot{background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--ink)}
+.msg-av.usr{background:linear-gradient(135deg,var(--vio),var(--blue));color:#fff}
+.msg-bubble{padding:10px 13px;border-radius:12px;font-size:.78rem;line-height:1.7;max-width:100%}
+.msg.bot .msg-bubble{background:var(--bg3);border:1px solid var(--border);border-radius:4px 12px 12px 12px;color:var(--text)}
+.msg.user .msg-bubble{background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--ink);border-radius:12px 4px 12px 12px;font-weight:600}
+.msg-bubble pre{background:var(--bg4);padding:10px;border-radius:8px;font-family:var(--fm);font-size:.65rem;overflow-x:auto;margin:8px 0;border:1px solid var(--border)}
+.msg-bubble code{font-family:var(--fm);background:var(--bg4);padding:1px 5px;border-radius:3px;font-size:.7rem}
+.tutor-inp-wrap{padding:12px 16px;border-top:1px solid var(--border);background:var(--bg2)}
+.tutor-inp-row{display:flex;gap:8px;align-items:flex-end}
+.tutor-inp{flex:1;background:var(--bg3);border:1px solid var(--border2);border-radius:10px;padding:10px 14px;font-size:.8rem;color:var(--text);outline:none;resize:none;max-height:120px;transition:border-color .2s;line-height:1.5}
+.tutor-inp:focus{border-color:rgba(200,169,110,.4)}
+.tutor-send{width:38px;height:38px;background:linear-gradient(135deg,var(--gold),var(--gold2));border:none;border-radius:10px;color:var(--ink);font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s}
+.tutor-send:hover{transform:scale(1.05)}
+.tutor-send:disabled{opacity:.5;cursor:not-allowed}
+.tutor-chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.chip{padding:5px 12px;background:var(--bg3);border:1px solid var(--border);border-radius:20px;font-size:.7rem;cursor:pointer;transition:all .18s;color:var(--t2)}
+.chip:hover{border-color:rgba(200,169,110,.3);color:var(--gold);background:var(--gA)}
+.typing-ind{display:flex;align-items:center;gap:5px;padding:8px 12px;background:var(--bg3);border:1px solid var(--border);border-radius:4px 12px 12px 12px;width:fit-content}
+.typing-ind span{width:6px;height:6px;border-radius:50%;background:var(--gold);animation:typDot 1.2s ease infinite}
+.typing-ind span:nth-child(2){animation-delay:.2s}
+.typing-ind span:nth-child(3){animation-delay:.4s}
+@keyframes typDot{0%,80%,100%{transform:scale(0.7);opacity:.4}40%{transform:scale(1.1);opacity:1}}
+
+/* CERTIFICATE */
+.cert-wrap{padding:20px}
+#certCanvas{width:100%;border-radius:12px;border:1px solid var(--border)}
+.cert-actions{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+
+/* EXAM */
+.exam-q{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:18px;margin-bottom:12px}
+.exam-q-num{font-family:var(--fm);font-size:.52rem;color:var(--t3);margin-bottom:6px}
+.exam-q-text{font-size:.85rem;font-weight:600;margin-bottom:12px;line-height:1.5}
+.exam-opts{display:flex;flex-direction:column;gap:8px}
+.exam-opt{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--bg4);border:1px solid var(--border);border-radius:8px;cursor:pointer;transition:all .2s;font-size:.78rem}
+.exam-opt:hover{border-color:rgba(200,169,110,.3);background:var(--gA)}
+.exam-opt.selected{border-color:var(--gold);background:var(--gA);color:var(--gold)}
+.exam-opt.correct{border-color:var(--green);background:var(--grA);color:var(--green)}
+.exam-opt.wrong{border-color:var(--red);background:var(--reA);color:var(--red)}
+.exam-prog{height:4px;background:var(--bg4);border-radius:4px;margin-bottom:18px;overflow:hidden}
+.exam-prog-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold2));border-radius:4px;transition:width .4s var(--ease)}
+
+/* PROJECT */
+.proj-drop{border:2px dashed var(--border2);border-radius:var(--r);padding:32px;text-align:center;cursor:pointer;transition:all .2s}
+.proj-drop:hover,.proj-drop.drag{border-color:var(--gold);background:var(--gA)}
+
+/* PROGRESS OVERVIEW */
+.prog-overview{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin-bottom:16px}
+.prog-stat{background:var(--bg3);border:1px solid var(--border);border-radius:var(--rs);padding:14px;text-align:center}
+.prog-stat-vl{font-family:var(--fd);font-size:1.5rem;font-weight:900;color:var(--gold);margin-bottom:3px}
+.prog-stat-lb{font-family:var(--fm);font-size:.5rem;color:var(--t3);text-transform:uppercase;letter-spacing:.1em}
+
+/* CERT GALLERY */
+.cert-gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
+.cert-thumb{background:var(--bg3);border:1px solid var(--border);border-radius:var(--rs);padding:14px;cursor:pointer;transition:all .22s;text-align:center}
+.cert-thumb:hover{transform:translateY(-2px);border-color:rgba(200,169,110,.25)}
+.cert-thumb-ic{font-size:2rem;margin-bottom:8px}
+.cert-thumb-t{font-size:.78rem;font-weight:700;margin-bottom:3px}
+.cert-thumb-d{font-family:var(--fm);font-size:.52rem;color:var(--t3)}
+
+@media(max-width:860px){
+.cv-body{grid-template-columns:1fr}
+.cv-sidebar{max-height:300px;border-left:none;border-top:1px solid var(--border)}
+.bundle-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:520px){
+.bundle-grid{grid-template-columns:1fr}
+.prog-overview{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+<div id="toast"></div>
+
+<!-- GUARD -->
+<div id="guard">
+  <div class="g-logo">Biluxe<sup>10</sup></div>
+  <div class="g-spin" id="gSpin"></div>
+  <div class="g-msg" id="gMsg">Authenticating…</div>
+  <div class="g-err" id="gErr">
+    <div class="g-err-t">⚠ Access Denied</div>
+    <div class="g-err-d" id="gErrD">Something went wrong.</div>
+    <button class="g-btn" onclick="location.href='auth.html'">← Back to Login</button>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <!-- SIDEBAR -->
+  <div id="sb">
+    <div class="sb-top">
+      <div class="sb-mark">B10</div>
+      <div class="sb-wordmark">Biluxe10</div>
+    </div>
+    <nav class="sb-nav">
+      <button class="si on" onclick="goPage('home')"><div class="si-ic">🏠</div><span class="si-lbl">All Courses</span></button>
+      <button class="si" onclick="goPage('my-learning')"><div class="si-ic">▶</div><span class="si-lbl">My Learning</span></button>
+      <button class="si" onclick="goPage('ai-tutor')"><div class="si-ic">🤖</div><span class="si-lbl">AI Tutor</span></button>
+      <button class="si" onclick="goPage('certificates')"><div class="si-ic">🏆</div><span class="si-lbl">Certificates</span></button>
+      <button class="si" onclick="goPage('exam')"><div class="si-ic">📝</div><span class="si-lbl">Exams</span></button>
+      <div class="sb-div"></div>
+      <button class="si" onclick="location.href='dashboard.html'"><div class="si-ic">📊</div><span class="si-lbl">Dashboard</span></button>
+    </nav>
+    <div class="sb-foot">
+      <div class="sb-usr">
+        <div class="sb-av" id="sbAv">U</div>
+        <div class="sb-uinf">
+          <div class="sb-uname" id="sbName">Loading…</div>
+          <div class="sb-utier" id="sbTier">🌟 Member</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div id="main">
+    <div class="topbar">
+      <div class="tb-l">
+        <div class="tb-ham" id="ham" onclick="toggleSb()"><span></span><span></span><span></span></div>
+        <div class="tb-pg" id="tbPg">🎓 Learning Hub</div>
+      </div>
+      <div class="tb-r">
+        <div class="tb-pill" id="tbBundle">🌟 Loading…</div>
+        <div class="tb-pill" id="tbProgress">0% Complete</div>
+        <button class="tb-out" onclick="location.href='dashboard.html'">← Dashboard</button>
+      </div>
+    </div>
+
+    <!-- HOME PAGE -->
+    <div class="pg on" id="pg-home">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
+        <div>
+          <div style="font-family:var(--fd);font-size:1.3rem;font-weight:900;margin-bottom:2px">Choose a Bundle to Learn</div>
+          <div style="font-size:.78rem;color:var(--t2)" id="homeSubtitle">Loading your courses…</div>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button class="btn-sm" onclick="goPage('my-learning')">▶ Continue Learning</button>
+          <button class="btn-sm" onclick="goPage('ai-tutor')">🤖 AI Tutor</button>
+        </div>
+      </div>
+      <div class="prog-overview" id="progOverview"></div>
+      <div class="bundle-grid" id="bundleGrid"></div>
+    </div>
+
+    <!-- BUNDLE COURSE LIST -->
+    <div class="pg" id="pg-bundle-courses">
+      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+        <button class="btn-o" onclick="goPage('home')" style="padding:6px 14px;font-size:.72rem">← All Bundles</button>
+        <div>
+          <div style="font-family:var(--fd);font-size:1.2rem;font-weight:900" id="bcPageTitle">Bundle</div>
+          <div style="font-size:.75rem;color:var(--t2)" id="bcPageSub">Courses</div>
+        </div>
+      </div>
+      <div id="bundleCourseList" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px"></div>
+    </div>
+
+    <!-- COURSE VIEWER -->
+    <div id="courseViewer">
+      <div class="cv-top">
+        <button class="cv-back" id="cvBackBtn">← Back</button>
+        <div class="cv-title" id="cvTitle">Course Title</div>
+        <div style="display:flex;gap:8px">
+          <button class="btn-sm" onclick="openAITutor()">🤖 Ask AI</button>
+          <button class="btn-sm" onclick="openNotes()">📝 Notes</button>
+        </div>
+      </div>
+      <div class="cv-body">
+        <div class="cv-player-wrap">
+          <!-- PROTECTED PLAYER -->
+          <div class="cv-player-container" id="cvPlayerContainer">
+            <div class="player-placeholder" id="playerPlaceholder">
+              <div class="ph-icon">▶</div>
+              <div class="ph-text">Select a module to start</div>
+            </div>
+            <!-- iframe injected here by JS -->
+            <div class="player-shield" id="playerShield"></div>
+            <div class="player-ctrl" id="playerCtrl" style="display:none">
+              <button class="ctrl-btn" id="ctrlPlayPause" onclick="togglePlayPause()">⏸</button>
+              <span class="ctrl-label" id="ctrlModTitle"></span>
+              <span class="ctrl-badge">🔒 Biluxe10</span>
+            </div>
+          </div>
+
+          <div class="cv-course-title" id="cvCourseTitle">—</div>
+          <div class="cv-course-meta" id="cvCourseMeta"></div>
+          <div class="cv-course-desc" id="cvCourseDesc"></div>
+          <div class="cv-actions" id="cvActions"></div>
+
+          <!-- Tabs -->
+          <div class="cv-tabs">
+            <button class="cv-tab on" onclick="switchCVTab('overview',this)">Overview</button>
+            <button class="cv-tab" onclick="switchCVTab('notes',this)">AI Notes</button>
+            <button class="cv-tab" onclick="switchCVTab('transcript',this)">Resources</button>
+            <button class="cv-tab" onclick="switchCVTab('project',this)">Project</button>
+          </div>
+          <div class="cv-tab-body">
+            <div class="cv-tab-pane on" id="cvt-overview">
+              <div id="cvOverviewContent" style="font-size:.8rem;color:var(--t2);line-height:1.8"></div>
+            </div>
+            <div class="cv-tab-pane" id="cvt-notes">
+              <div id="cvNotesContent"><div class="ai-note-loading"><div class="ai-note-dot"></div><div class="ai-note-dot"></div><div class="ai-note-dot"></div><span>Click "Generate Notes" to get AI notes for this module</span></div></div>
+              <button class="btn-sm" style="margin-top:12px" onclick="generateAINotes()">✨ Generate AI Notes</button>
+            </div>
+            <div class="cv-tab-pane" id="cvt-transcript">
+              <div id="cvResourcesContent" style="font-size:.8rem;color:var(--t2);line-height:1.8"></div>
+            </div>
+            <div class="cv-tab-pane" id="cvt-project">
+              <div id="cvProjectContent"></div>
+            </div>
+          </div>
+        </div>
+        <!-- Module Sidebar -->
+        <div class="cv-sidebar" id="cvSidebar">
+          <div class="cv-sb-hd">📋 Modules <span id="cvModCount" style="font-family:var(--fm);font-size:.55rem;color:var(--t3);font-weight:400"></span></div>
+          <div id="cvModuleList"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MY LEARNING -->
+    <div class="pg" id="pg-my-learning">
+      <div style="font-family:var(--fd);font-size:1.2rem;font-weight:900;margin-bottom:2px">My Learning</div>
+      <div style="font-size:.78rem;color:var(--t2);margin-bottom:4px">All courses you've started or completed</div>
+      <div id="myLearningGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px">
+        <div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--t3)"><div style="font-size:2rem;margin-bottom:8px">▶</div><p style="font-size:.75rem">Start watching any course to see it here</p></div>
+      </div>
+    </div>
+
+    <!-- AI TUTOR -->
+    <div class="pg" id="pg-ai-tutor" style="padding:0;gap:0">
+      <div class="tutor-wrap">
+        <div style="padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;background:var(--bg2)">
+          <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold2));display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0">🤖</div>
+          <div>
+            <div style="font-family:var(--fd);font-size:.95rem;font-weight:700">Biluxe10 AI Tutor</div>
+            <div style="font-family:var(--fm);font-size:.52rem;color:var(--green);display:flex;align-items:center;gap:4px"><span style="width:5px;height:5px;border-radius:50%;background:var(--green);display:inline-block"></span>Online — Powered by Groq Llama 3</div>
+          </div>
+          <div style="margin-left:auto;display:flex;gap:6px">
+            <button class="btn-sm" onclick="clearChat()">🗑 Clear</button>
+            <button class="btn-sm" onclick="showScreenCapture()">📸 Share Screen</button>
+          </div>
+        </div>
+        <div class="tutor-msgs" id="tutorMsgs"></div>
+        <div class="tutor-inp-wrap">
+          <div class="tutor-chips" id="tutorChips"></div>
+          <div class="tutor-inp-row">
+            <textarea class="tutor-inp" id="tutorInp" placeholder="Ask anything about your courses…" rows="1" onkeydown="handleTutorKey(event)" oninput="autoResize(this)"></textarea>
+            <button class="tutor-send" id="tutorSend" onclick="sendMsg()">▶</button>
+          </div>
+          <div style="font-family:var(--fm);font-size:.5rem;color:var(--t3);margin-top:6px;text-align:center">Powered by Groq (Llama 3.1 70B) · Biluxe10 Private</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CERTIFICATES -->
+    <div class="pg" id="pg-certificates">
+      <div style="font-family:var(--fd);font-size:1.2rem;font-weight:900;margin-bottom:2px">🏆 My Certificates</div>
+      <div style="font-size:.78rem;color:var(--t2)">Earn certificates by completing courses and passing exams.</div>
+      <div style="background:linear-gradient(135deg,rgba(200,169,110,0.08),rgba(167,139,250,0.05));border:1px solid rgba(200,169,110,.18);border-radius:14px;padding:18px">
+        <div style="font-family:var(--fd);font-size:1rem;font-weight:700;margin-bottom:8px">How to earn a certificate</div>
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <div style="display:flex;gap:8px;align-items:center;font-size:.75rem;color:var(--t2)"><span style="width:22px;height:22px;border-radius:50%;background:var(--gA);display:flex;align-items:center;justify-content:center;font-family:var(--fm);font-size:.6rem;font-weight:700;color:var(--gold);flex-shrink:0">1</span>Watch 100% of all modules in the course</div>
+          <div style="display:flex;gap:8px;align-items:center;font-size:.75rem;color:var(--t2)"><span style="width:22px;height:22px;border-radius:50%;background:var(--gA);display:flex;align-items:center;justify-content:center;font-family:var(--fm);font-size:.6rem;font-weight:700;color:var(--gold);flex-shrink:0">2</span>Pass the course exam (min 60%)</div>
+          <div style="display:flex;gap:8px;align-items:center;font-size:.75rem;color:var(--t2)"><span style="width:22px;height:22px;border-radius:50%;background:var(--gA);display:flex;align-items:center;justify-content:center;font-family:var(--fm);font-size:.6rem;font-weight:700;color:var(--gold);flex-shrink:0">3</span>Submit your project</div>
+          <div style="display:flex;gap:8px;align-items:center;font-size:.75rem;color:var(--t2)"><span style="width:22px;height:22px;border-radius:50%;background:var(--gA);display:flex;align-items:center;justify-content:center;font-family:var(--fm);font-size:.6rem;font-weight:700;color:var(--gold);flex-shrink:0">4</span>Download & verify your certificate</div>
+        </div>
+      </div>
+      <div class="cert-gallery" id="certGallery">
+        <div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--t3)"><div style="font-size:2rem;margin-bottom:8px">🏆</div><p style="font-size:.75rem">Complete courses to earn certificates</p></div>
+      </div>
+    </div>
+
+    <!-- EXAM PAGE -->
+    <div class="pg" id="pg-exam">
+      <div style="font-family:var(--fd);font-size:1.2rem;font-weight:900;margin-bottom:2px">📝 Course Exams</div>
+      <div style="font-size:.78rem;color:var(--t2)">Take an exam after completing your course to earn your certificate.</div>
+      <div id="examContent">
+        <div style="text-align:center;padding:40px;color:var(--t3)"><div style="font-size:2rem;margin-bottom:8px">📝</div><p style="font-size:.75rem">Select a completed course from "My Learning" to take its exam</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CERTIFICATE MODAL -->
+<div class="ov-bg" id="certModal">
+  <div class="modal" style="width:min(96vw,820px)">
+    <div class="modal-hd">
+      <div class="modal-title">🏆 Certificate of Completion</div>
+      <button class="modal-close" onclick="closeCertModal()">✕</button>
+    </div>
+    <div class="cert-wrap">
+      <canvas id="certCanvas" width="1200" height="850"></canvas>
+      <div id="certQR" style="display:flex;align-items:center;gap:16px;margin-top:12px;flex-wrap:wrap">
+        <canvas id="qrCanvas" style="border-radius:8px;border:1px solid var(--border)"></canvas>
+        <div>
+          <div style="font-family:var(--fd);font-size:.9rem;font-weight:700;margin-bottom:4px">Verify this Certificate</div>
+          <div style="font-size:.72rem;color:var(--t2);line-height:1.7">Scan the QR code or visit biluxe10.com/verify to confirm authenticity.</div>
+        </div>
+      </div>
+      <div class="cert-actions">
+        <button class="btn-g" onclick="downloadCert()">⬇ Download Certificate</button>
+        <button class="btn-o" onclick="shareCertWA()">💬 Share on WhatsApp</button>
+        <button class="btn-o" onclick="closeCertModal()">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SCREEN CAPTURE MODAL -->
+<div class="ov-bg" id="screenModal">
+  <div class="modal">
+    <div class="modal-hd">
+      <div class="modal-title">📸 Share with AI Tutor</div>
+      <button class="modal-close" onclick="document.getElementById('screenModal').classList.remove('on')">✕</button>
+    </div>
+    <div style="padding:18px;display:flex;flex-direction:column;gap:12px">
+      <div style="font-size:.8rem;color:var(--t2)">Paste a screenshot or describe what you're stuck on:</div>
+      <textarea style="width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--rs);padding:12px;color:var(--text);font-size:.8rem;outline:none;resize:vertical;min-height:100px" id="screenDesc" placeholder="Describe the problem or paste error message…"></textarea>
+      <button class="btn-g" onclick="sendScreenCapture()">Send to AI Tutor →</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ══ GLOBAL STATE ══ */
+let U={},UD={},BPRICE=0,COL='User-collection';
+let WATCH_DATA={},EXAM_DATA={},CERT_DATA={};
+let currentCourse=null,currentModule=null,currentBundleId=null;
+let chatHistory=[],currentContext='';
+let prevPage='home';
+let ytPlayer=null,playerReady=false,isPlaying=false;
+
+/* ══ BUNDLE DATA ══ */
+const BUNDLES=[
+  {
+    id:'starter',name:'Starter',price:499,ic:'🌟',color:'rgba(200,169,110,0.08)',border:'rgba(200,169,110,0.22)',
+    lpa:'Target: ₹3 LPA',desc:'Begin your digital career. Master Canva, ChatGPT, WhatsApp Business, and entrepreneurship basics.',
+    courses:[
+      {id:'s1',title:'Digital Entrepreneurship Basics',duration:'4 hrs',modules:8,
+        desc:'Learn how to start and grow a digital business from scratch.',
+        url:'https://youtu.be/x5hf-1Nj-ck',
+        modules_list:[
+          {id:'s1m1',title:'Introduction to Digital Business',dur:'28 min',url:'https://youtu.be/x5hf-1Nj-ck'},
+          {id:'s1m2',title:'Business Models & Monetisation',dur:'32 min',url:'https://youtu.be/x5hf-1Nj-ck?t=1680'},
+          {id:'s1m3',title:'Finding Your Niche',dur:'25 min',url:'https://youtu.be/x5hf-1Nj-ck?t=3600'},
+          {id:'s1m4',title:'Building Your First Product',dur:'30 min',url:'https://youtu.be/x5hf-1Nj-ck?t=5100'},
+          {id:'s1m5',title:'Marketing Fundamentals',dur:'35 min',url:'https://youtu.be/x5hf-1Nj-ck?t=6900'},
+          {id:'s1m6',title:'Sales & Conversion',dur:'28 min',url:'https://youtu.be/x5hf-1Nj-ck?t=9000'},
+          {id:'s1m7',title:'Scaling Your Business',dur:'32 min',url:'https://youtu.be/x5hf-1Nj-ck?t=10680'},
+          {id:'s1m8',title:'Project & Next Steps',dur:'20 min',url:'https://youtu.be/x5hf-1Nj-ck?t=12600'},
+        ],
+        resources:['Business Model Canvas Template','Niche Research Checklist','Marketing Funnel Guide','Action Plan Worksheet'],
+        project:'Create a 1-page digital business plan for your idea.'
+      },
+      {id:'s2',title:'Canva & Content Creation',duration:'3 hrs',modules:7,
+        desc:'Design stunning graphics, social media posts, presentations using Canva.',
+        url:'https://youtu.be/x7-XSJHcaVI',
+        modules_list:[
+          {id:'s2m1',title:'Canva Interface Walkthrough',dur:'22 min',url:'https://youtu.be/x7-XSJHcaVI'},
+          {id:'s2m2',title:'Brand Kit & Colors',dur:'20 min',url:'https://youtu.be/x7-XSJHcaVI?t=1320'},
+          {id:'s2m3',title:'Social Media Templates',dur:'25 min',url:'https://youtu.be/x7-XSJHcaVI?t=2520'},
+          {id:'s2m4',title:'Presentations & Pitches',dur:'28 min',url:'https://youtu.be/x7-XSJHcaVI?t=4020'},
+          {id:'s2m5',title:'Video & Reels Design',dur:'30 min',url:'https://youtu.be/x7-XSJHcaVI?t=5700'},
+          {id:'s2m6',title:'Content Calendar Planning',dur:'22 min',url:'https://youtu.be/x7-XSJHcaVI?t=7500'},
+          {id:'s2m7',title:'Portfolio & Project',dur:'15 min',url:'https://youtu.be/x7-XSJHcaVI?t=8820'},
+        ],
+        resources:['Canva Brand Kit Guide','100 Content Ideas','Color Psychology PDF','Social Media Size Guide'],
+        project:'Design a complete brand identity for a fictional brand.'
+      },
+      {id:'s3',title:'WhatsApp Business Marketing',duration:'3 hrs',modules:6,
+        desc:'Use WhatsApp Business to generate leads and grow revenue.',
+        url:'https://youtu.be/PlVxtty0wrI',
+        modules_list:[
+          {id:'s3m1',title:'Setting Up WhatsApp Business',dur:'20 min',url:'https://youtu.be/PlVxtty0wrI'},
+          {id:'s3m2',title:'Catalog & Product Lists',dur:'22 min',url:'https://youtu.be/PlVxtty0wrI?t=1200'},
+          {id:'s3m3',title:'Broadcast Lists & Groups',dur:'28 min',url:'https://youtu.be/PlVxtty0wrI?t=2520'},
+          {id:'s3m4',title:'Automated Replies',dur:'25 min',url:'https://youtu.be/PlVxtty0wrI?t=4200'},
+          {id:'s3m5',title:'Lead Generation Tactics',dur:'30 min',url:'https://youtu.be/PlVxtty0wrI?t=5700'},
+          {id:'s3m6',title:'Case Studies & Project',dur:'15 min',url:'https://youtu.be/PlVxtty0wrI?t=7500'},
+        ],
+        resources:['WA Business Setup Checklist','Message Templates PDF','Lead Gen Scripts','Follow-up Sequence'],
+        project:'Set up a WhatsApp Business profile with product catalog and auto-reply templates.'
+      },
+      {id:'s4',title:'ChatGPT for Daily Work',duration:'3 hrs',modules:6,
+        desc:'Leverage ChatGPT and AI tools to boost productivity.',
+        url:'https://youtu.be/IcCAEudzEDw',
+        modules_list:[
+          {id:'s4m1',title:'ChatGPT Basics & Interface',dur:'20 min',url:'https://youtu.be/IcCAEudzEDw'},
+          {id:'s4m2',title:'Prompt Engineering Secrets',dur:'28 min',url:'https://youtu.be/IcCAEudzEDw?t=1200'},
+          {id:'s4m3',title:'Content & Copywriting with AI',dur:'30 min',url:'https://youtu.be/IcCAEudzEDw?t=2880'},
+          {id:'s4m4',title:'AI for Research & Analysis',dur:'25 min',url:'https://youtu.be/IcCAEudzEDw?t=4680'},
+          {id:'s4m5',title:'Automating Work with AI',dur:'30 min',url:'https://youtu.be/IcCAEudzEDw?t=6180'},
+          {id:'s4m6',title:'Project: Build an AI Workflow',dur:'17 min',url:'https://youtu.be/IcCAEudzEDw?t=7980'},
+        ],
+        resources:['500 ChatGPT Prompts','AI Tools Directory','Automation Recipes','Productivity Checklist'],
+        project:'Create a complete AI-powered content workflow using ChatGPT.'
+      },
+    ]
+  },
+  {
+    id:'digital',name:'Digital Marketing',price:999,ic:'📈',color:'rgba(96,165,250,0.06)',border:'rgba(96,165,250,0.22)',
+    lpa:'Target: ₹3–4 LPA',desc:'Master affiliate marketing, SEO, social media, email, Google Ads, Facebook Ads, and freelancing.',
+    courses:[
+      {id:'d1',title:'Affiliate Marketing Mastery',duration:'8 hrs',modules:10,desc:'Learn to earn commissions by promoting products online.',url:'https://youtu.be/TF3BhN_dTdo',
+        modules_list:[
+          {id:'d1m1',title:'What is Affiliate Marketing?',dur:'35 min',url:'https://youtu.be/TF3BhN_dTdo'},
+          {id:'d1m2',title:'Choosing the Right Niche',dur:'40 min',url:'https://youtu.be/TF3BhN_dTdo?t=2100'},
+          {id:'d1m3',title:'Top Affiliate Networks',dur:'35 min',url:'https://youtu.be/TF3BhN_dTdo?t=4500'},
+          {id:'d1m4',title:'Building a Niche Website',dur:'50 min',url:'https://youtu.be/TF3BhN_dTdo?t=6600'},
+          {id:'d1m5',title:'SEO for Affiliate Sites',dur:'45 min',url:'https://youtu.be/TF3BhN_dTdo?t=9600'},
+          {id:'d1m6',title:'Content That Converts',dur:'40 min',url:'https://youtu.be/TF3BhN_dTdo?t=12300'},
+          {id:'d1m7',title:'Email List Building',dur:'35 min',url:'https://youtu.be/TF3BhN_dTdo?t=14700'},
+          {id:'d1m8',title:'Paid Traffic for Affiliates',dur:'40 min',url:'https://youtu.be/TF3BhN_dTdo?t=16800'},
+          {id:'d1m9',title:'Tracking & Analytics',dur:'30 min',url:'https://youtu.be/TF3BhN_dTdo?t=19200'},
+          {id:'d1m10',title:'Scaling to ₹1L+/month',dur:'30 min',url:'https://youtu.be/TF3BhN_dTdo?t=21000'},
+        ],
+        resources:['Affiliate Niche Research Guide','Top 50 Affiliate Programs','Content Template Pack','Analytics Dashboard'],
+        project:'Set up an affiliate review site or landing page for at least 3 products.'
+      },
+      {id:'d2',title:'SEO & Blogging',duration:'5 hrs',modules:8,desc:'Rank your website on Google and build a blog that generates organic traffic.',url:'https://youtu.be/pDUMhloKybU',
+        modules_list:[
+          {id:'d2m1',title:'How Search Engines Work',dur:'30 min',url:'https://youtu.be/pDUMhloKybU'},
+          {id:'d2m2',title:'Keyword Research Mastery',dur:'35 min',url:'https://youtu.be/pDUMhloKybU?t=1800'},
+          {id:'d2m3',title:'On-Page SEO',dur:'40 min',url:'https://youtu.be/pDUMhloKybU?t=3900'},
+          {id:'d2m4',title:'Technical SEO',dur:'35 min',url:'https://youtu.be/pDUMhloKybU?t=6300'},
+          {id:'d2m5',title:'Link Building Strategies',dur:'40 min',url:'https://youtu.be/pDUMhloKybU?t=8400'},
+          {id:'d2m6',title:'Blogging for Traffic',dur:'35 min',url:'https://youtu.be/pDUMhloKybU?t=10800'},
+          {id:'d2m7',title:'Content Strategy & Calendar',dur:'30 min',url:'https://youtu.be/pDUMhloKybU?t=12900'},
+          {id:'d2m8',title:'Measuring SEO Success',dur:'25 min',url:'https://youtu.be/pDUMhloKybU?t=14700'},
+        ],
+        resources:['Keyword Research Spreadsheet','SEO Audit Checklist','Blog Post Template','Backlink Outreach Scripts'],
+        project:'Publish 3 SEO-optimized blog posts targeting specific keywords.'
+      },
+      {id:'d3',title:'Social Media Management',duration:'6 hrs',modules:9,desc:'Grow Instagram, LinkedIn, Twitter/X and YouTube for brands.',url:'https://youtu.be/9WVGLqiHVuk',
+        modules_list:[
+          {id:'d3m1',title:'Social Media Strategy',dur:'35 min',url:'https://youtu.be/9WVGLqiHVuk'},
+          {id:'d3m2',title:'Instagram Growth System',dur:'40 min',url:'https://youtu.be/9WVGLqiHVuk?t=2100'},
+          {id:'d3m3',title:'LinkedIn for Business',dur:'35 min',url:'https://youtu.be/9WVGLqiHVuk?t=4500'},
+          {id:'d3m4',title:'YouTube Channel Building',dur:'40 min',url:'https://youtu.be/9WVGLqiHVuk?t=6600'},
+          {id:'d3m5',title:'Content Batching & Scheduling',dur:'30 min',url:'https://youtu.be/9WVGLqiHVuk?t=9000'},
+          {id:'d3m6',title:'Hashtag Research',dur:'25 min',url:'https://youtu.be/9WVGLqiHVuk?t=10800'},
+          {id:'d3m7',title:'Engagement & Community',dur:'30 min',url:'https://youtu.be/9WVGLqiHVuk?t=12300'},
+          {id:'d3m8',title:'Analytics & Reporting',dur:'28 min',url:'https://youtu.be/9WVGLqiHVuk?t=14100'},
+          {id:'d3m9',title:'Client Management',dur:'27 min',url:'https://youtu.be/9WVGLqiHVuk?t=15780'},
+        ],
+        resources:['Social Media Calendar','Hashtag Research Tool Guide','Engagement Scripts','Monthly Report Template'],
+        project:'Create a 30-day social media content plan for a brand.'
+      },
+      {id:'d4',title:'Email Marketing',duration:'4 hrs',modules:7,desc:'Build email lists and write high-converting email campaigns.',url:'https://www.youtube.com/live/yn6L7q4V1xg',
+        modules_list:[
+          {id:'d4m1',title:'Email Marketing Fundamentals',dur:'30 min',url:'https://www.youtube.com/live/yn6L7q4V1xg'},
+          {id:'d4m2',title:'Building Your List',dur:'35 min',url:'https://www.youtube.com/live/yn6L7q4V1xg?t=1800'},
+          {id:'d4m3',title:'Writing Compelling Emails',dur:'35 min',url:'https://www.youtube.com/live/yn6L7q4V1xg?t=3900'},
+          {id:'d4m4',title:'Mailchimp & Free Tools Setup',dur:'30 min',url:'https://www.youtube.com/live/yn6L7q4V1xg?t=6000'},
+          {id:'d4m5',title:'Automation Sequences',dur:'35 min',url:'https://www.youtube.com/live/yn6L7q4V1xg?t=7800'},
+          {id:'d4m6',title:'A/B Testing & Optimisation',dur:'25 min',url:'https://www.youtube.com/live/yn6L7q4V1xg?t=9900'},
+          {id:'d4m7',title:'Analytics & ROI',dur:'20 min',url:'https://www.youtube.com/live/yn6L7q4V1xg?t=11400'},
+        ],
+        resources:['Email Swipe File (50 templates)','Subject Line Formulas','Automation Blueprint','List Growth Tactics'],
+        project:'Set up a 5-email welcome sequence in any free email tool.'
+      },
+      {id:'d5',title:'Google Ads Complete',duration:'7 hrs',modules:10,desc:'Run profitable Google Search, Display, Shopping, and YouTube ads.',url:'https://youtu.be/autzRHtt-RM',
+        modules_list:[
+          {id:'d5m1',title:'Google Ads Overview',dur:'35 min',url:'https://youtu.be/autzRHtt-RM'},
+          {id:'d5m2',title:'Account & Campaign Setup',dur:'40 min',url:'https://youtu.be/autzRHtt-RM?t=2100'},
+          {id:'d5m3',title:'Keyword Research for Ads',dur:'40 min',url:'https://youtu.be/autzRHtt-RM?t=4500'},
+          {id:'d5m4',title:'Writing High-CTR Ad Copy',dur:'35 min',url:'https://youtu.be/autzRHtt-RM?t=6900'},
+          {id:'d5m5',title:'Bidding Strategies',dur:'35 min',url:'https://youtu.be/autzRHtt-RM?t=9000'},
+          {id:'d5m6',title:'Display & YouTube Ads',dur:'40 min',url:'https://youtu.be/autzRHtt-RM?t=11100'},
+          {id:'d5m7',title:'Shopping Campaigns',dur:'35 min',url:'https://youtu.be/autzRHtt-RM?t=13500'},
+          {id:'d5m8',title:'Conversion Tracking',dur:'30 min',url:'https://youtu.be/autzRHtt-RM?t=15600'},
+          {id:'d5m9',title:'Optimisation & Scaling',dur:'35 min',url:'https://youtu.be/autzRHtt-RM?t=17400'},
+          {id:'d5m10',title:'Reporting for Clients',dur:'25 min',url:'https://youtu.be/autzRHtt-RM?t=19500'},
+        ],
+        resources:['Google Ads Campaign Checklist','Keyword Bid Calculator','Ad Copy Templates','Reporting Dashboard'],
+        project:'Create and document a mock Google Ads campaign for a local business.'
+      },
+      {id:'d6',title:'Facebook Ads Mastery',duration:'7 hrs',modules:10,desc:'Master Meta Ads (Facebook & Instagram).',url:'https://youtu.be/WNiU5ZxazI4',
+        modules_list:[
+          {id:'d6m1',title:'Meta Ads Manager Overview',dur:'35 min',url:'https://youtu.be/WNiU5ZxazI4'},
+          {id:'d6m2',title:'Pixel Setup & Events',dur:'30 min',url:'https://youtu.be/WNiU5ZxazI4?t=2100'},
+          {id:'d6m3',title:'Audience Research & Targeting',dur:'40 min',url:'https://youtu.be/WNiU5ZxazI4?t=3900'},
+          {id:'d6m4',title:'Campaign Structure (CBO/ABO)',dur:'35 min',url:'https://youtu.be/WNiU5ZxazI4?t=6300'},
+          {id:'d6m5',title:'Creative Strategy',dur:'40 min',url:'https://youtu.be/WNiU5ZxazI4?t=8400'},
+          {id:'d6m6',title:'Retargeting Campaigns',dur:'35 min',url:'https://youtu.be/WNiU5ZxazI4?t=10800'},
+          {id:'d6m7',title:'Lookalike Audiences',dur:'30 min',url:'https://youtu.be/WNiU5ZxazI4?t=12900'},
+          {id:'d6m8',title:'Scaling Profitable Campaigns',dur:'40 min',url:'https://youtu.be/WNiU5ZxazI4?t=14700'},
+          {id:'d6m9',title:'Troubleshooting & Optimisation',dur:'30 min',url:'https://youtu.be/WNiU5ZxazI4?t=17100'},
+          {id:'d6m10',title:'Client Reporting & Communication',dur:'25 min',url:'https://youtu.be/WNiU5ZxazI4?t=18900'},
+        ],
+        resources:['Ad Creative Framework','Audience Research Template','ROAS Calculator','Client Report Template'],
+        project:'Plan a Facebook Ads strategy for an e-commerce product.'
+      },
+      {id:'d7',title:'Freelancing Mastery',duration:'9 hrs',modules:11,desc:'Build a profitable freelance career on Fiverr and Upwork.',url:'https://youtu.be/gMmTpoiITM4',
+        modules_list:[
+          {id:'d7m1',title:'Freelancing Mindset',dur:'35 min',url:'https://youtu.be/gMmTpoiITM4'},
+          {id:'d7m2',title:'Choosing Your Service',dur:'40 min',url:'https://youtu.be/gMmTpoiITM4?t=2100'},
+          {id:'d7m3',title:'Setting Up Fiverr',dur:'40 min',url:'https://youtu.be/gMmTpoiITM4?t=4500'},
+          {id:'d7m4',title:'Setting Up Upwork',dur:'40 min',url:'https://youtu.be/gMmTpoiITM4?t=6900'},
+          {id:'d7m5',title:'Portfolio & Personal Branding',dur:'35 min',url:'https://youtu.be/gMmTpoiITM4?t=9300'},
+          {id:'d7m6',title:'Writing Winning Proposals',dur:'40 min',url:'https://youtu.be/gMmTpoiITM4?t=11400'},
+          {id:'d7m7',title:'Pricing & Packages',dur:'35 min',url:'https://youtu.be/gMmTpoiITM4?t=13800'},
+          {id:'d7m8',title:'Client Communication',dur:'30 min',url:'https://youtu.be/gMmTpoiITM4?t=15900'},
+          {id:'d7m9',title:'Delivering Quality Work',dur:'35 min',url:'https://youtu.be/gMmTpoiITM4?t=17700'},
+          {id:'d7m10',title:'Getting Reviews & Repeat Clients',dur:'30 min',url:'https://youtu.be/gMmTpoiITM4?t=19800'},
+          {id:'d7m11',title:'Scaling to Agency',dur:'35 min',url:'https://youtu.be/gMmTpoiITM4?t=21600'},
+        ],
+        resources:['Proposal Templates','Rate Calculator','Portfolio Template','Client Onboarding Kit'],
+        project:'Create a complete freelance profile on Fiverr or Upwork + write 3 proposals.'
+      },
+    ]
+  },
+  {
+    id:'creative',name:'Creative & Design',price:2499,ic:'🎨',color:'rgba(167,139,250,0.06)',border:'rgba(167,139,250,0.22)',
+    lpa:'Target: ₹3–4 LPA',desc:'UI/UX design, no-code web development, video editing, and e-commerce mastery.',
+    courses:[
+      {id:'c1',title:'UI/UX Design Complete',duration:'12 hrs',modules:12,desc:'Master user experience and interface design with Figma.',url:'https://youtube.com/playlist?list=PL7ZIgV4R67IOMRiW_Q7vZqLulb0xyKDHD',
+        modules_list:[
+          {id:'c1m1',title:'Design Thinking Fundamentals',dur:'45 min',url:'https://youtube.com/playlist?list=PL7ZIgV4R67IOMRiW_Q7vZqLulb0xyKDHD'},
+          {id:'c1m2',title:'Figma Interface & Tools',dur:'50 min',url:'https://youtube.com/playlist?list=PL7ZIgV4R67IOMRiW_Q7vZqLulb0xyKDHD'},
+          {id:'c1m3',title:'Typography & Color Theory',dur:'45 min',url:'https://youtube.com/playlist?list=PL7ZIgV4R67IOMRiW_Q7vZqLulb0xyKDHD'},
+          {id:'c1m4',title:'Layout & Grid Systems',dur:'40 min',url:'https://youtube.com/playlist?list=PL7ZIgV4R67IOMRiW_Q7vZqLulb0xyKDHD'},
+          {id:'c1m5',title:'Component & Design Systems',dur:'50 min',url:'https://youtube.com/playlist?list=PL7ZIgV4R67IOMRiW_Q7vZqLulb0xyKDHD'},
+          {id:'c1m6',title:'User Research Methods',dur:'45 min',url:'https://youtube.com/playlist?list=PL7ZIgV4R67IOMRiW_Q7vZqLulb0xyKDHD'},
+          {id:'c1m7',title:'Wireframing',dur:'40 min',url:'https://youtube.com/playlist?list=PL7ZIgV4R67IOMRiW_Q7vZqLulb0xyKDHD'},
+          {id:'c1m8',title:'Prototyping & Interactions',dur:'45 min',url:'https://youtube.com/playlist?list=PL7ZIgV4R67IOMRiW_Q7vZqLulb0xyKDHD'},
+          {id:'c1m9',title:'Mobile App Design',dur:'50 min',url:'https://youtube.com/playlist?list=PL7ZIgV4R67IOMRiW_Q7vZqLulb0xyKDHD'},
+          {id:'c1m10',title:'Web Design Best Practices',dur:'45 min',url:'https://youtube.com/playlist?list=PL7ZIgV4R67IOMRiW_Q7vZqLulb0xyKDHD'},
+          {id:'c1m11',title:'Accessibility & Usability',dur:'40 min',url:'https://youtube.com/playlist?list=PL7ZIgV4R67IOMRiW_Q7vZqLulb0xyKDHD'},
+          {id:'c1m12',title:'Portfolio & Presentation',dur:'45 min',url:'https://youtube.com/playlist?list=PL7ZIgV4R67IOMRiW_Q7vZqLulb0xyKDHD'},
+        ],
+        resources:['Figma UI Kit','Design System Template','UX Research Template','Portfolio Guide'],
+        project:'Design a complete mobile app in Figma with 10+ screens.'
+      },
+      {id:'c2',title:'No Code Web Development',duration:'6 hrs',modules:8,desc:'Build professional websites without code using Webflow and Framer.',url:'https://youtu.be/9nIwTjG2fdI',
+        modules_list:[
+          {id:'c2m1',title:'No-Code Revolution Overview',dur:'30 min',url:'https://youtu.be/9nIwTjG2fdI'},
+          {id:'c2m2',title:'Webflow Foundations',dur:'45 min',url:'https://youtu.be/9nIwTjG2fdI?t=1800'},
+          {id:'c2m3',title:'Responsive Design',dur:'40 min',url:'https://youtu.be/9nIwTjG2fdI?t=4500'},
+          {id:'c2m4',title:'CMS & Dynamic Content',dur:'40 min',url:'https://youtu.be/9nIwTjG2fdI?t=6900'},
+          {id:'c2m5',title:'Framer & Modern Tools',dur:'40 min',url:'https://youtu.be/9nIwTjG2fdI?t=9300'},
+          {id:'c2m6',title:'E-commerce with No-Code',dur:'35 min',url:'https://youtu.be/9nIwTjG2fdI?t=11700'},
+          {id:'c2m7',title:'SEO & Publishing',dur:'30 min',url:'https://youtu.be/9nIwTjG2fdI?t=13800'},
+          {id:'c2m8',title:'Client Delivery & Project',dur:'20 min',url:'https://youtu.be/9nIwTjG2fdI?t=15600'},
+        ],
+        resources:['Webflow CMS Guide','Landing Page Templates','SEO Checklist','Client Handover Guide'],
+        project:'Build a complete 5-page website for a local business.'
+      },
+      {id:'c3',title:'Video Editing with CapCut',duration:'5 hrs',modules:8,desc:'Create viral short-form videos and reels using CapCut.',url:'https://youtu.be/nXeslaOL_BE',
+        modules_list:[
+          {id:'c3m1',title:'CapCut Interface & Basics',dur:'25 min',url:'https://youtu.be/nXeslaOL_BE'},
+          {id:'c3m2',title:'Cuts, Trims & Timeline',dur:'30 min',url:'https://youtu.be/nXeslaOL_BE?t=1500'},
+          {id:'c3m3',title:'Transitions & Effects',dur:'35 min',url:'https://youtu.be/nXeslaOL_BE?t=3300'},
+          {id:'c3m4',title:'Auto Captions & Text',dur:'30 min',url:'https://youtu.be/nXeslaOL_BE?t=5400'},
+          {id:'c3m5',title:'Music, Sound & Audio',dur:'28 min',url:'https://youtu.be/nXeslaOL_BE?t=7200'},
+          {id:'c3m6',title:'Colour Grading',dur:'30 min',url:'https://youtu.be/nXeslaOL_BE?t=8880'},
+          {id:'c3m7',title:'Reels & Short-form Strategy',dur:'35 min',url:'https://youtu.be/nXeslaOL_BE?t=10680'},
+          {id:'c3m8',title:'Export & Publishing',dur:'17 min',url:'https://youtu.be/nXeslaOL_BE?t=12780'},
+        ],
+        resources:['CapCut Shortcuts','Short-form Script Templates','Colour Grade Presets','Viral Video Formula'],
+        project:'Edit 3 short-form videos under 60 seconds each on different topics.'
+      },
+      {id:'c4',title:'Ecommerce Complete',duration:'8 hrs',modules:10,desc:'Launch and grow an e-commerce store from zero using Shopify.',url:'https://youtu.be/5d9jtO0uOpk',
+        modules_list:[
+          {id:'c4m1',title:'Ecommerce Business Models',dur:'35 min',url:'https://youtu.be/5d9jtO0uOpk'},
+          {id:'c4m2',title:'Product Research',dur:'45 min',url:'https://youtu.be/5d9jtO0uOpk?t=2100'},
+          {id:'c4m3',title:'Shopify Store Setup',dur:'50 min',url:'https://youtu.be/5d9jtO0uOpk?t=4800'},
+          {id:'c4m4',title:'Product Listings & Photography',dur:'40 min',url:'https://youtu.be/5d9jtO0uOpk?t=7800'},
+          {id:'c4m5',title:'Payment Gateways & Shipping',dur:'35 min',url:'https://youtu.be/5d9jtO0uOpk?t=10200'},
+          {id:'c4m6',title:'Social Media for Ecommerce',dur:'40 min',url:'https://youtu.be/5d9jtO0uOpk?t=12300'},
+          {id:'c4m7',title:'Ads for Ecommerce',dur:'45 min',url:'https://youtu.be/5d9jtO0uOpk?t=14700'},
+          {id:'c4m8',title:'Customer Service & Returns',dur:'30 min',url:'https://youtu.be/5d9jtO0uOpk?t=17400'},
+          {id:'c4m9',title:'Analytics & Conversion Rate',dur:'35 min',url:'https://youtu.be/5d9jtO0uOpk?t=19200'},
+          {id:'c4m10',title:'Scaling & Automation',dur:'25 min',url:'https://youtu.be/5d9jtO0uOpk?t=21300'},
+        ],
+        resources:['Product Research Framework','Shopify Theme Guide','Product Photography Tips','Store Launch Checklist'],
+        project:'Launch a live or demo Shopify store with at least 5 products.'
+      },
+    ]
+  },
+  {
+    id:'data',name:'Data & Analytics',price:3699,ic:'📊',color:'rgba(34,211,238,0.06)',border:'rgba(34,211,238,0.22)',
+    lpa:'Target: ₹4–6 LPA',desc:'Excel, SQL, Power BI, Python basics, and business analytics.',
+    courses:[
+      {id:'da1',title:'Excel for Data Analysis',duration:'8 hrs',modules:10,desc:'Master Microsoft Excel for data analysis, pivot tables, and dashboards.',url:'https://youtu.be/Vl0H-qTclOg',
+        modules_list:[
+          {id:'da1m1',title:'Excel Interface & Basics',dur:'35 min',url:'https://youtu.be/Vl0H-qTclOg'},
+          {id:'da1m2',title:'Formulas & Functions',dur:'45 min',url:'https://youtu.be/Vl0H-qTclOg?t=2100'},
+          {id:'da1m3',title:'VLOOKUP & XLOOKUP',dur:'40 min',url:'https://youtu.be/Vl0H-qTclOg?t=4800'},
+          {id:'da1m4',title:'Pivot Tables',dur:'45 min',url:'https://youtu.be/Vl0H-qTclOg?t=7200'},
+          {id:'da1m5',title:'Charts & Visualisation',dur:'40 min',url:'https://youtu.be/Vl0H-qTclOg?t=9900'},
+          {id:'da1m6',title:'Data Cleaning',dur:'35 min',url:'https://youtu.be/Vl0H-qTclOg?t=12300'},
+          {id:'da1m7',title:'Conditional Formatting',dur:'30 min',url:'https://youtu.be/Vl0H-qTclOg?t=14400'},
+          {id:'da1m8',title:'Dashboards',dur:'45 min',url:'https://youtu.be/Vl0H-qTclOg?t=16200'},
+          {id:'da1m9',title:'Macros & Automation',dur:'40 min',url:'https://youtu.be/Vl0H-qTclOg?t=18900'},
+          {id:'da1m10',title:'Business Analytics Project',dur:'25 min',url:'https://youtu.be/Vl0H-qTclOg?t=21300'},
+        ],
+        resources:['Excel Shortcuts PDF','100 Useful Formulas','Dashboard Template','Data Cleaning Guide'],
+        project:'Build a sales analytics dashboard in Excel.'
+      },
+      {id:'da2',title:'SQL for Beginners',duration:'6 hrs',modules:9,desc:'Learn SQL from scratch for data analytics.',url:'https://youtu.be/7S_tz1z_5bA',
+        modules_list:[
+          {id:'da2m1',title:'What is SQL & Databases?',dur:'30 min',url:'https://youtu.be/7S_tz1z_5bA'},
+          {id:'da2m2',title:'SELECT & WHERE',dur:'35 min',url:'https://youtu.be/7S_tz1z_5bA?t=1800'},
+          {id:'da2m3',title:'ORDER BY, LIMIT, DISTINCT',dur:'30 min',url:'https://youtu.be/7S_tz1z_5bA?t=3900'},
+          {id:'da2m4',title:'Aggregate Functions',dur:'35 min',url:'https://youtu.be/7S_tz1z_5bA?t=5700'},
+          {id:'da2m5',title:'GROUP BY & HAVING',dur:'35 min',url:'https://youtu.be/7S_tz1z_5bA?t=7800'},
+          {id:'da2m6',title:'JOINs (INNER, LEFT, RIGHT)',dur:'40 min',url:'https://youtu.be/7S_tz1z_5bA?t=9900'},
+          {id:'da2m7',title:'Subqueries',dur:'35 min',url:'https://youtu.be/7S_tz1z_5bA?t=12300'},
+          {id:'da2m8',title:'Creating & Modifying Tables',dur:'30 min',url:'https://youtu.be/7S_tz1z_5bA?t=14400'},
+          {id:'da2m9',title:'Real-world SQL Project',dur:'30 min',url:'https://youtu.be/7S_tz1z_5bA?t=16200'},
+        ],
+        resources:['SQL Cheat Sheet','Practice Datasets','Query Library','DB Browser Setup Guide'],
+        project:'Write 20 SQL queries on a provided dataset.'
+      },
+      {id:'da3',title:'Power BI & Tableau',duration:'9 hrs',modules:10,desc:'Build stunning interactive dashboards for business intelligence.',url:'https://youtu.be/AGrl-H87pRU',
+        modules_list:[
+          {id:'da3m1',title:'BI Tools Overview',dur:'30 min',url:'https://youtu.be/AGrl-H87pRU'},
+          {id:'da3m2',title:'Power BI Interface',dur:'40 min',url:'https://youtu.be/AGrl-H87pRU?t=1800'},
+          {id:'da3m3',title:'Data Import & Transform',dur:'45 min',url:'https://youtu.be/AGrl-H87pRU?t=4200'},
+          {id:'da3m4',title:'DAX Formulas',dur:'50 min',url:'https://youtu.be/AGrl-H87pRU?t=6900'},
+          {id:'da3m5',title:'Visualisations in Power BI',dur:'45 min',url:'https://youtu.be/AGrl-H87pRU?t=9900'},
+          {id:'da3m6',title:'Dashboard Design',dur:'40 min',url:'https://youtu.be/AGrl-H87pRU?t=12600'},
+          {id:'da3m7',title:'Tableau Interface',dur:'40 min',url:'https://youtu.be/AGrl-H87pRU?t=15000'},
+          {id:'da3m8',title:'Tableau Charts & Maps',dur:'45 min',url:'https://youtu.be/AGrl-H87pRU?t=17400'},
+          {id:'da3m9',title:'Publishing & Sharing',dur:'30 min',url:'https://youtu.be/AGrl-H87pRU?t=20100'},
+          {id:'da3m10',title:'Capstone Dashboard Project',dur:'35 min',url:'https://youtu.be/AGrl-H87pRU?t=21900'},
+        ],
+        resources:['Power BI Sample Data','DAX Quick Reference','Dashboard Design Guide','Tableau Starter Pack'],
+        project:'Build a complete business dashboard in Power BI.'
+      },
+      {id:'da4',title:'Python Basics',duration:'7 hrs',modules:10,desc:'Learn Python for data work with Pandas.',url:'https://youtu.be/_uQrJ0TkZlc',
+        modules_list:[
+          {id:'da4m1',title:'Python Setup & Hello World',dur:'25 min',url:'https://youtu.be/_uQrJ0TkZlc'},
+          {id:'da4m2',title:'Variables & Data Types',dur:'35 min',url:'https://youtu.be/_uQrJ0TkZlc?t=1500'},
+          {id:'da4m3',title:'Operators & Conditions',dur:'35 min',url:'https://youtu.be/_uQrJ0TkZlc?t=3600'},
+          {id:'da4m4',title:'Lists, Tuples & Dicts',dur:'40 min',url:'https://youtu.be/_uQrJ0TkZlc?t=5700'},
+          {id:'da4m5',title:'Loops & Iterations',dur:'40 min',url:'https://youtu.be/_uQrJ0TkZlc?t=8100'},
+          {id:'da4m6',title:'Functions & Modules',dur:'40 min',url:'https://youtu.be/_uQrJ0TkZlc?t=10500'},
+          {id:'da4m7',title:'File Handling',dur:'35 min',url:'https://youtu.be/_uQrJ0TkZlc?t=12900'},
+          {id:'da4m8',title:'Pandas Introduction',dur:'45 min',url:'https://youtu.be/_uQrJ0TkZlc?t=15000'},
+          {id:'da4m9',title:'Data Analysis with Pandas',dur:'45 min',url:'https://youtu.be/_uQrJ0TkZlc?t=17700'},
+          {id:'da4m10',title:'Mini Data Project',dur:'20 min',url:'https://youtu.be/_uQrJ0TkZlc?t=20400'},
+        ],
+        resources:['Python Cheat Sheet','Pandas Quick Reference','Jupyter Notebook Setup','Practice Datasets'],
+        project:'Write a Python script that reads a CSV and outputs a summary report.'
+      },
+      {id:'da5',title:'Business Analytics',duration:'5 hrs',modules:7,desc:'Apply data analysis to real business decisions.',url:'https://youtu.be/yZvFH7B6gKI',
+        modules_list:[
+          {id:'da5m1',title:'Analytics for Business',dur:'30 min',url:'https://youtu.be/yZvFH7B6gKI'},
+          {id:'da5m2',title:'Key Performance Indicators',dur:'35 min',url:'https://youtu.be/yZvFH7B6gKI?t=1800'},
+          {id:'da5m3',title:'Data Collection & Sources',dur:'30 min',url:'https://youtu.be/yZvFH7B6gKI?t=3900'},
+          {id:'da5m4',title:'Market & Customer Analysis',dur:'40 min',url:'https://youtu.be/yZvFH7B6gKI?t=5700'},
+          {id:'da5m5',title:'Forecasting Methods',dur:'40 min',url:'https://youtu.be/yZvFH7B6gKI?t=8100'},
+          {id:'da5m6',title:'Reporting to Stakeholders',dur:'35 min',url:'https://youtu.be/yZvFH7B6gKI?t=10500'},
+          {id:'da5m7',title:'Analytics Strategy Project',dur:'20 min',url:'https://youtu.be/yZvFH7B6gKI?t=12600'},
+        ],
+        resources:['KPI Framework Guide','Business Report Template','Forecasting Spreadsheet','Analytics Glossary'],
+        project:'Create a business analytics report with 5 KPIs and recommendations.'
+      },
+    ]
+  },
+  {
+    id:'dev',name:'Web Development',price:4999,ic:'💻',color:'rgba(34,197,94,0.06)',border:'rgba(34,197,94,0.22)',
+    lpa:'Target: ₹6–8 LPA',desc:'Full-stack: HTML/CSS/JS, React, Node.js, MongoDB, and Git.',
+    courses:[
+      {id:'dev1',title:'HTML, CSS & JavaScript',duration:'14 hrs',modules:14,desc:'Foundations of web development.',url:'https://youtu.be/G3e-cpL7ofc',
+        modules_list:[
+          {id:'dev1m1',title:'HTML Foundations',dur:'50 min',url:'https://youtu.be/G3e-cpL7ofc'},
+          {id:'dev1m2',title:'HTML Forms & Semantics',dur:'50 min',url:'https://youtu.be/G3e-cpL7ofc?t=3000'},
+          {id:'dev1m3',title:'CSS Basics & Selectors',dur:'55 min',url:'https://youtu.be/G3e-cpL7ofc?t=6000'},
+          {id:'dev1m4',title:'CSS Box Model & Layout',dur:'50 min',url:'https://youtu.be/G3e-cpL7ofc?t=9300'},
+          {id:'dev1m5',title:'Flexbox',dur:'50 min',url:'https://youtu.be/G3e-cpL7ofc?t=12300'},
+          {id:'dev1m6',title:'CSS Grid',dur:'50 min',url:'https://youtu.be/G3e-cpL7ofc?t=15300'},
+          {id:'dev1m7',title:'Responsive Design & Media Queries',dur:'50 min',url:'https://youtu.be/G3e-cpL7ofc?t=18300'},
+          {id:'dev1m8',title:'JavaScript Fundamentals',dur:'55 min',url:'https://youtu.be/G3e-cpL7ofc?t=21300'},
+          {id:'dev1m9',title:'DOM Manipulation',dur:'55 min',url:'https://youtu.be/G3e-cpL7ofc?t=24600'},
+          {id:'dev1m10',title:'Events & Functions',dur:'50 min',url:'https://youtu.be/G3e-cpL7ofc?t=27900'},
+          {id:'dev1m11',title:'Fetch API & AJAX',dur:'50 min',url:'https://youtu.be/G3e-cpL7ofc?t=30900'},
+          {id:'dev1m12',title:'ES6+ Features',dur:'50 min',url:'https://youtu.be/G3e-cpL7ofc?t=33900'},
+          {id:'dev1m13',title:'Project: Portfolio Website',dur:'60 min',url:'https://youtu.be/G3e-cpL7ofc?t=36900'},
+          {id:'dev1m14',title:'Deployment with GitHub Pages',dur:'30 min',url:'https://youtu.be/G3e-cpL7ofc?t=40500'},
+        ],
+        resources:['HTML Cheat Sheet','CSS Flexbox Guide','JS Quick Reference','Project Starter Files'],
+        project:'Build a fully responsive personal portfolio website. Deploy to GitHub Pages.'
+      },
+      {id:'dev2',title:'React.js Complete',duration:'12 hrs',modules:12,desc:'Build modern web applications with React hooks and state management.',url:'https://youtu.be/SqcY0GlETPk',
+        modules_list:[
+          {id:'dev2m1',title:'React Fundamentals',dur:'55 min',url:'https://youtu.be/SqcY0GlETPk'},
+          {id:'dev2m2',title:'JSX & Components',dur:'55 min',url:'https://youtu.be/SqcY0GlETPk?t=3300'},
+          {id:'dev2m3',title:'Props & State',dur:'55 min',url:'https://youtu.be/SqcY0GlETPk?t=6600'},
+          {id:'dev2m4',title:'useState & useEffect',dur:'60 min',url:'https://youtu.be/SqcY0GlETPk?t=9900'},
+          {id:'dev2m5',title:'Event Handling',dur:'50 min',url:'https://youtu.be/SqcY0GlETPk?t=13500'},
+          {id:'dev2m6',title:'Conditional Rendering',dur:'50 min',url:'https://youtu.be/SqcY0GlETPk?t=16500'},
+          {id:'dev2m7',title:'Lists & Keys',dur:'45 min',url:'https://youtu.be/SqcY0GlETPk?t=19500'},
+          {id:'dev2m8',title:'React Router',dur:'55 min',url:'https://youtu.be/SqcY0GlETPk?t=22200'},
+          {id:'dev2m9',title:'Context API',dur:'55 min',url:'https://youtu.be/SqcY0GlETPk?t=25500'},
+          {id:'dev2m10',title:'Fetching Data & APIs',dur:'55 min',url:'https://youtu.be/SqcY0GlETPk?t=28800'},
+          {id:'dev2m11',title:'Performance Optimisation',dur:'50 min',url:'https://youtu.be/SqcY0GlETPk?t=32100'},
+          {id:'dev2m12',title:'Full React App Project',dur:'55 min',url:'https://youtu.be/SqcY0GlETPk?t=35100'},
+        ],
+        resources:['React Hooks Reference','Component Pattern Library','State Management Guide','Deployment Guide'],
+        project:'Build a full React app with routing, state management, and API calls. Deploy to Vercel.'
+      },
+      {id:'dev3',title:'Node.js & Express',duration:'10 hrs',modules:10,desc:'Build backend APIs with Node.js and Express.',url:'https://youtu.be/Oe421EPjeBE',
+        modules_list:[
+          {id:'dev3m1',title:'Node.js Fundamentals',dur:'50 min',url:'https://youtu.be/Oe421EPjeBE'},
+          {id:'dev3m2',title:'NPM & Modules',dur:'45 min',url:'https://youtu.be/Oe421EPjeBE?t=3000'},
+          {id:'dev3m3',title:'Express Setup & Routing',dur:'55 min',url:'https://youtu.be/Oe421EPjeBE?t=5700'},
+          {id:'dev3m4',title:'Middleware',dur:'50 min',url:'https://youtu.be/Oe421EPjeBE?t=9000'},
+          {id:'dev3m5',title:'REST API Design',dur:'55 min',url:'https://youtu.be/Oe421EPjeBE?t=12000'},
+          {id:'dev3m6',title:'JWT Authentication',dur:'55 min',url:'https://youtu.be/Oe421EPjeBE?t=15300'},
+          {id:'dev3m7',title:'File Uploads',dur:'45 min',url:'https://youtu.be/Oe421EPjeBE?t=18600'},
+          {id:'dev3m8',title:'Error Handling',dur:'45 min',url:'https://youtu.be/Oe421EPjeBE?t=21300'},
+          {id:'dev3m9',title:'Testing APIs with Postman',dur:'40 min',url:'https://youtu.be/Oe421EPjeBE?t=24000'},
+          {id:'dev3m10',title:'Deployment & Production',dur:'40 min',url:'https://youtu.be/Oe421EPjeBE?t=26400'},
+        ],
+        resources:['Express Boilerplate','REST API Design Guide','Postman Collection','Auth Template'],
+        project:'Build a complete REST API with Node.js, Express, JWT auth, and deploy to Render.'
+      },
+      {id:'dev4',title:'MongoDB Full Course',duration:'7 hrs',modules:8,desc:'Master the MongoDB NoSQL database with Mongoose.',url:'https://youtu.be/-56x56UppqQ',
+        modules_list:[
+          {id:'dev4m1',title:'NoSQL & MongoDB Concepts',dur:'40 min',url:'https://youtu.be/-56x56UppqQ'},
+          {id:'dev4m2',title:'MongoDB Setup & Compass',dur:'35 min',url:'https://youtu.be/-56x56UppqQ?t=2400'},
+          {id:'dev4m3',title:'CRUD Operations',dur:'50 min',url:'https://youtu.be/-56x56UppqQ?t=4500'},
+          {id:'dev4m4',title:'Query Operators',dur:'45 min',url:'https://youtu.be/-56x56UppqQ?t=7500'},
+          {id:'dev4m5',title:'Schema Design',dur:'45 min',url:'https://youtu.be/-56x56UppqQ?t=10200'},
+          {id:'dev4m6',title:'Aggregation Pipeline',dur:'50 min',url:'https://youtu.be/-56x56UppqQ?t=12900'},
+          {id:'dev4m7',title:'Mongoose with Node.js',dur:'55 min',url:'https://youtu.be/-56x56UppqQ?t=15900'},
+          {id:'dev4m8',title:'Atlas & Cloud Setup',dur:'30 min',url:'https://youtu.be/-56x56UppqQ?t=19200'},
+        ],
+        resources:['MongoDB Cheat Sheet','Aggregation Examples','Mongoose Schema Library','Atlas Setup Guide'],
+        project:'Design a MongoDB database for a blog platform and connect to Node.js API.'
+      },
+      {id:'dev5',title:'Git & Version Control',duration:'3 hrs',modules:6,desc:'Master Git and GitHub for professional development workflows.',url:'https://youtu.be/RGOj5yH7evk',
+        modules_list:[
+          {id:'dev5m1',title:'Git Basics & Setup',dur:'25 min',url:'https://youtu.be/RGOj5yH7evk'},
+          {id:'dev5m2',title:'Staging, Commits & Logs',dur:'28 min',url:'https://youtu.be/RGOj5yH7evk?t=1500'},
+          {id:'dev5m3',title:'Branching & Merging',dur:'35 min',url:'https://youtu.be/RGOj5yH7evk?t=3180'},
+          {id:'dev5m4',title:'GitHub & Remote Repos',dur:'35 min',url:'https://youtu.be/RGOj5yH7evk?t=5280'},
+          {id:'dev5m5',title:'Pull Requests & Reviews',dur:'30 min',url:'https://youtu.be/RGOj5yH7evk?t=7380'},
+          {id:'dev5m6',title:'Git Flow & Best Practices',dur:'27 min',url:'https://youtu.be/RGOj5yH7evk?t=9180'},
+        ],
+        resources:['Git Cheat Sheet','Branch Strategy Guide','PR Template','Git Workflow Diagram'],
+        project:'Create a GitHub repo, make 10 commits across 3 branches, open a pull request.'
+      },
+    ]
+  },
+  {
+    id:'devops',name:'DevOps & Cloud',price:6999,ic:'☁️',color:'rgba(245,158,11,0.06)',border:'rgba(245,158,11,0.22)',
+    lpa:'Target: ₹8–12 LPA',desc:'AWS, Docker, Kubernetes, CI/CD, Linux, and cybersecurity.',
+    courses:[
+      {id:'do1',title:'AWS Cloud Practitioner',duration:'12 hrs',modules:12,desc:'Master Amazon Web Services: EC2, S3, RDS, Lambda, IAM, VPC.',url:'https://youtu.be/SOTamWNgDKc',
+        modules_list:[
+          {id:'do1m1',title:'Cloud Computing Fundamentals',dur:'50 min',url:'https://youtu.be/SOTamWNgDKc'},
+          {id:'do1m2',title:'AWS Global Infrastructure',dur:'45 min',url:'https://youtu.be/SOTamWNgDKc?t=3000'},
+          {id:'do1m3',title:'IAM & Security',dur:'55 min',url:'https://youtu.be/SOTamWNgDKc?t=5700'},
+          {id:'do1m4',title:'EC2 & Compute',dur:'60 min',url:'https://youtu.be/SOTamWNgDKc?t=9000'},
+          {id:'do1m5',title:'S3 & Storage',dur:'55 min',url:'https://youtu.be/SOTamWNgDKc?t=12600'},
+          {id:'do1m6',title:'RDS & Databases',dur:'55 min',url:'https://youtu.be/SOTamWNgDKc?t=15900'},
+          {id:'do1m7',title:'VPC & Networking',dur:'55 min',url:'https://youtu.be/SOTamWNgDKc?t=19200'},
+          {id:'do1m8',title:'Lambda & Serverless',dur:'55 min',url:'https://youtu.be/SOTamWNgDKc?t=22500'},
+          {id:'do1m9',title:'CloudWatch & Monitoring',dur:'45 min',url:'https://youtu.be/SOTamWNgDKc?t=25800'},
+          {id:'do1m10',title:'Cost Management',dur:'40 min',url:'https://youtu.be/SOTamWNgDKc?t=28500'},
+          {id:'do1m11',title:'Architecture Best Practices',dur:'50 min',url:'https://youtu.be/SOTamWNgDKc?t=30900'},
+          {id:'do1m12',title:'Exam Prep & Project',dur:'35 min',url:'https://youtu.be/SOTamWNgDKc?t=33900'},
+        ],
+        resources:['AWS Services Cheat Sheet','Architecture Diagrams','Cost Calculator','Practice Questions'],
+        project:'Design a 3-tier AWS architecture for a web application.'
+      },
+      {id:'do2',title:'Docker & Kubernetes',duration:'14 hrs',modules:12,desc:'Containerise apps with Docker and orchestrate with Kubernetes.',url:'https://youtu.be/pg19Z8LL06w',
+        modules_list:[
+          {id:'do2m1',title:'Containers & Docker Concepts',dur:'55 min',url:'https://youtu.be/pg19Z8LL06w'},
+          {id:'do2m2',title:'Docker CLI & Images',dur:'60 min',url:'https://youtu.be/pg19Z8LL06w?t=3300'},
+          {id:'do2m3',title:'Dockerfile',dur:'60 min',url:'https://youtu.be/pg19Z8LL06w?t=6900'},
+          {id:'do2m4',title:'Docker Compose',dur:'60 min',url:'https://youtu.be/pg19Z8LL06w?t=10500'},
+          {id:'do2m5',title:'Docker Networking',dur:'55 min',url:'https://youtu.be/pg19Z8LL06w?t=14100'},
+          {id:'do2m6',title:'Docker Hub & Registry',dur:'45 min',url:'https://youtu.be/pg19Z8LL06w?t=17400'},
+          {id:'do2m7',title:'Kubernetes Architecture',dur:'60 min',url:'https://youtu.be/pg19Z8LL06w?t=20100'},
+          {id:'do2m8',title:'Pods, Services & Deployments',dur:'65 min',url:'https://youtu.be/pg19Z8LL06w?t=23700'},
+          {id:'do2m9',title:'ConfigMaps & Secrets',dur:'55 min',url:'https://youtu.be/pg19Z8LL06w?t=27600'},
+          {id:'do2m10',title:'Ingress & Load Balancing',dur:'55 min',url:'https://youtu.be/pg19Z8LL06w?t=30900'},
+          {id:'do2m11',title:'Helm Charts',dur:'55 min',url:'https://youtu.be/pg19Z8LL06w?t=34200'},
+          {id:'do2m12',title:'Production Deployment',dur:'55 min',url:'https://youtu.be/pg19Z8LL06w?t=37500'},
+        ],
+        resources:['Docker Cheat Sheet','K8s Quick Reference','Docker Compose Templates','Helm Chart Guide'],
+        project:'Dockerise a Node.js app, write docker-compose, deploy to Kubernetes.'
+      },
+      {id:'do3',title:'CI/CD Pipelines',duration:'8 hrs',modules:9,desc:'Automate software delivery with GitHub Actions and Jenkins.',url:'https://youtu.be/R8_veQiYBjI',
+        modules_list:[
+          {id:'do3m1',title:'CI/CD Concepts',dur:'40 min',url:'https://youtu.be/R8_veQiYBjI'},
+          {id:'do3m2',title:'GitHub Actions Basics',dur:'50 min',url:'https://youtu.be/R8_veQiYBjI?t=2400'},
+          {id:'do3m3',title:'Build & Test Pipelines',dur:'55 min',url:'https://youtu.be/R8_veQiYBjI?t=5400'},
+          {id:'do3m4',title:'Docker in CI/CD',dur:'50 min',url:'https://youtu.be/R8_veQiYBjI?t=8700'},
+          {id:'do3m5',title:'Deploy to Cloud',dur:'55 min',url:'https://youtu.be/R8_veQiYBjI?t=11700'},
+          {id:'do3m6',title:'Jenkins Setup',dur:'50 min',url:'https://youtu.be/R8_veQiYBjI?t=15000'},
+          {id:'do3m7',title:'GitLab CI',dur:'50 min',url:'https://youtu.be/R8_veQiYBjI?t=18000'},
+          {id:'do3m8',title:'Secrets Management',dur:'40 min',url:'https://youtu.be/R8_veQiYBjI?t=21000'},
+          {id:'do3m9',title:'Monitoring Pipelines',dur:'30 min',url:'https://youtu.be/R8_veQiYBjI?t=23400'},
+        ],
+        resources:['GitHub Actions Templates','Jenkins Pipeline Guide','CI/CD Best Practices','Security Checklist'],
+        project:'Build a complete CI/CD pipeline using GitHub Actions.'
+      },
+      {id:'do4',title:'Linux for DevOps',duration:'7 hrs',modules:9,desc:'Master Linux command line, shell scripting, and system administration.',url:'https://youtu.be/sWbUDq4S6Y8',
+        modules_list:[
+          {id:'do4m1',title:'Linux & Terminal Basics',dur:'40 min',url:'https://youtu.be/sWbUDq4S6Y8'},
+          {id:'do4m2',title:'File System & Navigation',dur:'40 min',url:'https://youtu.be/sWbUDq4S6Y8?t=2400'},
+          {id:'do4m3',title:'File Permissions',dur:'40 min',url:'https://youtu.be/sWbUDq4S6Y8?t=4800'},
+          {id:'do4m4',title:'Users & Groups',dur:'40 min',url:'https://youtu.be/sWbUDq4S6Y8?t=7200'},
+          {id:'do4m5',title:'Package Management',dur:'35 min',url:'https://youtu.be/sWbUDq4S6Y8?t=9600'},
+          {id:'do4m6',title:'Processes & Services',dur:'45 min',url:'https://youtu.be/sWbUDq4S6Y8?t=11700'},
+          {id:'do4m7',title:'Shell Scripting',dur:'55 min',url:'https://youtu.be/sWbUDq4S6Y8?t=14400'},
+          {id:'do4m8',title:'Networking & SSH',dur:'45 min',url:'https://youtu.be/sWbUDq4S6Y8?t=17700'},
+          {id:'do4m9',title:'System Admin Project',dur:'20 min',url:'https://youtu.be/sWbUDq4S6Y8?t=20400'},
+        ],
+        resources:['Linux Command Cheat Sheet','Shell Script Library','SSH Config Guide','Admin Tasks Reference'],
+        project:'Write a bash script that automates server setup.'
+      },
+      {id:'do5',title:'Cybersecurity Fundamentals',duration:'10 hrs',modules:10,desc:'Learn cybersecurity: threats, defense, network security, and ethical hacking.',url:'https://youtu.be/U_P23SqJaDc',
+        modules_list:[
+          {id:'do5m1',title:'Cybersecurity Landscape',dur:'45 min',url:'https://youtu.be/U_P23SqJaDc'},
+          {id:'do5m2',title:'Types of Attacks',dur:'50 min',url:'https://youtu.be/U_P23SqJaDc?t=2700'},
+          {id:'do5m3',title:'Network Security',dur:'55 min',url:'https://youtu.be/U_P23SqJaDc?t=5700'},
+          {id:'do5m4',title:'Web Security & OWASP Top 10',dur:'60 min',url:'https://youtu.be/U_P23SqJaDc?t=9000'},
+          {id:'do5m5',title:'Cryptography Basics',dur:'55 min',url:'https://youtu.be/U_P23SqJaDc?t=12600'},
+          {id:'do5m6',title:'Identity & Access Management',dur:'50 min',url:'https://youtu.be/U_P23SqJaDc?t=15900'},
+          {id:'do5m7',title:'Vulnerability Assessment',dur:'55 min',url:'https://youtu.be/U_P23SqJaDc?t=18900'},
+          {id:'do5m8',title:'Incident Response',dur:'50 min',url:'https://youtu.be/U_P23SqJaDc?t=22200'},
+          {id:'do5m9',title:'Security Policies & Compliance',dur:'45 min',url:'https://youtu.be/U_P23SqJaDc?t=25200'},
+          {id:'do5m10',title:'Security Audit Project',dur:'35 min',url:'https://youtu.be/U_P23SqJaDc?t=27900'},
+        ],
+        resources:['Security Checklist','OWASP Top 10 Guide','Penetration Testing Tools List','Incident Response Template'],
+        project:'Perform a security audit on a sample web application.'
+      },
+    ]
+  },
+  {
+    id:'ai-ml',name:'AI & Machine Learning',price:11999,ic:'🧠',color:'rgba(167,139,250,0.08)',border:'rgba(167,139,250,0.25)',
+    lpa:'Target: ₹12–16 LPA',desc:'Python for data science, ML algorithms, deep learning, NLP, and computer vision.',
+    courses:[
+      {id:'ml1',title:'Python for Data Science',duration:'10 hrs',modules:10,desc:'Advanced Python: NumPy, Pandas, Matplotlib, Seaborn.',url:'https://youtu.be/LHBE6Q9XlzI',
+        modules_list:[
+          {id:'ml1m1',title:'NumPy Foundations',dur:'55 min',url:'https://youtu.be/LHBE6Q9XlzI'},
+          {id:'ml1m2',title:'NumPy Advanced Operations',dur:'55 min',url:'https://youtu.be/LHBE6Q9XlzI?t=3300'},
+          {id:'ml1m3',title:'Pandas Series & DataFrames',dur:'60 min',url:'https://youtu.be/LHBE6Q9XlzI?t=6600'},
+          {id:'ml1m4',title:'Data Cleaning & Preprocessing',dur:'60 min',url:'https://youtu.be/LHBE6Q9XlzI?t=10200'},
+          {id:'ml1m5',title:'Exploratory Data Analysis',dur:'60 min',url:'https://youtu.be/LHBE6Q9XlzI?t=13800'},
+          {id:'ml1m6',title:'Matplotlib Visualisations',dur:'55 min',url:'https://youtu.be/LHBE6Q9XlzI?t=17400'},
+          {id:'ml1m7',title:'Seaborn Statistical Plots',dur:'55 min',url:'https://youtu.be/LHBE6Q9XlzI?t=20700'},
+          {id:'ml1m8',title:'Feature Engineering',dur:'55 min',url:'https://youtu.be/LHBE6Q9XlzI?t=24000'},
+          {id:'ml1m9',title:'Working with APIs',dur:'50 min',url:'https://youtu.be/LHBE6Q9XlzI?t=27300'},
+          {id:'ml1m10',title:'Full EDA Project',dur:'35 min',url:'https://youtu.be/LHBE6Q9XlzI?t=30300'},
+        ],
+        resources:['NumPy Cheat Sheet','Pandas Reference','Matplotlib Gallery','EDA Template Notebook'],
+        project:'Perform full EDA on a real Kaggle dataset.'
+      },
+      {id:'ml2',title:'Machine Learning Fundamentals',duration:'12 hrs',modules:12,desc:'Core ML algorithms with scikit-learn.',url:'https://youtu.be/jGwO_UgTS7I',
+        modules_list:[
+          {id:'ml2m1',title:'What is ML?',dur:'45 min',url:'https://youtu.be/jGwO_UgTS7I'},
+          {id:'ml2m2',title:'Data Preprocessing',dur:'55 min',url:'https://youtu.be/jGwO_UgTS7I?t=2700'},
+          {id:'ml2m3',title:'Linear Regression',dur:'60 min',url:'https://youtu.be/jGwO_UgTS7I?t=6000'},
+          {id:'ml2m4',title:'Logistic Regression',dur:'60 min',url:'https://youtu.be/jGwO_UgTS7I?t=9600'},
+          {id:'ml2m5',title:'Decision Trees',dur:'60 min',url:'https://youtu.be/jGwO_UgTS7I?t=13200'},
+          {id:'ml2m6',title:'Random Forests',dur:'60 min',url:'https://youtu.be/jGwO_UgTS7I?t=16800'},
+          {id:'ml2m7',title:'Support Vector Machines',dur:'60 min',url:'https://youtu.be/jGwO_UgTS7I?t=20400'},
+          {id:'ml2m8',title:'K-Means Clustering',dur:'55 min',url:'https://youtu.be/jGwO_UgTS7I?t=24000'},
+          {id:'ml2m9',title:'Model Evaluation Metrics',dur:'55 min',url:'https://youtu.be/jGwO_UgTS7I?t=27300'},
+          {id:'ml2m10',title:'Cross-Validation & Tuning',dur:'60 min',url:'https://youtu.be/jGwO_UgTS7I?t=30600'},
+          {id:'ml2m11',title:'Pipelines & Scikit-learn',dur:'55 min',url:'https://youtu.be/jGwO_UgTS7I?t=34200'},
+          {id:'ml2m12',title:'End-to-End ML Project',dur:'55 min',url:'https://youtu.be/jGwO_UgTS7I?t=37500'},
+        ],
+        resources:['ML Algorithm Cheat Sheet','Scikit-learn API Reference','Model Selection Guide','Project Rubric'],
+        project:'Build an end-to-end ML pipeline. Submit GitHub repo.'
+      },
+      {id:'ml3',title:'Deep Learning & Neural Networks',duration:'14 hrs',modules:12,desc:'Build neural networks with TensorFlow and Keras.',url:'https://youtu.be/aircAruvnKk',
+        modules_list:[
+          {id:'ml3m1',title:'Neural Network Basics',dur:'60 min',url:'https://youtu.be/aircAruvnKk'},
+          {id:'ml3m2',title:'TensorFlow & Keras Setup',dur:'60 min',url:'https://youtu.be/aircAruvnKk?t=3600'},
+          {id:'ml3m3',title:'Building Your First Network',dur:'65 min',url:'https://youtu.be/aircAruvnKk?t=7200'},
+          {id:'ml3m4',title:'Activation Functions',dur:'60 min',url:'https://youtu.be/aircAruvnKk?t=11100'},
+          {id:'ml3m5',title:'Backpropagation & Optimisers',dur:'65 min',url:'https://youtu.be/aircAruvnKk?t=14700'},
+          {id:'ml3m6',title:'Regularisation Techniques',dur:'60 min',url:'https://youtu.be/aircAruvnKk?t=18600'},
+          {id:'ml3m7',title:'Convolutional Networks',dur:'70 min',url:'https://youtu.be/aircAruvnKk?t=22200'},
+          {id:'ml3m8',title:'Image Classification',dur:'65 min',url:'https://youtu.be/aircAruvnKk?t=26400'},
+          {id:'ml3m9',title:'Transfer Learning',dur:'65 min',url:'https://youtu.be/aircAruvnKk?t=30300'},
+          {id:'ml3m10',title:'Recurrent Networks (RNN/LSTM)',dur:'65 min',url:'https://youtu.be/aircAruvnKk?t=34200'},
+          {id:'ml3m11',title:'Model Saving & Deployment',dur:'55 min',url:'https://youtu.be/aircAruvnKk?t=38100'},
+          {id:'ml3m12',title:'Capstone DL Project',dur:'55 min',url:'https://youtu.be/aircAruvnKk?t=41400'},
+        ],
+        resources:['TensorFlow Quick Reference','CNN Architecture Diagrams','Training Tips Guide','Dataset Resources'],
+        project:'Train an image classification model with CNNs. Deploy as API.'
+      },
+      {id:'ml4',title:'NLP Complete',duration:'12 hrs',modules:11,desc:'Natural Language Processing with transformers and BERT.',url:'https://youtu.be/X2vAabgKiWM',
+        modules_list:[
+          {id:'ml4m1',title:'NLP Introduction',dur:'55 min',url:'https://youtu.be/X2vAabgKiWM'},
+          {id:'ml4m2',title:'Text Preprocessing',dur:'60 min',url:'https://youtu.be/X2vAabgKiWM?t=3300'},
+          {id:'ml4m3',title:'Bag of Words & TF-IDF',dur:'60 min',url:'https://youtu.be/X2vAabgKiWM?t=6900'},
+          {id:'ml4m4',title:'Word Embeddings (Word2Vec)',dur:'65 min',url:'https://youtu.be/X2vAabgKiWM?t=10500'},
+          {id:'ml4m5',title:'Sentiment Analysis',dur:'60 min',url:'https://youtu.be/X2vAabgKiWM?t=14400'},
+          {id:'ml4m6',title:'Text Classification',dur:'65 min',url:'https://youtu.be/X2vAabgKiWM?t=18000'},
+          {id:'ml4m7',title:'Sequence Models (RNN/LSTM)',dur:'65 min',url:'https://youtu.be/X2vAabgKiWM?t=21900'},
+          {id:'ml4m8',title:'Transformers & Attention',dur:'70 min',url:'https://youtu.be/X2vAabgKiWM?t=25800'},
+          {id:'ml4m9',title:'BERT & Fine-Tuning',dur:'70 min',url:'https://youtu.be/X2vAabgKiWM?t=30000'},
+          {id:'ml4m10',title:'Text Generation with GPT',dur:'65 min',url:'https://youtu.be/X2vAabgKiWM?t=34200'},
+          {id:'ml4m11',title:'NLP Project Deployment',dur:'45 min',url:'https://youtu.be/X2vAabgKiWM?t=38100'},
+        ],
+        resources:['NLP Pipeline Guide','HuggingFace Quickstart','Dataset Repository','BERT Fine-Tuning Template'],
+        project:'Build a sentiment analysis app using a pre-trained transformer.'
+      },
+      {id:'ml5',title:'Computer Vision',duration:'12 hrs',modules:11,desc:'Build computer vision apps with YOLO and OpenCV.',url:'https://youtu.be/oXlwWbU8l2o',
+        modules_list:[
+          {id:'ml5m1',title:'Computer Vision Fundamentals',dur:'55 min',url:'https://youtu.be/oXlwWbU8l2o'},
+          {id:'ml5m2',title:'OpenCV Basics',dur:'60 min',url:'https://youtu.be/oXlwWbU8l2o?t=3300'},
+          {id:'ml5m3',title:'Image Transformations',dur:'60 min',url:'https://youtu.be/oXlwWbU8l2o?t=6900'},
+          {id:'ml5m4',title:'Edge Detection & Filters',dur:'60 min',url:'https://youtu.be/oXlwWbU8l2o?t=10500'},
+          {id:'ml5m5',title:'Feature Detection (ORB, SIFT)',dur:'65 min',url:'https://youtu.be/oXlwWbU8l2o?t=14100'},
+          {id:'ml5m6',title:'Object Detection (YOLO)',dur:'70 min',url:'https://youtu.be/oXlwWbU8l2o?t=18000'},
+          {id:'ml5m7',title:'Image Segmentation',dur:'65 min',url:'https://youtu.be/oXlwWbU8l2o?t=22200'},
+          {id:'ml5m8',title:'Face Detection & Recognition',dur:'65 min',url:'https://youtu.be/oXlwWbU8l2o?t=26100'},
+          {id:'ml5m9',title:'Real-time Video Processing',dur:'60 min',url:'https://youtu.be/oXlwWbU8l2o?t=30000'},
+          {id:'ml5m10',title:'Image Generation (GANs)',dur:'65 min',url:'https://youtu.be/oXlwWbU8l2o?t=33600'},
+          {id:'ml5m11',title:'CV Deployment Project',dur:'45 min',url:'https://youtu.be/oXlwWbU8l2o?t=37500'},
+        ],
+        resources:['OpenCV Cheat Sheet','YOLO Config Guide','Face Recognition Dataset','CV Project Ideas'],
+        project:'Build a real-time object detection application using YOLO.'
+      },
+    ]
+  },
+  {
+    id:'genai',name:'Generative AI',price:15999,ic:'✨',color:'rgba(200,169,110,0.1)',border:'rgba(200,169,110,0.28)',
+    lpa:'Target: ₹14–18 LPA',desc:'LLMs, Agentic AI, LangChain, RAG, fine-tuning, and prompt engineering.',
+    courses:[
+      {id:'g1',title:'Generative AI & LLMs',duration:'12 hrs',modules:11,desc:'Understand and work with Large Language Models.',url:'https://youtu.be/zjkBMFhNj_g',
+        modules_list:[
+          {id:'g1m1',title:'GenAI Revolution',dur:'50 min',url:'https://youtu.be/zjkBMFhNj_g'},
+          {id:'g1m2',title:'How LLMs Work',dur:'65 min',url:'https://youtu.be/zjkBMFhNj_g?t=3000'},
+          {id:'g1m3',title:'Transformer Architecture',dur:'65 min',url:'https://youtu.be/zjkBMFhNj_g?t=6900'},
+          {id:'g1m4',title:'GPT Models & OpenAI API',dur:'65 min',url:'https://youtu.be/zjkBMFhNj_g?t=10800'},
+          {id:'g1m5',title:'Claude & Anthropic API',dur:'60 min',url:'https://youtu.be/zjkBMFhNj_g?t=14700'},
+          {id:'g1m6',title:'Gemini & Google AI',dur:'60 min',url:'https://youtu.be/zjkBMFhNj_g?t=18300'},
+          {id:'g1m7',title:'Open Source Models (Llama, Mistral)',dur:'65 min',url:'https://youtu.be/zjkBMFhNj_g?t=21900'},
+          {id:'g1m8',title:'Multimodal AI',dur:'60 min',url:'https://youtu.be/zjkBMFhNj_g?t=25800'},
+          {id:'g1m9',title:'Building LLM Applications',dur:'65 min',url:'https://youtu.be/zjkBMFhNj_g?t=29400'},
+          {id:'g1m10',title:'Responsible AI',dur:'55 min',url:'https://youtu.be/zjkBMFhNj_g?t=33300'},
+          {id:'g1m11',title:'GenAI Capstone Project',dur:'50 min',url:'https://youtu.be/zjkBMFhNj_g?t=36600'},
+        ],
+        resources:['LLM Comparison Guide','API Integration Templates','Prompting Cookbook','Model Selection Framework'],
+        project:'Build an LLM-powered application using at least 2 different model APIs.'
+      },
+      {id:'g2',title:'Agentic AI Development',duration:'14 hrs',modules:12,desc:'Build autonomous AI agents that plan and use tools.',url:'https://youtu.be/F8NKVhkZZWI',
+        modules_list:[
+          {id:'g2m1',title:'What are AI Agents?',dur:'55 min',url:'https://youtu.be/F8NKVhkZZWI'},
+          {id:'g2m2',title:'ReAct Framework',dur:'65 min',url:'https://youtu.be/F8NKVhkZZWI?t=3300'},
+          {id:'g2m3',title:'Tool Use & Function Calling',dur:'70 min',url:'https://youtu.be/F8NKVhkZZWI?t=7200'},
+          {id:'g2m4',title:'Memory Systems for Agents',dur:'65 min',url:'https://youtu.be/F8NKVhkZZWI?t=11400'},
+          {id:'g2m5',title:'Web Search & Browsing Agents',dur:'65 min',url:'https://youtu.be/F8NKVhkZZWI?t=15300'},
+          {id:'g2m6',title:'Code Execution Agents',dur:'70 min',url:'https://youtu.be/F8NKVhkZZWI?t=19200'},
+          {id:'g2m7',title:'Multi-Agent Systems',dur:'70 min',url:'https://youtu.be/F8NKVhkZZWI?t=23400'},
+          {id:'g2m8',title:'Planning & Reflection',dur:'65 min',url:'https://youtu.be/F8NKVhkZZWI?t=27600'},
+          {id:'g2m9',title:'AutoGen & CrewAI',dur:'65 min',url:'https://youtu.be/F8NKVhkZZWI?t=31500'},
+          {id:'g2m10',title:'Safety & Alignment',dur:'60 min',url:'https://youtu.be/F8NKVhkZZWI?t=35400'},
+          {id:'g2m11',title:'Productionising Agents',dur:'60 min',url:'https://youtu.be/F8NKVhkZZWI?t=39000'},
+          {id:'g2m12',title:'Agent Capstone Project',dur:'50 min',url:'https://youtu.be/F8NKVhkZZWI?t=42600'},
+        ],
+        resources:['Agent Design Patterns','Tool Library Template','AutoGen Setup Guide','Multi-Agent Blueprint'],
+        project:'Build a multi-agent system that researches a topic and writes a report.'
+      },
+      {id:'g3',title:'LangChain & LlamaIndex',duration:'10 hrs',modules:10,desc:'Build production LLM applications using LangChain and LlamaIndex.',url:'https://youtu.be/lG7Uxts9SXs',
+        modules_list:[
+          {id:'g3m1',title:'LangChain Fundamentals',dur:'55 min',url:'https://youtu.be/lG7Uxts9SXs'},
+          {id:'g3m2',title:'Chains & Prompts',dur:'60 min',url:'https://youtu.be/lG7Uxts9SXs?t=3300'},
+          {id:'g3m3',title:'Memory in LangChain',dur:'60 min',url:'https://youtu.be/lG7Uxts9SXs?t=6900'},
+          {id:'g3m4',title:'LangChain Agents & Tools',dur:'65 min',url:'https://youtu.be/lG7Uxts9SXs?t=10500'},
+          {id:'g3m5',title:'LlamaIndex Introduction',dur:'60 min',url:'https://youtu.be/lG7Uxts9SXs?t=14400'},
+          {id:'g3m6',title:'Document Indexing',dur:'60 min',url:'https://youtu.be/lG7Uxts9SXs?t=18000'},
+          {id:'g3m7',title:'Query Engines',dur:'60 min',url:'https://youtu.be/lG7Uxts9SXs?t=21600'},
+          {id:'g3m8',title:'Streaming & Async',dur:'55 min',url:'https://youtu.be/lG7Uxts9SXs?t=25200'},
+          {id:'g3m9',title:'Evaluation & Testing',dur:'55 min',url:'https://youtu.be/lG7Uxts9SXs?t=28500'},
+          {id:'g3m10',title:'Production App Project',dur:'50 min',url:'https://youtu.be/lG7Uxts9SXs?t=31800'},
+        ],
+        resources:['LangChain Templates','LlamaIndex Cookbook','Deployment Guide','Eval Frameworks'],
+        project:'Build a document Q&A application using LangChain + LlamaIndex.'
+      },
+      {id:'g4',title:'RAG Implementation',duration:'9 hrs',modules:9,desc:'Build Retrieval Augmented Generation pipelines with vector databases.',url:'https://youtu.be/T-D1OfcDW1M',
+        modules_list:[
+          {id:'g4m1',title:'What is RAG?',dur:'45 min',url:'https://youtu.be/T-D1OfcDW1M'},
+          {id:'g4m2',title:'Embeddings & Semantic Search',dur:'60 min',url:'https://youtu.be/T-D1OfcDW1M?t=2700'},
+          {id:'g4m3',title:'Vector Databases (Pinecone, ChromaDB)',dur:'65 min',url:'https://youtu.be/T-D1OfcDW1M?t=6300'},
+          {id:'g4m4',title:'Chunking Strategies',dur:'60 min',url:'https://youtu.be/T-D1OfcDW1M?t=10200'},
+          {id:'g4m5',title:'Retrieval Techniques',dur:'60 min',url:'https://youtu.be/T-D1OfcDW1M?t=13800'},
+          {id:'g4m6',title:'Hybrid Search',dur:'60 min',url:'https://youtu.be/T-D1OfcDW1M?t=17400'},
+          {id:'g4m7',title:'Re-ranking',dur:'55 min',url:'https://youtu.be/T-D1OfcDW1M?t=21000'},
+          {id:'g4m8',title:'Evaluation & Quality',dur:'55 min',url:'https://youtu.be/T-D1OfcDW1M?t=24300'},
+          {id:'g4m9',title:'Production RAG Project',dur:'60 min',url:'https://youtu.be/T-D1OfcDW1M?t=27600'},
+        ],
+        resources:['RAG Architecture Diagrams','Vector DB Comparison','Evaluation Framework','Production Checklist'],
+        project:'Build a RAG system over a custom knowledge base. Deploy and submit link.'
+      },
+      {id:'g5',title:'LLM Fine-Tuning',duration:'12 hrs',modules:10,desc:'Fine-tune large language models with LoRA and QLoRA.',url:'https://youtu.be/eC6Hd1hFvos',
+        modules_list:[
+          {id:'g5m1',title:'Why Fine-Tune?',dur:'55 min',url:'https://youtu.be/eC6Hd1hFvos'},
+          {id:'g5m2',title:'Dataset Preparation',dur:'70 min',url:'https://youtu.be/eC6Hd1hFvos?t=3300'},
+          {id:'g5m3',title:'LoRA & QLoRA',dur:'75 min',url:'https://youtu.be/eC6Hd1hFvos?t=7500'},
+          {id:'g5m4',title:'Fine-Tuning with HuggingFace',dur:'75 min',url:'https://youtu.be/eC6Hd1hFvos?t=12000'},
+          {id:'g5m5',title:'Instruction Fine-Tuning',dur:'70 min',url:'https://youtu.be/eC6Hd1hFvos?t=16500'},
+          {id:'g5m6',title:'RLHF Concepts',dur:'65 min',url:'https://youtu.be/eC6Hd1hFvos?t=20700'},
+          {id:'g5m7',title:'DPO Fine-Tuning',dur:'65 min',url:'https://youtu.be/eC6Hd1hFvos?t=24600'},
+          {id:'g5m8',title:'Evaluation & Benchmarks',dur:'60 min',url:'https://youtu.be/eC6Hd1hFvos?t=28500'},
+          {id:'g5m9',title:'Model Deployment (Ollama, vLLM)',dur:'60 min',url:'https://youtu.be/eC6Hd1hFvos?t=32100'},
+          {id:'g5m10',title:'Fine-Tuning Capstone',dur:'55 min',url:'https://youtu.be/eC6Hd1hFvos?t=35700'},
+        ],
+        resources:['LoRA Config Templates','HuggingFace Fine-Tuning Guide','Eval Benchmarks List','Dataset Curation Guide'],
+        project:'Fine-tune a Llama or Mistral model. Deploy with Ollama. Submit model card.'
+      },
+      {id:'g6',title:'Prompt Engineering Mastery',duration:'6 hrs',modules:8,desc:'Master the art of prompting: chain-of-thought, few-shot, and production patterns.',url:'https://youtu.be/1bUy-1hGZpI',
+        modules_list:[
+          {id:'g6m1',title:'Prompting Fundamentals',dur:'40 min',url:'https://youtu.be/1bUy-1hGZpI'},
+          {id:'g6m2',title:'Zero-Shot & Few-Shot',dur:'45 min',url:'https://youtu.be/1bUy-1hGZpI?t=2400'},
+          {id:'g6m3',title:'Chain-of-Thought (CoT)',dur:'50 min',url:'https://youtu.be/1bUy-1hGZpI?t=5100'},
+          {id:'g6m4',title:'System Prompts & Personas',dur:'45 min',url:'https://youtu.be/1bUy-1hGZpI?t=8100'},
+          {id:'g6m5',title:'Advanced Techniques (ToT, GoT)',dur:'50 min',url:'https://youtu.be/1bUy-1hGZpI?t=10800'},
+          {id:'g6m6',title:'Prompt Injection & Defense',dur:'45 min',url:'https://youtu.be/1bUy-1hGZpI?t=13800'},
+          {id:'g6m7',title:'Prompt Optimisation',dur:'45 min',url:'https://youtu.be/1bUy-1hGZpI?t=16500'},
+          {id:'g6m8',title:'Production Prompt Library',dur:'20 min',url:'https://youtu.be/1bUy-1hGZpI?t=19200'},
+        ],
+        resources:['500 Prompt Templates','CoT Examples Library','Prompt Testing Framework','Production Patterns'],
+        project:'Create a prompt library of 30 production-quality prompts for a specific domain.'
+      },
+    ]
+  },
+  {
+    id:'career',name:'AI Career & Industry',price:23999,ic:'🎯',color:'rgba(34,197,94,0.06)',border:'rgba(34,197,94,0.22)',
+    lpa:'Target: ₹16–25 LPA',desc:'AI product management, strategy, career mastery, ethics, governance, and AI freelancing.',
+    courses:[
+      {id:'cr1',title:'AI Product Management',duration:'9 hrs',modules:9,desc:'Manage AI products from concept to launch.',url:'https://youtu.be/lFRmSQj7SYI',
+        modules_list:[
+          {id:'cr1m1',title:'AI PM vs Traditional PM',dur:'50 min',url:'https://youtu.be/lFRmSQj7SYI'},
+          {id:'cr1m2',title:'AI Product Discovery',dur:'60 min',url:'https://youtu.be/lFRmSQj7SYI?t=3000'},
+          {id:'cr1m3',title:'Roadmapping for AI',dur:'60 min',url:'https://youtu.be/lFRmSQj7SYI?t=6600'},
+          {id:'cr1m4',title:'Working with Data & ML Teams',dur:'60 min',url:'https://youtu.be/lFRmSQj7SYI?t=10200'},
+          {id:'cr1m5',title:'AI Metrics & Experimentation',dur:'60 min',url:'https://youtu.be/lFRmSQj7SYI?t=13800'},
+          {id:'cr1m6',title:'Building AI Features',dur:'60 min',url:'https://youtu.be/lFRmSQj7SYI?t=17400'},
+          {id:'cr1m7',title:'Go-to-Market for AI',dur:'55 min',url:'https://youtu.be/lFRmSQj7SYI?t=21000'},
+          {id:'cr1m8',title:'AI Safety in Products',dur:'50 min',url:'https://youtu.be/lFRmSQj7SYI?t=24300'},
+          {id:'cr1m9',title:'AI PM Interview Prep',dur:'45 min',url:'https://youtu.be/lFRmSQj7SYI?t=27300'},
+        ],
+        resources:['AI PM Framework','Roadmap Templates','Metrics Dashboard','Interview Q&A Bank'],
+        project:'Write a complete PRD for an AI feature.'
+      },
+      {id:'cr2',title:'AI Strategy & Roadmap',duration:'8 hrs',modules:8,desc:'Develop AI transformation strategies for organisations.',url:'https://youtu.be/9C-a4iJpNE0',
+        modules_list:[
+          {id:'cr2m1',title:'AI Transformation Framework',dur:'60 min',url:'https://youtu.be/9C-a4iJpNE0'},
+          {id:'cr2m2',title:'AI Maturity Assessment',dur:'60 min',url:'https://youtu.be/9C-a4iJpNE0?t=3600'},
+          {id:'cr2m3',title:'Use Case Identification',dur:'60 min',url:'https://youtu.be/9C-a4iJpNE0?t=7200'},
+          {id:'cr2m4',title:'ROI & Business Case',dur:'60 min',url:'https://youtu.be/9C-a4iJpNE0?t=10800'},
+          {id:'cr2m5',title:'AI Team Building',dur:'60 min',url:'https://youtu.be/9C-a4iJpNE0?t=14400'},
+          {id:'cr2m6',title:'Change Management',dur:'60 min',url:'https://youtu.be/9C-a4iJpNE0?t=18000'},
+          {id:'cr2m7',title:'AI Governance & Risk',dur:'60 min',url:'https://youtu.be/9C-a4iJpNE0?t=21600'},
+          {id:'cr2m8',title:'Strategy Presentation',dur:'60 min',url:'https://youtu.be/9C-a4iJpNE0?t=25200'},
+        ],
+        resources:['AI Maturity Model','ROI Calculator','Strategy Template','Governance Framework'],
+        project:'Create a 3-year AI transformation roadmap as a 15-slide deck.'
+      },
+      {id:'cr3',title:'AI Career Mastery',duration:'7 hrs',modules:8,desc:'Build a career in AI: resume, portfolio, interviews, and landing top roles.',url:'https://youtu.be/Y8Tko2YC5hA',
+        modules_list:[
+          {id:'cr3m1',title:'AI Career Landscape',dur:'45 min',url:'https://youtu.be/Y8Tko2YC5hA'},
+          {id:'cr3m2',title:'Building Your AI Portfolio',dur:'55 min',url:'https://youtu.be/Y8Tko2YC5hA?t=2700'},
+          {id:'cr3m3',title:'AI Resume & LinkedIn',dur:'55 min',url:'https://youtu.be/Y8Tko2YC5hA?t=6000'},
+          {id:'cr3m4',title:'Technical Interviews',dur:'60 min',url:'https://youtu.be/Y8Tko2YC5hA?t=9300'},
+          {id:'cr3m5',title:'ML System Design Interviews',dur:'60 min',url:'https://youtu.be/Y8Tko2YC5hA?t=12900'},
+          {id:'cr3m6',title:'Salary Negotiation',dur:'50 min',url:'https://youtu.be/Y8Tko2YC5hA?t=16500'},
+          {id:'cr3m7',title:'Networking & Community',dur:'50 min',url:'https://youtu.be/Y8Tko2YC5hA?t=19500'},
+          {id:'cr3m8',title:'First 90 Days in AI Role',dur:'45 min',url:'https://youtu.be/Y8Tko2YC5hA?t=22500'},
+        ],
+        resources:['AI Resume Template','LinkedIn Optimisation Guide','Interview Q&A Bank','Salary Negotiation Scripts'],
+        project:'Build a complete AI portfolio: GitHub with 3 projects, LinkedIn, and a resume.'
+      },
+      {id:'cr4',title:'AI Ethics & Governance',duration:'5 hrs',modules:6,desc:'AI ethics, bias, fairness, privacy, and regulation (EU AI Act).',url:'https://youtu.be/aGwYtUzMQUk',
+        modules_list:[
+          {id:'cr4m1',title:'AI Ethics Foundations',dur:'50 min',url:'https://youtu.be/aGwYtUzMQUk'},
+          {id:'cr4m2',title:'Bias, Fairness & Discrimination',dur:'55 min',url:'https://youtu.be/aGwYtUzMQUk?t=3000'},
+          {id:'cr4m3',title:'Privacy & Data Protection',dur:'55 min',url:'https://youtu.be/aGwYtUzMQUk?t=6300'},
+          {id:'cr4m4',title:'AI Regulation & Compliance',dur:'55 min',url:'https://youtu.be/aGwYtUzMQUk?t=9600'},
+          {id:'cr4m5',title:'Responsible AI Frameworks',dur:'55 min',url:'https://youtu.be/aGwYtUzMQUk?t=12900'},
+          {id:'cr4m6',title:'Ethics Audit Project',dur:'30 min',url:'https://youtu.be/aGwYtUzMQUk?t=16200'},
+        ],
+        resources:['EU AI Act Summary','Bias Audit Framework','Privacy Checklist','Responsible AI Toolkit'],
+        project:'Conduct an AI ethics audit on a publicly available AI system.'
+      },
+      {id:'cr5',title:'Freelancing for AI',duration:'6 hrs',modules:7,desc:'Build a high-income AI freelancing career.',url:'https://youtu.be/7EmboKQH8lM',
+        modules_list:[
+          {id:'cr5m1',title:'AI Freelancing Landscape',dur:'40 min',url:'https://youtu.be/7EmboKQH8lM'},
+          {id:'cr5m2',title:'In-Demand AI Services',dur:'50 min',url:'https://youtu.be/7EmboKQH8lM?t=2400'},
+          {id:'cr5m3',title:'Positioning & Personal Brand',dur:'55 min',url:'https://youtu.be/7EmboKQH8lM?t=5400'},
+          {id:'cr5m4',title:'Client Acquisition',dur:'55 min',url:'https://youtu.be/7EmboKQH8lM?t=8700'},
+          {id:'cr5m5',title:'Pricing AI Projects',dur:'50 min',url:'https://youtu.be/7EmboKQH8lM?t=12000'},
+          {id:'cr5m6',title:'Delivering AI Solutions',dur:'55 min',url:'https://youtu.be/7EmboKQH8lM?t=15000'},
+          {id:'cr5m7',title:'Scaling to Agency',dur:'55 min',url:'https://youtu.be/7EmboKQH8lM?t=18300'},
+        ],
+        resources:['AI Services Pricing Guide','Client Proposal Template','Portfolio Framework','Agency Blueprint'],
+        project:'Create a complete AI freelancing pitch with service offerings and portfolio.'
+      },
+    ]
+  },
+  {
+    id:'special',name:'Special Courses',price:499,ic:'💄',color:'rgba(239,68,68,0.06)',border:'rgba(239,68,68,0.22)',
+    lpa:'Creative Skills',desc:'Beauty, fashion, and art: Make-up Artist, Fashion Designer, and Bridal Mehendi mastery.',
+    courses:[
+      {id:'sp1',title:'Make-up Artist Course',duration:'10 hrs',modules:12,desc:'Professional make-up artistry from basics to bridal.',url:'https://youtube.com/playlist?list=PLnormvp3UHAqpl1-m47DBTBMSXv1PCRL3',
+        modules_list:[
+          {id:'sp1m1',title:'Make-up Basics & Skin Types',dur:'45 min',url:'https://youtube.com/playlist?list=PLnormvp3UHAqpl1-m47DBTBMSXv1PCRL3'},
+          {id:'sp1m2',title:'Tools & Products Guide',dur:'40 min',url:'https://youtube.com/playlist?list=PLnormvp3UHAqpl1-m47DBTBMSXv1PCRL3'},
+          {id:'sp1m3',title:'Foundation & Concealer',dur:'45 min',url:'https://youtube.com/playlist?list=PLnormvp3UHAqpl1-m47DBTBMSXv1PCRL3'},
+          {id:'sp1m4',title:'Eye Make-up Techniques',dur:'50 min',url:'https://youtube.com/playlist?list=PLnormvp3UHAqpl1-m47DBTBMSXv1PCRL3'},
+          {id:'sp1m5',title:'Contouring & Highlighting',dur:'45 min',url:'https://youtube.com/playlist?list=PLnormvp3UHAqpl1-m47DBTBMSXv1PCRL3'},
+          {id:'sp1m6',title:'Lip Art',dur:'35 min',url:'https://youtube.com/playlist?list=PLnormvp3UHAqpl1-m47DBTBMSXv1PCRL3'},
+          {id:'sp1m7',title:'Colour Theory for MUAs',dur:'40 min',url:'https://youtube.com/playlist?list=PLnormvp3UHAqpl1-m47DBTBMSXv1PCRL3'},
+          {id:'sp1m8',title:'Bridal Make-up',dur:'55 min',url:'https://youtube.com/playlist?list=PLnormvp3UHAqpl1-m47DBTBMSXv1PCRL3'},
+          {id:'sp1m9',title:'Party & Evening Looks',dur:'45 min',url:'https://youtube.com/playlist?list=PLnormvp3UHAqpl1-m47DBTBMSXv1PCRL3'},
+          {id:'sp1m10',title:'Skin Care & Prep',dur:'40 min',url:'https://youtube.com/playlist?list=PLnormvp3UHAqpl1-m47DBTBMSXv1PCRL3'},
+          {id:'sp1m11',title:'MUA Business & Pricing',dur:'45 min',url:'https://youtube.com/playlist?list=PLnormvp3UHAqpl1-m47DBTBMSXv1PCRL3'},
+          {id:'sp1m12',title:'Portfolio & Client Showcase',dur:'35 min',url:'https://youtube.com/playlist?list=PLnormvp3UHAqpl1-m47DBTBMSXv1PCRL3'},
+        ],
+        resources:['Make-up Tool Kit List','Skin Type Guide','Colour Wheel for MUAs','Client Intake Form'],
+        project:'Create a full make-up portfolio with 5 different looks.'
+      },
+      {id:'sp2',title:'Fashion Designer Course',duration:'12 hrs',modules:12,desc:'Fashion design fundamentals: sketching, fabric, construction, and branding.',url:'https://youtube.com/playlist?list=PLQqMYWJXgJhjgb54-c2RWAVx4Ln6BfPcQ',
+        modules_list:[
+          {id:'sp2m1',title:'Fashion Design Basics',dur:'50 min',url:'https://youtube.com/playlist?list=PLQqMYWJXgJhjgb54-c2RWAVx4Ln6BfPcQ'},
+          {id:'sp2m2',title:'Fashion Illustration',dur:'55 min',url:'https://youtube.com/playlist?list=PLQqMYWJXgJhjgb54-c2RWAVx4Ln6BfPcQ'},
+          {id:'sp2m3',title:'Fabric & Textiles',dur:'50 min',url:'https://youtube.com/playlist?list=PLQqMYWJXgJhjgb54-c2RWAVx4Ln6BfPcQ'},
+          {id:'sp2m4',title:'Pattern Making Basics',dur:'55 min',url:'https://youtube.com/playlist?list=PLQqMYWJXgJhjgb54-c2RWAVx4Ln6BfPcQ'},
+          {id:'sp2m5',title:'Garment Construction',dur:'60 min',url:'https://youtube.com/playlist?list=PLQqMYWJXgJhjgb54-c2RWAVx4Ln6BfPcQ'},
+          {id:'sp2m6',title:'Colour Theory in Fashion',dur:'45 min',url:'https://youtube.com/playlist?list=PLQqMYWJXgJhjgb54-c2RWAVx4Ln6BfPcQ'},
+          {id:'sp2m7',title:'Trend Research & Forecasting',dur:'50 min',url:'https://youtube.com/playlist?list=PLQqMYWJXgJhjgb54-c2RWAVx4Ln6BfPcQ'},
+          {id:'sp2m8',title:'Sustainable Fashion',dur:'45 min',url:'https://youtube.com/playlist?list=PLQqMYWJXgJhjgb54-c2RWAVx4Ln6BfPcQ'},
+          {id:'sp2m9',title:'Digital Fashion Design',dur:'50 min',url:'https://youtube.com/playlist?list=PLQqMYWJXgJhjgb54-c2RWAVx4Ln6BfPcQ'},
+          {id:'sp2m10',title:'Brand Identity for Fashion',dur:'50 min',url:'https://youtube.com/playlist?list=PLQqMYWJXgJhjgb54-c2RWAVx4Ln6BfPcQ'},
+          {id:'sp2m11',title:'Launching a Fashion Line',dur:'55 min',url:'https://youtube.com/playlist?list=PLQqMYWJXgJhjgb54-c2RWAVx4Ln6BfPcQ'},
+          {id:'sp2m12',title:'Fashion Portfolio Project',dur:'45 min',url:'https://youtube.com/playlist?list=PLQqMYWJXgJhjgb54-c2RWAVx4Ln6BfPcQ'},
+        ],
+        resources:['Fashion Illustration Templates','Fabric Guide PDF','Pattern Library','Brand Kit Template'],
+        project:'Design a 5-piece mini fashion collection as a PDF portfolio.'
+      },
+      {id:'sp3',title:'Bridal Mehendi Course',duration:'8 hrs',modules:10,desc:'Master bridal mehendi art: traditional Indian, Arabic, and fusion designs.',url:'https://youtube.com/playlist?list=PL33mbEIHXrf8E9DGhM9R8cPH940qaIGev',
+        modules_list:[
+          {id:'sp3m1',title:'Mehendi Tools & Cones',dur:'35 min',url:'https://youtube.com/playlist?list=PL33mbEIHXrf8E9DGhM9R8cPH940qaIGev'},
+          {id:'sp3m2',title:'Basic Patterns & Lines',dur:'40 min',url:'https://youtube.com/playlist?list=PL33mbEIHXrf8E9DGhM9R8cPH940qaIGev'},
+          {id:'sp3m3',title:'Floral Designs',dur:'45 min',url:'https://youtube.com/playlist?list=PL33mbEIHXrf8E9DGhM9R8cPH940qaIGev'},
+          {id:'sp3m4',title:'Arabic Style Mehendi',dur:'50 min',url:'https://youtube.com/playlist?list=PL33mbEIHXrf8E9DGhM9R8cPH940qaIGev'},
+          {id:'sp3m5',title:'Traditional Indian Designs',dur:'55 min',url:'https://youtube.com/playlist?list=PL33mbEIHXrf8E9DGhM9R8cPH940qaIGev'},
+          {id:'sp3m6',title:'Bridal Full Hand Design',dur:'60 min',url:'https://youtube.com/playlist?list=PL33mbEIHXrf8E9DGhM9R8cPH940qaIGev'},
+          {id:'sp3m7',title:'Dulha Mehendi',dur:'45 min',url:'https://youtube.com/playlist?list=PL33mbEIHXrf8E9DGhM9R8cPH940qaIGev'},
+          {id:'sp3m8',title:'Feet & Leg Designs',dur:'40 min',url:'https://youtube.com/playlist?list=PL33mbEIHXrf8E9DGhM9R8cPH940qaIGev'},
+          {id:'sp3m9',title:'Fusion & Modern Designs',dur:'45 min',url:'https://youtube.com/playlist?list=PL33mbEIHXrf8E9DGhM9R8cPH940qaIGev'},
+          {id:'sp3m10',title:'Business & Pricing',dur:'25 min',url:'https://youtube.com/playlist?list=PL33mbEIHXrf8E9DGhM9R8cPH940qaIGev'},
+        ],
+        resources:['Mehendi Design Book','Cone Filling Guide','Pattern Reference Library','Business Pricing Guide'],
+        project:'Create a portfolio of 8 different mehendi designs including one full bridal hand.'
+      },
+    ]
+  },
+];
+
+/* EXAM QUESTIONS */
+const EXAM_QS={
+  s1:[
+    {q:'What is the first step to building a digital business?',opts:['Finding investors','Identifying a niche','Hiring employees','Buying ads'],ans:1},
+    {q:'Which of the following is a valid digital business model?',opts:['Barter system','Subscription SaaS','Door-to-door sales','Manufacturing'],ans:1},
+    {q:'What does "monetisation" mean in a digital context?',opts:['Spending money on ads','Converting audience/traffic into revenue','Printing currency','Hiring a team'],ans:1},
+    {q:'What is a USP?',opts:['Universal Support Protocol','Unique Selling Proposition','User Service Platform','Unlimited Sales Plan'],ans:1},
+    {q:'Which tool is commonly used to map out a business model?',opts:['Canva','Business Model Canvas','GitHub','Photoshop'],ans:1},
+  ],
+  default:[
+    {q:'What is the most important factor for success in this field?',opts:['Natural talent','Consistent practice and learning','Having the right connections','Expensive tools'],ans:1},
+    {q:'Which approach yields the best long-term results?',opts:['Shortcuts and hacks','Systematic, foundational learning','Copying competitors','Spending money on ads'],ans:1},
+    {q:'What does ROI stand for?',opts:['Rate of Interest','Return on Investment','Risk of Implementation','Revenue of Industry'],ans:1},
+    {q:'What is the best way to validate a new idea?',opts:['Launch immediately','Research and test with a small audience','Wait for a perfect plan','Copy a successful competitor'],ans:1},
+    {q:'Which mindset is most important for career growth?',opts:['Fixed mindset','Growth mindset','Competitive mindset','Passive mindset'],ans:1},
+    {q:'What does "iterate" mean in a business context?',opts:['To repeat the same action','To improve progressively based on feedback','To delete and restart','To outsource work'],ans:1},
+    {q:'Which metric best measures content effectiveness?',opts:['Number of posts','Engagement rate','Follower count','Posting frequency'],ans:1},
+    {q:'What is the purpose of a portfolio?',opts:['To store personal files','To showcase your work to potential clients','To track expenses','To list your certifications'],ans:1},
+    {q:'What does "conversion" mean in digital marketing?',opts:['Currency exchange','A visitor completing a desired action','Editing a video','Translating content'],ans:1},
+    {q:'Which is the most professional way to present your work?',opts:['WhatsApp chat','Email with portfolio link','Verbal description','Social media story'],ans:1},
+  ]
+};
+
+function getExamQs(courseId){return EXAM_QS[courseId]||EXAM_QS.default;}
+
+/* ══ HELPERS ══ */
+const T=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
+const $=id=>document.getElementById(id);
+const san2=e=>e.toLowerCase().trim().replace(/\./g,'_').replace(/@/g,'__at__');
+
+function toast(ic,msg,dur=3000){
+  const el=$('toast');
+  el.innerHTML=`<span style="font-size:1rem">${ic}</span><span>${msg}</span>`;
+  el.classList.add('on');
+  clearTimeout(toast._t);
+  toast._t=setTimeout(()=>el.classList.remove('on'),dur);
+}
+
+/* ══ AUTH ══ */
+const authTO=setTimeout(()=>{showErr('Firebase not responding. <a href="auth.html" style="color:var(--gold)">Sign in again</a>.');},9000);
+
+AUTH.onAuthStateChanged(async fbUser=>{
+  clearTimeout(authTO);
+  if(!fbUser){location.href='auth.html';return;}
+  try{
+    gMsg('Loading your courses…');
+    const emailId=san2(fbUser.email);
+    U={email:fbUser.email,emailId,name:fbUser.displayName||fbUser.email.split('@')[0]};
+    let docData=null;
+    const cols=['User-collection','user_collection','users','User_collection','user-collection'];
+    for(const c of cols){
+      try{const snap=await DB.collection(c).doc(emailId).get();if(snap.exists){docData=snap.data();COL=c;break;}}catch(e){}
+    }
+    if(!docData){showErr('Account not found. <a href="auth.html" style="color:var(--gold)">Re-login</a> or contact support.');return;}
+    if(docData.paymentStatus!=='approved'){showErr('Payment pending. Contact <a href="https://wa.me/919019254743" style="color:var(--gold)">+91 90192 54743</a>');return;}
+    UD=docData;
+    BPRICE=parseInt(docData.bundlePrice||docData.bundleAmount||0)||0;
+    if(docData.fullName)U.name=docData.fullName;
+    await loadProgress();
+    initApp();
+    const g=$('guard');g.classList.add('fade');
+    setTimeout(()=>{g.classList.add('gone');$('app').classList.add('show');},700);
+  }catch(err){showErr('Error: '+err.message);}
+});
+function gMsg(t){const el=$('gMsg');if(el)el.textContent=t;}
+function showErr(html){clearTimeout(authTO);$('gSpin').style.display='none';$('gMsg').style.display='none';const e=$('gErr');e.style.display='flex';$('gErrD').innerHTML=html;}
+
+/* ══ PROGRESS ══ */
+async function loadProgress(){
+  try{
+    const snap=await DB.collection(COL).doc(U.emailId).collection('progress').get();
+    snap.forEach(doc=>{WATCH_DATA[doc.id]=doc.data();});
+    const esnap=await DB.collection(COL).doc(U.emailId).collection('exams').get();
+    esnap.forEach(doc=>{EXAM_DATA[doc.id]=doc.data();});
+    const csnap=await DB.collection(COL).doc(U.emailId).collection('certificates').get();
+    csnap.forEach(doc=>{CERT_DATA[doc.id]=doc.data();});
+  }catch(e){}
+}
+
+async function saveModuleProgress(courseId,moduleId){
+  try{
+    const data=WATCH_DATA[courseId]||{done:[],lastModule:moduleId};
+    if(!data.done.includes(moduleId))data.done.push(moduleId);
+    data.lastModule=moduleId;
+    data.updatedAt=firebase.firestore.FieldValue.serverTimestamp();
+    WATCH_DATA[courseId]=data;
+    await DB.collection(COL).doc(U.emailId).collection('progress').doc(courseId).set(data);
+  }catch(e){}
+}
+
+function getCoursePct(courseId,totalModules){
+  const d=WATCH_DATA[courseId];if(!d)return 0;
+  return Math.min(100,Math.round((d.done||[]).length/Math.max(totalModules,1)*100));
+}
+function isModuleDone(courseId,moduleId){return(WATCH_DATA[courseId]?.done||[]).includes(moduleId);}
+
+/* ══ INIT ══ */
+function initApp(){
+  const bun=getBundleForPrice(BPRICE);
+  T('sbAv',U.name[0].toUpperCase());T('sbName',U.name);T('sbTier',bun.ic+' '+bun.name);
+  T('tbBundle',bun.ic+' '+bun.name);
+  updateOverallProgress();
+  renderBundleGrid();
+  renderProgOverview();
+  renderMyLearning();
+  renderCertGallery();
+  initTutor();
+  const params=new URLSearchParams(location.search);
+  if(params.get('tab'))goPage(params.get('tab'));
+}
+
+function getBundleForPrice(p){
+  let b=BUNDLES[0];
+  for(const x of BUNDLES){if(x.price<=p)b=x;}
+  return b;
+}
+function isBundleUnlocked(bundle){
+  if(bundle.id==='special')return BPRICE>=499;
+  return bundle.price<=BPRICE;
+}
+
+function updateOverallProgress(){
+  let total=0,done=0;
+  BUNDLES.forEach(b=>{
+    if(!isBundleUnlocked(b))return;
+    b.courses.forEach(c=>{
+      total+=c.modules_list.length;
+      done+=(WATCH_DATA[c.id]?.done||[]).length;
+    });
+  });
+  const pct=total?Math.round(done/total*100):0;
+  T('tbProgress',pct+'% Complete');
+}
+
+/* ══ BUNDLE GRID ══ */
+function renderBundleGrid(){
+  const grid=$('bundleGrid');if(!grid)return;
+  const unlocked=BUNDLES.filter(b=>isBundleUnlocked(b));
+  const locked=BUNDLES.filter(b=>!isBundleUnlocked(b));
+  T('homeSubtitle',`${unlocked.length} bundle${unlocked.length!==1?'s':''} unlocked · ${locked.length} to upgrade`);
+  grid.innerHTML=[...unlocked,...locked].map(b=>{
+    const isLocked=!isBundleUnlocked(b);
+    const totalMods=b.courses.reduce((s,c)=>s+c.modules_list.length,0);
+    const doneMods=b.courses.reduce((s,c)=>s+(WATCH_DATA[c.id]?.done||[]).length,0);
+    const pct=totalMods?Math.round(doneMods/totalMods*100):0;
+    return`<div class="bcard${isLocked?' locked':''}" style="--bc-color:${b.color};--bc-border:${b.border}" onclick="${isLocked?`upgradePrompt('${b.name}',${b.price})`:`openBundle('${b.id}')`}">
+      ${isLocked?'<div class="bc-lock-ic">🔒</div>':''}
+      <div class="bc-em">${b.ic}</div>
+      <div class="bc-name">${b.name}</div>
+      <div class="bc-price">${isLocked?'₹'+b.price.toLocaleString('en-IN')+' — Upgrade to unlock':'✅ Unlocked'} · ${b.courses.length} courses · ${b.lpa}</div>
+      <div class="bc-desc">${b.desc}</div>
+      <div class="bc-meta">${b.courses.map(c=>`<span class="bc-tag" style="color:var(--t2)">${c.title.split(' ').slice(0,3).join(' ')}</span>`).join('')}</div>
+      ${!isLocked?`<div class="bc-prog"><div class="bc-prog-bar"><div class="bc-prog-fill" style="width:${pct}%"></div></div><div class="bc-prog-lbl">${pct}% complete · ${doneMods}/${totalMods} modules</div></div>`:''}
+    </div>`;
+  }).join('');
+}
+
+function upgradePrompt(name,price){
+  toast('🔒',`${name} requires ₹${price.toLocaleString('en-IN')} bundle. Contact support to upgrade!`,4000);
+  setTimeout(()=>window.open('https://wa.me/919019254743?text=Hi, I want to upgrade to '+name+' bundle. My email: '+U.email,'_blank'),1000);
+}
+
+/* ══ BUNDLE COURSE LIST ══ */
+function openBundle(bundleId){
+  currentBundleId=bundleId;
+  const bundle=BUNDLES.find(b=>b.id===bundleId);if(!bundle)return;
+  T('bcPageTitle',bundle.ic+' '+bundle.name+' Bundle');
+  T('bcPageSub',bundle.courses.length+' courses · '+bundle.lpa);
+  const list=$('bundleCourseList');
+  list.innerHTML=bundle.courses.map(c=>{
+    const pct=getCoursePct(c.id,c.modules_list.length);
+    const examDone=EXAM_DATA[c.id]?.passed;
+    const certDone=CERT_DATA[c.id];
+    const doneMods=(WATCH_DATA[c.id]?.done||[]).length;
+    return`<div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:18px;cursor:pointer;transition:all .25s" onmouseenter="this.style.transform='translateY(-2px)';this.style.borderColor='${bundle.border}'" onmouseleave="this.style.transform='';this.style.borderColor=''" onclick="openCourse('${bundleId}','${c.id}')">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:10px">
+        <div style="font-family:var(--fd);font-size:.95rem;font-weight:700;line-height:1.3">${bundle.ic} ${c.title}</div>
+        <div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end;flex-shrink:0">
+          ${pct===100?'<span class="bdg ok">✓ Done</span>':''}
+          ${examDone?'<span class="bdg vl">📝 Passed</span>':''}
+          ${certDone?'<span class="bdg ok">🏆 Cert</span>':''}
+        </div>
+      </div>
+      <div style="font-size:.75rem;color:var(--t2);margin-bottom:10px;line-height:1.6">${c.desc}</div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;font-family:var(--fm);font-size:.55rem;color:var(--t3);margin-bottom:10px">
+        <span>⏱ ${c.duration}</span><span>📋 ${c.modules_list.length} modules</span><span>✅ ${doneMods} done</span>
+      </div>
+      <div style="height:3px;background:var(--bg4);border-radius:3px;overflow:hidden;margin-bottom:6px"><div style="height:100%;background:linear-gradient(90deg,var(--gold),var(--gold2));width:${pct}%;border-radius:3px;transition:width .8s"></div></div>
+      <div style="font-family:var(--fm);font-size:.5rem;color:var(--t3)">${pct}% complete</div>
+    </div>`;
+  }).join('');
+  goPage('bundle-courses');
+}
+
+/* ══ PROTECTED VIDEO PLAYER ══ */
+function getVideoInfo(url){
+  if(!url)return null;
+  try{
+    const u=new URL(url);
+    let vid='',start=0,listId='';
+    if(u.hostname==='youtu.be'){vid=u.pathname.slice(1);}
+    else if(u.hostname.includes('youtube.com')){
+      if(u.searchParams.get('v'))vid=u.searchParams.get('v');
+      else if(u.pathname.includes('live/'))vid=u.pathname.split('live/')[1].split('?')[0];
+      listId=u.searchParams.get('list')||'';
+    }
+    start=parseInt(u.searchParams.get('t')||'0')||0;
+    return{vid,listId,start};
+  }catch(e){return null;}
+}
+
+function buildEmbedUrl(info){
+  if(!info)return null;
+  const params=[
+    'rel=0',
+    'modestbranding=1',
+    'showinfo=0',
+    'iv_load_policy=3',
+    'disablekb=0',
+    'enablejsapi=1',
+    'origin='+encodeURIComponent(location.origin),
+    'controls=1',
+    'autoplay=1',
+    `start=${info.start}`
+  ].join('&');
+  if(info.vid)return`https://www.youtube.com/embed/${info.vid}?${params}`;
+  if(info.listId)return`https://www.youtube.com/embed?listType=playlist&list=${info.listId}&${params}`;
+  return null;
+}
+
+function injectPlayer(url,modTitle){
+  const container=$('cvPlayerContainer');
+  const placeholder=$('playerPlaceholder');
+  const ctrl=$('playerCtrl');
+  const shield=$('playerShield');
+  // remove old iframe
+  const old=container.querySelector('iframe');
+  if(old)old.remove();
+  const info=getVideoInfo(url);
+  const embedUrl=buildEmbedUrl(info);
+  if(!embedUrl){
+    placeholder.style.display='flex';
+    placeholder.innerHTML=`<div class="ph-icon">▶</div><div class="ph-text">${modTitle}</div><div style="font-size:.7rem;color:var(--t3);margin-top:4px">Video unavailable for embed</div>`;
+    ctrl.style.display='none';
+    return;
+  }
+  placeholder.style.display='none';
+  ctrl.style.display='flex';
+  T('ctrlModTitle',modTitle);
+  $('ctrlPlayPause').textContent='⏸';
+  isPlaying=true;
+  const iframe=document.createElement('iframe');
+  iframe.src=embedUrl;
+  iframe.allow='autoplay; encrypted-media; picture-in-picture';
+  iframe.allowFullscreen=true;
+  iframe.style.cssText='position:absolute;top:0;left:0;width:100%;height:100%;border:none;pointer-events:none';
+  // Insert iframe BEFORE the shield so shield is on top
+  container.insertBefore(iframe,shield);
+  ytPlayer=iframe;
+}
+
+function togglePlayPause(){
+  // We can only control via postMessage since pointer-events:none on iframe
+  if(!ytPlayer)return;
+  try{
+    if(isPlaying){
+      ytPlayer.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}','*');
+      $('ctrlPlayPause').textContent='▶';
+      isPlaying=false;
+    }else{
+      ytPlayer.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}','*');
+      $('ctrlPlayPause').textContent='⏸';
+      isPlaying=true;
+    }
+  }catch(e){}
+}
+
+/* ══ COURSE VIEWER ══ */
+function openCourse(bundleId,courseId){
+  const bundle=BUNDLES.find(b=>b.id===bundleId);
+  const course=bundle?.courses.find(c=>c.id===courseId);
+  if(!bundle||!course)return;
+  currentCourse=course;currentBundleId=bundleId;prevPage='bundle-courses';
+  document.querySelectorAll('.pg').forEach(p=>{p.style.display='none';p.classList.remove('on');});
+  $('courseViewer').classList.add('on');
+  T('cvTitle',course.title);
+  T('cvCourseTitle',course.title);
+  $('cvCourseMeta').innerHTML=`<span>⏱ ${course.duration}</span><span>📋 ${course.modules_list.length} modules</span><span>${bundle.ic} ${bundle.name}</span>`;
+  $('cvCourseDesc').textContent=course.desc;
+  $('cvActions').innerHTML=`<button class="btn-sm" onclick="startExam('${courseId}')">📝 Take Exam</button><button class="btn-sm" onclick="openProject()">📤 Submit Project</button>`;
+  $('cvBackBtn').onclick=()=>{
+    const old=document.querySelector('#cvPlayerContainer iframe');if(old)old.remove();
+    ytPlayer=null;isPlaying=false;
+    $('courseViewer').classList.remove('on');
+    goPage(prevPage);
+  };
+  T('cvModCount',`${(WATCH_DATA[courseId]?.done||[]).length}/${course.modules_list.length} done`);
+  // Overview tab
+  $('cvOverviewContent').innerHTML=`<div style="margin-bottom:14px"><b>About this course</b><p style="margin-top:6px">${course.desc}</p></div>
+    <div style="margin-bottom:14px"><b>Modules</b><ul style="margin-top:6px;padding-left:18px;display:flex;flex-direction:column;gap:4px">${course.modules_list.map(m=>`<li>${m.title}</li>`).join('')}</ul></div>
+    <div><b>Project</b><p style="margin-top:6px;background:var(--bg3);padding:12px;border-radius:var(--rs);border:1px solid var(--border)">${course.project}</p></div>`;
+  // Resources tab
+  $('cvResourcesContent').innerHTML=`<div style="font-weight:700;margin-bottom:10px">📎 Course Resources</div>${course.resources.map(r=>`<div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border)"><span>📄</span><span>${r}</span></div>`).join('')}<div style="margin-top:14px;padding:12px;background:var(--gA);border-radius:var(--rs);border:1px solid rgba(200,169,110,.18);font-size:.75rem;color:var(--t2)">🤖 Use AI Tutor to get notes, explanations, and practice questions.</div>`;
+  // Project tab
+  $('cvProjectContent').innerHTML=renderProjectTab(courseId,course);
+  // Module list
+  const modList=$('cvModuleList');
+  modList.innerHTML=course.modules_list.map((m,i)=>{
+    const done=isModuleDone(courseId,m.id);
+    return`<div class="module-item${done?' done':''}" id="mi-${m.id}" onclick="playModule('${courseId}','${m.id}',${i})">
+      <div class="mi-num">${done?'✓':(i+1)}</div>
+      <div class="mi-info"><div class="mi-title">${m.title}</div><div class="mi-dur">⏱ ${m.dur}</div></div>
+      <div class="mi-check">${done?'✅':''}</div>
+    </div>`;
+  }).join('');
+  // Auto-play last or first
+  const lastMod=WATCH_DATA[courseId]?.lastModule;
+  const startIdx=lastMod?course.modules_list.findIndex(m=>m.id===lastMod):0;
+  playModule(courseId,course.modules_list[Math.max(0,startIdx)].id,Math.max(0,startIdx));
+  currentContext=`Course: ${course.title}\nBundle: ${bundle.name}\nModules: ${course.modules_list.map(m=>m.title).join(', ')}`;
+}
+
+function playModule(courseId,moduleId,idx){
+  const course=currentCourse;if(!course)return;
+  const mod=course.modules_list[idx];if(!mod)return;
+  currentModule=mod;
+  // Mark active
+  document.querySelectorAll('.module-item').forEach(el=>el.classList.remove('active'));
+  const miEl=$('mi-'+moduleId);if(miEl){miEl.classList.add('active');miEl.scrollIntoView({behavior:'smooth',block:'nearest'});}
+  // Inject protected player
+  injectPlayer(mod.url,mod.title);
+  // Save progress
+  saveModuleProgress(courseId,moduleId);
+  WATCH_DATA[courseId]=WATCH_DATA[courseId]||{done:[],lastModule:moduleId};
+  if(!WATCH_DATA[courseId].done.includes(moduleId))WATCH_DATA[courseId].done.push(moduleId);
+  WATCH_DATA[courseId].lastModule=moduleId;
+  // Update module UI
+  const miEl2=$('mi-'+moduleId);
+  if(miEl2){
+    miEl2.classList.add('done');
+    const num=miEl2.querySelector('.mi-num');if(num)num.textContent='✓';
+    const chk=miEl2.querySelector('.mi-check');if(chk)chk.textContent='✅';
+  }
+  T('cvModCount',`${(WATCH_DATA[courseId]?.done||[]).length}/${course.modules_list.length} done`);
+  updateOverallProgress();
+  const doneCnt=(WATCH_DATA[courseId]?.done||[]).length;
+  if(doneCnt>=course.modules_list.length){
+    toast('🎉','Course 100% complete! Take the exam to earn your certificate.',4000);
+    sendTGNotification(`🎉 *Course Completed!*\nStudent: ${U.name}\nEmail: ${U.email}\nCourse: ${course.title}`);
+  }
+}
+
+function switchCVTab(tab,btn){
+  document.querySelectorAll('.cv-tab').forEach(b=>b.classList.remove('on'));
+  document.querySelectorAll('.cv-tab-pane').forEach(p=>p.classList.remove('on'));
+  btn.classList.add('on');
+  const pane=$('cvt-'+tab);if(pane)pane.classList.add('on');
+}
+
+/* ══ AI NOTES ══ */
+async function generateAINotes(){
+  if(!currentModule||!currentCourse){toast('⚠','Please select a module first.');return;}
+  const cont=$('cvNotesContent');
+  cont.innerHTML=`<div class="ai-note-loading"><div class="ai-note-dot"></div><div class="ai-note-dot"></div><div class="ai-note-dot"></div><span>Generating AI notes for "${currentModule.title}"…</span></div>`;
+  try{
+    const resp=await fetch('https://api.groq.com/openai/v1/chat/completions',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+GROQ_API},
+      body:JSON.stringify({
+        model:'llama-3.1-70b-versatile',
+        messages:[{role:'user',content:`You are an expert educator for Biluxe10 online courses.
+Course: ${currentCourse.title}
+Module: ${currentModule.title}
+Duration: ${currentModule.dur}
+
+Create comprehensive study notes. Include:
+1. Key Concepts (3-5 bullet points)
+2. Detailed Explanation (2-3 paragraphs)
+3. Important Terms & Definitions (3-5 terms)
+4. Practical Tips (3-4 actionable tips)
+5. Practice Questions (3 questions with answers)
+6. Summary
+
+Format with clear headers. Make it educational, clear, and practical for Indian students.`}],
+        max_tokens:1500,temperature:0.7
+      })
+    });
+    const data=await resp.json();
+    if(data.error)throw new Error(data.error.message);
+    const text=data.choices?.[0]?.message?.content||'Could not generate notes.';
+    cont.innerHTML=`<div style="font-size:.8rem;line-height:1.8;color:var(--t2)">${formatAIText(text)}</div>`;
+  }catch(e){
+    cont.innerHTML=`<div style="color:var(--red);font-size:.78rem">❌ Failed to generate notes: ${e.message}<br><small>Check your internet connection and try again.</small></div>`;
+  }
+}
+
+function formatAIText(text){
+  return text
+    .replace(/^###\s+(.+)$/gm,'<h4 style="color:var(--gold);font-family:var(--fd);margin:12px 0 6px">$1</h4>')
+    .replace(/^##\s+(.+)$/gm,'<h3 style="color:var(--text);font-family:var(--fd);margin:14px 0 6px;font-size:.92rem">$1</h3>')
+    .replace(/^#\s+(.+)$/gm,'<h2 style="color:var(--gold2);font-family:var(--fd);margin:16px 0 8px">$1</h2>')
+    .replace(/\*\*(.+?)\*\*/g,'<strong style="color:var(--text)">$1</strong>')
+    .replace(/\*(.+?)\*/g,'<em>$1</em>')
+    .replace(/`(.+?)`/g,'<code style="background:var(--bg4);padding:1px 5px;border-radius:3px;font-family:var(--fm);font-size:.7rem">$1</code>')
+    .replace(/^- (.+)$/gm,'<div style="display:flex;gap:6px;margin:3px 0"><span style="color:var(--gold);flex-shrink:0">•</span><span>$1</span></div>')
+    .replace(/\n\n/g,'<br><br>').replace(/\n/g,'<br>');
+}
+
+function openNotes(){switchCVTab('notes',document.querySelectorAll('.cv-tab')[1]);}
+
+/* ══ PROJECT ══ */
+function renderProjectTab(courseId,course){
+  const sub=EXAM_DATA[courseId]?.project;
+  if(sub)return`<div style="background:var(--grA);border:1px solid rgba(34,197,94,.2);border-radius:var(--rs);padding:14px;margin-bottom:12px"><div style="font-weight:700;color:var(--green);margin-bottom:4px">✅ Project Submitted</div><div style="font-size:.75rem;color:var(--t2)">${sub}</div></div><button class="btn-sm" onclick="resubmitProject('${courseId}')">Resubmit</button>`;
+  return`<div style="margin-bottom:14px">
+    <div style="font-weight:700;font-size:.85rem;margin-bottom:8px">📋 Project Brief</div>
+    <div style="background:var(--bg3);padding:14px;border-radius:var(--rs);border:1px solid var(--border);font-size:.8rem;color:var(--t2);line-height:1.75;margin-bottom:14px">${course.project}</div>
+    <label style="font-family:var(--fm);font-size:.55rem;color:var(--t3);text-transform:uppercase;letter-spacing:.1em;display:block;margin-bottom:5px">Submission Link or Description</label>
+    <textarea id="projSub" style="width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--rs);padding:12px;font-size:.8rem;color:var(--text);outline:none;resize:vertical;min-height:100px" placeholder="Paste your GitHub URL, Google Drive link, or describe your submission…"></textarea>
+    <div style="margin-top:10px;display:flex;gap:8px">
+      <button class="btn-g" onclick="submitProject('${courseId}')">📤 Submit Project</button>
+      <button class="btn-sm" onclick="openAITutor()">🤖 Get AI Help</button>
+    </div>
+  </div>`;
+}
+
+async function submitProject(courseId){
+  const val=$('projSub')?.value?.trim();
+  if(!val){toast('⚠','Please enter your submission link or description.');return;}
+  try{
+    const data=EXAM_DATA[courseId]||{};
+    data.project=val;data.projectSubmittedAt=firebase.firestore.FieldValue.serverTimestamp();
+    EXAM_DATA[courseId]=data;
+    await DB.collection(COL).doc(U.emailId).collection('exams').doc(courseId).set(data,{merge:true});
+    toast('✅','Project submitted!',4000);
+    sendTGNotification(`📤 *Project Submitted*\nStudent: ${U.name} (${U.email})\nCourse: ${currentCourse?.title}\nLink: ${val}`);
+    if($('cvProjectContent'))$('cvProjectContent').innerHTML=renderProjectTab(courseId,currentCourse);
+    checkCertificateEligibility(courseId);
+  }catch(e){toast('❌','Error: '+e.message);}
+}
+
+function resubmitProject(courseId){
+  if(currentCourse&&$('cvProjectContent'))$('cvProjectContent').innerHTML=renderProjectTab(courseId,currentCourse).replace(EXAM_DATA[courseId]?.project||'','');
+  const data=EXAM_DATA[courseId]||{};delete data.project;EXAM_DATA[courseId]=data;
+  if($('cvProjectContent'))$('cvProjectContent').innerHTML=renderProjectTab(courseId,currentCourse);
+}
+
+function openProject(){switchCVTab('project',document.querySelectorAll('.cv-tab')[3]);}
+
+/* ══ EXAM ══ */
+let examState={courseId:null,questions:[],answers:{},submitted:false};
+
+function startExam(courseId){
+  const course=currentCourse||BUNDLES.flatMap(b=>b.courses).find(c=>c.id===courseId);
+  if(!course){toast('⚠','Course not found.');return;}
+  const pct=getCoursePct(courseId,course.modules_list.length);
+  if(pct<70){toast('⚠',`Complete at least 70% of modules before the exam. (${pct}% done)`,3500);return;}
+  examState={courseId,questions:getExamQs(courseId),answers:{},submitted:false};
+  goPage('exam');
+  renderExam(course);
+}
+
+function renderExam(course){
+  const el=$('examContent');if(!el)return;
+  const qs=examState.questions;
+  const already=EXAM_DATA[examState.courseId];
+  if(already?.passed){
+    el.innerHTML=`<div style="text-align:center;padding:30px"><div style="font-size:2.5rem;margin-bottom:10px">🎉</div><div style="font-family:var(--fd);font-size:1.2rem;font-weight:700;margin-bottom:6px">Exam Already Passed!</div><div style="color:var(--green);font-family:var(--fm);font-size:.8rem;margin-bottom:16px">Score: ${already.score}%</div><button class="btn-g" onclick="viewCert('${examState.courseId}')">🏆 View Certificate</button></div>`;
+    return;
+  }
+  el.innerHTML=`
+    <div style="font-family:var(--fd);font-size:1.1rem;font-weight:700;margin-bottom:4px">${course.title} — Exam</div>
+    <div style="font-size:.78rem;color:var(--t2);margin-bottom:14px">${qs.length} questions · Pass mark: 60%</div>
+    <div class="exam-prog"><div class="exam-prog-fill" id="examProg" style="width:0%"></div></div>
+    <div id="examQs">${qs.map((q,i)=>`
+      <div class="exam-q" id="eq${i}">
+        <div class="exam-q-num">Question ${i+1} of ${qs.length}</div>
+        <div class="exam-q-text">${q.q}</div>
+        <div class="exam-opts">${q.opts.map((o,j)=>`<div class="exam-opt" id="eo${i}-${j}" onclick="selectOpt(${i},${j})">${String.fromCharCode(65+j)}. ${o}</div>`).join('')}</div>
+      </div>`).join('')}
+    </div>
+    <div style="margin-top:16px;display:flex;gap:8px">
+      <button class="btn-g" onclick="submitExam()">Submit Exam →</button>
+      <button class="btn-o" onclick="goPage('home')">Cancel</button>
+    </div>`;
+}
+
+function selectOpt(qIdx,optIdx){
+  if(examState.submitted)return;
+  examState.answers[qIdx]=optIdx;
+  document.querySelectorAll(`#eq${qIdx} .exam-opt`).forEach((el,j)=>{el.classList.toggle('selected',j===optIdx);});
+  const answered=Object.keys(examState.answers).length;
+  const pct=Math.round(answered/examState.questions.length*100);
+  const bar=$('examProg');if(bar)bar.style.width=pct+'%';
+}
+
+async function submitExam(){
+  const qs=examState.questions;
+  const answered=Object.keys(examState.answers).length;
+  if(answered<qs.length){toast('⚠',`Answer all ${qs.length} questions first.`);return;}
+  examState.submitted=true;
+  let correct=0;
+  qs.forEach((q,i)=>{
+    const isCorrect=examState.answers[i]===q.ans;
+    if(isCorrect)correct++;
+    document.querySelectorAll(`#eq${i} .exam-opt`).forEach((el,j)=>{
+      el.classList.remove('selected');
+      if(j===q.ans)el.classList.add('correct');
+      else if(j===examState.answers[i])el.classList.add('wrong');
+    });
+  });
+  const score=Math.round(correct/qs.length*100);
+  const passed=score>=60;
+  const courseId=examState.courseId;
+  const examData={score,passed,correct,total:qs.length,takenAt:firebase.firestore.FieldValue.serverTimestamp()};
+  if(passed)examData.passedAt=firebase.firestore.FieldValue.serverTimestamp();
+  EXAM_DATA[courseId]=examData;
+  try{await DB.collection(COL).doc(U.emailId).collection('exams').doc(courseId).set(examData,{merge:true});}catch(e){}
+  const resultDiv=document.createElement('div');
+  resultDiv.style.cssText=`position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:9000;background:var(--bg2);border:1px solid ${passed?'rgba(34,197,94,.3)':'rgba(239,68,68,.3)'};border-radius:18px;padding:30px 40px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.6);max-width:380px;width:90%`;
+  resultDiv.innerHTML=`<div style="font-size:3rem;margin-bottom:10px">${passed?'🎉':'😔'}</div>
+    <div style="font-family:var(--fd);font-size:1.4rem;font-weight:900;margin-bottom:6px;color:${passed?'var(--green)':'var(--red)'}">${passed?'You Passed!':'Not Passed'}</div>
+    <div style="font-family:var(--fm);font-size:.8rem;color:var(--t2);margin-bottom:6px">Score: ${score}% (${correct}/${qs.length} correct)</div>
+    <div style="font-size:.78rem;color:var(--t2);margin-bottom:20px">${passed?'Excellent! You can now claim your certificate.':'You need 60% to pass. Review the modules and try again.'}</div>
+    <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
+      ${passed?`<button class="btn-g" onclick="this.closest('[style*=fixed]').remove();checkCertificateEligibility('${courseId}')">🏆 Get Certificate</button>`:''}
+      <button class="btn-o" onclick="this.closest('[style*=fixed]').remove()">Close</button>
+    </div>`;
+  document.body.appendChild(resultDiv);
+  sendTGNotification(`📝 *Exam ${passed?'Passed':'Failed'}*\nStudent: ${U.name} (${U.email})\nCourse: ${currentCourse?.title||courseId}\nScore: ${score}%`);
+  if(passed)checkCertificateEligibility(courseId);
+}
+
+/* ══ CERTIFICATE ══ */
+async function checkCertificateEligibility(courseId){
+  const course=BUNDLES.flatMap(b=>b.courses).find(c=>c.id===courseId);
+  if(!course)return;
+  const pct=getCoursePct(courseId,course.modules_list.length);
+  const examPassed=EXAM_DATA[courseId]?.passed;
+  const projectSub=EXAM_DATA[courseId]?.project;
+  if(pct>=100&&examPassed&&projectSub){
+    await issueCertificate(courseId,course);
+  }else{
+    const missing=[];
+    if(pct<100)missing.push(`Complete all modules (${pct}% done)`);
+    if(!examPassed)missing.push('Pass the exam');
+    if(!projectSub)missing.push('Submit your project');
+    toast('📋',`To earn certificate: ${missing.join(' · ')}`,5000);
+  }
+}
+
+async function issueCertificate(courseId,course){
+  if(CERT_DATA[courseId]){viewCert(courseId);return;}
+  const certId='B10-'+courseId.toUpperCase()+'-'+Date.now().toString(36).toUpperCase();
+  const certData={courseId,courseName:course.title,studentName:U.name,email:U.email,certId,issuedAt:firebase.firestore.FieldValue.serverTimestamp(),score:EXAM_DATA[courseId]?.score||100};
+  CERT_DATA[courseId]=certData;
+  try{await DB.collection(COL).doc(U.emailId).collection('certificates').doc(courseId).set(certData);}catch(e){}
+  sendTGNotification(`🏆 *Certificate Issued!*\nStudent: ${U.name} (${U.email})\nCourse: ${course.title}\nCert ID: ${certId}`);
+  renderCertGallery();
+  viewCert(courseId);
+  toast('🎉','Certificate issued! Congratulations! 🏆',5000);
+}
+
+function viewCert(courseId){
+  const cert=CERT_DATA[courseId];if(!cert){toast('⚠','Certificate not yet earned.');return;}
+  $('certModal').classList.add('on');
+  drawCertificate(cert);
+}
+function closeCertModal(){$('certModal').classList.remove('on');}
+
+function drawCertificate(cert){
+  const canvas=$('certCanvas');if(!canvas)return;
+  const ctx=canvas.getContext('2d');
+  const W=1200,H=850;canvas.width=W;canvas.height=H;
+  ctx.fillStyle='#07070A';ctx.fillRect(0,0,W,H);
+  ctx.strokeStyle='#C8A96E';ctx.lineWidth=4;ctx.strokeRect(20,20,W-40,H-40);
+  ctx.strokeStyle='rgba(200,169,110,0.3)';ctx.lineWidth=1;ctx.strokeRect(32,32,W-64,H-64);
+  const grad=ctx.createRadialGradient(W/2,H/2,0,W/2,H/2,600);
+  grad.addColorStop(0,'rgba(200,169,110,0.06)');grad.addColorStop(1,'transparent');
+  ctx.fillStyle=grad;ctx.fillRect(0,0,W,H);
+  ctx.fillStyle='#C8A96E';ctx.font='bold 52px serif';ctx.textAlign='center';ctx.fillText('Biluxe10',W/2,100);
+  ctx.fillStyle='rgba(200,169,110,0.6)';ctx.font='16px monospace';ctx.fillText('BILUXE10.COM · CERTIFIED LEARNING PLATFORM',W/2,128);
+  ctx.strokeStyle='rgba(200,169,110,0.4)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(80,148);ctx.lineTo(W-80,148);ctx.stroke();
+  ctx.fillStyle='rgba(200,169,110,0.5)';ctx.font='14px monospace';ctx.textAlign='center';ctx.fillText('CERTIFICATE OF COMPLETION',W/2,185);
+  ctx.fillStyle='#EDEDF0';ctx.font='bold 58px serif';ctx.fillText(cert.studentName||'Student Name',W/2,275);
+  ctx.fillStyle='#9B9BA8';ctx.font='22px sans-serif';ctx.fillText('has successfully completed',W/2,318);
+  ctx.fillStyle='#C8A96E';ctx.font=`bold ${(cert.courseName||'').length>40?30:38}px serif`;ctx.fillText(cert.courseName||'Course',W/2,375);
+  ctx.fillStyle='rgba(200,169,110,0.7)';ctx.font='18px monospace';ctx.fillText(`Score: ${cert.score||100}%  ·  With Distinction`,W/2,415);
+  ctx.strokeStyle='rgba(200,169,110,0.3)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(80,445);ctx.lineTo(W-80,445);ctx.stroke();
+  ctx.fillStyle='rgba(200,169,110,0.15)';ctx.fillRect(100,490,340,200);ctx.fillRect(760,490,340,200);
+  ctx.strokeStyle='#C8A96E';ctx.lineWidth=2.5;ctx.lineCap='round';ctx.lineJoin='round';
+  const sx=200,sy=580;
+  ctx.beginPath();ctx.moveTo(sx-40,sy+10);ctx.bezierCurveTo(sx-30,sy-40,sx+10,sy-30,sx,sy);ctx.bezierCurveTo(sx-10,sy+30,sx+30,sy+20,sx+50,sy-10);ctx.moveTo(sx+60,sy-20);ctx.bezierCurveTo(sx+70,sy-50,sx+100,sy-40,sx+90,sy);ctx.bezierCurveTo(sx+80,sy+30,sx+110,sy+30,sx+130,sy+10);ctx.moveTo(sx-40,sy+20);ctx.lineTo(sx+140,sy+20);ctx.stroke();
+  ctx.fillStyle='#9B9BA8';ctx.font='15px sans-serif';ctx.textAlign='center';ctx.fillText('Syed Afshar Khadri',270,610);ctx.fillStyle='rgba(200,169,110,0.6)';ctx.font='13px monospace';ctx.fillText('Founder, Biluxe10',270,630);
+  ctx.beginPath();ctx.arc(930,585,65,0,Math.PI*2);ctx.fillStyle='rgba(200,169,110,0.1)';ctx.fill();ctx.strokeStyle='#C8A96E';ctx.lineWidth=2;ctx.stroke();
+  ctx.beginPath();ctx.arc(930,585,50,0,Math.PI*2);ctx.strokeStyle='rgba(200,169,110,0.5)';ctx.lineWidth=1;ctx.stroke();
+  ctx.fillStyle='#C8A96E';ctx.font='bold 20px serif';ctx.textAlign='center';ctx.fillText('BILUXE',930,578);ctx.fillText('10',930,600);
+  ctx.fillStyle='rgba(200,169,110,0.6)';ctx.font='11px monospace';ctx.fillText('CERTIFIED',930,620);
+  ctx.strokeStyle='rgba(200,169,110,0.3)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(80,680);ctx.lineTo(W-80,680);ctx.stroke();
+  ctx.fillStyle='#4B4B5A';ctx.font='14px monospace';ctx.textAlign='center';
+  const dateStr=cert.issuedAt?new Date(cert.issuedAt.toDate?.()??cert.issuedAt).toLocaleDateString('en-IN',{year:'numeric',month:'long',day:'numeric'}):new Date().toLocaleDateString('en-IN',{year:'numeric',month:'long',day:'numeric'});
+  ctx.fillText(`Issued: ${dateStr}  ·  Certificate ID: ${cert.certId}  ·  Verify at biluxe10.com/verify`,W/2,710);
+  if(typeof QRCode!=='undefined'){
+    try{QRCode.toCanvas($('qrCanvas'),`https://biluxe10.com/verify?id=${cert.certId}&name=${encodeURIComponent(cert.studentName)}&course=${encodeURIComponent(cert.courseName)}`,{width:120,color:{dark:'#C8A96E',light:'#07070A'}},()=>{});}catch(e){}
+  }
+}
+
+function downloadCert(){
+  const canvas=$('certCanvas');if(!canvas)return;
+  const link=document.createElement('a');
+  link.download=`Biluxe10_Certificate_${(currentCourse?.title||'Course').replace(/\s/g,'_')}.png`;
+  link.href=canvas.toDataURL('image/png',1.0);link.click();
+  toast('⬇','Certificate downloaded!');
+}
+
+function shareCertWA(){
+  const cert=currentCourse?CERT_DATA[currentCourse.id]:null;
+  const msg=`🏆 I just earned my *${cert?.courseName||'Course'}* certificate from *Biluxe10*!\n\nCertificate ID: ${cert?.certId||'—'}\n\n🎓 biluxe10.com`;
+  window.open('https://wa.me/?text='+encodeURIComponent(msg),'_blank');
+}
+
+/* ══ CERT GALLERY ══ */
+function renderCertGallery(){
+  const el=$('certGallery');if(!el)return;
+  const certs=Object.values(CERT_DATA);
+  if(!certs.length){el.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--t3)"><div style="font-size:2rem;margin-bottom:8px">🏆</div><p style="font-size:.75rem">Complete courses + exams + projects to earn certificates</p></div>';return;}
+  el.innerHTML=certs.map(c=>`<div class="cert-thumb" onclick="viewCert('${c.courseId}')">
+    <div class="cert-thumb-ic">🏆</div>
+    <div class="cert-thumb-t">${c.courseName}</div>
+    <div class="cert-thumb-d">${c.certId}</div>
+    <div class="cert-thumb-d" style="margin-top:4px;color:var(--green)">Score: ${c.score||100}%</div>
+  </div>`).join('');
+}
+
+/* ══ MY LEARNING ══ */
+function renderMyLearning(){
+  const el=$('myLearningGrid');if(!el)return;
+  const started=[];
+  BUNDLES.forEach(b=>{
+    if(!isBundleUnlocked(b))return;
+    b.courses.forEach(c=>{
+      const d=WATCH_DATA[c.id];
+      if(d&&(d.done||[]).length>0)started.push({...c,bundle:b,doneMods:(d.done||[]).length});
+    });
+  });
+  if(!started.length){el.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--t3)"><div style="font-size:2rem;margin-bottom:8px">▶</div><p style="font-size:.75rem">Start watching any course to see it here</p></div>';return;}
+  el.innerHTML=started.map(c=>{
+    const pct=getCoursePct(c.id,c.modules_list.length);
+    return`<div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:16px;cursor:pointer;transition:all .22s" onmouseenter="this.style.transform='translateY(-2px)';this.style.borderColor='rgba(200,169,110,.2)'" onmouseleave="this.style.transform='';this.style.borderColor=''" onclick="openCourse('${c.bundle.id}','${c.id}')">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+        <span style="font-size:1.3rem">${c.bundle.ic}</span>
+        <div style="font-family:var(--fd);font-size:.9rem;font-weight:700;flex:1">${c.title}</div>
+        ${pct===100?'<span class="bdg ok">✓</span>':''}
+      </div>
+      <div style="height:3px;background:var(--bg4);border-radius:3px;overflow:hidden;margin-bottom:5px"><div style="height:100%;background:linear-gradient(90deg,var(--gold),var(--gold2));width:${pct}%;border-radius:3px"></div></div>
+      <div style="font-family:var(--fm);font-size:.52rem;color:var(--t3)">${c.doneMods}/${c.modules_list.length} modules · ${pct}% complete</div>
+    </div>`;
+  }).join('');
+}
+
+/* ══ PROGRESS OVERVIEW ══ */
+function renderProgOverview(){
+  const el=$('progOverview');if(!el)return;
+  let totalCourses=0,completedCourses=0,totalMods=0,doneMods=0,certs=0,exams=0;
+  BUNDLES.forEach(b=>{
+    if(!isBundleUnlocked(b))return;
+    b.courses.forEach(c=>{
+      totalCourses++;totalMods+=c.modules_list.length;
+      const d=(WATCH_DATA[c.id]?.done||[]).length;doneMods+=d;
+      if(d>=c.modules_list.length)completedCourses++;
+    });
+  });
+  certs=Object.keys(CERT_DATA).length;
+  exams=Object.values(EXAM_DATA).filter(e=>e.passed).length;
+  el.innerHTML=[
+    {vl:totalCourses,lb:'Unlocked Courses'},
+    {vl:completedCourses,lb:'Completed'},
+    {vl:doneMods+'/'+totalMods,lb:'Modules Done'},
+    {vl:exams,lb:'Exams Passed'},
+    {vl:certs,lb:'Certificates'},
+  ].map(s=>`<div class="prog-stat"><div class="prog-stat-vl">${s.vl}</div><div class="prog-stat-lb">${s.lb}</div></div>`).join('');
+}
+
+/* ══ AI TUTOR ══ */
+function initTutor(){
+  addBotMsg(`👋 Welcome to **Biluxe10 AI Tutor**, ${U.name}!\n\nI'm powered by Groq (Llama 3.1 70B) and here to help you with:\n• Understanding course concepts\n• Clearing doubts instantly\n• Practice questions\n• Project guidance\n• Career advice for Indian market\n\nWhat would you like to learn today?`);
+  const chips=$('tutorChips');
+  if(chips)chips.innerHTML=['Explain a concept','Practice questions','Help with project','Career guidance','Code review','Exam prep'].map(c=>`<div class="chip" onclick="sendChip('${c}')">${c}</div>`).join('');
+}
+
+function addBotMsg(text){
+  const msgs=$('tutorMsgs');if(!msgs)return;
+  const div=document.createElement('div');div.className='msg bot';
+  div.innerHTML=`<div class="msg-av bot">🤖</div><div class="msg-bubble">${formatAIText(text)}</div>`;
+  msgs.appendChild(div);msgs.scrollTop=msgs.scrollHeight;
+  chatHistory.push({role:'assistant',content:text});
+}
+function addUserMsg(text){
+  const msgs=$('tutorMsgs');if(!msgs)return;
+  const div=document.createElement('div');div.className='msg user';
+  div.innerHTML=`<div class="msg-av usr">${U.name?.[0]||'U'}</div><div class="msg-bubble">${text.replace(/\n/g,'<br>')}</div>`;
+  msgs.appendChild(div);msgs.scrollTop=msgs.scrollHeight;
+  chatHistory.push({role:'user',content:text});
+}
+function addTyping(){
+  const msgs=$('tutorMsgs');if(!msgs)return;
+  const div=document.createElement('div');div.className='msg bot';div.id='typing';
+  div.innerHTML=`<div class="msg-av bot">🤖</div><div class="typing-ind"><span></span><span></span><span></span></div>`;
+  msgs.appendChild(div);msgs.scrollTop=msgs.scrollHeight;
+}
+function removeTyping(){const t=$('typing');if(t)t.remove();}
+function handleTutorKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg();}}
+function autoResize(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,120)+'px';}
+function sendChip(text){const inp=$('tutorInp');if(inp){inp.value=text;sendMsg();}}
+
+async function sendMsg(){
+  const inp=$('tutorInp');if(!inp)return;
+  const text=inp.value.trim();if(!text)return;
+  inp.value='';inp.style.height='auto';
+  const send=$('tutorSend');if(send)send.disabled=true;
+  addUserMsg(text);addTyping();
+  try{
+    const sysPrompt=`You are the Biluxe10 AI Tutor — an expert Indian educator for an online learning platform. You help students with:
+- Digital marketing, entrepreneurship, web development, data science, AI/ML, generative AI
+- Creative skills: UI/UX, video editing, fashion, makeup artistry, mehendi
+- Career guidance specifically for the Indian job market (LPA salary targets, Indian companies, etc.)
+- Practical coding help with real examples
+- Project guidance and review
+
+Student name: ${U.name}
+Bundle: ${getBundleForPrice(BPRICE).name} (₹${BPRICE})
+${currentContext?'Current Course: '+currentContext:''}
+
+Be warm, encouraging, clear, and practical. Use Indian context and examples. Format responses well with headers and bullet points where helpful. When explaining code, use markdown code blocks. Be concise but thorough. Never say you are Claude or any other AI — you are Biluxe10 AI Tutor.`;
+
+    const messages=[{role:'system',content:sysPrompt},...chatHistory.slice(-12)];
+    const resp=await fetch('https://api.groq.com/openai/v1/chat/completions',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+GROQ_API},
+      body:JSON.stringify({model:'llama-3.1-70b-versatile',messages,max_tokens:1024,temperature:0.75})
+    });
+    if(!resp.ok){const err=await resp.json();throw new Error(err.error?.message||'API error '+resp.status);}
+    const data=await resp.json();
+    removeTyping();
+    const reply=data.choices?.[0]?.message?.content;
+    if(!reply)throw new Error('Empty response from AI');
+    addBotMsg(reply);
+  }catch(e){
+    removeTyping();
+    addBotMsg(`❌ Error connecting to AI: ${e.message}\n\nPlease check your internet and try again. If this persists, contact support.`);
+  }
+  if(send)send.disabled=false;
+  inp.focus();
+}
+
+function clearChat(){
+  const msgs=$('tutorMsgs');if(msgs)msgs.innerHTML='';
+  chatHistory=[];
+  addBotMsg(`Chat cleared! Ready to help you again, ${U.name}. What would you like to learn?`);
+}
+function openAITutor(){goPage('ai-tutor');}
+function showScreenCapture(){$('screenModal').classList.add('on');}
+function sendScreenCapture(){
+  const desc=$('screenDesc')?.value?.trim();
+  if(!desc){toast('⚠','Please describe your problem first.');return;}
+  $('screenModal').classList.remove('on');
+  goPage('ai-tutor');
+  const inp=$('tutorInp');if(inp){inp.value='I need help with this: '+desc;sendMsg();}
+}
+
+/* ══ TELEGRAM ══ */
+async function sendTGNotification(msg){
+  try{await fetch(`https://api.telegram.org/bot${TG_BOT}/sendMessage`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chat_id:TG_CHAT,text:msg,parse_mode:'Markdown'})});}catch(e){}
+}
+
+/* ══ NAVIGATION ══ */
+function goPage(pg){
+  // Stop video if navigating away from course
+  if(pg!=='__stay__'){
+    const old=document.querySelector('#cvPlayerContainer iframe');
+    if(old&&pg!=='bundle-courses'&&pg!=='home'){/* keep playing */}
+  }
+  $('courseViewer').classList.remove('on');
+  document.querySelectorAll('.pg').forEach(p=>{p.classList.remove('on');p.style.display='';});
+  const target=$('pg-'+pg);if(target)target.classList.add('on');
+  document.querySelectorAll('.si').forEach(b=>b.classList.remove('on'));
+  document.querySelectorAll('.si').forEach(b=>{if(b.getAttribute('onclick')?.includes("'"+pg+"'"))b.classList.add('on');});
+  const labels={'home':'🎓 Learning Hub','my-learning':'▶ My Learning','ai-tutor':'🤖 AI Tutor','certificates':'🏆 Certificates','exam':'📝 Exam','bundle-courses':'Bundle Courses'};
+  T('tbPg',labels[pg]||'🎓 Learning Hub');
+  if(pg==='my-learning')renderMyLearning();
+  if(pg==='certificates')renderCertGallery();
+  if(pg==='home'){renderBundleGrid();renderProgOverview();}
+  if(window.innerWidth<860){$('sb').classList.remove('open');$('ham').classList.remove('open');}
+}
+
+function toggleSb(){$('sb').classList.toggle('open');$('ham').classList.toggle('open');}
+</script>
+</body>
+</html>
