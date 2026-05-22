@@ -1,0 +1,1597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Biluxe10 — Learning Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,700;0,9..144,900;1,9..144,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-storage-compat.js"></script>
+<script>
+const firebaseConfig={apiKey:"AIzaSyDxxkC9iD1V1w-53Kf4oBrHEXlBLvCc7sE",authDomain:"biluxe10-3e894.firebaseapp.com",projectId:"biluxe10-3e894",storageBucket:"biluxe10-3e894.appspot.com",messagingSenderId:"804749588233",appId:"1:804749588233:web:7777648c0c7834733c05d8"};
+if(!firebase.apps.length)firebase.initializeApp(firebaseConfig);
+const AUTH=firebase.auth(),DB=firebase.firestore(),STORAGE=firebase.storage();
+const san=e=>e.toLowerCase().trim().replace(/\./g,'_').replace(/@/g,'__at__');
+const COLS=['User-collection','user_collection','users','User_collection','user-collection'];
+let COL='User-collection';
+</script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+--bg:#07070A;--bg2:#0D0D12;--bg3:#121218;--bg4:#18181F;--bg5:#1E1E28;
+--border:rgba(255,255,255,0.055);--border2:rgba(255,255,255,0.1);--border3:rgba(255,255,255,0.16);
+--gold:#C8A96E;--gold2:#E2C48A;--gold3:#F0D9A8;
+--gA:rgba(200,169,110,0.08);--gB:rgba(200,169,110,0.15);--gC:rgba(200,169,110,0.04);
+--green:#22C55E;--grA:rgba(34,197,94,0.1);
+--red:#EF4444;--reA:rgba(239,68,68,0.1);
+--blue:#60A5FA;--blA:rgba(96,165,250,0.1);
+--vio:#A78BFA;--viA:rgba(167,139,250,0.1);
+--amber:#F59E0B;--amA:rgba(245,158,11,0.1);
+--cyan:#22D3EE;--cyA:rgba(34,211,238,0.1);
+--ink:#07070A;--text:#EDEDF0;--t2:#9B9BA8;--t3:#4B4B5A;--t4:#2A2A35;
+--fd:'Fraunces',serif;--fb:'Plus Jakarta Sans',sans-serif;--fm:'JetBrains Mono',monospace;
+--r:14px;--rs:10px;--nav:64px;
+--ease:cubic-bezier(0.16,1,0.3,1);--spring:cubic-bezier(0.34,1.56,0.64,1);
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--fb);line-height:1.6;overflow-x:hidden;min-height:100vh}
+body.lock{overflow:hidden}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-thumb{background:rgba(200,169,110,0.2);border-radius:2px}
+button,input,select,textarea{font-family:var(--fb)}
+
+/* GUARD */
+#guard{position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;transition:opacity .7s ease}
+#guard.fade{opacity:0;pointer-events:none}
+#guard.gone{display:none}
+.g-logo{font-family:var(--fd);font-size:clamp(3rem,10vw,5rem);font-weight:900;color:var(--gold);letter-spacing:-.03em;line-height:1;animation:logoPulse 2s ease infinite}
+@keyframes logoPulse{0%,100%{text-shadow:0 0 30px rgba(200,169,110,0.3)}50%{text-shadow:0 0 60px rgba(200,169,110,0.6)}}
+.g-logo sup{font-size:.4em;color:var(--t3);font-weight:400;vertical-align:super}
+.g-spin{width:36px;height:36px;border:2.5px solid rgba(200,169,110,.12);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.g-msg{font-family:var(--fm);font-size:.58rem;color:var(--t3);letter-spacing:.2em;text-transform:uppercase}
+.g-err{display:none;flex-direction:column;align-items:center;gap:14px;text-align:center;padding:24px;max-width:340px}
+.g-err-t{font-family:var(--fd);font-size:1.1rem;color:var(--red)}
+.g-err-d{font-size:.8rem;color:var(--t2);line-height:1.75}
+.g-btn{padding:11px 26px;background:var(--gold);color:var(--ink);border:none;border-radius:8px;font-weight:800;font-size:.8rem;cursor:pointer}
+
+/* TOPBAR */
+.topbar{height:var(--nav);background:rgba(7,7,10,0.95);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 16px;position:sticky;top:0;z-index:200;gap:10px}
+.tb-l{display:flex;align-items:center;gap:10px;min-width:0}
+.tb-logo{font-family:var(--fd);font-size:1.05rem;font-weight:900;color:var(--gold);text-decoration:none;white-space:nowrap}
+.tb-divider{width:1px;height:20px;background:var(--border2);flex-shrink:0}
+.tb-r{display:flex;align-items:center;gap:6px;flex-wrap:nowrap}
+.tb-tab{padding:6px 12px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--t2);font-size:.7rem;font-weight:600;cursor:pointer;transition:all .2s;white-space:nowrap}
+.tb-tab:hover{border-color:rgba(200,169,110,.3);color:var(--gold)}
+.tb-tab.on{background:var(--gB);border-color:rgba(200,169,110,.3);color:var(--gold)}
+.tb-back{padding:6px 12px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;color:var(--t2);font-size:.7rem;font-weight:600;cursor:pointer;transition:all .2s;text-decoration:none;display:flex;align-items:center;gap:5px;white-space:nowrap}
+.tb-back:hover{color:var(--text)}
+.btn-sm-nav{padding:5px 10px;background:var(--gA);color:var(--gold);border:1px solid rgba(200,169,110,.2);border-radius:7px;font-weight:700;font-size:.65rem;cursor:pointer;transition:all .2s;white-space:nowrap}
+.btn-sm-nav:hover{background:var(--gB)}
+
+/* APP */
+#app{opacity:0;transition:opacity .5s ease;min-height:100vh}
+#app.show{opacity:1}
+
+/* TAB CONTENT */
+.tab-pane{display:none;padding:16px;animation:pgIn .3s var(--ease)}
+.tab-pane.on{display:block}
+@keyframes pgIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* CARDS */
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
+
+/* BUTTONS */
+.btn-g{padding:9px 18px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--ink);border:none;border-radius:var(--rs);font-weight:800;font-size:.74rem;cursor:pointer;transition:all .2s}
+.btn-g:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(200,169,110,0.3)}
+.btn-o{padding:9px 18px;background:transparent;color:var(--t2);border:1px solid var(--border2);border-radius:var(--rs);font-weight:600;font-size:.74rem;cursor:pointer;transition:all .2s}
+.btn-o:hover{border-color:var(--border3);color:var(--text)}
+.btn-sm{padding:6px 12px;background:var(--gA);color:var(--gold);border:1px solid rgba(200,169,110,.2);border-radius:7px;font-weight:700;font-size:.68rem;cursor:pointer;transition:all .2s}
+.btn-sm:hover{background:var(--gB)}
+.btn-red{padding:9px 18px;background:var(--reA);color:var(--red);border:1px solid rgba(239,68,68,.2);border-radius:var(--rs);font-weight:700;font-size:.74rem;cursor:pointer;transition:all .2s}
+.btn-red:hover{background:rgba(239,68,68,.2)}
+
+/* BADGES */
+.bdg{display:inline-flex;align-items:center;padding:3px 8px;border-radius:5px;font-family:var(--fm);font-size:.52rem;font-weight:700;letter-spacing:.04em}
+.bdg.ok{background:var(--grA);color:var(--green);border:1px solid rgba(34,197,94,.2)}
+.bdg.pn{background:var(--amA);color:var(--amber);border:1px solid rgba(245,158,11,.2)}
+.bdg.bl{background:var(--blA);color:var(--blue);border:1px solid rgba(96,165,250,.2)}
+.bdg.go{background:var(--gA);color:var(--gold);border:1px solid rgba(200,169,110,.2)}
+.bdg.vi{background:var(--viA);color:var(--vio);border:1px solid rgba(167,139,250,.2)}
+
+/* TOAST */
+#toast{position:fixed;bottom:24px;right:24px;z-index:9999;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--rs);padding:13px 18px;max-width:320px;display:flex;align-items:center;gap:9px;transform:translateY(90px);opacity:0;transition:all .38s var(--spring);font-size:.76rem;color:var(--text);box-shadow:0 12px 40px rgba(0,0,0,0.45)}
+#toast.on{transform:translateY(0);opacity:1}
+
+/* ═══ COURSES TAB ═══ */
+.cat-tabs{display:flex;gap:5px;flex-wrap:wrap;padding:14px 16px 0;border-bottom:1px solid var(--border)}
+.cat-tab{padding:7px 12px;border-radius:8px 8px 0 0;border:1px solid transparent;background:none;color:var(--t3);font-size:.68rem;font-weight:600;cursor:pointer;transition:all .2s;white-space:nowrap;border-bottom:none}
+.cat-tab:hover{color:var(--t2);background:var(--bg3)}
+.cat-tab.on{background:var(--bg);border-color:var(--border);border-bottom-color:var(--bg);color:var(--gold);margin-bottom:-1px;padding-bottom:8px}
+.course-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px;padding:14px}
+.c-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;cursor:pointer;transition:all .22s;position:relative}
+.c-card:hover{transform:translateY(-3px);border-color:rgba(200,169,110,.2);box-shadow:0 12px 40px rgba(0,0,0,.3)}
+.c-card.locked{opacity:.6;cursor:default}
+.c-card-thumb{height:120px;background:linear-gradient(135deg,var(--bg4),var(--bg5));display:flex;align-items:center;justify-content:center;font-size:2.8rem;position:relative;overflow:hidden}
+.c-card-body{padding:13px}
+.c-card-cat{font-family:var(--fm);font-size:.49rem;color:var(--gold);text-transform:uppercase;letter-spacing:.12em;margin-bottom:4px}
+.c-card-t{font-size:.8rem;font-weight:700;color:var(--text);margin-bottom:5px;line-height:1.35}
+.c-card-meta{display:flex;align-items:center;gap:7px;font-family:var(--fm);font-size:.51rem;color:var(--t3);margin-bottom:9px;flex-wrap:wrap}
+.c-card-pg{height:3px;background:var(--bg4);border-radius:3px;overflow:hidden}
+.c-card-pgf{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold2));border-radius:3px;transition:width .6s var(--ease)}
+.c-lock-badge{position:absolute;top:8px;right:8px;background:rgba(0,0,0,.75);border:1px solid var(--border2);border-radius:6px;padding:3px 8px;font-family:var(--fm);font-size:.49rem;color:var(--t3)}
+
+/* MODULE LIST */
+.module-list{display:flex;flex-direction:column;gap:0}
+.mod-item{display:flex;align-items:center;gap:11px;padding:10px 14px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .18s}
+.mod-item:hover{background:var(--bg3)}
+.mod-item.active{background:var(--gA)}
+.mod-num{width:26px;height:26px;border-radius:50%;background:var(--bg4);display:flex;align-items:center;justify-content:center;font-family:var(--fm);font-size:.56rem;font-weight:700;color:var(--t3);flex-shrink:0}
+.mod-item.done .mod-num{background:var(--grA);color:var(--green)}
+.mod-item.active .mod-num{background:var(--gB);color:var(--gold)}
+.mod-t{font-size:.74rem;font-weight:600;flex:1;line-height:1.3}
+.mod-dur{font-family:var(--fm);font-size:.5rem;color:var(--t3);flex-shrink:0}
+
+/* VIDEO PLAYER */
+.player-layout{display:grid;grid-template-columns:1fr 300px;gap:0;height:calc(100vh - var(--nav));overflow:hidden}
+.player-main{display:flex;flex-direction:column;overflow-y:auto}
+.player-wrap{position:relative;width:100%;background:#000;aspect-ratio:16/9;user-select:none}
+.player-wrap iframe{width:100%;height:100%;border:none;display:block;pointer-events:auto}
+.player-overlay{position:absolute;inset:0;z-index:5;background:transparent;pointer-events:none}
+.player-overlay.active{pointer-events:auto}
+.player-info{padding:14px}
+.player-title{font-family:var(--fd);font-size:1.05rem;font-weight:900;margin-bottom:6px}
+.player-meta{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-bottom:10px}
+.player-sidebar{border-left:1px solid var(--border);overflow-y:auto;background:var(--bg2)}
+.player-sidebar-hd{padding:11px 14px;border-bottom:1px solid var(--border);font-family:var(--fd);font-size:.85rem;font-weight:700;position:sticky;top:0;background:var(--bg2);z-index:10}
+.player-bottom{padding:10px 14px;border-top:1px solid var(--border);background:var(--bg2);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+
+/* COMPLETION OPTIONS */
+.completion-box{margin:14px;padding:18px;background:linear-gradient(135deg,rgba(200,169,110,.1),rgba(167,139,250,.06));border:1px solid rgba(200,169,110,.2);border-radius:var(--r)}
+.completion-options{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:12px}
+.comp-opt{background:var(--bg3);border:1px solid var(--border);border-radius:var(--rs);padding:13px;cursor:pointer;transition:all .22s;text-align:center}
+.comp-opt:hover{border-color:rgba(200,169,110,.3);background:var(--gA)}
+.comp-opt-ic{font-size:1.5rem;margin-bottom:5px}
+.comp-opt-t{font-size:.74rem;font-weight:700;color:var(--text);margin-bottom:3px}
+.comp-opt-s{font-family:var(--fm);font-size:.5rem;color:var(--t3)}
+
+/* AI TUTOR */
+.chat-wrap{display:flex;flex-direction:column;height:calc(100vh - var(--nav) - 80px);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;background:var(--bg2)}
+.chat-msgs{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:11px}
+.chat-bubble{max-width:82%;padding:11px 14px;border-radius:12px;font-size:.78rem;line-height:1.65}
+.chat-bubble.user{align-self:flex-end;background:var(--gB);color:var(--text);border-radius:12px 12px 2px 12px}
+.chat-bubble.ai{align-self:flex-start;background:var(--bg3);border:1px solid var(--border);color:var(--text);border-radius:2px 12px 12px 12px}
+.chat-bubble.ai .ai-name{font-family:var(--fm);font-size:.49rem;color:var(--gold);margin-bottom:5px;text-transform:uppercase;letter-spacing:.12em}
+.chat-input-area{padding:12px 14px;border-top:1px solid var(--border);background:var(--bg2);display:flex;gap:9px;align-items:flex-end}
+.chat-inp{flex:1;background:var(--bg3);border:1px solid var(--border2);border-radius:10px;padding:9px 13px;font-size:.78rem;color:var(--text);outline:none;resize:none;max-height:90px;min-height:40px;transition:border-color .2s;font-family:var(--fb)}
+.chat-inp:focus{border-color:rgba(200,169,110,.38)}
+.chat-send{padding:9px 14px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--ink);border:none;border-radius:8px;font-weight:800;font-size:.74rem;cursor:pointer;white-space:nowrap;height:40px}
+.typing-dot{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--gold);animation:tdot .8s ease infinite;margin:0 2px}
+.typing-dot:nth-child(2){animation-delay:.15s}
+.typing-dot:nth-child(3){animation-delay:.3s}
+@keyframes tdot{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+
+/* CERTIFICATES */
+.cert-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:14px}
+.cert-card{background:linear-gradient(135deg,rgba(200,169,110,.1),rgba(200,169,110,.05));border:1px solid rgba(200,169,110,.25);border-radius:16px;padding:18px;position:relative;overflow:hidden}
+.cert-card::before{content:'';position:absolute;top:-30px;right:-30px;width:110px;height:110px;border-radius:50%;background:radial-gradient(circle,rgba(200,169,110,.12),transparent);pointer-events:none}
+.cert-logo{font-family:var(--fd);font-size:.95rem;font-weight:900;color:var(--gold);margin-bottom:2px}
+.cert-sub{font-family:var(--fm);font-size:.5rem;color:var(--t3);text-transform:uppercase;letter-spacing:.12em;margin-bottom:11px}
+.cert-nm{font-family:var(--fd);font-size:1rem;font-weight:700;color:var(--text);margin-bottom:3px}
+.cert-course{font-size:.74rem;color:var(--t2);margin-bottom:7px}
+.cert-sig{border-top:1px solid rgba(200,169,110,.2);padding-top:9px;margin-top:9px;display:flex;align-items:center;justify-content:space-between}
+.cert-sig-nm{font-family:var(--fd);font-size:.85rem;font-weight:700;color:var(--gold)}
+.cert-sig-role{font-family:var(--fm);font-size:.48rem;color:var(--t3)}
+
+/* EXAM */
+.exam-wrap{max-width:780px;margin:0 auto;padding:14px}
+.exam-q{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:18px;margin-bottom:12px}
+.exam-q-num{font-family:var(--fm);font-size:.53rem;color:var(--gold);text-transform:uppercase;letter-spacing:.12em;margin-bottom:5px}
+.exam-q-text{font-size:.86rem;font-weight:600;margin-bottom:13px;line-height:1.55}
+.exam-opts{display:flex;flex-direction:column;gap:7px}
+.exam-opt{display:flex;align-items:center;gap:9px;padding:9px 13px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--rs);cursor:pointer;transition:all .18s;font-size:.78rem}
+.exam-opt:hover{border-color:rgba(200,169,110,.2);background:var(--gA)}
+.exam-opt.sel{border-color:rgba(200,169,110,.4);background:var(--gB);color:var(--gold);font-weight:700}
+.exam-opt.correct{border-color:rgba(34,197,94,.4);background:rgba(34,197,94,.1);color:var(--green)}
+.exam-opt.wrong{border-color:rgba(239,68,68,.4);background:rgba(239,68,68,.1);color:var(--red)}
+.exam-opt-letter{width:22px;height:22px;border-radius:50%;background:var(--bg4);display:flex;align-items:center;justify-content:center;font-family:var(--fm);font-size:.58rem;font-weight:700;flex-shrink:0}
+.exam-timer{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rs);padding:9px 14px;display:flex;align-items:center;gap:10px;margin-bottom:14px;position:sticky;top:0;z-index:10}
+.exam-timer-val{font-family:var(--fm);font-size:1.15rem;font-weight:700;color:var(--gold)}
+.exam-timer-val.warn{color:var(--red);animation:blink .5s ease infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.4}}
+.exam-prog-bar{flex:1;height:4px;background:var(--bg4);border-radius:4px;overflow:hidden}
+.exam-prog-fill{height:100%;background:linear-gradient(90deg,var(--green),var(--gold));border-radius:4px;transition:width .5s linear}
+
+/* PDF NOTES */
+.pdf-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:11px}
+.pdf-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--rs);padding:14px;cursor:pointer;transition:all .22s;display:flex;align-items:center;gap:11px}
+.pdf-card:hover{border-color:rgba(200,169,110,.2);background:var(--gA);transform:translateY(-2px)}
+.pdf-ic{font-size:1.8rem;flex-shrink:0}
+.pdf-nm{font-size:.76rem;font-weight:700;color:var(--text);margin-bottom:2px;line-height:1.3}
+.pdf-sz{font-family:var(--fm);font-size:.5rem;color:var(--t3)}
+
+/* MODAL */
+.modal-bg{position:fixed;inset:0;z-index:900;background:rgba(0,0,0,.8);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;padding:16px}
+.modal-bg.on{display:flex}
+.modal{background:var(--bg2);border:1px solid var(--border2);border-radius:18px;padding:0;max-width:480px;width:100%;overflow:hidden;max-height:90vh;overflow-y:auto}
+.modal-hd{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--bg2);z-index:5}
+.modal-t{font-family:var(--fd);font-size:.95rem;font-weight:700}
+.modal-body{padding:18px 20px}
+.modal-close{background:none;border:none;color:var(--t2);font-size:1.1rem;cursor:pointer;padding:4px}
+.modal-close:hover{color:var(--red)}
+.proctor-cam{width:100%;aspect-ratio:4/3;background:#000;border-radius:10px;overflow:hidden;position:relative;margin-bottom:12px}
+.proctor-cam video{width:100%;height:100%;object-fit:cover}
+.proctor-badge{position:absolute;top:7px;left:7px;background:rgba(239,68,68,.9);color:#fff;font-family:var(--fm);font-size:.5rem;padding:3px 7px;border-radius:4px;font-weight:700;display:flex;align-items:center;gap:4px}
+.proctor-badge::before{content:'';width:5px;height:5px;border-radius:50%;background:#fff;animation:pdot 1s ease infinite}
+@keyframes pdot{0%,100%{opacity:1}50%{opacity:.3}}
+.upload-box{border:2px dashed var(--border2);border-radius:var(--r);padding:28px 16px;text-align:center;cursor:pointer;transition:all .22s}
+.upload-box:hover,.upload-box.drag{border-color:rgba(200,169,110,.4);background:var(--gC)}
+.upload-box-ic{font-size:2rem;margin-bottom:8px}
+.upload-box-t{font-size:.84rem;font-weight:700;margin-bottom:3px}
+.upload-box-s{font-size:.72rem;color:var(--t3)}
+.inp{width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--rs);padding:9px 13px;font-size:.78rem;color:var(--text);outline:none}
+.inp:focus{border-color:rgba(200,169,110,.38)}
+.lbl{font-family:var(--fm);font-size:.53rem;color:var(--t3);text-transform:uppercase;letter-spacing:.1em;display:block;margin-bottom:4px;margin-top:10px}
+
+/* CAMERA OVERLAY for exam */
+#proctoringOverlay{position:fixed;bottom:16px;right:16px;z-index:800;display:none;flex-direction:column;gap:6px;align-items:flex-end}
+#proctoringOverlay.on{display:flex}
+#proctoringCam{width:120px;height:90px;border-radius:10px;overflow:hidden;border:2px solid var(--red);background:#000}
+#proctoringCam video{width:100%;height:100%;object-fit:cover}
+.proctoring-badge{background:rgba(239,68,68,.9);color:#fff;font-family:var(--fm);font-size:.48rem;padding:3px 8px;border-radius:4px;font-weight:700;display:flex;align-items:center;gap:4px}
+.proctoring-badge::before{content:'';width:5px;height:5px;border-radius:50%;background:#fff;animation:pdot 1s ease infinite}
+
+/* SCREEN RECORD WARNING */
+.rec-warning{position:fixed;top:var(--nav);left:0;right:0;background:rgba(239,68,68,.95);color:#fff;font-family:var(--fm);font-size:.62rem;padding:6px 16px;text-align:center;z-index:300;display:none}
+.rec-warning.on{display:block}
+
+/* OVERALL PROGRESS */
+.progress-header{display:flex;align-items:center;justify-content:space-between;padding:12px 16px 4px;flex-wrap:wrap;gap:10px}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+.player-layout{grid-template-columns:1fr;height:auto}
+.player-sidebar{border-left:none;border-top:1px solid var(--border);max-height:280px}
+.completion-options{grid-template-columns:1fr 1fr}
+.cert-grid{grid-template-columns:1fr}
+.tb-tab{font-size:.62rem;padding:5px 9px}
+}
+@media(max-width:600px){
+.cat-tabs{gap:3px;padding:9px 10px 0}
+.cat-tab{padding:5px 9px;font-size:.62rem}
+.course-grid{grid-template-columns:1fr}
+.tb-tab:not(.show-mobile){display:none}
+.completion-options{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div id="toast"></div>
+
+<!-- PROCTORING OVERLAY (Live camera during exam) -->
+<div id="proctoringOverlay">
+  <div class="proctoring-badge">● REC · PROCTORED</div>
+  <div id="proctoringCam"><video id="proctoringVidLive" autoplay muted playsinline></video></div>
+</div>
+
+<!-- REC WARNING BAR -->
+<div class="rec-warning" id="recWarning">⚠ PROCTORED EXAM IN PROGRESS — Screen + Camera Recording Active — Do Not Switch Tabs</div>
+
+<!-- GUARD -->
+<div id="guard">
+  <div class="g-logo">Biluxe<sup>10</sup></div>
+  <div class="g-spin" id="gSpin"></div>
+  <div class="g-msg" id="gMsg">Loading Learning Hub…</div>
+  <div class="g-err" id="gErr">
+    <div class="g-err-t">⚠ Access Denied</div>
+    <div class="g-err-d" id="gErrD">Something went wrong.</div>
+    <button class="g-btn" onclick="location.href='auth.html'">← Back to Login</button>
+  </div>
+</div>
+
+<!-- PROCTOR MODAL -->
+<div class="modal-bg" id="proctorModal">
+  <div class="modal">
+    <div class="modal-hd">
+      <div class="modal-t">🎓 Exam Proctoring Setup</div>
+      <button class="modal-close" onclick="closeProctor()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="proctor-cam" id="proctorCamWrap">
+        <video id="proctorVid" autoplay muted playsinline></video>
+        <div class="proctor-badge">● LIVE</div>
+      </div>
+      <p style="font-size:.78rem;color:var(--t2);line-height:1.7;margin-bottom:12px">📷 Your face & screen will be monitored during the exam. By proceeding, you agree to the proctoring policy.</p>
+      <div style="background:var(--amA);border:1px solid rgba(245,158,11,.2);border-radius:8px;padding:11px 13px;font-size:.74rem;color:var(--amber);line-height:1.65;margin-bottom:14px">
+        ⚠ <strong>Rules:</strong> No switching tabs · No looking away · No external help · 40 minutes · 100 questions · Minimum 40/100 to pass
+      </div>
+      <div style="display:flex;gap:9px">
+        <button class="btn-g" onclick="startExamForReal()" id="startExamBtn" style="flex:1">🚀 Start Proctored Exam</button>
+        <button class="btn-o" onclick="closeProctor()">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PROJECT MODAL -->
+<div class="modal-bg" id="projectModal">
+  <div class="modal" style="max-width:560px">
+    <div class="modal-hd">
+      <div class="modal-t">📁 Submit Your Project</div>
+      <button class="modal-close" onclick="closeProject()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div id="projectCourseTitle" style="font-family:var(--fd);font-size:.95rem;font-weight:700;margin-bottom:3px;color:var(--gold)"></div>
+      <div style="font-size:.74rem;color:var(--t2);margin-bottom:14px">Upload your completed project. After admin review, your certificate will be issued.</div>
+      <label class="lbl" style="margin-top:0">Project Type</label>
+      <select id="projType" class="inp" style="margin-bottom:0">
+        <option value="link">🔗 Project Link (GitHub / Live URL)</option>
+        <option value="file">📄 Upload File (PDF / ZIP)</option>
+        <option value="video">🎥 Video Presentation</option>
+        <option value="screenshot">📸 Screenshots / Images</option>
+      </select>
+      <label class="lbl">Project URL / Link</label>
+      <input id="projUrl" class="inp" placeholder="https://github.com/yourusername/project">
+      <label class="lbl">What did you build / learn?</label>
+      <textarea id="projDesc" rows="3" class="inp" placeholder="Describe your project, what you built, key learnings…" style="resize:vertical;min-height:80px"></textarea>
+      <label class="lbl">Upload File (optional)</label>
+      <div class="upload-box" id="projDropZone" onclick="document.getElementById('projFileInput').click()" ondragover="this.classList.add('drag');event.preventDefault()" ondragleave="this.classList.remove('drag')" ondrop="handleDrop(event)">
+        <div class="upload-box-ic">📎</div>
+        <div class="upload-box-t">Drop file or click to upload</div>
+        <div class="upload-box-s">PDF, ZIP, MP4 — max 50MB</div>
+        <input type="file" id="projFileInput" style="display:none" onchange="fileSelected(this)">
+      </div>
+      <div id="projFileChosen" style="display:none;margin-top:7px;font-size:.74rem;color:var(--green)"></div>
+      <div style="display:flex;gap:9px;margin-top:13px">
+        <button class="btn-g" onclick="submitProject()" style="flex:1">📤 Submit Project</button>
+        <button class="btn-o" onclick="closeProject()">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CERT VERIFY MODAL -->
+<div class="modal-bg" id="certVerifyModal">
+  <div class="modal" style="max-width:500px">
+    <div class="modal-hd">
+      <div class="modal-t">🔍 Verify Certificate</div>
+      <button class="modal-close" onclick="document.getElementById('certVerifyModal').classList.remove('on')">✕</button>
+    </div>
+    <div class="modal-body">
+      <label class="lbl" style="margin-top:0">Certificate ID</label>
+      <div style="display:flex;gap:8px;margin-bottom:14px">
+        <input id="certVerifyId" class="inp" placeholder="e.g. BLX10-2025-001234" style="flex:1">
+        <button class="btn-g" onclick="verifyCert()">Verify</button>
+      </div>
+      <div id="certVerifyResult"></div>
+    </div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="tb-l">
+      <a href="dashboard.html" class="tb-back">← Dashboard</a>
+      <div class="tb-divider"></div>
+      <div style="font-family:var(--fd);font-size:.9rem;font-weight:700;color:var(--gold);white-space:nowrap">🎓 Learning Hub</div>
+    </div>
+    <div class="tb-r">
+      <button class="tb-tab on show-mobile" onclick="switchTab('courses',this)">📚 Courses</button>
+      <button class="tb-tab" onclick="switchTab('ai-tutor',this)">🤖 AI Tutor</button>
+      <button class="tb-tab" onclick="switchTab('certificates',this)">🏆 Certs</button>
+      <button class="tb-tab" onclick="switchTab('notes',this)">📝 Notes</button>
+      <button class="btn-sm-nav" onclick="document.getElementById('certVerifyModal').classList.add('on')">🔍 Verify</button>
+    </div>
+  </div>
+
+  <!-- ══ COURSES TAB ══ -->
+  <div class="tab-pane on" id="tab-courses">
+    <div id="playerView" style="display:none"></div>
+    <div id="courseListView">
+      <div class="progress-header">
+        <div>
+          <div style="font-family:var(--fd);font-size:1.15rem;font-weight:900;margin-bottom:2px">My Courses</div>
+          <div style="font-size:.74rem;color:var(--t2)" id="bundleLabel">Loading your bundle…</div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <div id="overallProgress" style="display:flex;align-items:center;gap:7px;font-family:var(--fm);font-size:.6rem;color:var(--t3)">
+            <div style="height:5px;width:70px;background:var(--bg4);border-radius:3px;overflow:hidden"><div id="overallPgBar" style="height:100%;background:linear-gradient(90deg,var(--gold),var(--gold2));width:0%;transition:width .8s var(--ease)"></div></div>
+            <span id="overallPct">0%</span>
+          </div>
+        </div>
+      </div>
+      <div style="margin:0 0 4px;background:transparent">
+        <div class="cat-tabs" id="catTabs"></div>
+        <div class="course-grid" id="courseGrid"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ AI TUTOR TAB ══ -->
+  <div class="tab-pane" id="tab-ai-tutor">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:9px;margin-bottom:12px">
+      <div>
+        <div style="font-family:var(--fd);font-size:1.15rem;font-weight:900;margin-bottom:2px">🤖 AI Tutor — Free</div>
+        <div style="font-size:.74rem;color:var(--t2)">Ask anything about your courses. Powered by Anthropic Claude.</div>
+      </div>
+      <div style="display:flex;gap:7px;align-items:center">
+        <select id="tutorCtx" style="background:var(--bg3);border:1px solid var(--border2);border-radius:var(--rs);padding:6px 11px;font-size:.72rem;color:var(--text);outline:none;max-width:180px">
+          <option value="">All Topics</option>
+        </select>
+        <button class="btn-sm" onclick="clearChat()">🗑 Clear</button>
+      </div>
+    </div>
+    <div class="chat-wrap">
+      <div class="chat-msgs" id="chatMsgs">
+        <div class="chat-bubble ai">
+          <div class="ai-name">Biluxe10 AI Tutor</div>
+          Hello! 👋 I'm your free AI Tutor powered by Claude. I can help you with:<br><br>
+          📚 <strong>Course concepts</strong> — any topic from your enrolled courses<br>
+          💡 <strong>Doubt clearing</strong> — ask any question anytime<br>
+          🛠 <strong>Project guidance</strong> — help planning & building projects<br>
+          📝 <strong>Exam prep</strong> — quiz you on course topics<br>
+          🎤 <strong>Mock Q&A</strong> — interview-style practice<br><br>
+          What would you like to learn today?
+        </div>
+      </div>
+      <div class="chat-input-area">
+        <textarea class="chat-inp" id="chatInput" placeholder="Ask me anything about your courses…" rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChat()}"></textarea>
+        <button class="chat-send" onclick="sendChat()">Send ↑</button>
+      </div>
+    </div>
+    <div style="padding:7px 0 0;font-family:var(--fm);font-size:.5rem;color:var(--t3);text-align:center">Powered by Anthropic Claude · Free for all Biluxe10 members</div>
+  </div>
+
+  <!-- ══ CERTIFICATES TAB ══ -->
+  <div class="tab-pane" id="tab-certificates">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:9px;margin-bottom:14px">
+      <div>
+        <div style="font-family:var(--fd);font-size:1.15rem;font-weight:900;margin-bottom:2px">🏆 Certificates</div>
+        <div style="font-size:.74rem;color:var(--t2)">Issued & signed by Syed Afshar Khadri · Founder, Biluxe10</div>
+      </div>
+      <button class="btn-sm" onclick="document.getElementById('certVerifyModal').classList.add('on')">🔍 Verify Certificate</button>
+    </div>
+    <div style="background:linear-gradient(135deg,rgba(200,169,110,.08),rgba(167,139,250,.05));border:1px solid rgba(200,169,110,.18);border-radius:16px;padding:18px;margin-bottom:14px">
+      <div style="font-family:var(--fd);font-size:.92rem;font-weight:700;margin-bottom:8px">How to earn your certificate</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:9px">
+        <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--rs);padding:11px;text-align:center"><div style="font-size:1.3rem;margin-bottom:4px">▶️</div><div style="font-size:.72rem;font-weight:700;margin-bottom:2px">1. Complete Course</div><div style="font-family:var(--fm);font-size:.5rem;color:var(--t3)">Watch all modules</div></div>
+        <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--rs);padding:11px;text-align:center"><div style="font-size:1.3rem;margin-bottom:4px">📝</div><div style="font-size:.72rem;font-weight:700;margin-bottom:2px">2. Pass Exam</div><div style="font-family:var(--fm);font-size:.5rem;color:var(--t3)">40/100 minimum</div></div>
+        <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--rs);padding:11px;text-align:center"><div style="font-size:1.3rem;margin-bottom:4px">📁</div><div style="font-size:.72rem;font-weight:700;margin-bottom:2px">3. Submit Project</div><div style="font-family:var(--fm);font-size:.5rem;color:var(--t3)">Upload your work</div></div>
+        <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--rs);padding:11px;text-align:center"><div style="font-size:1.3rem;margin-bottom:4px">🏆</div><div style="font-size:.72rem;font-weight:700;margin-bottom:2px">4. Get Certificate</div><div style="font-family:var(--fm);font-size:.5rem;color:var(--t3)">Signed by founder</div></div>
+      </div>
+    </div>
+    <div class="cert-grid" id="certGrid">
+      <div style="grid-column:1/-1;text-align:center;padding:36px 20px;color:var(--t3)">
+        <div style="font-size:2rem;margin-bottom:7px">🏆</div>
+        <p style="font-size:.74rem">Complete a course + pass exam + submit project to earn your certificate.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ NOTES TAB ══ -->
+  <div class="tab-pane" id="tab-notes">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:9px;margin-bottom:14px">
+      <div>
+        <div style="font-family:var(--fd);font-size:1.15rem;font-weight:900;margin-bottom:2px">📝 PDF Notes & Resources</div>
+        <div style="font-size:.74rem;color:var(--t2)">Downloadable notes for each course in your bundle.</div>
+      </div>
+    </div>
+    <div class="pdf-grid" id="pdfGrid">
+      <div style="grid-column:1/-1;text-align:center;padding:36px;color:var(--t3)">Loading notes…</div>
+    </div>
+  </div>
+
+</div><!-- /app -->
+
+<script>
+/* ════════════════════════════════════
+   GLOBAL STATE
+════════════════════════════════════ */
+let U={},UD={},BPRICE=0,WATCH_DATA={},CERT_DATA={},EXAM_STATE=null,MEDIA_STREAM=null;
+let CURRENT_COURSE=null,CURRENT_CAT=null,CURRENT_MODULE=0,chatHistory=[];
+let pendingExamCid=null,pendingExamCatId=null,uploadedFile=null,projectCid=null,projectCatId=null;
+let examTimerInterval=null;
+let tabSwitchCount=0,tabSwitchWarned=false;
+
+/* ════════════════════════════════════
+   BUNDLES
+════════════════════════════════════ */
+const BUNDLES=[
+  {name:'Starter',p:499,ic:'🌟'},
+  {name:'Pro',p:999,ic:'🚀'},
+  {name:'Professional',p:2499,ic:'🎨'},
+  {name:'Elite',p:3699,ic:'📊'},
+  {name:'Premium',p:4999,ic:'💻'},
+  {name:'Master',p:6999,ic:'☁️'},
+  {name:'Elite Pro',p:11999,ic:'🤖'},
+  {name:'Legend',p:15999,ic:'🧠'},
+  {name:'Ultimate',p:23999,ic:'👑'},
+];
+
+/* ════════════════════════════════════
+   COURSES DATA
+════════════════════════════════════ */
+const CATS=[
+  {id:'starter',lb:'🚀 Starter',em:'🚀',courses:[
+    {id:'s1',t:'Digital Entrepreneurship Basics',p:499,h:'4 hrs',b:'Starter',modules:[
+      {t:'Introduction to Digital Business',url:'https://youtu.be/x5hf-1Nj-ck',dur:'45 min'},
+      {t:'Finding Your Niche',url:'https://youtu.be/x5hf-1Nj-ck',dur:'38 min'},
+      {t:'Building Online Presence',url:'https://youtu.be/x5hf-1Nj-ck',dur:'42 min'},
+      {t:'Monetization Strategies',url:'https://youtu.be/x5hf-1Nj-ck',dur:'50 min'},
+      {t:'Scaling Your Business',url:'https://youtu.be/x5hf-1Nj-ck',dur:'45 min'},
+    ]},
+    {id:'s2',t:'Canva & Content Creation',p:499,h:'3 hrs',b:'Popular',modules:[
+      {t:'Canva Interface Basics',url:'https://youtu.be/x7-XSJHcaVI',dur:'35 min'},
+      {t:'Design Principles',url:'https://youtu.be/x7-XSJHcaVI',dur:'40 min'},
+      {t:'Social Media Templates',url:'https://youtu.be/x7-XSJHcaVI',dur:'38 min'},
+      {t:'Brand Kit & Identity',url:'https://youtu.be/x7-XSJHcaVI',dur:'27 min'},
+    ]},
+    {id:'s3',t:'WhatsApp Business Marketing',p:499,h:'3 hrs',b:'Hot',modules:[
+      {t:'WhatsApp Business Setup',url:'https://youtu.be/PlVxtty0wrI',dur:'30 min'},
+      {t:'Broadcast Lists & Groups',url:'https://youtu.be/PlVxtty0wrI',dur:'35 min'},
+      {t:'Catalog & Payments',url:'https://youtu.be/PlVxtty0wrI',dur:'33 min'},
+      {t:'WhatsApp Automation',url:'https://youtu.be/PlVxtty0wrI',dur:'42 min'},
+    ]},
+    {id:'s4',t:'ChatGPT for Daily Work',p:499,h:'3 hrs',b:'Trending',modules:[
+      {t:'ChatGPT Fundamentals',url:'https://youtu.be/IcCAEudzEDw',dur:'32 min'},
+      {t:'Prompt Engineering 101',url:'https://youtu.be/IcCAEudzEDw',dur:'40 min'},
+      {t:'Use Cases for Business',url:'https://youtu.be/IcCAEudzEDw',dur:'38 min'},
+      {t:'Automation with AI',url:'https://youtu.be/IcCAEudzEDw',dur:'30 min'},
+    ]},
+  ]},
+  {id:'digital',lb:'📈 Digital Marketing',em:'📈',courses:[
+    {id:'d1',t:'Affiliate Marketing Mastery',p:999,h:'8 hrs',b:'Hot',modules:[
+      {t:'Affiliate Marketing Basics',url:'https://youtu.be/TF3BhN_dTdo',dur:'55 min'},
+      {t:'Choosing Affiliate Networks',url:'https://youtu.be/TF3BhN_dTdo',dur:'50 min'},
+      {t:'Creating Content that Converts',url:'https://youtu.be/TF3BhN_dTdo',dur:'60 min'},
+      {t:'SEO for Affiliates',url:'https://youtu.be/TF3BhN_dTdo',dur:'48 min'},
+      {t:'Email Funnel for Affiliates',url:'https://youtu.be/TF3BhN_dTdo',dur:'52 min'},
+      {t:'Scaling & Automation',url:'https://youtu.be/TF3BhN_dTdo',dur:'55 min'},
+    ]},
+    {id:'d2',t:'SEO & Blogging',p:999,h:'5 hrs',b:'SEO',modules:[
+      {t:'SEO Fundamentals',url:'https://youtu.be/pDUMhloKybU',dur:'45 min'},
+      {t:'Keyword Research',url:'https://youtu.be/pDUMhloKybU',dur:'50 min'},
+      {t:'On-Page Optimization',url:'https://youtu.be/pDUMhloKybU',dur:'48 min'},
+      {t:'Link Building',url:'https://youtu.be/pDUMhloKybU',dur:'42 min'},
+      {t:'Blogging for Income',url:'https://youtu.be/pDUMhloKybU',dur:'35 min'},
+    ]},
+    {id:'d3',t:'Social Media Management',p:999,h:'6 hrs',b:'Popular',modules:[
+      {t:'Social Media Strategy',url:'https://youtu.be/9WVGLqiHVuk',dur:'50 min'},
+      {t:'Instagram Growth Tactics',url:'https://youtu.be/9WVGLqiHVuk',dur:'55 min'},
+      {t:'Facebook Page Management',url:'https://youtu.be/9WVGLqiHVuk',dur:'45 min'},
+      {t:'Content Calendar Planning',url:'https://youtu.be/9WVGLqiHVuk',dur:'40 min'},
+      {t:'Analytics & Reporting',url:'https://youtu.be/9WVGLqiHVuk',dur:'30 min'},
+    ]},
+    {id:'d4',t:'Email Marketing',p:999,h:'4 hrs',b:'New',modules:[
+      {t:'Email Marketing 101',url:'https://www.youtube.com/live/yn6L7q4V1xg',dur:'48 min'},
+      {t:'Building Your List',url:'https://www.youtube.com/live/yn6L7q4V1xg',dur:'40 min'},
+      {t:'Writing High-Converting Emails',url:'https://www.youtube.com/live/yn6L7q4V1xg',dur:'45 min'},
+      {t:'Automations & Sequences',url:'https://www.youtube.com/live/yn6L7q4V1xg',dur:'37 min'},
+    ]},
+    {id:'d5',t:'Google Ads Complete',p:999,h:'7 hrs',b:'Ads',modules:[
+      {t:'Google Ads Fundamentals',url:'https://youtu.be/autzRHtt-RM',dur:'55 min'},
+      {t:'Search Campaign Setup',url:'https://youtu.be/autzRHtt-RM',dur:'60 min'},
+      {t:'Display Ads',url:'https://youtu.be/autzRHtt-RM',dur:'45 min'},
+      {t:'Conversion Tracking',url:'https://youtu.be/autzRHtt-RM',dur:'42 min'},
+      {t:'Optimization & Bidding',url:'https://youtu.be/autzRHtt-RM',dur:'38 min'},
+    ]},
+    {id:'d6',t:'Facebook Ads Mastery',p:999,h:'7 hrs',b:'Ads',modules:[
+      {t:'Facebook Ads Manager Intro',url:'https://youtu.be/WNiU5ZxazI4',dur:'50 min'},
+      {t:'Audience Targeting',url:'https://youtu.be/WNiU5ZxazI4',dur:'55 min'},
+      {t:'Ad Creative & Copy',url:'https://youtu.be/WNiU5ZxazI4',dur:'48 min'},
+      {t:'Retargeting Campaigns',url:'https://youtu.be/WNiU5ZxazI4',dur:'52 min'},
+      {t:'Scaling Profitable Ads',url:'https://youtu.be/WNiU5ZxazI4',dur:'35 min'},
+    ]},
+    {id:'d7',t:'Freelancing Mastery',p:999,h:'9 hrs',b:'Best',modules:[
+      {t:'Freelancing 101',url:'https://youtu.be/gMmTpoiITM4',dur:'55 min'},
+      {t:'Building Your Portfolio',url:'https://youtu.be/gMmTpoiITM4',dur:'50 min'},
+      {t:'Finding Clients',url:'https://youtu.be/gMmTpoiITM4',dur:'60 min'},
+      {t:'Proposal & Pricing',url:'https://youtu.be/gMmTpoiITM4',dur:'45 min'},
+      {t:'Client Management',url:'https://youtu.be/gMmTpoiITM4',dur:'48 min'},
+      {t:'Scaling Your Freelance',url:'https://youtu.be/gMmTpoiITM4',dur:'42 min'},
+    ]},
+  ]},
+  {id:'creative',lb:'🎨 Creative & Design',em:'🎨',courses:[
+    {id:'c1',t:'UI/UX Design Complete',p:2499,h:'12 hrs',b:'Creative',modules:[
+      {t:'Design Thinking & UX Basics',url:'https://youtube.com/playlist?list=PL7ZIgV4R67IOMRiW_Q7vZqLulb0xyKDHD',dur:'80 min'},
+      {t:'User Research Methods',url:'https://youtube.com/playlist?list=PL7ZIgV4R67IOMRiW_Q7vZqLulb0xyKDHD',dur:'75 min'},
+      {t:'Wireframing & Prototyping',url:'https://youtube.com/playlist?list=PL7ZIgV4R67IOMRiW_Q7vZqLulb0xyKDHD',dur:'90 min'},
+      {t:'Figma Complete',url:'https://youtube.com/playlist?list=PL7ZIgV4R67IOMRiW_Q7vZqLulb0xyKDHD',dur:'100 min'},
+      {t:'Visual Design Principles',url:'https://youtube.com/playlist?list=PL7ZIgV4R67IOMRiW_Q7vZqLulb0xyKDHD',dur:'75 min'},
+    ]},
+    {id:'c2',t:'No Code Web Dev',p:2499,h:'6 hrs',b:'No-Code',modules:[
+      {t:'No-Code Fundamentals',url:'https://youtu.be/9nIwTjG2fdI',dur:'60 min'},
+      {t:'Building with Webflow',url:'https://youtu.be/9nIwTjG2fdI',dur:'75 min'},
+      {t:'Automation with Zapier',url:'https://youtu.be/9nIwTjG2fdI',dur:'55 min'},
+      {t:'Launching Your Site',url:'https://youtu.be/9nIwTjG2fdI',dur:'50 min'},
+    ]},
+    {id:'c3',t:'Video Editing with CapCut',p:2499,h:'5 hrs',b:'Video',modules:[
+      {t:'CapCut Interface',url:'https://youtu.be/nXeslaOL_BE',dur:'45 min'},
+      {t:'Cuts, Transitions & Effects',url:'https://youtu.be/nXeslaOL_BE',dur:'55 min'},
+      {t:'Audio & Music',url:'https://youtu.be/nXeslaOL_BE',dur:'40 min'},
+      {t:'Exporting for Social Media',url:'https://youtu.be/nXeslaOL_BE',dur:'30 min'},
+    ]},
+    {id:'c4',t:'Ecommerce Complete',p:2499,h:'8 hrs',b:'Commerce',modules:[
+      {t:'Ecommerce Business Models',url:'https://youtu.be/5d9jtO0uOpk',dur:'60 min'},
+      {t:'Shopify Setup',url:'https://youtu.be/5d9jtO0uOpk',dur:'70 min'},
+      {t:'Product Research & Sourcing',url:'https://youtu.be/5d9jtO0uOpk',dur:'65 min'},
+      {t:'Marketing Your Store',url:'https://youtu.be/5d9jtO0uOpk',dur:'55 min'},
+      {t:'Scaling with Ads',url:'https://youtu.be/5d9jtO0uOpk',dur:'30 min'},
+    ]},
+  ]},
+  {id:'data',lb:'📊 Data & Analytics',em:'📊',courses:[
+    {id:'da1',t:'Excel for Data Analysis',p:3699,h:'8 hrs',b:'Analytics',modules:[{t:'Excel Basics & Formulas',url:'',dur:'60 min'},{t:'Pivot Tables & Charts',url:'',dur:'70 min'},{t:'Data Cleaning',url:'',dur:'55 min'},{t:'Dashboard Creation',url:'',dur:'75 min'}]},
+    {id:'da2',t:'SQL for Beginners',p:3699,h:'6 hrs',b:'SQL',modules:[{t:'SQL Fundamentals',url:'',dur:'60 min'},{t:'Queries & Joins',url:'',dur:'70 min'},{t:'Aggregations',url:'',dur:'50 min'},{t:'Real-world Projects',url:'',dur:'60 min'}]},
+    {id:'da3',t:'Power BI & Tableau',p:3699,h:'9 hrs',b:'BI',modules:[{t:'Power BI Basics',url:'',dur:'80 min'},{t:'Data Modeling',url:'',dur:'75 min'},{t:'Tableau Fundamentals',url:'',dur:'80 min'},{t:'Dashboard Design',url:'',dur:'65 min'}]},
+    {id:'da4',t:'Python Basics',p:3699,h:'7 hrs',b:'Python',modules:[{t:'Python Setup & Syntax',url:'',dur:'70 min'},{t:'Data Structures',url:'',dur:'65 min'},{t:'Functions & OOP',url:'',dur:'75 min'},{t:'Projects',url:'',dur:'60 min'}]},
+    {id:'da5',t:'Business Analytics',p:3699,h:'5 hrs',b:'Business',modules:[{t:'Business Metrics',url:'',dur:'55 min'},{t:'KPIs & Reporting',url:'',dur:'50 min'},{t:'Forecasting',url:'',dur:'60 min'},{t:'Presentations',url:'',dur:'35 min'}]},
+  ]},
+  {id:'dev',lb:'💻 Web Development',em:'💻',courses:[
+    {id:'dev1',t:'HTML, CSS & JavaScript',p:4999,h:'14 hrs',b:'Foundations',modules:[{t:'HTML Essentials',url:'',dur:'80 min'},{t:'CSS & Flexbox',url:'',dur:'90 min'},{t:'JavaScript Fundamentals',url:'',dur:'100 min'},{t:'DOM Manipulation',url:'',dur:'80 min'},{t:'Projects',url:'',dur:'90 min'}]},
+    {id:'dev2',t:'React.js Complete',p:4999,h:'12 hrs',b:'Frontend',modules:[{t:'React Fundamentals',url:'',dur:'90 min'},{t:'Hooks & State',url:'',dur:'85 min'},{t:'React Router',url:'',dur:'60 min'},{t:'Building Apps',url:'',dur:'90 min'}]},
+    {id:'dev3',t:'Node.js & Express',p:4999,h:'10 hrs',b:'Backend',modules:[{t:'Node.js Basics',url:'',dur:'80 min'},{t:'Express Framework',url:'',dur:'75 min'},{t:'REST APIs',url:'',dur:'85 min'},{t:'Authentication',url:'',dur:'60 min'}]},
+    {id:'dev4',t:'MongoDB Full Course',p:4999,h:'7 hrs',b:'Database',modules:[{t:'MongoDB Basics',url:'',dur:'70 min'},{t:'CRUD Operations',url:'',dur:'65 min'},{t:'Aggregation',url:'',dur:'60 min'},{t:'Mongoose',url:'',dur:'55 min'}]},
+    {id:'dev5',t:'Git & Version Control',p:4999,h:'3 hrs',b:'Git',modules:[{t:'Git Basics',url:'',dur:'50 min'},{t:'Branching & Merging',url:'',dur:'45 min'},{t:'GitHub Workflow',url:'',dur:'45 min'},{t:'Advanced Git',url:'',dur:'40 min'}]},
+  ]},
+  {id:'devops',lb:'☁ DevOps & Cloud',em:'☁️',courses:[
+    {id:'do1',t:'AWS Cloud Practitioner',p:6999,h:'12 hrs',b:'AWS',modules:[{t:'Cloud Fundamentals',url:'',dur:'80 min'},{t:'AWS Core Services',url:'',dur:'90 min'},{t:'Security & Compliance',url:'',dur:'75 min'},{t:'Pricing & Support',url:'',dur:'55 min'}]},
+    {id:'do2',t:'Docker & Kubernetes',p:6999,h:'14 hrs',b:'DevOps',modules:[{t:'Docker Basics',url:'',dur:'90 min'},{t:'Container Networking',url:'',dur:'80 min'},{t:'Kubernetes Fundamentals',url:'',dur:'100 min'},{t:'Deployments',url:'',dur:'90 min'}]},
+    {id:'do3',t:'CI/CD Pipelines',p:6999,h:'8 hrs',b:'CI/CD',modules:[{t:'DevOps Culture',url:'',dur:'70 min'},{t:'GitHub Actions',url:'',dur:'80 min'},{t:'Jenkins',url:'',dur:'75 min'},{t:'Deployment Automation',url:'',dur:'55 min'}]},
+    {id:'do4',t:'Linux for DevOps',p:6999,h:'7 hrs',b:'Linux',modules:[{t:'Linux Basics',url:'',dur:'70 min'},{t:'Shell Scripting',url:'',dur:'75 min'},{t:'System Administration',url:'',dur:'65 min'},{t:'Networking',url:'',dur:'60 min'}]},
+    {id:'do5',t:'Cybersecurity Fundamentals',p:6999,h:'10 hrs',b:'Security',modules:[{t:'Security Basics',url:'',dur:'80 min'},{t:'Network Security',url:'',dur:'85 min'},{t:'Ethical Hacking Intro',url:'',dur:'90 min'},{t:'Tools & Frameworks',url:'',dur:'65 min'}]},
+  ]},
+  {id:'ai-ml',lb:'🧠 AI & Machine Learning',em:'🧠',courses:[
+    {id:'ml1',t:'Python for Data Science',p:11999,h:'10 hrs',b:'Python',modules:[{t:'NumPy & Pandas',url:'',dur:'90 min'},{t:'Data Visualization',url:'',dur:'85 min'},{t:'Statistical Analysis',url:'',dur:'80 min'},{t:'Real Projects',url:'',dur:'75 min'}]},
+    {id:'ml2',t:'Machine Learning Fundamentals',p:11999,h:'12 hrs',b:'ML',modules:[{t:'ML Algorithms',url:'',dur:'100 min'},{t:'Supervised Learning',url:'',dur:'95 min'},{t:'Unsupervised Learning',url:'',dur:'90 min'},{t:'Model Evaluation',url:'',dur:'75 min'}]},
+    {id:'ml3',t:'Deep Learning & Neural Networks',p:11999,h:'14 hrs',b:'DL',modules:[{t:'Neural Networks',url:'',dur:'110 min'},{t:'CNN & Image Recognition',url:'',dur:'100 min'},{t:'RNN & Sequences',url:'',dur:'95 min'},{t:'Transfer Learning',url:'',dur:'80 min'}]},
+    {id:'ml4',t:'NLP Complete',p:11999,h:'12 hrs',b:'NLP',modules:[{t:'Text Processing',url:'',dur:'90 min'},{t:'Word Embeddings',url:'',dur:'85 min'},{t:'Transformers',url:'',dur:'100 min'},{t:'NLP Applications',url:'',dur:'85 min'}]},
+    {id:'ml5',t:'Computer Vision',p:11999,h:'12 hrs',b:'CV',modules:[{t:'Image Fundamentals',url:'',dur:'85 min'},{t:'OpenCV',url:'',dur:'90 min'},{t:'Object Detection',url:'',dur:'100 min'},{t:'Projects',url:'',dur:'85 min'}]},
+  ]},
+  {id:'genai',lb:'✨ Generative AI',em:'✨',courses:[
+    {id:'g1',t:'Generative AI & LLMs',p:15999,h:'12 hrs',b:'GenAI',modules:[{t:'GenAI Fundamentals',url:'',dur:'90 min'},{t:'LLM Architecture',url:'',dur:'100 min'},{t:'API Integration',url:'',dur:'85 min'},{t:'Building AI Apps',url:'',dur:'90 min'}]},
+    {id:'g2',t:'Agentic AI Development',p:15999,h:'14 hrs',b:'Agents',modules:[{t:'AI Agents 101',url:'',dur:'95 min'},{t:'Tool Use & Function Calling',url:'',dur:'100 min'},{t:'Multi-Agent Systems',url:'',dur:'110 min'},{t:'Production Agents',url:'',dur:'95 min'}]},
+    {id:'g3',t:'LangChain & LlamaIndex',p:15999,h:'10 hrs',b:'LangChain',modules:[{t:'LangChain Basics',url:'',dur:'90 min'},{t:'Chains & Agents',url:'',dur:'95 min'},{t:'LlamaIndex',url:'',dur:'85 min'},{t:'Production Apps',url:'',dur:'80 min'}]},
+    {id:'g4',t:'RAG Implementation',p:15999,h:'9 hrs',b:'RAG',modules:[{t:'RAG Architecture',url:'',dur:'85 min'},{t:'Vector Databases',url:'',dur:'90 min'},{t:'Chunking Strategies',url:'',dur:'75 min'},{t:'Production RAG',url:'',dur:'90 min'}]},
+    {id:'g5',t:'LLM Fine-Tuning',p:15999,h:'12 hrs',b:'Fine-Tune',modules:[{t:'Fine-Tuning Basics',url:'',dur:'95 min'},{t:'Dataset Preparation',url:'',dur:'85 min'},{t:'LoRA & PEFT',url:'',dur:'100 min'},{t:'Deployment',url:'',dur:'80 min'}]},
+    {id:'g6',t:'Prompt Engineering Mastery',p:15999,h:'6 hrs',b:'Prompts',modules:[{t:'Prompt Fundamentals',url:'',dur:'55 min'},{t:'Advanced Techniques',url:'',dur:'65 min'},{t:'Chain-of-Thought',url:'',dur:'50 min'},{t:'Production Prompting',url:'',dur:'50 min'}]},
+  ]},
+  {id:'career',lb:'🎯 AI Career',em:'🎯',courses:[
+    {id:'cr1',t:'AI Product Management',p:23999,h:'9 hrs',b:'PM',modules:[{t:'AI PM Fundamentals',url:'',dur:'80 min'},{t:'Product Roadmapping',url:'',dur:'75 min'},{t:'Stakeholder Management',url:'',dur:'65 min'},{t:'Case Studies',url:'',dur:'60 min'}]},
+    {id:'cr2',t:'AI Strategy & Roadmap',p:23999,h:'8 hrs',b:'Strategy',modules:[{t:'AI Strategy Basics',url:'',dur:'75 min'},{t:'Business Cases',url:'',dur:'70 min'},{t:'Implementation',url:'',dur:'65 min'},{t:'ROI Measurement',url:'',dur:'60 min'}]},
+    {id:'cr3',t:'AI Career Mastery',p:23999,h:'7 hrs',b:'Career',modules:[{t:'AI Career Paths',url:'',dur:'60 min'},{t:'Resume & LinkedIn',url:'',dur:'55 min'},{t:'Interview Prep',url:'',dur:'70 min'},{t:'Job Search Strategy',url:'',dur:'65 min'}]},
+    {id:'cr4',t:'AI Ethics & Governance',p:23999,h:'5 hrs',b:'Ethics',modules:[{t:'AI Ethics Principles',url:'',dur:'55 min'},{t:'Bias & Fairness',url:'',dur:'60 min'},{t:'Governance Frameworks',url:'',dur:'55 min'},{t:'Policy & Law',url:'',dur:'50 min'}]},
+    {id:'cr5',t:'Freelancing for AI',p:23999,h:'6 hrs',b:'Freelance',modules:[{t:'AI Freelance Market',url:'',dur:'55 min'},{t:'Positioning & Niche',url:'',dur:'60 min'},{t:'Client Acquisition',url:'',dur:'65 min'},{t:'Scaling',url:'',dur:'60 min'}]},
+  ]},
+  {id:'special',lb:'💄 Special Courses',em:'💄',courses:[
+    {id:'sp1',t:'Make-up Artist Course',p:499,h:'10 hrs',b:'Beauty',
+      playlist:'https://youtube.com/playlist?list=PLnormvp3UHAqpl1-m47DBTBMSXv1PCRL3',
+      modules:[
+        {t:'Skincare & Prep Basics',url:'https://youtube.com/playlist?list=PLnormvp3UHAqpl1-m47DBTBMSXv1PCRL3',dur:'55 min'},
+        {t:'Foundation & Contouring',url:'https://youtube.com/playlist?list=PLnormvp3UHAqpl1-m47DBTBMSXv1PCRL3',dur:'65 min'},
+        {t:'Eye Makeup — Day & Night',url:'https://youtube.com/playlist?list=PLnormvp3UHAqpl1-m47DBTBMSXv1PCRL3',dur:'70 min'},
+        {t:'Lip Looks & Techniques',url:'https://youtube.com/playlist?list=PLnormvp3UHAqpl1-m47DBTBMSXv1PCRL3',dur:'50 min'},
+        {t:'Bridal & Party Makeup',url:'https://youtube.com/playlist?list=PLnormvp3UHAqpl1-m47DBTBMSXv1PCRL3',dur:'75 min'},
+        {t:'Professional Tips & Kit',url:'https://youtube.com/playlist?list=PLnormvp3UHAqpl1-m47DBTBMSXv1PCRL3',dur:'45 min'},
+      ]},
+    {id:'sp2',t:'Fashion Designer Course',p:499,h:'12 hrs',b:'Fashion',
+      playlist:'https://youtube.com/playlist?list=PLQqMYWJXgJhjgb54-c2RWAVx4Ln6BfPcQ',
+      modules:[
+        {t:'Fashion Design Basics',url:'https://youtube.com/playlist?list=PLQqMYWJXgJhjgb54-c2RWAVx4Ln6BfPcQ',dur:'70 min'},
+        {t:'Sketching & Illustration',url:'https://youtube.com/playlist?list=PLQqMYWJXgJhjgb54-c2RWAVx4Ln6BfPcQ',dur:'80 min'},
+        {t:'Fabrics & Materials',url:'https://youtube.com/playlist?list=PLQqMYWJXgJhjgb54-c2RWAVx4Ln6BfPcQ',dur:'65 min'},
+        {t:'Pattern Making',url:'https://youtube.com/playlist?list=PLQqMYWJXgJhjgb54-c2RWAVx4Ln6BfPcQ',dur:'85 min'},
+        {t:'Sewing Techniques',url:'https://youtube.com/playlist?list=PLQqMYWJXgJhjgb54-c2RWAVx4Ln6BfPcQ',dur:'90 min'},
+        {t:'Collection Planning',url:'https://youtube.com/playlist?list=PLQqMYWJXgJhjgb54-c2RWAVx4Ln6BfPcQ',dur:'55 min'},
+        {t:'Portfolio Building',url:'https://youtube.com/playlist?list=PLQqMYWJXgJhjgb54-c2RWAVx4Ln6BfPcQ',dur:'45 min'},
+      ]},
+    {id:'sp3',t:'Bridal Mehendi Course',p:499,h:'8 hrs',b:'Mehendi',
+      playlist:'https://youtube.com/playlist?list=PL33mbEIHXrf8E9DGhM9R8cPH940qaIGev',
+      modules:[
+        {t:'Mehendi Tools & Cones',url:'https://youtube.com/playlist?list=PL33mbEIHXrf8E9DGhM9R8cPH940qaIGev',dur:'40 min'},
+        {t:'Basic Patterns & Motifs',url:'https://youtube.com/playlist?list=PL33mbEIHXrf8E9DGhM9R8cPH940qaIGev',dur:'55 min'},
+        {t:'Floral & Paisley Designs',url:'https://youtube.com/playlist?list=PL33mbEIHXrf8E9DGhM9R8cPH940qaIGev',dur:'65 min'},
+        {t:'Bridal Full Hand Designs',url:'https://youtube.com/playlist?list=PL33mbEIHXrf8E9DGhM9R8cPH940qaIGev',dur:'80 min'},
+        {t:'Feet & Leg Patterns',url:'https://youtube.com/playlist?list=PL33mbEIHXrf8E9DGhM9R8cPH940qaIGev',dur:'60 min'},
+        {t:'Business & Client Tips',url:'https://youtube.com/playlist?list=PL33mbEIHXrf8E9DGhM9R8cPH940qaIGev',dur:'40 min'},
+      ]},
+  ]},
+];
+
+/* ════════════════════════════════════
+   PDF NOTES
+════════════════════════════════════ */
+const PDF_NOTES_DATA=`
+Digital Marketing Complete Guide|📈|2.4 MB|https://www.w3.org/WAI/WCAG21/Techniques/pdf/pdf-resources.html
+ChatGPT Prompt Templates 200+|🤖|1.8 MB|https://www.w3.org/WAI/WCAG21/Techniques/pdf/pdf-resources.html
+Canva Design Cheatsheet|🎨|3.1 MB|https://www.w3.org/WAI/WCAG21/Techniques/pdf/pdf-resources.html
+SEO 101 — Quick Reference|🔍|1.2 MB|https://www.w3.org/WAI/WCAG21/Techniques/pdf/pdf-resources.html
+Affiliate Marketing Roadmap|💰|2.0 MB|https://www.w3.org/WAI/WCAG21/Techniques/pdf/pdf-resources.html
+React.js Reference Card|⚛️|1.5 MB|https://www.w3.org/WAI/WCAG21/Techniques/pdf/pdf-resources.html
+Python for Data Science Notes|🐍|4.2 MB|https://www.w3.org/WAI/WCAG21/Techniques/pdf/pdf-resources.html
+UI/UX Design Principles|🎭|3.8 MB|https://www.w3.org/WAI/WCAG21/Techniques/pdf/pdf-resources.html
+Freelancing Starter Kit|💼|2.2 MB|https://www.w3.org/WAI/WCAG21/Techniques/pdf/pdf-resources.html
+AWS Cloud Cheatsheet|☁️|2.7 MB|https://www.w3.org/WAI/WCAG21/Techniques/pdf/pdf-resources.html
+Machine Learning Algorithms|🧠|5.1 MB|https://www.w3.org/WAI/WCAG21/Techniques/pdf/pdf-resources.html
+Bridal Makeup Step-by-Step|💄|3.3 MB|https://www.w3.org/WAI/WCAG21/Techniques/pdf/pdf-resources.html
+Fashion Design Portfolio Guide|👗|2.9 MB|https://www.w3.org/WAI/WCAG21/Techniques/pdf/pdf-resources.html
+Mehendi Design Collection 100+|🌿|6.2 MB|https://www.w3.org/WAI/WCAG21/Techniques/pdf/pdf-resources.html
+WhatsApp Marketing Scripts|💬|1.1 MB|https://www.w3.org/WAI/WCAG21/Techniques/pdf/pdf-resources.html
+Google Ads Playbook|🎯|2.5 MB|https://www.w3.org/WAI/WCAG21/Techniques/pdf/pdf-resources.html
+Email Marketing Templates|✉️|1.9 MB|https://www.w3.org/WAI/WCAG21/Techniques/pdf/pdf-resources.html
+SQL Quick Reference|🗄️|1.4 MB|https://www.w3.org/WAI/WCAG21/Techniques/pdf/pdf-resources.html
+`.trim().split('\n').map((l,i)=>{const[t,ic,sz,url]=l.split('|');return{id:'n'+(i+1),t,ic,sz,url};});
+
+/* ════════════════════════════════════
+   EXAM QUESTION BANK
+════════════════════════════════════ */
+const EXAM_QUESTIONS={
+  default:[
+    {q:'What is the primary goal of digital marketing?',opts:['Increase brand awareness and drive sales through digital channels','Print and distribute flyers','Make websites faster','None of the above'],ans:0},
+    {q:'Which platform is best for B2B marketing?',opts:['TikTok','LinkedIn','Snapchat','Clubhouse'],ans:1},
+    {q:'What does SEO stand for?',opts:['Social Engagement Online','Search Engine Optimization','Site Engagement Output','Search Engagement Order'],ans:1},
+    {q:'What is a landing page?',opts:['A page about company history','A dedicated page for a specific campaign or offer','The homepage of a website','A contact form page'],ans:1},
+    {q:'What is the purpose of A/B testing?',opts:['To test two different products','To compare two versions to see which performs better','To delete old content','To test server speed'],ans:1},
+    {q:'What is a conversion rate?',opts:['Speed of page loading','% of visitors completing a desired action','Social media follower growth','Email open rate'],ans:1},
+    {q:'Which metric measures email campaign success?',opts:['Bounce Rate, Open Rate, Click-Through Rate','Page Views only','Social Shares only','Domain Authority only'],ans:0},
+    {q:'What does CPC stand for in Google Ads?',opts:['Cost Per Content','Cost Per Click','Click Per Customer','Content Per Campaign'],ans:1},
+    {q:'What is a sales funnel?',opts:['A plumbing tool','The journey a prospect takes from awareness to purchase','A type of website','A social media strategy'],ans:1},
+    {q:'Which is a key benefit of affiliate marketing?',opts:['High upfront cost','Passive income potential with low risk','Requires a large team','Only works for big brands'],ans:1},
+    {q:'What is the difference between organic and paid traffic?',opts:['No difference','Organic is free from search engines; paid uses advertising','Organic is slower','Paid is more trusted'],ans:1},
+    {q:'What is a buyer persona?',opts:['A fictional character in a story','A semi-fictional profile of your ideal customer','A type of ad campaign','A website template'],ans:1},
+    {q:'What does ROI stand for?',opts:['Return on Investment','Rate of Inflation','Revenue of Industry','Risk of Implementation'],ans:0},
+    {q:'What is content marketing?',opts:['Selling content directly','Creating and distributing valuable content to attract an audience','Advertising on social media','Building a website'],ans:1},
+    {q:'What is the purpose of a call-to-action (CTA)?',opts:['To confuse visitors','To prompt users to take a specific desired action','To slow page loading','To add color to a page'],ans:1},
+    {q:'What is remarketing?',opts:['Marketing the same product twice','Showing ads to users who previously visited your site','Email marketing','Cold calling'],ans:1},
+    {q:'What does KPI stand for?',opts:['Key Performance Indicator','Knowledge Process Integration','Key Product Index','Known Performance Issue'],ans:0},
+    {q:'Which tool is used for website analytics?',opts:['Adobe Photoshop','Google Analytics','Microsoft Word','Mailchimp'],ans:1},
+    {q:'What is influencer marketing?',opts:['Marketing through influential people with large audiences','TV advertising','Billboard marketing','Direct mail marketing'],ans:0},
+    {q:'What is a drip campaign in email marketing?',opts:['A leaky campaign','A series of automated emails sent over time based on user behavior','A one-time email blast','A spam campaign'],ans:1},
+  ],
+  sp1:[
+    {q:'What is the first step in applying foundation?',opts:['Apply mascara first','Prep and prime the skin','Apply lipstick','Set with powder'],ans:1},
+    {q:'What does contouring achieve?',opts:['Adding color to lips','Creating the illusion of depth and dimension on the face','Brightening the eyes','Removing wrinkles'],ans:1},
+    {q:'Which brush is used for blending eyeshadow?',opts:['Fan brush','Flat shader brush','Blending brush','Powder brush'],ans:2},
+    {q:'What is the purpose of a primer?',opts:['To remove makeup','To create a smooth base and extend makeup wear','To add shimmer','To set the foundation'],ans:1},
+    {q:'Which undertone has a mix of warm and cool?',opts:['Warm','Cool','Neutral','Dark'],ans:2},
+    {q:'What is the correct order of makeup application?',opts:['Foundation, primer, concealer','Primer, foundation, concealer, setting powder','Lipstick first, then foundation','Eyeshadow last'],ans:1},
+    {q:'What is a highlight in makeup?',opts:['Dark shadow under cheekbones','Light reflecting product on high points of face','Blush application','Eyebrow filler'],ans:1},
+    {q:'Which product defines and fills eyebrows?',opts:['Mascara','Eyebrow pencil or powder','Foundation','Blush'],ans:1},
+    {q:'What is the purpose of setting spray?',opts:['Remove makeup','Lock makeup in place for longer wear','Add glitter','Clean brushes'],ans:1},
+    {q:'What skin prep step should always come before makeup?',opts:['Apply blush','Cleanse and moisturize the skin','Curl eyelashes','Apply mascara'],ans:1},
+  ],
+  sp2:[
+    {q:'What is the foundation of fashion design?',opts:['Photography','Sketching and illustration of garment ideas','Sewing only','Buying fabrics'],ans:1},
+    {q:'What does GSM stand for in fabric?',opts:['Grams per Square Meter','Global Standard Measurement','General Sewing Method','Garment Size Mark'],ans:0},
+    {q:'What is a mood board in fashion?',opts:['A meeting board','A visual collage of design inspiration and references','A sewing table','A pattern template'],ans:1},
+    {q:'What is draping?',opts:['Ironing clothes','Manipulating fabric on a dress form to create garment designs','Buying fabric','Sewing buttons'],ans:1},
+    {q:'Which stitch is most basic in sewing?',opts:['French seam','Running stitch','Blind hem stitch','Overlock stitch'],ans:1},
+    {q:'What is a seam allowance?',opts:['The price of fabric','Extra fabric beyond the seam line for joining pieces','A type of stitch','The hem of a garment'],ans:1},
+    {q:'What does RTW stand for in fashion?',opts:['Ready To Wear','Rough Textile Work','Running Thread Width','Regional Trend Workshop'],ans:0},
+    {q:'What is a capsule collection?',opts:['A large seasonal collection','A small, curated collection of essential versatile pieces','A children\'s clothing line','A sportswear line'],ans:1},
+    {q:'What is couture fashion?',opts:['Mass-produced clothing','Custom-made, high-quality garments made to a client\'s measurements','Fast fashion','Vintage fashion'],ans:1},
+    {q:'What is a toile?',opts:['A French fabric','A test garment made in cheap fabric before the final version','A type of pattern','A sewing tool'],ans:1},
+  ],
+  sp3:[
+    {q:'What is the traditional paste used for Mehendi?',opts:['Henna paste made from henna leaves','Regular paint','Food coloring','Hair dye'],ans:0},
+    {q:'How long should Mehendi stay on skin for dark stain?',opts:['10 minutes','1 hour','4–8 hours','24 hours on skin'],ans:2},
+    {q:'Which body part traditionally gets bridal Mehendi first?',opts:['Feet','Hands','Back','Neck'],ans:1},
+    {q:'What is the most popular Mehendi pattern style?',opts:['Geometric only','Floral and paisley motifs','Abstract only','Tribal'],ans:1},
+    {q:'What should you NOT apply after Mehendi?',opts:['Lemon-sugar mixture','Water immediately after application','Clove oil vapor','None of the above'],ans:1},
+    {q:'What motif is considered auspicious in bridal Mehendi?',opts:['Stars','Peacock, lotus, and bride-groom motifs','Cars','Geometric lines only'],ans:1},
+    {q:'What keeps Mehendi cone fresh?',opts:['Exposing to air','Wrapping tightly and refrigerating','Heating in microwave','Diluting with water'],ans:1},
+    {q:'What gives Mehendi its dark color?',opts:['The green paste itself','Lawsone, the dye molecule in henna leaves','Food coloring added','The sugar in mixture'],ans:1},
+    {q:'What is Arabic Mehendi style known for?',opts:['Dense coverage','Large floral patterns with lots of open space','Mandala patterns','Geometric patterns'],ans:1},
+    {q:'What is the best way to remove dried Mehendi paste?',opts:['Wash with water','Scrape off gently without water, then apply oil','Use soap immediately','Pick with fingernail'],ans:1},
+  ],
+};
+
+/* ════════════════════════════════════
+   AUTH & INIT
+════════════════════════════════════ */
+const authTO=setTimeout(()=>showErr('Firebase not responding. <a href="auth.html" style="color:var(--gold)">Sign in again</a>.'),10000);
+AUTH.onAuthStateChanged(async fbUser=>{
+  clearTimeout(authTO);
+  if(!fbUser){location.href='auth.html';return;}
+  try{
+    gMsg('Loading your courses…');
+    const emailId=san(fbUser.email);
+    U={email:fbUser.email,emailId,name:fbUser.displayName||fbUser.email.split('@')[0]};
+    let docData=null;
+    for(const c of COLS){
+      try{const snap=await DB.collection(c).doc(emailId).get();if(snap.exists){docData=snap.data();COL=c;break;}}catch(e){}
+    }
+    if(!docData){showErr('Account not found. <a href="auth.html" style="color:var(--gold)">Sign in</a>.');return;}
+    if(docData.paymentStatus!=='approved'){showErr('Payment pending approval. <a href="https://wa.me/919019254743" style="color:var(--gold)">Contact support</a>');return;}
+    UD=docData;
+    BPRICE=parseInt(docData.bundlePrice||docData.bundleAmount||0)||0;
+    if(docData.fullName)U.name=docData.fullName;
+    await loadWatchData();
+    await loadCertData();
+    initApp();
+    const g=document.getElementById('guard');
+    g.classList.add('fade');
+    setTimeout(()=>{g.classList.add('gone');document.getElementById('app').style.opacity='1';},700);
+    const sp=new URLSearchParams(location.search);
+    if(sp.get('tab'))switchTab(sp.get('tab'),null);
+  }catch(err){showErr('Error: '+err.message);}
+});
+function gMsg(t){const el=document.getElementById('gMsg');if(el)el.textContent=t;}
+function showErr(html){clearTimeout(authTO);document.getElementById('gSpin').style.display='none';document.getElementById('gMsg').style.display='none';const e=document.getElementById('gErr');e.style.display='flex';document.getElementById('gErrD').innerHTML=html;}
+
+async function loadWatchData(){
+  try{const snap=await DB.collection(COL).doc(U.emailId).collection('watchData').get();snap.forEach(doc=>{WATCH_DATA[doc.id]=doc.data();});}catch(e){}
+}
+async function loadCertData(){
+  try{const snap=await DB.collection(COL).doc(U.emailId).collection('certificates').get();snap.forEach(doc=>{CERT_DATA[doc.id]=doc.data();});}catch(e){}
+}
+
+/* ════════════════════════════════════
+   INIT
+════════════════════════════════════ */
+function initApp(){
+  const bun=BUNDLES.slice().reverse().find(b=>b.p<=BPRICE)||BUNDLES[0];
+  document.getElementById('bundleLabel').textContent=`${bun.ic} ${bun.name} Bundle · Courses unlocked up to ₹${BPRICE.toLocaleString('en-IN')}`;
+  buildCatTabs();
+  renderCourseGrid('all');
+  renderCertificates();
+  renderNotes();
+  buildTutorContext();
+  updateOverallProgress();
+}
+
+/* ════════════════════════════════════
+   TAB SWITCHING
+════════════════════════════════════ */
+function switchTab(tab,btn){
+  document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.tb-tab').forEach(b=>b.classList.remove('on'));
+  const pane=document.getElementById('tab-'+tab);
+  if(pane)pane.classList.add('on');
+  if(btn)btn.classList.add('on');
+  else{document.querySelectorAll('.tb-tab').forEach(b=>{if(b.textContent.toLowerCase().includes(tab.replace('-',' ')))b.classList.add('on');});}
+  if(tab!=='courses')hidePlayer();
+}
+
+/* ════════════════════════════════════
+   COURSES
+════════════════════════════════════ */
+function buildCatTabs(){
+  const tabs=document.getElementById('catTabs');
+  tabs.innerHTML=`<button class="cat-tab on" onclick="filterCat('all',this)">All</button>`+
+    CATS.map(c=>`<button class="cat-tab" onclick="filterCat('${c.id}',this)">${c.lb}</button>`).join('');
+}
+function filterCat(id,btn){
+  document.querySelectorAll('.cat-tab').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  renderCourseGrid(id);
+}
+function getCatColor(id){const m={starter:'#F59E0B',digital:'#3B82F6',creative:'#EC4899',data:'#8B5CF6',dev:'#06B6D4',devops:'#10B981','ai-ml':'#6366F1',genai:'#F43F5E',career:'#14B8A6',special:'#E879F9'};return m[id]||'#C8A96E';}
+function getCourseProgress(cid){
+  const cat=CATS.find(c=>c.courses.some(cc=>cc.id===cid));
+  const course=cat?.courses.find(c=>c.id===cid);
+  if(!course)return 0;
+  const wd=WATCH_DATA[cid];if(!wd)return 0;
+  return Math.min(100,Math.round((wd.modulesWatched||0)/course.modules.length*100)||0);
+}
+function renderCourseGrid(filter){
+  const grid=document.getElementById('courseGrid');
+  grid.innerHTML='';
+  CATS.forEach(cat=>{
+    if(filter!=='all'&&cat.id!==filter)return;
+    cat.courses.forEach(c=>{
+      const unlocked=c.p<=BPRICE;
+      const pct=unlocked?getCourseProgress(c.id):0;
+      const div=document.createElement('div');
+      div.className='c-card'+(unlocked?'':' locked');
+      div.innerHTML=`
+        <div class="c-card-thumb" style="background:linear-gradient(135deg,${getCatColor(cat.id)}22,${getCatColor(cat.id)}08)">
+          <span style="font-size:2.6rem;position:relative;z-index:1">${cat.em}</span>
+          ${!unlocked?`<div class="c-lock-badge">🔒 Locked</div>`:''}
+          ${pct===100?`<div style="position:absolute;bottom:7px;right:7px;background:rgba(34,197,94,.9);color:#fff;font-family:var(--fm);font-size:.46rem;padding:3px 7px;border-radius:4px;font-weight:700">✓ COMPLETE</div>`:''}
+        </div>
+        <div class="c-card-body">
+          <div class="c-card-cat">${cat.lb}</div>
+          <div class="c-card-t">${c.t}</div>
+          <div class="c-card-meta">
+            <span>⏱ ${c.h}</span>
+            <span>📋 ${c.modules.length} modules</span>
+            ${unlocked?`<span style="color:var(--gold)">${pct}% done</span>`:`<span style="color:var(--t3)">₹${c.p.toLocaleString('en-IN')}</span>`}
+          </div>
+          <div class="c-card-pg"><div class="c-card-pgf" style="width:${pct}%"></div></div>
+          ${unlocked?`<div style="margin-top:9px;display:flex;gap:5px;flex-wrap:wrap">
+            <button class="btn-g" onclick="event.stopPropagation();openCourse('${c.id}','${cat.id}')" style="flex:1;font-size:.66rem;padding:6px 9px">${pct>0?'▶ Continue':'▶ Start'}</button>
+            ${pct===100?`<button class="btn-sm" onclick="event.stopPropagation();showCompletionOptions('${c.id}','${cat.id}')" style="font-size:.63rem">🎓 Options</button>`:''}
+          </div>`:''}
+        </div>`;
+      grid.appendChild(div);
+    });
+  });
+}
+function updateOverallProgress(){
+  let total=0,done=0;
+  CATS.forEach(cat=>cat.courses.forEach(c=>{if(c.p<=BPRICE){total++;if(getCourseProgress(c.id)===100)done++;}}));
+  const pct=total?Math.round(done/total*100):0;
+  document.getElementById('overallPct').textContent=pct+'%';
+  const bar=document.getElementById('overallPgBar');if(bar)bar.style.width=pct+'%';
+}
+
+/* ════════════════════════════════════
+   PLAYER
+════════════════════════════════════ */
+function openCourse(cid,catId){
+  const cat=CATS.find(c=>c.id===catId);
+  const course=cat?.courses.find(c=>c.id===cid);
+  if(!course)return;
+  CURRENT_COURSE=course;CURRENT_CAT=cat;CURRENT_MODULE=0;
+  showPlayer(course,cat,0);
+}
+function getYTEmbed(url){
+  if(!url)return'';
+  let id='';
+  if(url.includes('youtu.be/')){id=url.split('youtu.be/')[1]?.split('?')[0]||'';}
+  else if(url.includes('v=')){id=url.split('v=')[1]?.split('&')[0]||'';}
+  else if(url.includes('youtube.com/live/')){id=url.split('live/')[1]?.split('?')[0]||'';}
+  if(id)return`https://www.youtube.com/embed/${id}?rel=0&modestbranding=1`;
+  if(url.includes('list=')){
+    const lid=url.split('list=')[1]?.split('&')[0]||'';
+    if(lid)return`https://www.youtube.com/embed/videoseries?list=${lid}&rel=0&modestbranding=1`;
+  }
+  return'';
+}
+function showPlayer(course,cat,modIdx){
+  const pv=document.getElementById('playerView');
+  const lv=document.getElementById('courseListView');
+  lv.style.display='none';pv.style.display='block';
+  const mod=course.modules[modIdx];
+  const vid=getYTEmbed(mod.url||'');
+  const pct=getCourseProgress(course.id);
+  const wd=WATCH_DATA[course.id];
+  pv.innerHTML=`
+    <div class="player-layout">
+      <div class="player-main">
+        <div class="player-wrap" id="playerWrap" oncontextmenu="return false">
+          ${vid
+            ?`<iframe id="ytFrame" src="${vid}" allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowfullscreen></iframe>
+               <div class="player-overlay" id="playerOverlay" oncontextmenu="return false"></div>`
+            :`<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--t3);font-size:.85rem;flex-direction:column;gap:10px;background:#0a0a0e;aspect-ratio:16/9"><div style="font-size:2rem">🎬</div><div>Video coming soon for this module</div></div>`}
+        </div>
+        <div class="player-info">
+          <div class="player-title">${mod.t}</div>
+          <div class="player-meta">
+            <span class="bdg go">${cat.lb}</span>
+            <span class="bdg pn">Module ${modIdx+1}/${course.modules.length}</span>
+            <span style="font-family:var(--fm);font-size:.6rem;color:var(--t3)">⏱ ${mod.dur}</span>
+            <span style="font-family:var(--fm);font-size:.6rem;color:var(--gold)">${pct}% complete</span>
+          </div>
+          ${pct===100?renderCompletionBox(course,cat):''}
+        </div>
+      </div>
+      <div class="player-sidebar">
+        <div class="player-sidebar-hd">
+          <div style="font-size:.82rem;font-weight:700">${course.t}</div>
+          <div style="font-family:var(--fm);font-size:.5rem;color:var(--t3);margin-top:2px">${course.modules.length} modules · ${course.h}</div>
+        </div>
+        <div class="module-list">
+          ${course.modules.map((m,i)=>{
+            const watched=(wd?.modulesWatched||0)>i;
+            return`<div class="mod-item${i===modIdx?' active':''}${watched?' done':''}" onclick="switchModule(${i},'${course.id}','${cat.id}')">
+              <div class="mod-num">${watched?'✓':i+1}</div>
+              <div class="mod-t">${m.t}</div>
+              <div class="mod-dur">${m.dur}</div>
+            </div>`;
+          }).join('')}
+        </div>
+        <div style="padding:11px 13px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:7px">
+          <button class="btn-g" onclick="markModuleDone('${course.id}','${cat.id}',${modIdx})" style="width:100%;font-size:.7rem">✓ Mark Done & Continue</button>
+          <button class="btn-sm" onclick="preFillChat('I need help understanding: ${mod.t.replace(/'/g,"\\'")}');switchTab('ai-tutor',document.querySelector('.tb-tab:nth-child(2)'))" style="width:100%;text-align:center;font-size:.65rem">🤖 Ask AI Tutor About This</button>
+          ${course.playlist?`<a href="${course.playlist}" target="_blank" rel="noopener noreferrer" class="btn-sm" style="text-decoration:none;text-align:center;font-size:.65rem;display:block">📋 Open Full Playlist ↗</a>`:''}
+        </div>
+      </div>
+    </div>
+    <div class="player-bottom">
+      <button class="btn-o" onclick="hidePlayer()" style="font-size:.7rem">← All Courses</button>
+      ${modIdx>0?`<button class="btn-sm" onclick="switchModule(${modIdx-1},'${course.id}','${cat.id}')">← Prev</button>`:''}
+      ${modIdx<course.modules.length-1
+        ?`<button class="btn-g" onclick="switchModule(${modIdx+1},'${course.id}','${cat.id}')" style="font-size:.7rem">Next Module →</button>`
+        :`<button class="btn-g" onclick="markModuleDone('${course.id}','${cat.id}',${modIdx})" style="font-size:.7rem">✓ Finish Course</button>`}
+      <button class="btn-sm" onclick="openProjectModal('${course.id}','${cat.id}')">📁 Project</button>
+      <button class="btn-sm" onclick="openExamSetup('${course.id}','${cat.id}')">📝 Exam</button>
+    </div>`;
+  // Block right-click on player wrap
+  const pw=document.getElementById('playerWrap');
+  if(pw)pw.addEventListener('contextmenu',e=>e.preventDefault());
+}
+function hidePlayer(){
+  document.getElementById('playerView').style.display='none';
+  document.getElementById('courseListView').style.display='block';
+}
+function switchModule(idx,cid,catId){
+  const cat=CATS.find(c=>c.id===catId);
+  const course=cat?.courses.find(c=>c.id===cid);
+  if(!course)return;
+  CURRENT_COURSE=course;CURRENT_CAT=cat;CURRENT_MODULE=idx;
+  showPlayer(course,cat,idx);
+}
+async function markModuleDone(cid,catId,modIdx){
+  const cat=CATS.find(c=>c.id===catId);
+  const course=cat?.courses.find(c=>c.id===cid);
+  if(!course)return;
+  const prev=WATCH_DATA[cid]?.modulesWatched||0;
+  const newW=Math.max(prev,modIdx+1);
+  WATCH_DATA[cid]={...(WATCH_DATA[cid]||{}),modulesWatched:newW,total:course.modules.length};
+  try{
+    await DB.collection(COL).doc(U.emailId).collection('watchData').doc(cid).set({modulesWatched:newW,total:course.modules.length,updatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});
+    toast('✅','Module marked complete!');
+  }catch(e){toast('⚠','Saved locally');}
+  const next=modIdx+1;
+  if(next<course.modules.length){
+    switchModule(next,cid,catId);
+  }else{
+    toast('🎉','Course complete! Choose your next step below.');
+    showPlayer(course,cat,modIdx);
+  }
+  updateOverallProgress();
+}
+
+/* ════════════════════════════════════
+   COMPLETION BOX
+════════════════════════════════════ */
+function renderCompletionBox(course,cat){
+  return`<div class="completion-box">
+    <div style="font-family:var(--fd);font-size:.9rem;font-weight:700;color:var(--gold);margin-bottom:3px">🎉 Course Complete! Choose Your Next Step:</div>
+    <div style="font-size:.72rem;color:var(--t2);line-height:1.6;margin-bottom:10px">Complete all steps below to earn your Biluxe10 Certificate signed by the Founder.</div>
+    <div class="completion-options">
+      <div class="comp-opt" onclick="openExamSetup('${course.id}','${cat.id}')">
+        <div class="comp-opt-ic">📝</div>
+        <div class="comp-opt-t">Take Proctored Exam</div>
+        <div class="comp-opt-s">100 Qs · 40 min · Camera monitored</div>
+      </div>
+      <div class="comp-opt" onclick="openProjectModal('${course.id}','${cat.id}')">
+        <div class="comp-opt-ic">📁</div>
+        <div class="comp-opt-t">Submit Project</div>
+        <div class="comp-opt-s">Upload your work for review</div>
+      </div>
+      <div class="comp-opt" onclick="preFillChat('Give me a detailed Q&A interview session for: ${course.t.replace(/'/g,"\\'")}');switchTab('ai-tutor',document.querySelector('.tb-tab:nth-child(2)'))">
+        <div class="comp-opt-ic">🤖</div>
+        <div class="comp-opt-t">AI Q&A Practice</div>
+        <div class="comp-opt-s">Mock interview with AI tutor</div>
+      </div>
+      <div class="comp-opt" onclick="startExam('${course.id}','${cat.id}',false)">
+        <div class="comp-opt-ic">🎯</div>
+        <div class="comp-opt-t">Practice Exam</div>
+        <div class="comp-opt-s">100 Qs · No proctoring</div>
+      </div>
+    </div>
+  </div>`;
+}
+function showCompletionOptions(cid,catId){
+  const cat=CATS.find(c=>c.id===catId);
+  const course=cat?.courses.find(c=>c.id===cid);
+  if(!course||!cat)return;
+  showPlayer(course,cat,CURRENT_MODULE||0);
+}
+
+/* ════════════════════════════════════
+   PROCTORED EXAM SETUP
+════════════════════════════════════ */
+function openExamSetup(cid,catId){
+  pendingExamCid=cid;pendingExamCatId=catId;
+  const modal=document.getElementById('proctorModal');
+  modal.classList.add('on');
+  navigator.mediaDevices.getUserMedia({video:true,audio:false}).then(stream=>{
+    MEDIA_STREAM=stream;
+    const v=document.getElementById('proctorVid');
+    if(v)v.srcObject=stream;
+    document.getElementById('startExamBtn').disabled=false;
+  }).catch(()=>{
+    const cw=document.getElementById('proctorCamWrap');
+    if(cw)cw.innerHTML='<div style="height:200px;display:flex;align-items:center;justify-content:center;background:#0a0a0e;color:var(--amber);font-size:.78rem;flex-direction:column;gap:8px;border-radius:10px"><div style="font-size:1.4rem">📷</div><div>Camera access required for proctored exam.</div><div style="font-size:.65rem;color:var(--t3)">Allow camera permission and try again.</div></div>';
+    document.getElementById('startExamBtn').disabled=false;
+  });
+}
+function closeProctor(){
+  document.getElementById('proctorModal').classList.remove('on');
+  if(MEDIA_STREAM){MEDIA_STREAM.getTracks().forEach(t=>t.stop());MEDIA_STREAM=null;}
+}
+function startExamForReal(){
+  closeProctor();
+  startExam(pendingExamCid,pendingExamCatId,true);
+}
+
+/* ════════════════════════════════════
+   EXAM ENGINE
+════════════════════════════════════ */
+function startExam(cid,catId,proctored){
+  const cat=CATS.find(c=>c.id===catId);
+  const course=cat?.courses.find(c=>c.id===cid);
+  if(!course)return;
+  // Build 100-question bank
+  const bank=EXAM_QUESTIONS[cid]||EXAM_QUESTIONS.default;
+  const pool=[];
+  while(pool.length<100)pool.push(...bank.map(q=>({...q})));
+  const questions=pool.sort(()=>Math.random()-.5).slice(0,100);
+  EXAM_STATE={cid,catId,course,cat,questions,answers:{},start:Date.now(),proctored,timeLeft:40*60,total:100};
+  tabSwitchCount=0;tabSwitchWarned=false;
+  // Show exam in player view
+  switchTab('courses',document.querySelector('.tb-tab'));
+  hidePlayer();
+  document.getElementById('courseListView').style.display='none';
+  document.getElementById('playerView').style.display='block';
+  document.getElementById('playerView').innerHTML=buildExamHTML(EXAM_STATE);
+  startExamTimer();
+  // Start live camera overlay
+  if(proctored){
+    startProctoringOverlay();
+    document.getElementById('recWarning').classList.add('on');
+    // Attempt screen capture notification
+    try{
+      navigator.mediaDevices.getDisplayMedia({video:true}).then(s=>{
+        // Screen recording stream available
+        toast('🔴','Screen recording started for proctoring.');
+        s.getTracks().forEach(t=>t.addEventListener('ended',()=>{if(EXAM_STATE)toast('⚠','Screen sharing stopped! This has been noted.');}));
+      }).catch(()=>{toast('📷','Camera proctoring active. Screen capture unavailable on this device.');});
+    }catch(e){}
+  }
+}
+function startProctoringOverlay(){
+  navigator.mediaDevices.getUserMedia({video:true,audio:false}).then(stream=>{
+    MEDIA_STREAM=stream;
+    const v=document.getElementById('proctoringVidLive');
+    if(v)v.srcObject=stream;
+    document.getElementById('proctoringOverlay').classList.add('on');
+  }).catch(()=>{});
+}
+function stopProctoring(){
+  document.getElementById('proctoringOverlay').classList.remove('on');
+  document.getElementById('recWarning').classList.remove('on');
+  if(MEDIA_STREAM){MEDIA_STREAM.getTracks().forEach(t=>t.stop());MEDIA_STREAM=null;}
+}
+// Tab switch detection
+document.addEventListener('visibilitychange',()=>{
+  if(EXAM_STATE&&EXAM_STATE.proctored&&document.hidden){
+    tabSwitchCount++;
+    if(tabSwitchCount>=3&&!tabSwitchWarned){
+      tabSwitchWarned=true;
+      toast('⛔','Warning: Tab switching detected! Exam may be invalidated.');
+    }
+  }
+});
+function buildExamHTML(state){
+  return`<div style="background:var(--bg);min-height:calc(100vh - var(--nav));padding:0 0 40px">
+    <div class="exam-wrap">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:9px;padding-top:14px">
+        <div>
+          <div style="font-family:var(--fd);font-size:1.05rem;font-weight:900">📝 ${state.course.t}</div>
+          <div style="font-size:.72rem;color:var(--t2);margin-top:2px">${state.proctored?'Proctored · 100 Questions · 40 Minutes · 40/100 to pass':'Practice Mode · Results not saved to certificate'}</div>
+        </div>
+        ${state.proctored?`<div style="display:flex;align-items:center;gap:5px;padding:4px 11px;background:var(--reA);border:1px solid rgba(239,68,68,.2);border-radius:7px;font-family:var(--fm);font-size:.56rem;color:var(--red)"><span>●</span>PROCTORED</div>`:'<span class="bdg pn">PRACTICE MODE</span>'}
+      </div>
+      <div class="exam-timer" id="examTimer">
+        <div style="font-size:.75rem;font-weight:600;white-space:nowrap">⏱ Time Left</div>
+        <div class="exam-timer-val" id="examTimerVal">40:00</div>
+        <div class="exam-prog-bar"><div class="exam-prog-fill" id="examProgFill" style="width:100%"></div></div>
+        <div style="font-family:var(--fm);font-size:.58rem;color:var(--t3);white-space:nowrap" id="examQCount">0/${state.total} answered</div>
+      </div>
+      <div id="examQuestions">
+        ${state.questions.map((q,i)=>`
+          <div class="exam-q" id="eq${i}">
+            <div class="exam-q-num">Question ${i+1} of ${state.total}</div>
+            <div class="exam-q-text">${q.q}</div>
+            <div class="exam-opts">
+              ${q.opts.map((o,oi)=>`<div class="exam-opt" id="eq${i}o${oi}" onclick="selectAnswer(${i},${oi})">
+                <div class="exam-opt-letter">${'ABCD'[oi]}</div>
+                <span>${o}</span>
+              </div>`).join('')}
+            </div>
+          </div>`).join('')}
+      </div>
+      <div style="display:flex;gap:9px;margin-top:18px">
+        <button class="btn-g" onclick="submitExam()" style="flex:1">✅ Submit Exam</button>
+        <button class="btn-red" onclick="cancelExam()">✕ Cancel</button>
+      </div>
+    </div>
+  </div>`;
+}
+function selectAnswer(qi,oi){
+  if(!EXAM_STATE)return;
+  EXAM_STATE.answers[qi]=oi;
+  const q=document.getElementById('eq'+qi);
+  if(!q)return;
+  q.querySelectorAll('.exam-opt').forEach(o=>o.classList.remove('sel'));
+  const opt=document.getElementById(`eq${qi}o${oi}`);
+  if(opt)opt.classList.add('sel');
+  const answered=Object.keys(EXAM_STATE.answers).length;
+  const el=document.getElementById('examQCount');if(el)el.textContent=`${answered}/${EXAM_STATE.total} answered`;
+}
+function startExamTimer(){
+  clearInterval(examTimerInterval);
+  examTimerInterval=setInterval(()=>{
+    if(!EXAM_STATE)return;
+    EXAM_STATE.timeLeft--;
+    const m=Math.floor(EXAM_STATE.timeLeft/60),s=EXAM_STATE.timeLeft%60;
+    const el=document.getElementById('examTimerVal');
+    if(el){el.textContent=`${m}:${s.toString().padStart(2,'0')}`;if(EXAM_STATE.timeLeft<120)el.classList.add('warn');}
+    const pf=document.getElementById('examProgFill');
+    if(pf)pf.style.width=(EXAM_STATE.timeLeft/(40*60)*100)+'%';
+    if(EXAM_STATE.timeLeft<=0){clearInterval(examTimerInterval);submitExam();}
+  },1000);
+}
+async function submitExam(){
+  clearInterval(examTimerInterval);
+  if(!EXAM_STATE)return;
+  stopProctoring();
+  const{questions,answers,cid,catId,course,proctored}=EXAM_STATE;
+  let correct=0;
+  questions.forEach((q,i)=>{if(answers[i]===q.ans)correct++;});
+  const score=Math.round(correct/questions.length*100);
+  const passed=score>=40;
+  if(proctored){
+    try{
+      await DB.collection(COL).doc(U.emailId).collection('examResults').add({
+        courseId:cid,courseName:course.t,score,correct,total:questions.length,
+        passed,proctored,tabSwitches:tabSwitchCount,
+        takenAt:firebase.firestore.FieldValue.serverTimestamp()
+      });
+      if(passed)await checkAndIssueCert(cid,catId,course);
+    }catch(e){}
+    // Notify admin
+    notifyAdmin(`📝 Exam Completed!\n👤 ${U.name} (${U.email})\n📚 ${course.t}\n🎯 Score: ${score}/100 (${passed?'PASSED ✅':'FAILED ❌'})\n🔄 Tab switches: ${tabSwitchCount}`);
+  }
+  const pv=document.getElementById('playerView');
+  pv.innerHTML=`<div style="padding:40px 20px;text-align:center;max-width:500px;margin:0 auto">
+    <div style="font-size:${passed?'4rem':'3rem'};margin-bottom:14px">${passed?'🎉':'😔'}</div>
+    <div style="font-family:var(--fd);font-size:1.5rem;font-weight:900;margin-bottom:7px;color:${passed?'var(--green)':'var(--red)'}">${passed?'You Passed!':'Not Passed'}</div>
+    <div style="font-family:var(--fm);font-size:1.9rem;font-weight:700;color:var(--gold);margin-bottom:4px">${score}/100</div>
+    <div style="font-size:.8rem;color:var(--t2);margin-bottom:10px">${correct} correct out of ${questions.length} questions</div>
+    ${proctored&&tabSwitchCount>0?`<div style="background:var(--amA);border:1px solid rgba(245,158,11,.2);border-radius:8px;padding:9px 13px;font-size:.72rem;color:var(--amber);margin-bottom:12px">⚠ ${tabSwitchCount} tab switch(es) detected during exam.</div>`:''}
+    <div style="font-size:.8rem;color:var(--t2);margin-bottom:22px">${passed?'🏆 Certificate eligible! Now submit your project to receive it.':'Minimum 40/100 required. Keep practicing!'}</div>
+    <div style="display:flex;gap:9px;justify-content:center;flex-wrap:wrap">
+      ${passed&&proctored?`<button class="btn-g" onclick="switchTab('certificates',document.querySelector('.tb-tab:nth-child(3)'))">🏆 View Certificates</button>`:''}
+      ${passed?`<button class="btn-sm" onclick="openProjectModal('${cid}','${catId}')">📁 Submit Project</button>`:''}
+      <button class="btn-sm" onclick="hidePlayer();document.getElementById('courseListView').style.display='block'">← Back to Courses</button>
+      ${!passed?`<button class="btn-g" onclick="startExam('${cid}','${catId}',false)">🔄 Practice Again</button>`:''}
+    </div>
+  </div>`;
+  EXAM_STATE=null;
+}
+function cancelExam(){
+  clearInterval(examTimerInterval);
+  stopProctoring();
+  hidePlayer();
+  document.getElementById('courseListView').style.display='block';
+  EXAM_STATE=null;
+}
+
+/* ════════════════════════════════════
+   CERTIFICATES
+════════════════════════════════════ */
+async function checkAndIssueCert(cid,catId,course){
+  if(CERT_DATA[cid]){toast('🏆','Certificate already issued for this course!');return;}
+  const certId='BLX10-'+(new Date().getFullYear())+'-'+Math.floor(Math.random()*900000+100000);
+  const certData={
+    certId,courseId:cid,courseName:course.t,
+    userName:U.name,email:U.email,
+    issuedAt:firebase.firestore.FieldValue.serverTimestamp(),
+    issuedBy:'Syed Afshar Khadri',issuerTitle:'Founder & CEO, Biluxe10'
+  };
+  try{
+    await DB.collection(COL).doc(U.emailId).collection('certificates').doc(cid).set(certData,{merge:true});
+    await DB.collection('certificates').doc(certId).set({...certData,userId:U.emailId});
+    CERT_DATA[cid]={...certData,issuedAt:{toDate:()=>new Date()}};
+    renderCertificates();
+    toast('🏆','Certificate issued! Check Certificates tab.');
+    notifyAdmin(`🏆 Certificate Issued!\n👤 ${U.name}\n📚 ${course.t}\n🆔 ${certId}`);
+  }catch(e){toast('⚠','Cert error: '+e.message);}
+}
+function renderCertificates(){
+  const grid=document.getElementById('certGrid');if(!grid)return;
+  const certs=Object.values(CERT_DATA);
+  if(!certs.length){
+    grid.innerHTML=`<div style="grid-column:1/-1;text-align:center;padding:36px 20px;color:var(--t3)">
+      <div style="font-size:2rem;margin-bottom:7px">🏆</div>
+      <p style="font-size:.74rem;line-height:1.8">Complete a course → pass the proctored exam (40/100) → submit your project → receive your certificate signed by<br><strong style="color:var(--gold)">Syed Afshar Khadri, Founder of Biluxe10</strong></p>
+    </div>`;
+    return;
+  }
+  grid.innerHTML=certs.map(c=>{
+    let dt='—';
+    try{dt=c.issuedAt?.toDate?new Date(c.issuedAt.toDate()).toLocaleDateString('en-IN',{year:'numeric',month:'long',day:'numeric'}):new Date().toLocaleDateString('en-IN',{year:'numeric',month:'long',day:'numeric'});}catch(e){}
+    return`<div class="cert-card">
+      <div class="cert-logo">Biluxe<sup style="font-size:.5em">10</sup></div>
+      <div class="cert-sub">Certificate of Completion</div>
+      <div style="font-family:var(--fm);font-size:.5rem;color:var(--t3);margin-bottom:7px">This certifies that</div>
+      <div class="cert-nm">${c.userName}</div>
+      <div class="cert-course">has successfully completed<br><strong>${c.courseName}</strong></div>
+      <div style="font-family:var(--fm);font-size:.52rem;color:var(--t3);margin:6px 0 0">Issued on ${dt}</div>
+      <div class="cert-sig">
+        <div>
+          <div class="cert-sig-nm">Syed Afshar Khadri</div>
+          <div class="cert-sig-role">Founder & CEO, Biluxe10</div>
+          <div style="font-family:var(--fm);font-size:.48rem;color:var(--t3);margin-top:2px">ID: ${c.certId}</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:5px;align-items:flex-end">
+          <button class="btn-sm" onclick="downloadCert('${c.certId}','${c.userName}','${c.courseName}','${dt}')" style="font-size:.58rem;padding:5px 9px">⬇ Download</button>
+          <button class="btn-sm" onclick="shareOnLinkedIn('${c.certId}','${c.courseName}')" style="font-size:.58rem;padding:5px 9px">🔗 LinkedIn</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+function downloadCert(certId,name,course,date){
+  const w=window.open('','_blank');
+  // Signature as SVG (based on uploaded signature image style)
+  const sigSVG=`<svg width="180" height="60" viewBox="0 0 180 60" xmlns="http://www.w3.org/2000/svg"><path d="M30 40 Q40 10 50 35 Q60 55 70 30 Q80 10 90 35 Q100 55 120 25 Q135 10 150 35" stroke="#C8A96E" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><circle cx="155" cy="37" r="2" fill="#C8A96E"/><path d="M25 50 Q80 42 160 50" stroke="#C8A96E" stroke-width="1" fill="none" opacity="0.4"/></svg>`;
+  w.document.write(`<!DOCTYPE html><html><head><title>Certificate — ${name}</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,900;1,9..144,400;1,9..144,700&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#fff;font-family:'Plus Jakarta Sans',sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px}
+.cert{width:900px;min-height:620px;border:8px double #C8A96E;border-radius:6px;padding:50px 60px;position:relative;background:linear-gradient(160deg,#fffdf5 0%,#fff9ed 50%,#fffdf5 100%);text-align:center;box-shadow:0 0 0 3px #E2C48A,0 0 0 6px #fff,0 0 0 8px #C8A96E}
+.org{font-family:'Fraunces',serif;font-size:2.3rem;font-weight:900;color:#C8A96E;letter-spacing:-.02em;margin-bottom:3px}
+.org sup{font-size:.4em;color:#bbb}
+.tagline{font-size:.72rem;color:#aaa;letter-spacing:.18em;text-transform:uppercase;margin-bottom:28px}
+.lbl{font-size:.7rem;color:#aaa;text-transform:uppercase;letter-spacing:.2em;margin-bottom:7px}
+.recipient{font-family:'Fraunces',serif;font-size:2.5rem;font-style:italic;font-weight:400;color:#1a1a1a;border-bottom:2px solid #C8A96E;display:inline-block;padding:0 36px 7px;margin-bottom:18px}
+.for{font-size:.78rem;color:#777;margin-bottom:5px}
+.course-nm{font-family:'Fraunces',serif;font-size:1.35rem;font-weight:700;color:#333;margin-bottom:22px}
+.divider{width:70px;height:2px;background:linear-gradient(90deg,transparent,#C8A96E,transparent);margin:0 auto 22px}
+.sig-section{display:flex;justify-content:space-between;align-items:flex-end;margin-top:28px;padding-top:18px;border-top:1px solid #e9e9e9}
+.seal{width:65px;height:65px;border-radius:50%;border:3px solid #C8A96E;display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-size:.6rem;font-weight:900;color:#C8A96E;text-align:center;padding:7px;line-height:1.25}
+.deco{position:absolute;font-size:3.5rem;opacity:.03;pointer-events:none}
+.watermark{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-30deg);font-family:'Fraunces',serif;font-size:5rem;font-weight:900;color:rgba(200,169,110,0.04);white-space:nowrap;pointer-events:none}
+@media print{body{background:#fff;padding:0}@page{size:A4 landscape;margin:0}.cert{width:100%;min-height:100vh;border-radius:0}}
+</style></head><body>
+<div class="cert">
+  <div class="watermark">BILUXE10</div>
+  <div class="deco" style="top:18px;left:18px">🎓</div>
+  <div class="deco" style="bottom:18px;right:18px">🏆</div>
+  <div class="deco" style="top:18px;right:18px;font-size:2.5rem">✨</div>
+  <div class="org">Biluxe<sup>10</sup></div>
+  <div class="tagline">Learning · Growth · Certification</div>
+  <div class="lbl">This is to certify that</div>
+  <div class="recipient">${name}</div>
+  <div class="for">has successfully completed the course</div>
+  <div class="course-nm">${course}</div>
+  <div class="divider"></div>
+  <div style="font-size:.72rem;color:#999;margin-bottom:22px">This certificate is issued in recognition of demonstrated knowledge, practical project completion, and passing the proctored examination.</div>
+  <div class="sig-section">
+    <div style="text-align:left">
+      <div style="font-size:.6rem;color:#aaa;text-transform:uppercase;letter-spacing:.1em">Issue Date</div>
+      <div style="font-size:.76rem;color:#555;margin-top:2px">${date}</div>
+      <div style="font-size:.6rem;color:#ccc;margin-top:6px;letter-spacing:.1em;font-family:monospace">ID: ${certId}</div>
+    </div>
+    <div class="seal">BILUXE<br>10<br>CERT</div>
+    <div style="text-align:right">
+      ${sigSVG}
+      <div style="font-family:'Fraunces',serif;font-size:.85rem;font-weight:700;color:#C8A96E;margin-top:3px">Syed Afshar Khadri</div>
+      <div style="font-size:.65rem;color:#aaa">Founder & CEO, Biluxe10</div>
+    </div>
+  </div>
+</div>
+<script>setTimeout(()=>{window.print();},500)<\/script>
+</body></html>`);
+  w.document.close();
+}
+function shareOnLinkedIn(certId,courseName){
+  const url=encodeURIComponent(`https://biluxe10.com/verify?id=${certId}`);
+  const title=encodeURIComponent(`I just earned my ${courseName} certificate from Biluxe10! 🎓`);
+  window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${url}&title=${title}`,'_blank');
+}
+async function verifyCert(){
+  const id=document.getElementById('certVerifyId').value.trim();
+  const res=document.getElementById('certVerifyResult');
+  if(!id){res.innerHTML='<div style="color:var(--amber);font-size:.76rem;padding:8px 0">Enter a certificate ID to verify.</div>';return;}
+  res.innerHTML='<div style="color:var(--t3);font-size:.76rem;padding:8px 0">🔍 Searching database…</div>';
+  try{
+    const snap=await DB.collection('certificates').doc(id).get();
+    if(!snap.exists){res.innerHTML=`<div style="background:var(--reA);border:1px solid rgba(239,68,68,.2);border-radius:8px;padding:13px;font-size:.76rem;color:var(--red)">❌ Certificate not found. Please check the ID.</div>`;return;}
+    const c=snap.data();
+    let dt='—';
+    try{dt=c.issuedAt?.toDate?new Date(c.issuedAt.toDate()).toLocaleDateString('en-IN',{year:'numeric',month:'long',day:'numeric'}):'—';}catch(e){}
+    res.innerHTML=`<div style="background:var(--grA);border:1px solid rgba(34,197,94,.2);border-radius:10px;padding:15px">
+      <div style="color:var(--green);font-weight:700;font-size:.82rem;margin-bottom:9px">✅ Verified Certificate</div>
+      <div style="font-size:.78rem;color:var(--text);line-height:2">
+        <div><span style="color:var(--t3)">Student: </span><strong>${c.userName}</strong></div>
+        <div><span style="color:var(--t3)">Course: </span><strong>${c.courseName}</strong></div>
+        <div><span style="color:var(--t3)">Issued On: </span>${dt}</div>
+        <div><span style="color:var(--t3)">Issued By: </span>${c.issuedBy||'Syed Afshar Khadri'}</div>
+        <div><span style="color:var(--t3)">ID: </span><span style="font-family:var(--fm);color:var(--gold);font-size:.7rem">${id}</span></div>
+      </div>
+    </div>`;
+  }catch(e){res.innerHTML=`<div style="color:var(--red);font-size:.76rem">Error: ${e.message}</div>`;}
+}
+
+/* ════════════════════════════════════
+   PROJECT UPLOAD
+════════════════════════════════════ */
+function openProjectModal(cid,catId){
+  projectCid=cid;projectCatId=catId;uploadedFile=null;
+  const cat=CATS.find(c=>c.id===catId);
+  const course=cat?.courses.find(c=>c.id===cid);
+  if(!course)return;
+  document.getElementById('projectCourseTitle').textContent='📚 '+course.t;
+  document.getElementById('projUrl').value='';
+  document.getElementById('projDesc').value='';
+  document.getElementById('projFileChosen').style.display='none';
+  document.getElementById('projectModal').classList.add('on');
+}
+function closeProject(){document.getElementById('projectModal').classList.remove('on');}
+function fileSelected(inp){
+  if(inp.files[0]){
+    uploadedFile=inp.files[0];
+    const d=document.getElementById('projFileChosen');
+    d.style.display='block';
+    d.textContent='✅ '+uploadedFile.name+' ('+Math.round(uploadedFile.size/1024)+'KB)';
+  }
+}
+function handleDrop(e){
+  e.preventDefault();
+  document.getElementById('projDropZone').classList.remove('drag');
+  if(e.dataTransfer.files[0]){
+    const fi=document.getElementById('projFileInput');
+    try{fi.files=e.dataTransfer.files;}catch(_){}
+    uploadedFile=e.dataTransfer.files[0];
+    const d=document.getElementById('projFileChosen');
+    d.style.display='block';
+    d.textContent='✅ '+uploadedFile.name+' ('+Math.round(uploadedFile.size/1024)+'KB)';
+  }
+}
+async function submitProject(){
+  const url=document.getElementById('projUrl').value.trim();
+  const desc=document.getElementById('projDesc').value.trim();
+  if(!url&&!uploadedFile){toast('⚠','Add a project link or upload a file');return;}
+  const cat=CATS.find(c=>c.id===projectCatId);
+  const course=cat?.courses.find(c=>c.id===projectCid);
+  toast('⏳','Submitting project…');
+  try{
+    let fileUrl='';
+    if(uploadedFile){
+      const ref=STORAGE.ref(`projects/${U.emailId}/${projectCid}_${Date.now()}_${uploadedFile.name}`);
+      const snap=await ref.put(uploadedFile);
+      fileUrl=await snap.ref.getDownloadURL();
+    }
+    await DB.collection(COL).doc(U.emailId).collection('projects').add({
+      courseId:projectCid,courseName:course?.t||'',
+      projectUrl:url,description:desc,fileUrl,
+      status:'pending_review',
+      submittedAt:firebase.firestore.FieldValue.serverTimestamp(),
+      userName:U.name,email:U.email
+    });
+    closeProject();
+    toast('✅','Project submitted! Certificate pending admin review (24–48hrs).');
+    notifyAdmin(`📁 Project Submitted!\n👤 ${U.name} (${U.email})\n📚 ${course?.t||'Unknown'}\n🔗 ${url||fileUrl||'(file uploaded)'}\n📝 ${desc.slice(0,100)}`);
+  }catch(e){toast('❌','Upload failed: '+e.message);}
+}
+
+/* ════════════════════════════════════
+   TELEGRAM NOTIFY
+════════════════════════════════════ */
+async function notifyAdmin(msg){
+  try{
+    const settingsSnap=await DB.collection('settings').doc('telegram').get();
+    if(!settingsSnap.exists)return;
+    const{botToken,adminChatId}=settingsSnap.data()||{};
+    if(!botToken||!adminChatId)return;
+    await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({chat_id:adminChatId,text:msg})
+    });
+  }catch(e){}
+}
+
+/* ════════════════════════════════════
+   PDF NOTES
+════════════════════════════════════ */
+function renderNotes(){
+  const grid=document.getElementById('pdfGrid');if(!grid)return;
+  const maxNotes=Math.max(6,Math.floor(BPRICE/499)*2);
+  const unlocked=PDF_NOTES_DATA.slice(0,Math.min(maxNotes,PDF_NOTES_DATA.length));
+  const locked=PDF_NOTES_DATA.slice(unlocked.length);
+  grid.innerHTML=unlocked.map(n=>`
+    <div class="pdf-card" onclick="openNote('${n.t}','${n.url}')">
+      <div class="pdf-ic">${n.ic}</div>
+      <div style="flex:1;min-width:0">
+        <div class="pdf-nm">${n.t}</div>
+        <div class="pdf-sz">📄 PDF · ${n.sz}</div>
+      </div>
+      <span class="bdg ok" style="flex-shrink:0">Free</span>
+    </div>`).join('')+
+  (locked.length?`<div style="grid-column:1/-1;background:var(--bg3);border:1px solid var(--border);border-radius:var(--rs);padding:14px;text-align:center;font-size:.74rem;color:var(--t3)">🔒 Upgrade your bundle to unlock ${locked.length} more resource packs</div>`:'');
+}
+function openNote(title,url){
+  toast('📄',`Opening "${title}"…`);
+  // In production, replace with actual PDF URLs
+  setTimeout(()=>{
+    if(url&&url!=='#')window.open(url,'_blank');
+    else toast('📄','PDF notes will be available soon for: '+title);
+  },500);
+}
+
+/* ════════════════════════════════════
+   AI TUTOR
+════════════════════════════════════ */
+function buildTutorContext(){
+  const sel=document.getElementById('tutorCtx');if(!sel)return;
+  const courses=[''];
+  CATS.forEach(cat=>cat.courses.forEach(c=>{if(c.p<=BPRICE)courses.push(c.t);}));
+  sel.innerHTML='<option value="">All Topics</option>'+
+    courses.slice(1).map(t=>`<option value="${t}">${t}</option>`).join('');
+}
+function preFillChat(msg){
+  const inp=document.getElementById('chatInput');
+  if(inp){inp.value=msg;inp.style.height='auto';inp.style.height=Math.min(inp.scrollHeight,90)+'px';}
+}
+async function sendChat(msg){
+  const inp=document.getElementById('chatInput');
+  const text=msg||(inp?.value?.trim()||'');
+  if(!text)return;
+  if(inp)inp.value='';
+  const msgs=document.getElementById('chatMsgs');if(!msgs)return;
+  const ub=document.createElement('div');ub.className='chat-bubble user';ub.textContent=text;msgs.appendChild(ub);
+  chatHistory.push({role:'user',content:text});
+  const tb=document.createElement('div');tb.className='chat-bubble ai';
+  tb.innerHTML='<div class="ai-name">Biluxe10 AI Tutor</div><span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span>';
+  msgs.appendChild(tb);msgs.scrollTop=msgs.scrollHeight;
+  const ctx=document.getElementById('tutorCtx')?.value||'';
+  const sys=`You are the AI Tutor for Biluxe10, an online education platform. Help students with their courses. ${ctx?`The student is studying: ${ctx}.`:''}
+You are expert in: Digital Marketing, SEO, Affiliate Marketing, Social Media, Email Marketing, Google Ads, Facebook Ads, Freelancing, UI/UX Design, Canva, Video Editing, Ecommerce, Data Analysis, Python, Web Dev, React, Node.js, DevOps, AWS, AI/ML, Generative AI, LangChain, RAG, Make-up artistry, Fashion Design, Mehendi art.
+Be encouraging, clear, and practical. Give structured responses. Under 300 words unless more detail is requested.`;
+  try{
+    const response=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:sys,messages:chatHistory.slice(-10)})
+    });
+    const data=await response.json();
+    const reply=data.content?.map(i=>i.text||'').join('')||'Sorry, I could not generate a response. Please try again.';
+    chatHistory.push({role:'assistant',content:reply});
+    tb.innerHTML=`<div class="ai-name">Biluxe10 AI Tutor</div>${reply.replace(/\n\n/g,'<br><br>').replace(/\n/g,'<br>')}`;
+  }catch(e){
+    tb.innerHTML=`<div class="ai-name">Biluxe10 AI Tutor</div>I'm having trouble connecting right now. Please try again in a moment. 🔄`;
+  }
+  msgs.scrollTop=msgs.scrollHeight;
+}
+function clearChat(){
+  chatHistory=[];
+  const msgs=document.getElementById('chatMsgs');
+  if(msgs)msgs.innerHTML=`<div class="chat-bubble ai"><div class="ai-name">Biluxe10 AI Tutor</div>Chat cleared! Ask me anything about your courses. 📚</div>`;
+}
+
+/* ════════════════════════════════════
+   UTILS
+════════════════════════════════════ */
+let toastTm;
+function toast(ic,msg){
+  const el=document.getElementById('toast');
+  el.innerHTML=`<span style="font-size:1.05rem">${ic}</span><span>${msg}</span>`;
+  el.classList.add('on');clearTimeout(toastTm);
+  toastTm=setTimeout(()=>el.classList.remove('on'),3800);
+}
+
+// Auto-resize chat textarea
+document.addEventListener('DOMContentLoaded',()=>{
+  const ta=document.getElementById('chatInput');
+  if(ta){ta.addEventListener('input',()=>{ta.style.height='auto';ta.style.height=Math.min(ta.scrollHeight,90)+'px';});}
+});
+
+// Escape closes modals
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){
+    document.querySelectorAll('.modal-bg.on').forEach(m=>m.classList.remove('on'));
+    if(!EXAM_STATE)closeProctor();
+  }
+});
+
+// Prevent right-click globally on video areas
+document.addEventListener('contextmenu',e=>{
+  if(e.target.closest('#playerWrap')||e.target.closest('.player-wrap'))e.preventDefault();
+});
+</script>
+</body>
+</html>
