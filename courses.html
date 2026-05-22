@@ -15,8 +15,7 @@ const firebaseConfig={apiKey:"AIzaSyDxxkC9iD1V1w-53Kf4oBrHEXlBLvCc7sE",authDomai
 if(!firebase.apps.length)firebase.initializeApp(firebaseConfig);
 const AUTH=firebase.auth(),DB=firebase.firestore();
 const san=e=>e.toLowerCase().trim().replace(/\./g,'_').replace(/@/g,'__at__');
-const COLS=['User-collection','user_collection','users','User_collection','user-collection'];
-let COL='User-collection';
+const COLS=['User-collection']
 const TG_BOT='8234849380:AAE8WhIn1eHnsPa2dlYZaTKr8qRAcjtt54o';
 const TG_CHAT='7592977302';
 const GROQ_API='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';
