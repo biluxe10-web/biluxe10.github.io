@@ -43,26 +43,6 @@ body.lock{overflow:hidden}
 ::-webkit-scrollbar-thumb{background:rgba(200,169,110,0.25);border-radius:2px}
 button,input,select,textarea{font-family:var(--fb)}
 
-/* ── GUARD ── */
-#guard{position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;transition:opacity .7s ease}
-#guard.fade{opacity:0;pointer-events:none}
-#guard.gone{display:none}
-.g-logo{font-family:var(--fd);font-size:clamp(3rem,10vw,5rem);font-weight:900;color:var(--gold);letter-spacing:-.03em;animation:logoPulse 2s ease infinite;display:flex;align-items:center;gap:8px}
-.g-logo-mark{width:52px;height:52px;border-radius:12px;background:linear-gradient(135deg,var(--gold),var(--gold2));display:flex;align-items:center;justify-content:center;font-size:1.2rem;font-weight:900;color:var(--ink);box-shadow:0 8px 24px rgba(200,169,110,0.35)}
-@keyframes logoPulse{0%,100%{text-shadow:0 0 30px rgba(200,169,110,0.3)}50%{text-shadow:0 0 60px rgba(200,169,110,0.6)}}
-.g-logo sup{font-size:.4em;color:var(--t3);font-weight:400;vertical-align:super}
-.g-spin{width:32px;height:32px;border:2.5px solid rgba(200,169,110,.12);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
-.g-msg{font-family:var(--fm);font-size:.58rem;color:var(--t3);letter-spacing:.2em;text-transform:uppercase}
-.g-err{display:none;flex-direction:column;align-items:center;gap:12px;text-align:center;padding:24px;max-width:340px}
-.g-err-t{font-family:var(--fd);font-size:1.1rem;color:var(--red)}
-.g-err-d{font-size:.8rem;color:var(--t2);line-height:1.75}
-.g-btn{padding:11px 26px;background:var(--gold);color:var(--ink);border:none;border-radius:8px;font-weight:800;font-size:.8rem;cursor:pointer}
-
-/* ── TOAST ── */
-#toast{position:fixed;bottom:20px;right:20px;z-index:9999;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--rs);padding:11px 16px;max-width:280px;display:flex;align-items:center;gap:8px;transform:translateY(80px);opacity:0;transition:all .35s var(--spring);font-size:.74rem;color:var(--text);box-shadow:0 12px 40px rgba(0,0,0,.45)}
-#toast.on{transform:translateY(0);opacity:1}
-
 /* ── LAYOUT ── */
 #app{display:flex;min-height:100vh;opacity:0;transition:opacity .5s ease}
 #app.show{opacity:1}
@@ -360,7 +340,7 @@ canvas{max-width:100%;display:block}
 .modal-close:hover{color:var(--red)}
 </style>
 </head>
-<body>
+   
 <!-- ══ FULLSCREEN PLAYER MODAL ══ -->
 <div id="playerModal">
   <!-- top bar -->
