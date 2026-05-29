@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Biluxe10 — Learning Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@700;900&family=Plus+Jakarta+Sans:wght@400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+
+<script>
+// CONFIGURATIONS
+const firebaseConfig = {
+    apiKey: "AIzaSyDxxkC9iD1V1w-53Kf4oBrHEXlBLvCc7sE",
+    authDomain: "biluxe10-3e894.firebaseapp.com",
+    projectId: "biluxe10-3e894",
+    storageBucket: "biluxe10-3e894.appspot.com",
+    messagingSenderId: "804749588233",
+    appId: "1:804749588233:web:7777648c0c7834733c05d8"
+};
+if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+const AUTH = firebase.auth(), DB = firebase.firestore();
+
+const GEMINI_API = 'AQ.Ab8RN6IR3tac_cGV4OJH6xRU8r1xUsloJUjhmpU0PhI4QDVPAQ';
+const TG_BOT = '8234849380:AAE8WhIn1eHnsPa2dlYZaTKr8qRAcjtt54o';
+const TG_CHAT = '7592977302';
+</script>
+
+<style>
+:root {
+    --bg: #07070A; --bg2: #0D0D12; --bg3: #121218; --bg4: #18181F;
+    --border: rgba(255,255,255,0.06); --gold: #C8A96E; --gold2: #E2C48A;
+    --text: #EDEDF0; --t2: #9B9BA8; --t3: #4B4B5A;
+    --fd: 'Fraunces', serif; --fb: 'Plus Jakarta Sans', sans-serif; --fm: 'JetBrains Mono', monospace;
+    --sbw: 70px; --sbx: 250px; --nav: 70px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: var(--fb); overflow-x: hidden; line-height: 1.6; }
+button, input, textarea { font-family: inherit; }
+
+/* LOADING GUARD */
+#guard { position: fixed; inset: 0; z-index: 9999; background: var(--bg); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px; transition: opacity .5s; }
+.g-logo { font-family: var(--fd); font-size: 3rem; font-weight: 900; color: var(--gold); }
+.g-spin { width: 35px; height: 35px; border: 3px solid rgba(200,169,110,0.1); border-top-color: var(--gold); border-radius: 50%; animation: spin .8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* SIDEBAR */
+#sb { position: fixed; left: 0; top: 0; bottom: 0; width: var(--sbw); background: var(--bg2); border-right: 1px solid var(--border); z-index: 500; transition: width .3s cubic-bezier(0.16,1,0.3,1); overflow: hidden; }
+#sb:hover { width: var(--sbx); }
+.sb-item { display: flex; align-items: center; gap: 20px; padding: 18px 22px; cursor: pointer; color: var(--t2); text-decoration: none; transition: 0.2s; white-space: nowrap; border: none; background: none; width: 100%; text-align: left; }
+.sb-item:hover, .sb-item.on { background: rgba(200,169,110,0.08); color: var(--gold); }
+.sb-ic { font-size: 1.3rem; min-width: 25px; text-align: center; }
+.sb-lbl { font-size: 0.9rem; font-weight: 600; opacity: 0; transition: opacity 0.2s; }
+#sb:hover .sb-lbl { opacity: 1; }
+
+/* MAIN CONTENT */
+#main { margin-left: var(--sbw); min-height: 100vh; display: flex; flex-direction: column; }
+.topbar { height: var(--nav); padding: 0 30px; background: rgba(7,7,10,0.8); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 400; }
+.pg { display: none; padding: 40px; animation: slideUp 0.4s ease; }
+.pg.on { display: block; }
+@keyframes slideUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+/* GRID & CARDS */
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; }
+.card { background: var(--bg2); border: 1px solid var(--border); border-radius: 18px; padding: 25px; transition: 0.3s; cursor: pointer; position: relative; }
+.card:hover { border-color: var(--gold); transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0,0,0,0.4); }
+.card.locked { opacity: 0.5; filter: grayscale(1); cursor: not-allowed; }
+.card-ic { font-size: 2.5rem; margin-bottom: 15px; }
+.card-title { font-family: var(--fd); font-size: 1.25rem; font-weight: 700; margin-bottom: 8px; }
+.card-price { font-family: var(--fm); font-size: 0.75rem; color: var(--gold); letter-spacing: 1px; margin-bottom: 12px; }
+.card-desc { font-size: 0.85rem; color: var(--t2); }
+
+/* COURSE VIEWER */
+#cv { display: none; grid-template-columns: 1fr 350px; height: calc(100vh - var(--nav)); }
+.cv-vid { padding: 30px; overflow-y: auto; background: var(--bg); }
+.cv-side { background: var(--bg2); border-left: 1px solid var(--border); overflow-y: auto; }
+.vid-box { width: 100%; aspect-ratio: 16/9; background: #000; border-radius: 15px; overflow: hidden; border: 1px solid var(--border); margin-bottom: 25px; }
+iframe { width: 100%; height: 100%; border: none; }
+.mod-item { padding: 15px 20px; border-bottom: 1px solid var(--border); cursor: pointer; display: flex; align-items: center; gap: 15px; font-size: 0.85rem; transition: 0.2s; }
+.mod-item:hover, .mod-item.active { background: rgba(200,169,110,0.1); color: var(--gold); }
+.mod-idx { width: 28px; height: 28px; background: var(--bg4); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; flex-shrink: 0; }
+.mod-item.active .mod-idx { background: var(--gold); color: var(--ink); }
+
+/* AI TUTOR */
+.tutor-ui { height: calc(100vh - 140px); display: flex; flex-direction: column; max-width: 1000px; margin: 0 auto; background: var(--bg2); border: 1px solid var(--border); border-radius: 20px; overflow: hidden; }
+#chatBox { flex: 1; padding: 25px; overflow-y: auto; display: flex; flex-direction: column; gap: 20px; }
+.m-bot { align-self: flex-start; background: var(--bg4); padding: 15px 20px; border-radius: 18px 18px 18px 2px; max-width: 85%; font-size: 0.9rem; }
+.m-user { align-self: flex-end; background: var(--gold); color: #000; padding: 15px 20px; border-radius: 18px 18px 2px 18px; max-width: 85%; font-size: 0.9rem; font-weight: 600; }
+.chat-input { padding: 20px; background: var(--bg3); border-top: 1px solid var(--border); display: flex; gap: 12px; align-items: flex-end; }
+#msgInp { flex: 1; background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 12px 18px; color: #fff; outline: none; resize: none; max-height: 150px; }
+.chat-btn { width: 45px; height: 45px; border-radius: 12px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
+.btn-send { background: var(--gold); color: #000; }
+.btn-file { background: var(--bg4); color: var(--t2); }
+
+@media (max-width: 900px) {
+    #cv { grid-template-columns: 1fr; }
+    #sb { width: 0; transform: translateX(-100%); }
+    #main { margin-left: 0; }
+}
+</style>
+</head>
+<body>
+
+<div id="guard">
+    <div class="g-logo">Biluxe10</div>
+    <div class="g-spin"></div>
+</div>
+
+<div id="app">
+    <div id="sb">
+        <div style="padding: 25px; font-family: var(--fd); font-weight: 900; color: var(--gold); font-size: 1.6rem;">B10</div>
+        <button class="sb-item on" onclick="nav('bundles')"><span class="sb-ic">🏠</span><span class="sb-lbl">Learning Bundles</span></button>
+        <button class="sb-item" onclick="nav('special')"><span class="sb-ic">✨</span><span class="sb-lbl">Special Courses</span></button>
+        <button class="sb-item" onclick="nav('tutor')"><span class="sb-ic">🤖</span><span class="sb-lbl">AI Tutor</span></button>
+        <button class="sb-item" onclick="location.href='dashboard.html'"><span class="sb-ic">📊</span><span class="sb-lbl">Dashboard</span></button>
+    </div>
+
+    <div id="main">
+        <div class="topbar">
+            <div style="font-family: var(--fd); font-weight: 700; font-size: 1.1rem;" id="pgTitle">Course Bundles</div>
+            <div id="userTier" style="font-family: var(--fm); font-size: 0.7rem; background: var(--bg3); padding: 6px 14px; border-radius: 20px; color: var(--gold); border: 1px solid rgba(200,169,110,0.2);">UNAUTHENTICATED</div>
+        </div>
+
+        <!-- BUNDLES PG -->
+        <div id="pg-bundles" class="pg on">
+            <div class="grid" id="bundleGrid"></div>
+        </div>
+
+        <!-- SPECIAL PG -->
+        <div id="pg-special" class="pg">
+            <div class="grid" id="specialGrid"></div>
+        </div>
+
+        <!-- COURSE LIST PG -->
+        <div id="pg-courses" class="pg">
+            <button onclick="nav('bundles')" style="background:none; border:none; color:var(--gold); cursor:pointer; margin-bottom:20px; font-weight:bold;">← All Bundles</button>
+            <div class="grid" id="courseList"></div>
+        </div>
+
+        <!-- AI TUTOR PG -->
+        <div id="pg-tutor" class="pg">
+            <div class="tutor-ui">
+                <div id="chatBox"></div>
+                <div class="chat-input">
+                    <input type="file" id="fileInp" hidden onchange="uploadFile(this)">
+                    <button class="chat-btn btn-file" onclick="document.getElementById('fileInp').click()">📎</button>
+                    <textarea id="msgInp" placeholder="Ask anything about your studies..." rows="1" oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'"></textarea>
+                    <button class="chat-btn btn-send" onclick="sendMsg()">➤</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEWER -->
+        <div id="cv">
+            <div class="cv-vid">
+                <div class="vid-box" id="player"></div>
+                <h2 id="vidTitle" style="font-family: var(--fd); margin-bottom: 10px;">Select a chapter</h2>
+                <p id="vidDesc" style="color: var(--t2); font-size: 0.9rem;"></p>
+            </div>
+            <div class="cv-side">
+                <div style="padding: 20px; font-weight: bold; border-bottom: 1px solid var(--border); background: var(--bg3);">Course Content</div>
+                <div id="modList"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// DATA STRUCTURE
+const BUNDLES = [
+    { name: "Starter Bundle", price: 499, ic: "🌟", desc: "Foundations of Digital Business.", courses: ["s1","s2","s3","s4"] },
+    { name: "Pro Bundle", price: 999, ic: "📈", desc: "Digital Marketing Mastery.", courses: ["d1","d2","d3","d4","d5a","d5b","d6"] },
+    { name: "Professional Bundle", price: 2499, ic: "🎨", desc: "Design & No-Code Web Development.", courses: ["p1","p2","p3","p4","p5","p6"] },
+    { name: "Elite Bundle", price: 3699, ic: "📊", desc: "Data & Business Analytics.", courses: ["e1","e2","e3","e4","e5","e6"] },
+    { name: "Master Bundle", price: 6999, ic: "☁️", desc: "Cloud & DevOps & Security.", courses: ["m1","m2","m3","m4","m5","m6","m7","m8"] },
+    { name: "Elite Pro Bundle", price: 11999, ic: "🧠", desc: "Data Science & Machine Learning.", courses: ["ds1","ds2","ds3","ds4","ds5","ds6","ds7","ds8","ds9","ds10"] },
+    { name: "Legend Bundle", price: 15999, ic: "✨", desc: "GenAI & Agentic AI Mastery.", courses: ["g1","g2","g3","g4","g5","g6","g7","g8","g9","g10","g11","g12"] },
+    { name: "Ultimate Bundle", price: 23999, ic: "🎯", desc: "AI Leadership & Advanced Research.", courses: ["cr1","cr2","cr3","cr4","cr5","cr6","cr7","cr8","cr9","cr10","cr11","cr12","cr13","cr14","cr15","cr16","cr17","cr18","cr19","cr20","cr21","cr22"] }
+];
+
+const ALL_COURSES = {
+    // Starter
+    's1': { title: "Digital Entrepreneurship Basics", yt: "CcwYCG0Gggw" },
+    's2': { title: "Canva & Content Creation", pl: "PLW-zSkCnZ-gDgc_YNSC7uCaYNLoMwLPp8" },
+    's3': { title: "WhatsApp Business Marketing", yt: "PlVxtty0wrI" },
+    's4': { title: "ChatGPT for Daily Work", yt: "IcCAEudzEDw" },
+    // Pro
+    'd1': { title: "Affiliate Marketing Mastery", yt: "TF3BhN_dTdo" },
+    'd2': { title: "SEO & Blogging", yt: "pDUMhloKybU" },
+    'd3': { title: "Social Media Management", yt: "9WVGLqiHVuk" },
+    'd4': { title: "Email Marketing", yt: "yn6L7q4V1xg" },
+    'd5a': { title: "Google Ads", yt: "autzRHtt-RM" },
+    'd5b': { title: "Facebook Ads", yt: "WNiU5ZxazI4" },
+    'd6': { title: "Freelancing Mastery", yt: "gMmTpoiITM4" },
+    // Professional
+    'p1': { title: "UI/UX Design Complete", pl: "PL7ZIgV4R67IOMRiW_Q7vZqLulb0xyKDHD" },
+    'p2': { title: "No Code Web Development", yt: "9nIwTjG2fdI" },
+    'p3': { title: "Video Editing with CapCut", yt: "nXeslaOL_BE" },
+    'p4': { title: "Podcast & Audio Production", yt: "cGWFvYknE7o" },
+    'p5': { title: "Ecommerce Complete Course", yt: "5d9jtO0uOpk" },
+    'p6': { title: "Dropshipping & Print on Demand", yt: "thYCp3y1Yuw" },
+    // Elite
+    'e1': { title: "Excel for Data Analysis", yt: "Kjz_DDO4Fzs" },
+    'e2': { title: "SQL for Beginners", yt: "7azCOKryADA" },
+    'e3': { title: "Power BI & Tableau", yt: "Gmk3DWOxVKQ" },
+    'e4': { title: "Python Basics", yt: "LgW6Vla0kXA" },
+    'e5': { title: "Business Analytics", yt: "cCTuOBOqMaM" },
+    'e6': { title: "Financial Accounting Basics", yt: "vO09q2V8TGQ" },
+    // Master
+    'm1': { title: "AWS Cloud Practitioner", yt: "a8FFknuJwB0" },
+    'm2': { title: "Docker & Kubernetes", pl: "PLhNrFKat_aeLmPHBkS42O1pdN8Pt-tfF9" },
+    'm3': { title: "CI/CD Pipelines", yt: "Ke_Wr5zPE0A" },
+    'm4': { title: "Linux for DevOps", yt: "e01GGTKmtpc" },
+    'm5': { title: "Cybersecurity Fundamentals", yt: "z2hVCeiwvGk" },
+    'm6': { title: "Ethical Hacking", yt: "2eLJNBroFrg" },
+    'm7': { title: "Cloud Security", yt: "a58CqpP6vEw" },
+    'm8': { title: "DevOps Project", yt: "H5FAxTBuNM8" },
+    // Data Science
+    'ds1': { title: "Python for Data Science", yt: "CMEWVn1uZpQ" },
+    'ds2': { title: "Machine Learning Fundamentals", yt: "hR-tMLTMw0s" },
+    'ds3': { title: "Deep Learning & Neural Networks", yt: "G1P2IaBcXx8" },
+    'ds4': { title: "Natural Language Processing (NLP)", yt: "BCLjPLeVCBY" },
+    'ds5': { title: "Computer Vision", pl: "PLPTV0NXA_ZSgmWYoSpY_2EJzPJjkke4Az" },
+    'ds6': { title: "Big Data Engineering", yt: "H5SHmiKTFsM" },
+    'ds7': { title: "Data Engineering", yt: "hf2go3E2m8g" },
+    'ds8': { title: "MLOps Fundamentals", yt: "dPmH3G9NQtY" },
+    'ds9': { title: "End-to-End ML Project", yt: "o6vbe5G7xNo" },
+    'ds10': { title: "Data Science Interview Prep", yt: "A3ZSv6IqXY8" },
+    // Legend
+    'g1': { title: "Generative AI & LLMs", yt: "d4yCWBGFCEs" },
+    'g2': { title: "Agentic AI Development", yt: "-rUKr8JDits" },
+    'g3': { title: "LangChain & LlamaIndex", yt: "-8IUWRtznX8" },
+    'g4': { title: "Vector Databases", yt: "8KrTO9bS91s" },
+    'g5': { title: "AI Agents for Business", yt: "EsTrWCV0Ph4" },
+    'g6': { title: "LLM Fine-Tuning", yt: "iOdFUJiB0Zc" },
+    'g7': { title: "RAG Implementation", yt: "o126p1QN_RI" },
+    'g8': { title: "Multi-Agent Systems", yt: "rHtRWyxVQps" },
+    'g9': { title: "AI Safety & Governance", yt: "b6HwyKFShek" },
+    'g10': { title: "AI Agents Capstone Project", yt: "HVi0F3YT13I" },
+    'g11': { title: "Prompt Engineering Mastery", yt: "YhRfgYH_AoU" },
+    'g12': { title: "AI API Integration", yt: "xcP9NE6C5EI" },
+    // Ultimate
+    'cr1': { title: "AI Product Management", yt: "IfW1FMDkw4k" },
+    'cr2': { title: "AI Strategy & Roadmap", yt: "zwUSZD3t_BU" },
+    'cr3': { title: "AI Team Leadership", yt: "1NMM9Q_TjxE" },
+    'cr4': { title: "AI Project Management", yt: "lADZ6Pxy9m8" },
+    'cr5': { title: "AI Ethics & Governance", yt: "VugSwwHaOgQ" },
+    'cr6': { title: "AI Career Mastery", yt: "aIuPQjPQEb4" },
+    'cr7': { title: "Resume & LinkedIn for AI", yt: "qCZlSCmphMM" },
+    'cr8': { title: "Salary Negotiation", yt: "vLbrwSzXUro" },
+    'cr9': { title: "Freelancing & Consulting for AI", yt: "Ozp3k4qzmHo" },
+    'cr10': { title: "AI for Finance & Banking", yt: "Nh7OhW7ZcIU" },
+    'cr11': { title: "AI for Healthcare", yt: "eZFtf69sido" },
+    'cr12': { title: "AI for E-commerce & Retail", yt: "plo5kk_MzL4" },
+    'cr13': { title: "AI for Manufacturing", yt: "bNiThiN8cLg" },
+    'cr14': { title: "Edge AI & TinyML", pl: "PL7VEa1KauMQppUExiIOfxxk_2ta94EEpd" },
+    'cr15': { title: "AI Model Optimization", yt: "zqoJCOgMd_4" },
+    'cr16': { title: "Federated Learning", pl: "PLNG4feLHqCWkdlSrEL2xbCtGa6QBxlUZb" },
+    'cr17': { title: "Graph Neural Networks", pl: "PLPTV0NXA_ZSg4Pimkso0nHxwYMB6IGX7l" },
+    'cr18': { title: "Reinforcement Learning", yt: "VnpRp7ZglfA" },
+    'cr19': { title: "Time Series Forecasting", yt: "qx5055j0U6c" },
+    'cr20': { title: "Recommendation Systems", yt: "F2tn-BviO_U" },
+    'cr21': { title: "AI Research Paper Implementation", yt: "onU5Hbb3qao" },
+    'cr22': { title: "Building AI Startups", yt: "zO1098PFOw8" }
+};
+
+const SPECIAL_COURSES = {
+    'sp1': { 
+        title: "Professional Makeup Course", 
+        ic: "💄", 
+        pl: "PLnormvp3UHAqpl1-m47DBTBMSXv1PCRL3",
+        desc: "Professional makeup artistry from basics to bridal."
+    },
+    'sp2': { 
+        title: "Fashion Designer", 
+        ic: "👗", 
+        pl: "PLQqMYWJXgJhjgb54-c2RWAVx4Ln6BfPcQ",
+        desc: "Fundamental fashion design and garment construction."
+    },
+    'sp3': { 
+        title: "Bridal Mehndi Designer", 
+        ic: "🌿", 
+        desc: "Complete series on advanced bridal mehndi patterns.",
+        modules: [
+            { title: "Part 1", yt: "7ZqkiTDOrBQ" }, { title: "Part 2", yt: "zfAiB0R1rlM" },
+            { title: "Part 3", yt: "2dMBULmJY2Y" }, { title: "Part 4", yt: "4QPzvawirzM" },
+            { title: "Part 5", yt: "KLhVTmWC11w" }, { title: "Part 6", yt: "YcRrtl23-Rg" },
+            { title: "Part 7", yt: "125BS2PVYD0" }, { title: "Part 8", yt: "Y_SR17eTNt8" },
+            { title: "Part 9", yt: "G3LDg3qORFM" }, { title: "Part 10", yt: "5aMpbLWqMk0" },
+            { title: "Part 11", yt: "6Te6cklQtWk" }, { title: "Part 12", yt: "jQQQssCFdEY" },
+            { title: "Part 13", yt: "q9T4Qmuk9mc" }, { title: "Part 14", yt: "BWTLRmRYC-c" },
+            { title: "Part 15", yt: "u49SmoSaTk8" }, { title: "Part 16", yt: "3LwoQlw1Wzw" },
+            { title: "Part 17", yt: "hwDxsBDOJPQ" }, { title: "Part 18", yt: "uWpvvLskYFk" },
+            { title: "Part 19", yt: "32S-25ax_aE" }, { title: "Part 20", yt: "mhIi1z_7aWU" },
+            { title: "Part 21", yt: "fpvNSfzthwU" }, { title: "Part 22", yt: "cNVU-4LyYyQ" },
+            { title: "Part 23", yt: "wgoSbB1jy6c" }, { title: "Part 24", yt: "e-c7RJBQGSU" },
+            { title: "Part 25", yt: "TbvCruBXrEc" }, { title: "Part 26", yt: "fcW05mJoBhc" },
+            { title: "Part 27", yt: "SeA08YQQFcE" }, { title: "Part 28", yt: "L6t09bkqbcA" },
+            { title: "Part 29", yt: "X5kmVd25bJ8" }, { title: "Part 30", yt: "5GJHpZB1gF4" },
+            { title: "Part 31", yt: "zZ2t_B4NOS4" }, { title: "Part 32", yt: "PgiayPy13m8" },
+            { title: "Part 33", yt: "yBspCHOgs3E" }, { title: "Part 34", yt: "VU7vtAUSwQg" },
+            { title: "Part 35", yt: "yBspCHOgs3E" }, { title: "Part 36", yt: "hmSeQ_Ocjlo" },
+            { title: "Part 37", yt: "4Xf403jpMsM" }, { title: "Part 38", yt: "a7GvmLWT9X0" },
+            { title: "Part 39", yt: "mcbWEadqdN0" }, { title: "Part 40", yt: "agxRyZj8C6A" },
+            { title: "Part 41", yt: "fJkaPMabYK0" }, { title: "Part 42", yt: "m2mI2bcPfxk" }
+        ]
+    }
+};
+
+let userTier = 0;
+let chatHistory = JSON.parse(localStorage.getItem('b10_chat')) || [];
+
+// AUTH LOGIC
+AUTH.onAuthStateChanged(async user => {
+    if(!user) { location.href='auth.html'; return; }
+    const doc = await DB.collection('user_collection').doc(user.email.toLowerCase().replace(/\./g,'_')).get();
+    if(doc.exists) {
+        const data = doc.data();
+        userTier = parseInt(data.bundlePrice) || 0;
+        document.getElementById('userTier').innerText = `TIER: ₹${userTier}`;
+        initUI();
+    }
+    document.getElementById('guard').style.opacity = '0';
+    setTimeout(() => document.getElementById('guard').style.display='none', 500);
+});
+
+function initUI() {
+    renderBundles();
+    renderSpecial();
+    renderChat();
+}
+
+// NAVIGATION
+function nav(pg) {
+    document.querySelectorAll('.pg').forEach(p => p.classList.remove('on'));
+    document.getElementById('cv').style.display = 'none';
+    document.getElementById('pg-'+pg).classList.add('on');
+    document.querySelectorAll('.sb-item').forEach(i => i.classList.remove('on'));
+    const titles = { bundles: "Course Bundles", special: "Special Courses", tutor: "AI Tutor" };
+    document.getElementById('pgTitle').innerText = titles[pg];
+}
+
+// BUNDLES RENDER
+function renderBundles() {
+    const grid = document.getElementById('bundleGrid');
+    grid.innerHTML = BUNDLES.map(b => {
+        const locked = userTier < b.price;
+        return `
+            <div class="card ${locked?'locked':''}" onclick="${locked?'upgrade()':`showBundleCourses('${b.name}')`}">
+                <div class="card-ic">${b.ic}</div>
+                <div class="card-title">${b.name}</div>
+                <div class="card-price">ACCESS: ₹${b.price}+</div>
+                <div class="card-desc">${b.desc}</div>
+            </div>
+        `;
+    }).join('');
+}
+
+function showBundleCourses(bundleName) {
+    const bundle = BUNDLES.find(b => b.name === bundleName);
+    const grid = document.getElementById('courseList');
+    grid.innerHTML = bundle.courses.map(cid => {
+        const c = ALL_COURSES[cid];
+        return `
+            <div class="card" onclick="playCourse('${cid}', 'all')">
+                <div class="card-title">${c.title}</div>
+                <div class="card-desc">Click to start modules.</div>
+            </div>
+        `;
+    }).join('');
+    nav('courses');
+    document.getElementById('pgTitle').innerText = bundleName;
+}
+
+// SPECIAL COURSES RENDER
+function renderSpecial() {
+    const grid = document.getElementById('specialGrid');
+    grid.innerHTML = Object.keys(SPECIAL_COURSES).map(id => {
+        const c = SPECIAL_COURSES[id];
+        return `
+            <div class="card" onclick="playCourse('${id}', 'special')">
+                <div class="card-ic">${c.ic}</div>
+                <div class="card-title">${c.title}</div>
+                <div class="card-desc">${c.desc}</div>
+            </div>
+        `;
+    }).join('');
+}
+
+// PLAYER LOGIC
+function playCourse(id, type) {
+    const course = (type === 'special') ? SPECIAL_COURSES[id] : ALL_COURSES[id];
+    document.querySelectorAll('.pg').forEach(p => p.classList.remove('on'));
+    document.getElementById('cv').style.display = 'grid';
+    document.getElementById('vidTitle').innerText = course.title;
+    
+    const list = document.getElementById('modList');
+    
+    // If it's a playlist or a multi-part special
+    if(course.pl) {
+        list.innerHTML = `<div class="mod-item active" onclick="loadVideo('${course.pl}', true)">
+            <div class="mod-idx">▶</div>
+            <div>Full Playlist</div>
+        </div>`;
+        loadVideo(course.pl, true);
+    } else if (course.modules) {
+        list.innerHTML = course.modules.map((m, i) => `
+            <div class="mod-item ${i===0?'active':''}" onclick="loadVideo('${m.yt}', false, this)">
+                <div class="mod-idx">${i+1}</div>
+                <div>${m.title}</div>
+            </div>
+        `).join('');
+        loadVideo(course.modules[0].yt, false);
+    } else {
+        list.innerHTML = `<div class="mod-item active">
+            <div class="mod-idx">1</div>
+            <div>Full Course Video</div>
+        </div>`;
+        loadVideo(course.yt, false);
+    }
+}
+
+function loadVideo(vid, isPl, el) {
+    const player = document.getElementById('player');
+    const url = isPl ? `https://www.youtube.com/embed/videoseries?list=${vid}` : `https://www.youtube.com/embed/${vid}`;
+    player.innerHTML = `<iframe src="${url}" allowfullscreen></iframe>`;
+    if(el) {
+        document.querySelectorAll('.mod-item').forEach(m => m.classList.remove('active'));
+        el.classList.add('active');
+    }
+}
+
+// AI TUTOR LOGIC
+async function sendMsg() {
+    const inp = document.getElementById('msgInp');
+    const text = inp.value.trim();
+    if(!text) return;
+
+    inp.value = '';
+    inp.style.height = 'auto';
+    
+    addMsg(text, 'user');
+    
+    try {
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                contents: [{ parts: [{ text: text }] }]
+            })
+        });
+        const data = await response.json();
+        const aiReply = data.candidates[0].content.parts[0].text;
+        addMsg(aiReply, 'bot');
+    } catch (e) {
+        addMsg("Error connecting to AI. Please check your key or connection.", 'bot');
+    }
+}
+
+function addMsg(text, role) {
+    const box = document.getElementById('chatBox');
+    const div = document.createElement('div');
+    div.className = role === 'user' ? 'm-user' : 'm-bot';
+    div.innerText = text;
+    box.appendChild(div);
+    box.scrollTop = box.scrollHeight;
+    
+    chatHistory.push({ role, text });
+    localStorage.setItem('b10_chat', JSON.stringify(chatHistory));
+}
+
+function renderChat() {
+    const box = document.getElementById('chatBox');
+    box.innerHTML = chatHistory.map(m => `
+        <div class="${m.role==='user'?'m-user':'m-bot'}">${m.text}</div>
+    `).join('');
+    box.scrollTop = box.scrollHeight;
+}
+
+function uploadFile(input) {
+    if(input.files[0]) {
+        addMsg(`Uploaded file: ${input.files[0].name}`, 'user');
+        setTimeout(() => addMsg("I've received your file. How can I help you with its contents?", 'bot'), 1000);
+    }
+}
+
+function upgrade() {
+    alert("This bundle is locked. Please upgrade your plan from the dashboard.");
+}
+
+function toggleSb() {
+    // Optional: for mobile manual toggle
+}
+</script>
+
+</body>
+</html>
