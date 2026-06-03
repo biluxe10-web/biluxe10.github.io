@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biluxe10 - Premium Learning LMS Player</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* S-SHIELD PROTECTED LAYER & CORE STYLES */
+        * {
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-user-select: none;
+            -ms-user-select: none;
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        body, html {
+            margin: 0;
+            padding: 0;
+            background-color: #0a0a0a;
+            color: #ffffff;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        /* Smoke Animation Intro Screen */
+        #intro-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            transition: opacity 1s ease;
+        }
+
+        .smoke-text {
+            font-size: 3rem;
+            font-weight: 700;
+            letter-spacing: 10px;
+            color: transparent;
+            background: linear-gradient(90deg, #fff, #8e8e8e, #fff);
+            background-size: 80%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            animation: smokeFade 4s forwards;
+            opacity: 0;
+        }
+
+        @keyframes smokeFade {
+            0% { filter: blur(10px); opacity: 0; transform: scale(0.9); }
+            50% { filter: blur(2px); opacity: 1; transform: scale(1.05); }
+            100% { filter: blur(0); opacity: 1; transform: scale(1); }
+        }
+
+        /* Main Dashboard Structure */
+        .app-container {
+            display: flex;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        /* Sidebar Playlist Navigation */
+        .sidebar {
+            width: 350px;
+            background: #111;
+            border-right: 1px solid #222;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .brand-header {
+            padding: 20px;
+            text-align: center;
+            background: #0d0d0d;
+            border-bottom: 1px solid #222;
+        }
+
+        .brand-header h2 {
+            margin: 0;
+            font-size: 1.5rem;
+            letter-spacing: 3px;
+            color: #d4af37; /* Gold Tint for Biluxe Luxury Feel */
+        }
+
+        .playlist-container {
+            overflow-y: auto;
+            flex-grow: 1;
+            padding: 15px;
+        }
+
+        .playlist-title {
+            font-size: 0.9rem;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 20px 0 10px 0;
+        }
+
+        .course-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            background: #161616;
+            margin-bottom: 8px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: 0.3s;
+            border: 1px solid transparent;
+            position: relative;
+        }
+
+        .course-item:hover {
+            background: #1f1f1f;
+        }
+
+        .course-item.active {
+            background: #1f1f1f;
+            border-color: #d4af37;
+        }
+
+        .course-item.locked {
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .video-index {
+            font-size: 0.8rem;
+            margin-right: 12px;
+            color: #888;
+        }
+
+        .video-title {
+            font-size: 0.85rem;
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            width: 80%;
+        }
+
+        .status-icon {
+            position: absolute;
+            right: 15px;
+            font-size: 0.9rem;
+        }
+
+        /* Player Canvas Screen */
+        .player-canvas {
+            flex-grow: 1;
+            background: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        /* S-Shield Guard Overlay: Prevents interaction inside YouTube iFrame */
+        .shield-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10;
+            background: transparent;
+        }
+
+        /* Dynamic Moving Blur Watermark */
+        .blur-watermark {
+            position: absolute;
+            z-index: 20;
+            pointer-events: none;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: rgba(255, 255, 255, 0.15);
+            text-shadow: 0 0 8px rgba(0,0,0,0.8);
+            background: rgba(0, 0, 0, 0.3);
+            padding: 5px 12px;
+            border-radius: 4px;
+            backdrop-filter: blur(2px);
+            animation: floatWatermark 15s infinite linear;
+        }
+
+        @keyframes floatWatermark {
+            0% { top: 10%; left: 10%; }
+            25% { top: 80%; left: 30%; }
+            50% { top: 20%; left: 70%; }
+            75% { top: 75%; left: 80%; }
+            100% { top: 10%; left: 10%; }
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+    </style>
+</head>
+<body oncontextmenu="return false;"> <div id="intro-overlay">
+        <div class="smoke-text">BILUXE10</div>
+    </div>
+
+    <div class="app-container">
+        
+        <div class="sidebar">
+            <div class="brand-header">
+                <h2>BILUXE10 ELITE</h2>
+            </div>
+            
+            <div class="playlist-container">
+                <div class="playlist-title">Course 1: Sindhi & Gujarati Hand Embroidery</div>
+                
+                <div class="course-item active" onclick="playVideo('mhI6btlyUyI', this, false)">
+                    <span class="video-index">01</span>
+                    <span class="video-title">Module 1: Introduction & Basic Demo</span>
+                    <span class="status-icon">🔓</span>
+                </div>
+                
+                <div class="course-item locked" onclick="playVideo('', this, true)">
+                    <span class="video-index">02</span>
+                    <span class="video-title">Module 2: Kutch Advanced Advanced Border</span>
+                    <span class="status-icon">🔒</span>
+                </div>
+
+                <div class="playlist-title">Course 2: Basic Hand Embroidery for Beginners</div>
+                
+                <div class="course-item" onclick="playVideo('Nyz3r_g2VpE', this, false)">
+                    <span class="video-index">01</span>
+                    <span class="video-title">Module 1: Basic Stitches Day 1 Demo</span>
+                    <span class="status-icon">🔓</span>
+                </div>
+                
+                <div class="course-item locked" onclick="playVideo('', this, true)">
+                    <span class="video-index">02</span>
+                    <span class="video-title">Module 2: Creative Patterns & Outlines</span>
+                    <span class="status-icon">🔒</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="player-canvas">
+            <div class="shield-overlay"></div>
+            
+            <div class="blur-watermark">BILUXE10 SECURE PLAYER</div>
+
+            <div id="video-wrapper" style="width:100%; height:100%;">
+                <div id="player"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Smoke intro control timeout
+        window.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                const intro = document.getElementById('intro-overlay');
+                intro.style.opacity = '0';
+                setTimeout(() => intro.style.display = 'none', 1000);
+            }, 3500); // 3.5 Seconds Smoke Animation
+        });
+
+        // Load YouTube Iframe Player API
+        let tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        let firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+        let player;
+        let currentVideoId = 'mhI6btlyUyI'; // Initial default video
+
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('player', {
+                height: '100%',
+                width: '100%',
+                videoId: currentVideoId,
+                playerVars: {
+                    'controls': 1,          // Player native control panel enabled
+                    'rel': 0,               // Prevents recommendation videos
+                    'modestbranding': 1,    // Removes massive YouTube branding logo
+                    'disablekb': 1,         // Prevents shortcuts like 'Watch on YouTube' keys
+                    'fs': 0                 // Disables Native Fullscreen button to avoid escaping wrapper environment
+                },
+                events: {
+                    'onReady': onPlayerReady
+                }
+            });
+        }
+
+        function onPlayerReady(event) {
+            // Setting Default Playback Speed to 1.1x as instructed
+            event.target.setPlaybackRate(1.1);
+        }
+
+        // Active Player Switch Module Control
+        function playVideo(videoId, element, isLocked) {
+            if (isLocked) {
+                alert("🔒 This Module is Locked! Please upgrade package details on Biluxe10 Platform to unlock premium components.");
+                return;
+            }
+
+            // Manage CSS State classes
+            document.querySelectorAll('.course-item').forEach(item => item.classList.remove('active'));
+            element.classList.add('active');
+
+            // Load and dynamically apply speed factors 
+            if (player) {
+                player.loadVideoById(videoId);
+                setTimeout(() => {
+                    player.setPlaybackRate(1.1); // Force reset 1.1x speed control
+                }, 600);
+            }
+        }
+
+        // S-SHIELD PROTOCOL: Heavy Keystroke blocker to prevent Inspect Element & developer tools console shortcuts
+        document.onkeydown = function(e) {
+            if (e.keyCode == 123 || 
+                (e.ctrlKey && e.shiftKey && (e.keyCode == 73 || e.keyCode == 74)) || 
+                (e.ctrlKey && e.keyCode == 85)) {
+                return false;
+            }
+        };
+    </script>
+</body>
+</html>
