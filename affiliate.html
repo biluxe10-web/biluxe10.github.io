@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Affiliate Terms — Biluxe10</title>
+  <meta name="description" content="Affiliate Programme Terms & Commission Structure — Biluxe10 Advanced Ed-Tech India."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;0,9..144,900;1,9..144,400&family=Cabinet+Grotesk:wght@400;500;600;700;800&family=Instrument+Mono:ital@0;1&display=swap" rel="stylesheet"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --bg:#07070A;--bg2:#0D0D11;--bg3:#121216;--bg4:#181820;
+      --border:rgba(255,255,255,0.055);--border2:rgba(255,255,255,0.10);--border3:rgba(255,255,255,0.16);
+      --gold:#C8A96E;--gold2:#E2C48A;--gold3:#F0D9A8;
+      --goldA:rgba(200,169,110,0.08);--goldB:rgba(200,169,110,0.15);--goldC:rgba(200,169,110,0.22);
+      --ink:#07070A;--text:#EBEBF0;--text2:#9898A8;--text3:#50505F;
+      --green:#22c55e;--red:#ef4444;
+      --font-display:'Fraunces',Georgia,serif;
+      --font-ui:'Cabinet Grotesk',sans-serif;
+      --font-mono:'Instrument Mono',monospace;
+      --nav-h:64px;
+      --ease-out:cubic-bezier(0.16,1,0.3,1);
+      --ease-spring:cubic-bezier(0.34,1.56,0.64,1);
+    }
+    html{scroll-behavior:smooth}
+    body{background:var(--bg);color:var(--text);font-family:var(--font-ui);overflow-x:hidden;line-height:1.6;font-size:15px}
+    a{text-decoration:none;color:inherit}
+    h1,h2,h3,h4{font-family:var(--font-display);line-height:1.05;letter-spacing:-0.025em}
+    ::-webkit-scrollbar{width:2px}
+    ::-webkit-scrollbar-track{background:var(--bg)}
+    ::-webkit-scrollbar-thumb{background:var(--gold);border-radius:2px}
+    ::selection{background:var(--goldB);color:var(--text)}
+
+    /* CURSOR */
+    #cursor-glow{position:fixed;width:500px;height:500px;border-radius:50%;pointer-events:none;background:radial-gradient(circle,rgba(200,169,110,0.045) 0%,transparent 65%);transform:translate(-50%,-50%);z-index:0;will-change:transform}
+    #cursor-dot{position:fixed;width:5px;height:5px;background:var(--gold);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:transform 0.1s}
+
+    /* NAV */
+    nav{position:fixed;top:0;left:0;right:0;z-index:500;height:var(--nav-h);display:flex;align-items:center;justify-content:space-between;padding:0 max(18px,4.5vw);background:rgba(7,7,10,0.75);backdrop-filter:blur(32px) saturate(1.4);border-bottom:1px solid var(--border);transition:all 0.3s}
+    nav.scrolled{background:rgba(7,7,10,0.97);border-bottom-color:rgba(200,169,110,0.12)}
+    .nav-logo{display:flex;align-items:center;gap:10px;cursor:pointer;transition:opacity 0.2s;text-decoration:none}
+    .nav-logo:hover{opacity:0.8}
+    .nav-logo img{width:34px;height:34px;object-fit:contain;border-radius:8px}
+    .nav-logo-text{font-family:var(--font-display);font-size:1.15rem;font-weight:900;color:transparent;background:linear-gradient(120deg,var(--gold2),var(--gold));-webkit-background-clip:text;background-clip:text;letter-spacing:-0.025em}
+    .nav-logo-text sup{font-size:0.42em;color:var(--text3);font-weight:400}
+    .nav-back{display:flex;align-items:center;gap:7px;font-family:var(--font-mono);font-size:0.65rem;color:var(--text3);letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;transition:color 0.2s;text-decoration:none;background:none;border:none;padding:0}
+    .nav-back:hover{color:var(--gold)}
+
+    /* DECO BAR */
+    .deco-bar{height:4px;background:linear-gradient(90deg,var(--gold3),var(--gold),var(--gold2),var(--gold3))}
+
+    /* HERO */
+    .legal-hero{padding:calc(var(--nav-h) + 60px) max(18px,5vw) 60px;position:relative;overflow:hidden;background:var(--bg2);border-bottom:1px solid var(--border)}
+    .legal-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 700px 400px at 60% 50%,rgba(200,169,110,0.07),transparent);pointer-events:none}
+    .lh-inner{max-width:880px;margin:0 auto;position:relative;z-index:1}
+    .lh-badge{display:inline-flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);background:var(--goldA);border:1px solid rgba(200,169,110,0.2);padding:5px 14px 5px 8px;border-radius:20px;margin-bottom:22px}
+    .lh-badge-dot{width:6px;height:6px;background:var(--gold);border-radius:50%;animation:pillPulse 2s ease infinite}
+    @keyframes pillPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.4;transform:scale(0.7)}}
+    .lh-title{font-family:var(--font-display);font-size:clamp(2.2rem,5vw,3.6rem);font-weight:900;color:var(--text);margin-bottom:14px;line-height:1.1}
+    .lh-title em{color:transparent;background:linear-gradient(120deg,var(--gold3),var(--gold));-webkit-background-clip:text;background-clip:text;font-style:italic}
+    .lh-desc{font-size:0.9rem;color:var(--text2);max-width:600px;line-height:1.9;margin-bottom:28px}
+    .lh-meta{display:flex;gap:10px;flex-wrap:wrap}
+    .lh-meta-item{display:flex;align-items:center;gap:7px;font-family:var(--font-mono);font-size:0.62rem;color:var(--text3);background:var(--bg3);border:1px solid var(--border);padding:6px 12px;border-radius:7px}
+    .lh-meta-item span{color:var(--gold)}
+
+    /* COMMISSION HERO CARDS */
+    .commission-cards{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:36px}
+    .comm-card{background:var(--bg3);border:1px solid var(--border2);border-radius:16px;padding:28px 26px;position:relative;overflow:hidden;transition:all 0.3s}
+    .comm-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:16px 16px 0 0}
+    .comm-card.learner::before{background:linear-gradient(90deg,var(--gold),var(--gold2))}
+    .comm-card.partner::before{background:linear-gradient(90deg,#7CB9E8,#60A5FA)}
+    .comm-card:hover{transform:translateY(-4px);box-shadow:0 20px 50px rgba(0,0,0,0.4)}
+    .comm-card-badge{display:inline-flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;padding:4px 10px;border-radius:20px;margin-bottom:14px}
+    .learner .comm-card-badge{background:var(--goldA);color:var(--gold);border:1px solid rgba(200,169,110,0.2)}
+    .partner .comm-card-badge{background:rgba(96,165,250,0.08);color:#60A5FA;border:1px solid rgba(96,165,250,0.2)}
+    .comm-card-title{font-family:var(--font-display);font-size:1.3rem;font-weight:900;color:var(--text);margin-bottom:6px}
+    .comm-card-sub{font-size:0.76rem;color:var(--text2);margin-bottom:20px;line-height:1.6}
+    .comm-rates{display:flex;flex-direction:column;gap:10px}
+    .comm-rate-item{display:flex;align-items:center;justify-content:space-between;background:var(--bg2);border:1px solid var(--border);border-radius:9px;padding:12px 14px}
+    .comm-rate-label{font-size:0.76rem;color:var(--text2)}
+    .comm-rate-label small{display:block;font-family:var(--font-mono);font-size:0.58rem;color:var(--text3);margin-top:2px}
+    .comm-rate-val{font-family:var(--font-display);font-size:1.5rem;font-weight:900}
+    .learner .comm-rate-val{color:var(--gold)}
+    .partner .comm-rate-val{color:#60A5FA}
+    .comm-rate-na{font-family:var(--font-mono);font-size:0.65rem;color:var(--text3)}
+
+    /* MAIN */
+    .legal-main{max-width:880px;margin:0 auto;padding:48px max(18px,5vw) 100px}
+
+    /* TOC */
+    .toc-box{background:var(--bg2);border:1px solid var(--border2);border-left:3px solid var(--gold);border-radius:14px;padding:24px 28px;margin-bottom:40px}
+    .toc-title{font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);margin-bottom:16px}
+    .toc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:4px 20px;list-style:none;counter-reset:toc}
+    .toc-grid li{counter-increment:toc}
+    .toc-grid li a{display:flex;align-items:baseline;gap:8px;color:var(--text2);text-decoration:none;font-size:0.78rem;padding:5px 0;transition:color 0.2s}
+    .toc-grid li a::before{content:counter(toc,decimal-leading-zero);font-family:var(--font-mono);font-size:0.58rem;color:var(--text3);min-width:22px}
+    .toc-grid li a:hover{color:var(--gold)}
+
+    /* ALERT BOXES */
+    .alert-box{background:var(--goldA);border:1px solid rgba(200,169,110,0.2);border-left:3px solid var(--gold);border-radius:10px;padding:16px 18px;margin:20px 0;display:flex;gap:12px;align-items:flex-start}
+    .alert-icon{font-size:1.1rem;flex-shrink:0;margin-top:2px}
+    .alert-text{font-size:0.8rem;color:var(--text);line-height:1.8}
+    .alert-text strong{color:var(--gold)}
+    .alert-text a{color:var(--gold)}
+    .warn-box{background:rgba(239,68,68,0.06);border:1px solid rgba(239,68,68,0.2);border-left:3px solid #ef4444;border-radius:10px;padding:16px 18px;margin:20px 0;display:flex;gap:12px;align-items:flex-start}
+    .warn-box .alert-text{color:var(--text2)}
+    .warn-box .alert-text strong{color:#f87171}
+    .green-box{background:rgba(34,197,94,0.06);border:1px solid rgba(34,197,94,0.2);border-left:3px solid var(--green);border-radius:10px;padding:16px 18px;margin:20px 0;display:flex;gap:12px;align-items:flex-start}
+    .green-box .alert-text{color:var(--text2)}
+    .green-box .alert-text strong{color:var(--green)}
+
+    /* ACCORDION */
+    .acc-stack{display:flex;flex-direction:column;gap:10px}
+    .acc-item{background:var(--bg2);border:1px solid var(--border);border-radius:14px;overflow:hidden;transition:border-color 0.25s}
+    .acc-item.open{border-color:rgba(200,169,110,0.28)}
+    .acc-trigger{width:100%;background:none;border:none;padding:20px 24px;display:flex;align-items:center;gap:14px;cursor:pointer;text-align:left;transition:background 0.2s}
+    .acc-trigger:hover{background:var(--bg3)}
+    .acc-num{font-family:var(--font-mono);font-size:0.58rem;color:var(--gold);opacity:0.7;min-width:28px;flex-shrink:0}
+    .acc-label{flex:1;font-family:var(--font-display);font-size:1rem;font-weight:700;color:var(--text)}
+    .acc-chevron{width:26px;height:26px;border-radius:50%;background:var(--goldA);border:1px solid rgba(200,169,110,0.18);display:flex;align-items:center;justify-content:center;transition:transform 0.3s,background 0.2s;flex-shrink:0}
+    .acc-chevron svg{width:12px;height:12px;stroke:var(--gold);transition:stroke 0.2s}
+    .acc-item.open .acc-chevron{transform:rotate(180deg);background:var(--gold)}
+    .acc-item.open .acc-chevron svg{stroke:var(--ink)}
+    .acc-body{max-height:0;overflow:hidden;transition:max-height 0.38s ease}
+    .acc-content{padding:0 24px 24px 66px;font-size:0.8rem;color:var(--text2);line-height:1.88}
+    .acc-content p{margin-bottom:12px}
+    .acc-content p:last-child{margin-bottom:0}
+    .acc-content ul,
+    .acc-content ol{padding-left:20px;margin-bottom:12px}
+    .acc-content li{margin-bottom:7px}
+    .acc-content strong{color:var(--text)}
+    .acc-content a{color:var(--gold)}
+    .acc-content a:hover{text-decoration:underline}
+
+    /* TABLE */
+    .acc-table{width:100%;border-collapse:collapse;margin:16px 0;font-size:0.78rem;border-radius:10px;overflow:hidden}
+    .acc-table th{background:rgba(200,169,110,0.08);color:var(--gold);font-weight:700;font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.08em;text-transform:uppercase;padding:10px 14px;text-align:left;border-bottom:1px solid var(--border)}
+    .acc-table td{padding:10px 14px;color:var(--text2);border-bottom:1px solid rgba(255,255,255,0.04)}
+    .acc-table tr:last-child td{border-bottom:none}
+    .acc-table tr:hover td{background:var(--bg3)}
+    .acc-table .hi{color:var(--gold);font-weight:700}
+    .acc-table .hi-blue{color:#60A5FA;font-weight:700}
+    .acc-table .hi-green{color:var(--green);font-weight:700}
+
+    /* FLOW STEPS */
+    .flow-steps{display:flex;flex-direction:column;gap:0;margin:20px 0;position:relative}
+    .flow-steps::before{content:'';position:absolute;left:18px;top:0;bottom:0;width:1px;background:linear-gradient(to bottom,var(--gold),rgba(200,169,110,0.1))}
+    .flow-step{display:flex;gap:18px;align-items:flex-start;padding:14px 0;position:relative;z-index:1}
+    .flow-step-num{width:36px;height:36px;border-radius:50%;background:var(--goldA);border:1px solid rgba(200,169,110,0.3);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:0.65rem;color:var(--gold);font-weight:700;flex-shrink:0}
+    .flow-step-body{}
+    .flow-step-title{font-size:0.82rem;font-weight:700;color:var(--text);margin-bottom:4px}
+    .flow-step-desc{font-size:0.76rem;color:var(--text2);line-height:1.7}
+
+    /* CONTACT CARD */
+    .contact-card{background:var(--bg2);border:1px solid var(--border2);border-radius:16px;padding:28px 32px;margin-top:52px;display:flex;gap:20px;flex-wrap:wrap;align-items:center;justify-content:space-between;position:relative;overflow:hidden}
+    .contact-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+    .cc-left h3{font-family:var(--font-display);font-size:1.1rem;font-weight:700;color:var(--text);margin-bottom:5px}
+    .cc-left p{font-size:0.78rem;color:var(--text2)}
+    .cc-btns{display:flex;gap:8px;flex-wrap:wrap}
+    .cc-btn{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;border-radius:8px;font-size:0.75rem;font-weight:700;text-decoration:none;transition:all 0.2s;cursor:pointer;font-family:var(--font-ui);border:1px solid var(--border2);background:var(--bg3);color:var(--text2)}
+    .cc-btn:hover{border-color:rgba(200,169,110,0.3);color:var(--gold)}
+    .cc-btn.primary{background:linear-gradient(135deg,var(--gold2),var(--gold));color:var(--ink);border:none}
+    .cc-btn.primary:hover{transform:translateY(-1px);box-shadow:0 4px 18px rgba(200,169,110,0.3)}
+
+    /* FOUNDER CARD */
+    .founder-card{background:var(--bg2);border:2px solid rgba(200,169,110,0.28);border-radius:16px;padding:28px 32px;margin-top:28px;position:relative;overflow:hidden}
+    .founder-card::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 400px 200px at 50% 0%,rgba(200,169,110,0.06),transparent);pointer-events:none}
+    .founder-inner{display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap;position:relative;z-index:1}
+    .founder-avatar{width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,var(--gold),rgba(200,169,110,0.35));display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0;border:2px solid rgba(200,169,110,0.3)}
+    .founder-info{flex:1;min-width:200px}
+    .founder-name{font-family:var(--font-display);font-size:1.1rem;font-weight:900;color:var(--text);margin-bottom:3px}
+    .founder-role{font-family:var(--font-mono);font-size:0.6rem;color:var(--gold);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:14px}
+    .founder-contacts{display:flex;flex-direction:column;gap:7px}
+    .founder-contact-item{display:flex;align-items:center;gap:10px;font-family:var(--font-mono);font-size:0.68rem;color:var(--text2)}
+    .founder-contact-item a{color:var(--text2);text-decoration:none;transition:color 0.2s}
+    .founder-contact-item a:hover{color:var(--gold)}
+    .fci-icon{width:26px;height:26px;border-radius:6px;background:var(--goldA);border:1px solid rgba(200,169,110,0.15);display:flex;align-items:center;justify-content:center;font-size:0.75rem;flex-shrink:0}
+
+    /* LEGAL STRIP */
+    .legal-strip{margin-top:36px;padding-top:24px;border-top:1px solid var(--border);display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+    .ls-pill{padding:5px 14px;border:1px solid var(--border);border-radius:20px;font-size:0.65rem;color:var(--text3);font-family:var(--font-mono);letter-spacing:0.06em;text-decoration:none;transition:all 0.2s;background:transparent}
+    .ls-pill:hover{border-color:rgba(200,169,110,0.3);color:var(--gold);background:var(--goldA)}
+    .ls-copy{width:100%;text-align:center;font-family:var(--font-mono);font-size:0.6rem;color:var(--text3);margin-top:14px}
+    .ls-copy span{color:var(--gold)}
+
+    /* SCROLL TOP */
+    #scroll-top{position:fixed;bottom:22px;right:22px;z-index:700;width:42px;height:42px;border-radius:50%;background:var(--bg2);border:1px solid var(--border2);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:1rem;transition:all 0.3s;opacity:0;transform:translateY(14px);pointer-events:none;box-shadow:0 4px 20px rgba(0,0,0,0.4);font-family:var(--font-ui)}
+    #scroll-top.vis{opacity:1;transform:none;pointer-events:all}
+    #scroll-top:hover{background:var(--goldA);border-color:var(--goldC)}
+
+    /* REVEAL */
+    .reveal{opacity:0;transform:translateY(22px);transition:opacity 0.65s ease,transform 0.65s ease}
+    .reveal.visible{opacity:1;transform:none}
+
+    @media(max-width:700px){
+      .commission-cards{grid-template-columns:1fr}
+      .acc-content{padding-left:24px}
+      .toc-grid{grid-template-columns:1fr}
+      .contact-card{flex-direction:column;align-items:flex-start}
+      .legal-main{padding-left:16px;padding-right:16px}
+    }
+  </style>
+</head>
+<body>
+<div id="cursor-glow"></div>
+<div id="cursor-dot"></div>
+<button id="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Back to top">↑</button>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a href="index.html" class="nav-logo">
+    <img src="https://raw.githubusercontent.com/Biluxe10/biluxe10-assets/main/bundles/Screenshot_20260104-140226.jpg" alt="Biluxe10" onerror="this.style.display='none'"/>
+    <span class="nav-logo-text">Biluxe<sup>10</sup></span>
+  </a>
+  <a href="index.html" class="nav-back">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+    Back to Home
+  </a>
+</nav>
+
+<div class="deco-bar"></div>
+
+<!-- HERO -->
+<section class="legal-hero">
+  <div class="lh-inner">
+    <div class="lh-badge"><span class="lh-badge-dot"></span>Earn While You Learn</div>
+    <h1 class="lh-title">Affiliate <em>Programme</em> Terms</h1>
+    <p class="lh-desc">Biluxe10's affiliate programme lets you earn real income by referring new learners. Two paths, transparent commissions, and no hidden rules. Everything you need to know is right here.</p>
+    <div class="lh-meta">
+      <div class="lh-meta-item"><span>📅</span> Last Updated: April 2026</div>
+      <div class="lh-meta-item"><span>🏢</span> Biluxe10 Advanced Ed-Tech</div>
+      <div class="lh-meta-item"><span>💰</span> Up to 65% Commission</div>
+      <div class="lh-meta-item"><span>📍</span> Hyderabad–Gulbarga, KA, India</div>
+    </div>
+
+    <!-- COMMISSION CARDS -->
+    <div class="commission-cards">
+      <div class="comm-card learner reveal">
+        <div class="comm-card-badge">⭐ Learner Path</div>
+        <div class="comm-card-title">Learner Path</div>
+        <div class="comm-card-sub">For enrolled Biluxe10 students who refer friends and family while learning.</div>
+        <div class="comm-rates">
+          <div class="comm-rate-item">
+            <div class="comm-rate-label">Direct Referral
+              <small>When someone buys using your link</small>
+            </div>
+            <div class="comm-rate-val">65%</div>
+          </div>
+          <div class="comm-rate-item">
+            <div class="comm-rate-label">Passive (2nd Level)
+              <small>When your referral refers someone else</small>
+            </div>
+            <div class="comm-rate-val">10%</div>
+          </div>
+        </div>
+      </div>
+      <div class="comm-card partner reveal">
+        <div class="comm-card-badge" style="background:rgba(96,165,250,0.08);color:#60A5FA;border:1px solid rgba(96,165,250,0.2)">🤝 Partner Path</div>
+        <div class="comm-card-title">Partner Path</div>
+        <div class="comm-card-sub">For promoters and marketers who want to refer Biluxe10 without enrolling themselves.</div>
+        <div class="comm-rates">
+          <div class="comm-rate-item">
+            <div class="comm-rate-label">Direct Referral
+              <small>When someone buys using your link</small>
+            </div>
+            <div class="comm-rate-val" style="color:#60A5FA">40%</div>
+          </div>
+          <div class="comm-rate-item">
+            <div class="comm-rate-label">Passive (2nd Level)
+              <small>Not applicable on Partner Path</small>
+            </div>
+            <div class="comm-rate-na">— N/A</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MAIN -->
+<main class="legal-main">
+
+  <!-- TOC -->
+  <div class="toc-box reveal">
+    <div class="toc-title">📋 Table of Contents</div>
+    <ol class="toc-grid">
+      <li><a href="#s1">Programme Overview</a></li>
+      <li><a href="#s2">How to Join</a></li>
+      <li><a href="#s3">Commission Structure</a></li>
+      <li><a href="#s4">How Commissions Are Calculated</a></li>
+      <li><a href="#s5">Withdrawal Terms</a></li>
+      <li><a href="#s6">Free Enrollment Policy</a></li>
+      <li><a href="#s7">Prohibited Activities</a></li>
+      <li><a href="#s8">Termination & Forfeiture</a></li>
+      <li><a href="#s9">Changes to Programme</a></li>
+      <li><a href="#s10">Contact & Support</a></li>
+    </ol>
+  </div>
+
+  <div class="acc-stack">
+
+    <!-- 01 -->
+    <div class="acc-item open reveal" id="s1">
+      <button class="acc-trigger" onclick="toggleAcc(this)">
+        <span class="acc-num">01</span>
+        <span class="acc-label">Programme Overview</span>
+        <span class="acc-chevron"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg></span>
+      </button>
+      <div class="acc-body">
+        <div class="acc-content">
+          <p>The Biluxe10 Affiliate Programme allows registered users to earn commissions by referring new learners to the platform. When someone purchases a course or bundle using your unique referral link, you earn a commission based on your path.</p>
+          <p>There are two participation paths:</p>
+          <ul>
+            <li><strong>Learner Path</strong> — Available to enrolled Biluxe10 students. Offers 65% direct commission + 10% passive (2nd level) commissions.</li>
+            <li><strong>Partner Path</strong> — Available to promoters who may not be enrolled students. Offers 40% direct commission only.</li>
+          </ul>
+          <div class="green-box">
+            <div class="alert-icon">✅</div>
+            <div class="alert-text"><strong>No investment required to join.</strong> Simply sign up, get your unique referral link from your dashboard, and start sharing. Commission is earned automatically when qualifying purchases are made through your link.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 02 -->
+    <div class="acc-item reveal" id="s2">
+      <button class="acc-trigger" onclick="toggleAcc(this)">
+        <span class="acc-num">02</span>
+        <span class="acc-label">How to Join the Programme</span>
+        <span class="acc-chevron"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg></span>
+      </button>
+      <div class="acc-body">
+        <div class="acc-content">
+          <p>Getting started with the Biluxe10 affiliate programme is simple:</p>
+          <div class="flow-steps">
+            <div class="flow-step">
+              <div class="flow-step-num">01</div>
+              <div class="flow-step-body">
+                <div class="flow-step-title">Create a Biluxe10 Account</div>
+                <div class="flow-step-desc">Sign up at biluxe10.com. Email verification required. Account is free to create.</div>
+              </div>
+            </div>
+            <div class="flow-step">
+              <div class="flow-step-num">02</div>
+              <div class="flow-step-body">
+                <div class="flow-step-title">Choose Your Path</div>
+                <div class="flow-step-desc">Select Learner Path (enroll in a bundle) or Partner Path (promote without enrolling). Your dashboard will reflect your path.</div>
+              </div>
+            </div>
+            <div class="flow-step">
+              <div class="flow-step-num">03</div>
+              <div class="flow-step-body">
+                <div class="flow-step-title">Get Your Referral Link</div>
+                <div class="flow-step-desc">Find your unique referral code in the Affiliate section of your dashboard. Share it via WhatsApp, Instagram, Telegram, or anywhere you like.</div>
+              </div>
+            </div>
+            <div class="flow-step">
+              <div class="flow-step-num">04</div>
+              <div class="flow-step-body">
+                <div class="flow-step-title">Earn When They Enroll</div>
+                <div class="flow-step-desc">When a referred user signs up using your link AND their payment is approved by admin, your commission is automatically credited to your dashboard earnings.</div>
+              </div>
+            </div>
+            <div class="flow-step">
+              <div class="flow-step-num">05</div>
+              <div class="flow-step-body">
+                <div class="flow-step-title">Request Withdrawal</div>
+                <div class="flow-step-desc">Once your balance reaches ₹500+, submit a withdrawal request from your dashboard. Payment is processed within 7 business days.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 03 -->
+    <div class="acc-item reveal" id="s3">
+      <button class="acc-trigger" onclick="toggleAcc(this)">
+        <span class="acc-num">03</span>
+        <span class="acc-label">Commission Structure</span>
+        <span class="acc-chevron"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg></span>
+      </button>
+      <div class="acc-body">
+        <div class="acc-content">
+          <table class="acc-table">
+            <thead>
+              <tr>
+                <th>Path</th>
+                <th>Commission Type</th>
+                <th>Rate</th>
+                <th>Basis</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Learner</strong></td>
+                <td>Direct Referral</td>
+                <td class="hi">65%</td>
+                <td>Bundle/course sale value</td>
+              </tr>
+              <tr>
+                <td><strong>Learner</strong></td>
+                <td>Passive (2nd Level)</td>
+                <td class="hi">10%</td>
+                <td>Your referral's referral sale value</td>
+              </tr>
+              <tr>
+                <td><strong>Partner</strong></td>
+                <td>Direct Referral</td>
+                <td class="hi-blue">40%</td>
+                <td>Bundle/course sale value</td>
+              </tr>
+              <tr>
+                <td><strong>Partner</strong></td>
+                <td>Passive (2nd Level)</td>
+                <td class="hi">—</td>
+                <td>Not applicable</td>
+              </tr>
+              <tr>
+                <td colspan="2"><strong>Minimum Withdrawal</strong></td>
+                <td class="hi-green">₹500</td>
+                <td>Across all earnings combined</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="alert-box">
+            <div class="alert-icon">💡</div>
+            <div class="alert-text">Commission percentages shown are <strong>base rates</strong>. Biluxe10 reserves the right to adjust rates per user at admin discretion. Your dashboard always reflects your current applicable rate.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 04 -->
+    <div class="acc-item reveal" id="s4">
+      <button class="acc-trigger" onclick="toggleAcc(this)">
+        <span class="acc-num">04</span>
+        <span class="acc-label">How Commissions Are Calculated</span>
+        <span class="acc-chevron"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg></span>
+      </button>
+      <div class="acc-body">
+        <div class="acc-content">
+          <p>Commissions are calculated and credited automatically when the admin approves a referred user's payment. Here is the exact flow:</p>
+          <div class="flow-steps">
+            <div class="flow-step">
+              <div class="flow-step-num">1</div>
+              <div class="flow-step-body">
+                <div class="flow-step-title">User B signs up using User A's referral link</div>
+                <div class="flow-step-desc">User B's account records referredBy = User A's email ID.</div>
+              </div>
+            </div>
+            <div class="flow-step">
+              <div class="flow-step-num">2</div>
+              <div class="flow-step-body">
+                <div class="flow-step-title">User B submits payment (UTR)</div>
+                <div class="flow-step-desc">Payment is pending admin verification. No commission is calculated yet.</div>
+              </div>
+            </div>
+            <div class="flow-step">
+              <div class="flow-step-num">3</div>
+              <div class="flow-step-body">
+                <div class="flow-step-title">Admin approves User B's payment</div>
+                <div class="flow-step-desc">System checks: Is this a free enrollment? If yes — no commission. If no — commission is calculated.</div>
+              </div>
+            </div>
+            <div class="flow-step">
+              <div class="flow-step-num">4</div>
+              <div class="flow-step-body">
+                <div class="flow-step-title">Commission credited to User A</div>
+                <div class="flow-step-desc">User A's totalEarning, monthlyEarning, weeklyEarning, and dailyEarning are all updated instantly. A transaction record is logged.</div>
+              </div>
+            </div>
+            <div class="flow-step">
+              <div class="flow-step-num">5</div>
+              <div class="flow-step-body">
+                <div class="flow-step-title">Passive commission to User A's referrer</div>
+                <div class="flow-step-desc">If User A was also referred by someone (Learner Path only), that person earns 10% passive commission on User B's sale.</div>
+              </div>
+            </div>
+            <div class="flow-step">
+              <div class="flow-step-num">6</div>
+              <div class="flow-step-body">
+                <div class="flow-step-title">Double-processing prevention</div>
+                <div class="flow-step-desc">commissionProcessed = true is set on User B's record to prevent any duplicate commission credits in future.</div>
+              </div>
+            </div>
+          </div>
+          <div class="alert-box">
+            <div class="alert-icon">🔒</div>
+            <div class="alert-text"><strong>Commission is only triggered once per qualifying sale.</strong> Re-approvals, status changes, or admin edits will not re-trigger a commission if it has already been processed.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 05 -->
+    <div class="acc-item reveal" id="s5">
+      <button class="acc-trigger" onclick="toggleAcc(this)">
+        <span class="acc-num">05</span>
+        <span class="acc-label">Withdrawal Terms</span>
+        <span class="acc-chevron"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg></span>
+      </button>
+      <div class="acc-body">
+        <div class="acc-content">
+          <table class="acc-table">
+            <thead><tr><th>Term</th><th>Detail</th></tr></thead>
+            <tbody>
+              <tr><td>Minimum Balance</td><td class="hi">₹500</td></tr>
+              <tr><td>Payment Timeline</td><td>Within <strong>7 business days</strong> of request approval</td></tr>
+              <tr><td>Payment Methods</td><td>UPI, Bank Transfer (as supported)</td></tr>
+              <tr><td>Request Process</td><td>Submit via dashboard Withdrawal section</td></tr>
+              <tr><td>Verification</td><td>Admin reviews and marks as paid</td></tr>
+              <tr><td>Disputes</td><td>Contact help.biluxe10@gmail.com within 14 days</td></tr>
+            </tbody>
+          </table>
+          <ul>
+            <li>Withdrawal requests can only be made once your verified balance reaches ₹500 or above</li>
+            <li>Biluxe10 reserves the right to hold a withdrawal if fraud or policy violations are under investigation</li>
+            <li>Biluxe10 is not responsible for delays caused by banking systems or incorrect payment details provided by you</li>
+            <li>Ensure your payment details in the dashboard are accurate before requesting a withdrawal</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- 06 -->
+    <div class="acc-item reveal" id="s6">
+      <button class="acc-trigger" onclick="toggleAcc(this)">
+        <span class="acc-num">06</span>
+        <span class="acc-label">Free Enrollment Policy</span>
+        <span class="acc-chevron"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg></span>
+      </button>
+      <div class="acc-body">
+        <div class="acc-content">
+          <p>Biluxe10 admins have the ability to mark certain enrollments as <strong>free enrollments</strong>. These are special cases where a user is granted access without a commercial transaction taking place.</p>
+          <ul>
+            <li>Free enrollments are flagged with <code style="font-family:var(--font-mono);font-size:0.75rem;background:var(--bg3);padding:1px 6px;border-radius:4px;color:var(--gold)">freeEnrollment: true</code> in the system</li>
+            <li><strong>No commission is generated</strong> for referrals of free enrollment accounts</li>
+            <li>This prevents gaming the system through self-created free accounts</li>
+            <li>Admins can also set <code style="font-family:var(--font-mono);font-size:0.75rem;background:var(--bg3);padding:1px 6px;border-radius:4px;color:var(--gold)">commissionEligible: false</code> on any enrollment at their discretion</li>
+          </ul>
+          <div class="warn-box">
+            <div class="alert-icon">⚠️</div>
+            <div class="alert-text"><strong>Attempting to abuse free enrollment</strong> to generate fake commissions will result in immediate account termination and forfeiture of all earnings.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 07 -->
+    <div class="acc-item reveal" id="s7">
+      <button class="acc-trigger" onclick="toggleAcc(this)">
+        <span class="acc-num">07</span>
+        <span class="acc-label">Prohibited Activities</span>
+        <span class="acc-chevron"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg></span>
+      </button>
+      <div class="acc-body">
+        <div class="acc-content">
+          <p>The following activities are strictly prohibited under the Biluxe10 Affiliate Programme:</p>
+          <ul>
+            <li><strong>Self-referrals</strong> — Using your own referral link to purchase or creating fake accounts to earn commissions</li>
+            <li><strong>Spam</strong> — Sending unsolicited messages, emails, or posts promoting your referral link</li>
+            <li><strong>Misleading advertising</strong> — Making false claims about Biluxe10, its courses, or earning potential to drive referrals</li>
+            <li><strong>Discount promises</strong> — Offering unauthorised discounts or refunds on behalf of Biluxe10</li>
+            <li><strong>Impersonation</strong> — Presenting yourself as an official Biluxe10 representative without written authorisation</li>
+            <li><strong>Paid ads without permission</strong> — Running paid advertising campaigns using Biluxe10's brand name without prior written approval</li>
+            <li><strong>Cookie stuffing</strong> — Using technical methods to falsely attribute referrals to your account</li>
+            <li><strong>Incentivised clicks</strong> — Paying others to click your referral link without making a genuine purchase intent</li>
+          </ul>
+          <div class="warn-box">
+            <div class="alert-icon">🚫</div>
+            <div class="alert-text"><strong>Zero tolerance policy.</strong> Any violation of these rules results in immediate programme suspension, forfeiture of all pending and unpaid commissions, and potential permanent account ban.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 08 -->
+    <div class="acc-item reveal" id="s8">
+      <button class="acc-trigger" onclick="toggleAcc(this)">
+        <span class="acc-num">08</span>
+        <span class="acc-label">Termination &amp; Forfeiture</span>
+        <span class="acc-chevron"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg></span>
+      </button>
+      <div class="acc-body">
+        <div class="acc-content">
+          <p>Biluxe10 reserves the right to terminate your participation in the affiliate programme at any time. Grounds for termination include but are not limited to:</p>
+          <ul>
+            <li>Violation of any section of these Affiliate Terms</li>
+            <li>Violation of Biluxe10's main Terms &amp; Conditions</li>
+            <li>Engaging in fraudulent or deceptive referral activity</li>
+            <li>Chargebacks or payment disputes that affect commission integrity</li>
+            <li>Account inactivity for an extended period with pending withdrawal requests flagged as suspicious</li>
+          </ul>
+          <p>Upon termination for violations:</p>
+          <ul>
+            <li>All pending commissions are immediately forfeited</li>
+            <li>Previously paid commissions are not reversible</li>
+            <li>Your referral link is deactivated instantly</li>
+            <li>You may not re-register for the programme without written approval from Biluxe10</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- 09 -->
+    <div class="acc-item reveal" id="s9">
+      <button class="acc-trigger" onclick="toggleAcc(this)">
+        <span class="acc-num">09</span>
+        <span class="acc-label">Changes to the Programme</span>
+        <span class="acc-chevron"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg></span>
+      </button>
+      <div class="acc-body">
+        <div class="acc-content">
+          <p>Biluxe10 reserves the right to modify, suspend, or terminate the affiliate programme — or any part of it — at any time, including but not limited to:</p>
+          <ul>
+            <li>Commission rates (direct or passive)</li>
+            <li>Minimum withdrawal thresholds</li>
+            <li>Payment timelines</li>
+            <li>Eligibility criteria for Learner vs Partner path</li>
+            <li>Rules around free enrollment and commission eligibility</li>
+          </ul>
+          <p>Changes will be announced via your registered email and/or updated on this page. The "Last Updated" date at the top reflects the most recent revision.</p>
+          <div class="alert-box">
+            <div class="alert-icon">📌</div>
+            <div class="alert-text">Continued participation in the affiliate programme after changes are published constitutes your acceptance of the updated terms.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 10 -->
+    <div class="acc-item reveal" id="s10">
+      <button class="acc-trigger" onclick="toggleAcc(this)">
+        <span class="acc-num">10</span>
+        <span class="acc-label">Contact &amp; Support</span>
+        <span class="acc-chevron"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg></span>
+      </button>
+      <div class="acc-body">
+        <div class="acc-content">
+          <p>For any affiliate-related questions, commission disputes, or withdrawal support, reach us through:</p>
+          <ul>
+            <li><strong>Email:</strong> <a href="mailto:help.biluxe10@gmail.com">help.biluxe10@gmail.com</a></li>
+            <li><strong>WhatsApp:</strong> <a href="https://wa.me/919019254743" target="_blank" rel="noopener">+91 90192 54743</a></li>
+            <li><strong>Telegram:</strong> <a href="https://t.me/biluxe10_support" target="_blank" rel="noopener">t.me/biluxe10_support</a></li>
+          </ul>
+          <p>Support hours: <strong>9 AM – 9 PM IST, Monday to Saturday.</strong> We typically respond within 2–4 hours.</p>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /acc-stack -->
+
+  <!-- FOUNDER CARD -->
+  <div class="founder-card reveal">
+    <div class="founder-inner">
+      <div class="founder-avatar">👤</div>
+      <div class="founder-info">
+        <div class="founder-name">Syed Afshar Khadri</div>
+        <div class="founder-role">Founder · Biluxe10 Advanced Ed-Tech</div>
+        <div class="founder-contacts">
+          <div class="founder-contact-item">
+            <div class="fci-icon">📧</div>
+            <a href="mailto:syedafsharkhadri63@gmail.com">syedafsharkhadri63@gmail.com</a>
+          </div>
+          <div class="founder-contact-item">
+            <div class="fci-icon">📱</div>
+            <a href="tel:+919019254743">+91 90192 54743</a>
+          </div>
+          <div class="founder-contact-item">
+            <div class="fci-icon">💬</div>
+            <a href="https://wa.me/919019254743" target="_blank" rel="noopener">WhatsApp Direct</a>
+          </div>
+          <div class="founder-contact-item">
+            <div class="fci-icon">📍</div>
+            <span>Gulbarga / Hyderabad, Karnataka, India</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTACT CARD -->
+  <div class="contact-card reveal">
+    <div class="cc-left">
+      <h3>Ready to start earning?</h3>
+      <p>Sign up free and get your referral link from your dashboard today.</p>
+    </div>
+    <div class="cc-btns">
+      <a href="auth.html" class="cc-btn primary">Sign Up Free →</a>
+      <a href="https://wa.me/919019254743" class="cc-btn" target="_blank" rel="noopener">💬 WhatsApp</a>
+      <a href="index.html" class="cc-btn">← Back Home</a>
+    </div>
+  </div>
+
+  <!-- LEGAL STRIP -->
+  <div class="legal-strip">
+    <a href="privacy.html" class="ls-pill">Privacy Policy</a>
+    <a href="terms.html" class="ls-pill">Terms & Conditions</a>
+    <a href="disclaimer.html" class="ls-pill">Disclaimer</a>
+    <a href="refund.html" class="ls-pill">Refund Policy</a>
+    <div class="ls-copy">© 2026 <span>Biluxe10</span> Advanced Ed-Tech · Hyderabad–Gulbarga, Karnataka, India</div>
+  </div>
+
+</main>
+
+<script>
+/* SHIELD */
+(function(){
+  document.addEventListener('contextmenu',e=>e.preventDefault());
+  document.addEventListener('keydown',function(e){
+    if(e.key==='F12'){e.preventDefault();return false;}
+    if(e.ctrlKey&&['u','s','a','p'].includes(e.key.toLowerCase())){e.preventDefault();return false;}
+    if(e.ctrlKey&&e.shiftKey&&['i','j','c'].includes(e.key.toLowerCase())){e.preventDefault();return false;}
+  });
+  document.addEventListener('selectstart',e=>e.preventDefault());
+  document.addEventListener('dragstart',e=>e.preventDefault());
+})();
+
+/* CURSOR */
+const glow=document.getElementById('cursor-glow'),dot=document.getElementById('cursor-dot');
+let mx=0,my=0,gx=0,gy=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;dot.style.left=mx+'px';dot.style.top=my+'px'});
+(function animC(){gx+=(mx-gx)*0.06;gy+=(my-gy)*0.06;glow.style.left=gx+'px';glow.style.top=gy+'px';requestAnimationFrame(animC)})();
+
+/* NAV SCROLL */
+window.addEventListener('scroll',()=>{
+  document.getElementById('navbar').classList.toggle('scrolled',scrollY>50);
+  document.getElementById('scroll-top').classList.toggle('vis',scrollY>280);
+});
+
+/* ACCORDION */
+function toggleAcc(btn){
+  const item=btn.closest('.acc-item');
+  const body=item.querySelector('.acc-body');
+  const isOpen=item.classList.contains('open');
+  document.querySelectorAll('.acc-item.open').forEach(el=>{
+    el.classList.remove('open');
+    el.querySelector('.acc-body').style.maxHeight='';
+  });
+  if(!isOpen){
+    item.classList.add('open');
+    body.style.maxHeight=body.scrollHeight+40+'px';
+  }
+}
+document.querySelectorAll('.acc-item.open').forEach(item=>{
+  const body=item.querySelector('.acc-body');
+  if(body)body.style.maxHeight=body.scrollHeight+40+'px';
+});
+
+/* REVEAL */
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target)}});
+},{threshold:0.07});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+</script>
+</body>
+</html>
