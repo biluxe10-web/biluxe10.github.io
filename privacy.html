@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Privacy Policy — Biluxe10</title>
+<meta name="description" content="Biluxe10 Privacy Policy — How we collect, use, and protect your data.">
+<link rel="canonical" href="https://biluxe10.com/privacy.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;0,9..144,900;1,9..144,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#07070A;--bg2:#0D0D11;--bg3:#121216;--bg4:#181820;
+  --border:rgba(255,255,255,0.055);--border2:rgba(255,255,255,0.10);--border3:rgba(255,255,255,0.16);
+  --gold:#C8A96E;--gold2:#E2C48A;--gold3:#F0D9A8;
+  --goldA:rgba(200,169,110,0.08);--goldB:rgba(200,169,110,0.15);--goldC:rgba(200,169,110,0.22);
+  --ink:#07070A;--text:#EDEDF0;--text2:#9B9BA8;--text3:#50505F;
+  --font-display:'Fraunces',Georgia,serif;
+  --font-ui:'Plus Jakarta Sans',sans-serif;
+  --font-mono:'JetBrains Mono',monospace;
+  --nav-h:64px;
+  --ease-out:cubic-bezier(0.16,1,0.3,1);
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--font-ui);overflow-x:hidden;line-height:1.6;font-size:15px}
+a{text-decoration:none;color:inherit}
+h1,h2,h3,h4{font-family:var(--font-display);line-height:1.05;letter-spacing:-0.025em}
+::-webkit-scrollbar{width:2px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--gold);border-radius:2px}
+::selection{background:rgba(200,169,110,0.15);color:var(--text)}
+
+/* NAV */
+nav{position:sticky;top:0;z-index:500;height:var(--nav-h);display:flex;align-items:center;justify-content:space-between;padding:0 max(18px,4.5vw);background:rgba(7,7,10,0.92);backdrop-filter:blur(32px) saturate(1.4);border-bottom:1px solid var(--border)}
+.nav-logo{display:flex;align-items:center;gap:10px;cursor:pointer;text-decoration:none;transition:opacity 0.2s}
+.nav-logo:hover{opacity:0.8}
+.nav-logo img{width:34px;height:34px;object-fit:contain;border-radius:8px}
+.nav-logo-text{font-family:var(--font-display);font-size:1.15rem;font-weight:900;color:transparent;background:linear-gradient(120deg,var(--gold2),var(--gold));-webkit-background-clip:text;background-clip:text;letter-spacing:-0.025em}
+.nav-logo-text sup{font-size:0.42em;color:var(--text3);font-weight:400}
+.nav-right{display:flex;gap:8px;align-items:center}
+.nav-pill{font-family:var(--font-mono);font-size:0.58rem;color:var(--text3);background:var(--bg3);border:1px solid var(--border);padding:4px 12px;border-radius:20px;letter-spacing:0.1em;text-transform:uppercase}
+.nav-home-btn{padding:8px 18px;border-radius:8px;background:var(--goldA);border:1px solid var(--goldC);color:var(--gold);font-family:var(--font-ui);font-size:0.75rem;font-weight:700;cursor:pointer;transition:all 0.2s;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+.nav-home-btn:hover{background:var(--goldB)}
+
+/* HERO */
+.legal-hero{padding:60px max(18px,5vw) 48px;background:var(--bg2);border-bottom:1px solid var(--border);position:relative;overflow:hidden}
+.legal-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 600px 300px at 70% 50%,rgba(200,169,110,0.06),transparent);pointer-events:none}
+.legal-hero-inner{max-width:860px;margin:0 auto;position:relative;z-index:1}
+.legal-breadcrumb{display:flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:0.6rem;color:var(--text3);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:24px}
+.legal-breadcrumb a{color:var(--gold);text-decoration:none;transition:opacity 0.2s}
+.legal-breadcrumb a:hover{opacity:0.7}
+.legal-breadcrumb span{color:var(--text3)}
+.legal-icon-wrap{width:56px;height:56px;border-radius:14px;background:rgba(96,165,250,0.08);border:1px solid rgba(96,165,250,0.2);display:flex;align-items:center;justify-content:center;font-size:1.6rem;margin-bottom:20px}
+.legal-hero h1{font-family:var(--font-display);font-size:clamp(2.2rem,4vw,3.2rem);font-weight:900;color:var(--text);margin-bottom:10px}
+.legal-hero h1 em{color:transparent;background:linear-gradient(120deg,var(--gold2),var(--gold));-webkit-background-clip:text;background-clip:text;font-style:italic}
+.legal-hero-sub{font-size:0.88rem;color:var(--text2);max-width:520px;line-height:1.8;margin-bottom:28px}
+.legal-meta-strip{display:flex;gap:20px;flex-wrap:wrap;padding:14px 18px;background:var(--bg3);border:1px solid var(--border);border-radius:12px;max-width:560px}
+.lms-item{display:flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:0.6rem;color:var(--text3);letter-spacing:0.06em}
+.lms-item span{color:var(--gold)}
+
+/* MAIN */
+.legal-main{max-width:860px;margin:0 auto;padding:52px max(18px,5vw) 80px}
+
+/* QUICK NAV */
+.quick-nav{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:20px 22px;margin-bottom:36px}
+.qn-title{font-family:var(--font-mono);font-size:0.58rem;color:var(--text3);letter-spacing:0.14em;text-transform:uppercase;margin-bottom:14px}
+.qn-list{display:flex;flex-direction:column;gap:4px}
+.qn-item{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;font-size:0.78rem;color:var(--text2);text-decoration:none;transition:all 0.2s;cursor:pointer}
+.qn-item:hover{background:var(--bg3);color:var(--text)}
+.qn-num{font-family:var(--font-mono);font-size:0.58rem;color:var(--text3);background:var(--bg3);border:1px solid var(--border);padding:2px 7px;border-radius:4px;flex-shrink:0;min-width:28px;text-align:center}
+.qn-item:hover .qn-num{background:var(--goldA);border-color:var(--goldC);color:var(--gold)}
+
+/* ACCORDION */
+.accord-list{display:flex;flex-direction:column;gap:10px}
+.accord-item{background:var(--bg2);border:1px solid var(--border);border-radius:14px;overflow:hidden;transition:border-color 0.3s}
+.accord-item.open{border-color:rgba(200,169,110,0.22)}
+.accord-trigger{width:100%;padding:18px 22px;background:transparent;border:none;text-align:left;cursor:pointer;display:flex;align-items:center;gap:14px;transition:background 0.2s}
+.accord-trigger:hover{background:rgba(255,255,255,0.02)}
+.accord-num{font-family:var(--font-mono);font-size:0.58rem;color:var(--text3);background:var(--bg3);border:1px solid var(--border);padding:3px 8px;border-radius:4px;flex-shrink:0;transition:all 0.2s}
+.accord-item.open .accord-num{background:var(--goldA);border-color:var(--goldC);color:var(--gold)}
+.accord-title{font-family:var(--font-display);font-size:0.92rem;font-weight:700;color:var(--text);flex:1;text-align:left}
+.accord-icon{width:24px;height:24px;border-radius:50%;background:var(--bg3);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--gold);font-family:var(--font-mono);font-size:0.8rem;transition:all 0.3s;flex-shrink:0}
+.accord-item.open .accord-icon{transform:rotate(45deg);background:var(--goldA);border-color:var(--goldC)}
+.accord-body{max-height:0;overflow:hidden;transition:max-height 0.4s ease}
+.accord-item.open .accord-body{max-height:600px}
+.accord-content{padding:0 22px 22px;border-top:1px solid var(--border)}
+.accord-content p{font-size:0.82rem;color:var(--text2);line-height:1.9;margin-bottom:10px}
+.accord-content p:last-child{margin-bottom:0}
+.accord-content ul{list-style:none;display:flex;flex-direction:column;gap:8px;margin-bottom:10px}
+.accord-content ul li{font-size:0.82rem;color:var(--text2);line-height:1.7;padding-left:20px;position:relative}
+.accord-content ul li::before{content:"▸";position:absolute;left:0;color:var(--gold);font-size:0.65rem;top:3px}
+.accord-content strong{color:var(--text);font-weight:700}
+
+/* HIGHLIGHT BOX */
+.highlight-box{background:var(--goldA);border:1px solid rgba(200,169,110,0.2);border-radius:10px;padding:14px 16px;margin-top:14px;font-size:0.78rem;color:var(--gold);line-height:1.75;font-family:var(--font-mono);letter-spacing:0.02em}
+.info-box{background:rgba(96,165,250,0.06);border:1px solid rgba(96,165,250,0.18);border-radius:10px;padding:14px 16px;margin-top:14px;font-size:0.78rem;color:#7CB9E8;line-height:1.75}
+
+/* CONTACT FOOTER */
+.contact-card{background:var(--bg2);border:1px solid var(--border2);border-radius:16px;padding:28px;margin-top:40px;display:flex;align-items:flex-start;gap:18px;flex-wrap:wrap}
+.cc-icon{font-size:2rem;flex-shrink:0;margin-top:2px}
+.cc-body{flex:1;min-width:220px}
+.cc-title{font-family:var(--font-display);font-size:1.05rem;font-weight:700;color:var(--text);margin-bottom:6px}
+.cc-desc{font-size:0.8rem;color:var(--text2);line-height:1.8;margin-bottom:16px}
+.cc-links{display:flex;flex-direction:column;gap:8px}
+.cc-link{display:inline-flex;align-items:center;gap:9px;padding:9px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:9px;font-size:0.78rem;color:var(--text2);text-decoration:none;transition:all 0.2s;max-width:fit-content}
+.cc-link:hover{border-color:rgba(200,169,110,0.28);color:var(--gold);transform:translateX(3px)}
+.cc-link-icon{font-size:0.9rem}
+
+/* LEGAL NAV BAR */
+.legal-nav-bar{background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:0 max(18px,5vw);overflow-x:auto;-webkit-overflow-scrolling:touch}
+.lnb-inner{display:flex;gap:0;max-width:860px;margin:0 auto;min-width:max-content}
+.lnb-item{padding:14px 20px;font-family:var(--font-mono);font-size:0.62rem;color:var(--text3);letter-spacing:0.1em;text-transform:uppercase;text-decoration:none;cursor:pointer;transition:all 0.2s;border-bottom:2px solid transparent;white-space:nowrap;display:inline-flex;align-items:center;gap:6px}
+.lnb-item:hover{color:var(--text2);border-bottom-color:var(--border2)}
+.lnb-item.active{color:var(--gold);border-bottom-color:var(--gold)}
+
+/* FOOTER */
+.legal-footer{background:var(--bg3);border-top:1px solid var(--border);padding:24px max(18px,5vw)}
+.lf-inner{max-width:860px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.lf-copy{font-family:var(--font-mono);font-size:0.65rem;color:var(--text3)}
+.lf-copy span{color:var(--gold)}
+.lf-back{display:inline-flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:0.62rem;color:var(--text3);text-decoration:none;transition:color 0.2s;cursor:pointer;background:none;border:none;padding:0}
+.lf-back:hover{color:var(--gold)}
+
+/* RESPONSIVE */
+@media(max-width:600px){
+  .legal-main{padding:36px 16px 60px}
+  .legal-hero{padding:40px 16px 36px}
+  .contact-card{flex-direction:column}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-logo">
+    <img src="https://raw.githubusercontent.com/Biluxe10/biluxe10-assets/main/bundles/Screenshot_20260104-140226.jpg" alt="Biluxe10" onerror="this.style.display='none'">
+    <span class="nav-logo-text">Biluxe<sup>10</sup></span>
+  </a>
+  <div class="nav-right">
+    <span class="nav-pill">Legal</span>
+    <a href="index.html" class="nav-home-btn">← Back to Home</a>
+  </div>
+</nav>
+
+<!-- LEGAL NAV BAR -->
+<div class="legal-nav-bar">
+  <div class="lnb-inner">
+    <a href="privacy.html" class="lnb-item active">⊛ Privacy</a>
+    <a href="terms.html" class="lnb-item">≡ Terms</a>
+    <a href="disclaimer.html" class="lnb-item">△ Disclaimer</a>
+    <a href="refund.html" class="lnb-item">↺ Refund</a>
+    <a href="affiliate.html" class="lnb-item">◆ Affiliate</a>
+  </div>
+</div>
+
+<!-- HERO -->
+<div class="legal-hero">
+  <div class="legal-hero-inner">
+    <div class="legal-breadcrumb">
+      <a href="index.html">Home</a>
+      <span>›</span>
+      <span>Legal</span>
+      <span>›</span>
+      <span style="color:var(--gold)">Privacy Policy</span>
+    </div>
+    <div class="legal-icon-wrap">⊛</div>
+    <h1>Privacy <em>Policy</em></h1>
+    <p class="legal-hero-sub">We take your privacy seriously. This policy explains exactly what data we collect, how we use it, and your rights over it.</p>
+    <div class="legal-meta-strip">
+      <div class="lms-item"><span>📅</span> Last Updated: April 2026</div>
+      <div class="lms-item"><span>🏢</span> Biluxe10 Advanced Ed-Tech</div>
+      <div class="lms-item"><span>📍</span> Hyderabad–Gulbarga, KA, India</div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="legal-main">
+
+  <!-- QUICK NAV -->
+  <div class="quick-nav">
+    <div class="qn-title">Jump to Section</div>
+    <div class="qn-list">
+      <a class="qn-item" onclick="openSection(0)"><span class="qn-num">01</span>Information We Collect</a>
+      <a class="qn-item" onclick="openSection(1)"><span class="qn-num">02</span>How We Use Your Information</a>
+      <a class="qn-item" onclick="openSection(2)"><span class="qn-num">03</span>Data Sharing & Third Parties</a>
+      <a class="qn-item" onclick="openSection(3)"><span class="qn-num">04</span>Data Security</a>
+      <a class="qn-item" onclick="openSection(4)"><span class="qn-num">05</span>Cookies & Tracking</a>
+      <a class="qn-item" onclick="openSection(5)"><span class="qn-num">06</span>Data Retention</a>
+      <a class="qn-item" onclick="openSection(6)"><span class="qn-num">07</span>Your Rights</a>
+      <a class="qn-item" onclick="openSection(7)"><span class="qn-num">08</span>Children's Privacy</a>
+      <a class="qn-item" onclick="openSection(8)"><span class="qn-num">09</span>Changes to This Policy</a>
+    </div>
+  </div>
+
+  <!-- ACCORDION -->
+  <div class="accord-list" id="accordList">
+
+    <div class="accord-item open">
+      <button class="accord-trigger" onclick="toggleAccord(this)">
+        <span class="accord-num">01</span>
+        <span class="accord-title">Information We Collect</span>
+        <span class="accord-icon">+</span>
+      </button>
+      <div class="accord-body">
+        <div class="accord-content">
+          <p>When you register or use Biluxe10, we collect the following information to operate the platform effectively:</p>
+          <ul>
+            <li><strong>Identity data:</strong> Full name and email address provided at sign-up</li>
+            <li><strong>Contact data:</strong> Phone number (used for WhatsApp support and OTP verification)</li>
+            <li><strong>Authentication data:</strong> Securely hashed passwords — never stored in plain text</li>
+            <li><strong>Device data:</strong> Device ID, browser type, and operating system (for device-locked access security)</li>
+            <li><strong>Usage data:</strong> Course progress, chapter completion percentages, exam scores, and project submissions</li>
+            <li><strong>Payment data:</strong> UTR number or payment reference — we do <strong>not</strong> store card numbers, UPI PINs, or banking credentials</li>
+            <li><strong>Referral data:</strong> Referral code used at sign-up (for affiliate commission tracking)</li>
+            <li><strong>Communication data:</strong> Messages sent to our support email or WhatsApp</li>
+          </ul>
+          <div class="info-box">💡 We collect only what is necessary to operate the platform, verify payments, and support your learning journey. We do not collect sensitive personal data such as government IDs, biometrics, or financial account details.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="accord-item">
+      <button class="accord-trigger" onclick="toggleAccord(this)">
+        <span class="accord-num">02</span>
+        <span class="accord-title">How We Use Your Information</span>
+        <span class="accord-icon">+</span>
+      </button>
+      <div class="accord-body">
+        <div class="accord-content">
+          <p>We use your information for the following purposes only:</p>
+          <ul>
+            <li>To create and manage your Biluxe10 account</li>
+            <li>To verify your payment and grant course access (typically within 2–6 hours)</li>
+            <li>To track your course progress and issue completion certificates</li>
+            <li>To calculate and credit affiliate commissions accurately</li>
+            <li>To lock your account to your registered device (security measure)</li>
+            <li>To send important platform updates, course notifications, and support replies</li>
+            <li>To detect and prevent fraud, fake referrals, and Terms violations</li>
+            <li>To improve platform performance and course quality based on usage patterns</li>
+          </ul>
+          <div class="highlight-box">We do not use your data for advertising profiling, political targeting, or any purpose unrelated to your learning experience on Biluxe10.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="accord-item">
+      <button class="accord-trigger" onclick="toggleAccord(this)">
+        <span class="accord-num">03</span>
+        <span class="accord-title">Data Sharing & Third Parties</span>
+        <span class="accord-icon">+</span>
+      </button>
+      <div class="accord-body">
+        <div class="accord-content">
+          <p>We <strong>never sell, rent, or trade</strong> your personal data to third parties for commercial purposes. Your data may be shared only in these limited circumstances:</p>
+          <ul>
+            <li><strong>Firebase / Google Cloud:</strong> Our database and authentication is hosted on Google Firebase. Your data is stored on Google's secure servers under their Privacy Policy and our data processor agreement</li>
+            <li><strong>Payment processors:</strong> We receive only your UTR/reference number — your bank or payment gateway handles all financial data independently</li>
+            <li><strong>Legal requirements:</strong> We may disclose data if required by applicable Indian law, court order, or government authority</li>
+          </ul>
+          <div class="info-box">Third-party service providers we use (Firebase) are bound by strict confidentiality. We do not share your data with any marketing companies, data brokers, or advertisers.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="accord-item">
+      <button class="accord-trigger" onclick="toggleAccord(this)">
+        <span class="accord-num">04</span>
+        <span class="accord-title">Data Security</span>
+        <span class="accord-icon">+</span>
+      </button>
+      <div class="accord-body">
+        <div class="accord-content">
+          <p>We implement multiple layers of security to protect your data:</p>
+          <ul>
+            <li><strong>Encryption in transit:</strong> All data transferred between your browser and our servers is encrypted via HTTPS/TLS</li>
+            <li><strong>Encryption at rest:</strong> Data stored in Firebase Firestore is encrypted at the infrastructure level by Google</li>
+            <li><strong>Password security:</strong> All passwords are hashed using industry-standard algorithms — plain-text passwords are never stored</li>
+            <li><strong>Device locking:</strong> Accounts are tied to a specific device ID to prevent unauthorized sharing or access</li>
+            <li><strong>Access controls:</strong> Only authorised Biluxe10 administrators can access user data, and only for legitimate support or operational purposes</li>
+            <li><strong>Firebase Security Rules:</strong> Firestore rules ensure users can only read their own data — not other users' records</li>
+          </ul>
+          <div class="highlight-box">Despite our best efforts, no system is 100% secure. If you believe your account has been compromised, contact us immediately at help.biluxe10@gmail.com.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="accord-item">
+      <button class="accord-trigger" onclick="toggleAccord(this)">
+        <span class="accord-num">05</span>
+        <span class="accord-title">Cookies & Tracking</span>
+        <span class="accord-icon">+</span>
+      </button>
+      <div class="accord-body">
+        <div class="accord-content">
+          <p>Biluxe10 uses cookies and similar browser storage technologies for the following purposes:</p>
+          <ul>
+            <li><strong>Session cookies:</strong> To keep you logged in while browsing the platform</li>
+            <li><strong>Preference cookies:</strong> To remember your display preferences and settings</li>
+            <li><strong>Security cookies:</strong> To detect and prevent fraudulent activity</li>
+            <li><strong>Analytics:</strong> Basic, anonymised usage data to understand how learners use the platform and improve it</li>
+          </ul>
+          <p>You can decline non-essential cookies via the cookie consent banner that appears on your first visit. Note that declining cookies may affect platform functionality, including staying logged in.</p>
+          <div class="info-box">We do not use third-party advertising cookies or tracking pixels. No ad networks have access to your behaviour on Biluxe10.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="accord-item">
+      <button class="accord-trigger" onclick="toggleAccord(this)">
+        <span class="accord-num">06</span>
+        <span class="accord-title">Data Retention</span>
+        <span class="accord-icon">+</span>
+      </button>
+      <div class="accord-body">
+        <div class="accord-content">
+          <p>We retain your personal data for as long as your account is active or as needed to provide you services. Specifically:</p>
+          <ul>
+            <li><strong>Account data:</strong> Retained for the lifetime of your account plus 2 years after closure</li>
+            <li><strong>Course progress & certificates:</strong> Retained indefinitely (lifetime access is our commitment)</li>
+            <li><strong>Payment records:</strong> Retained for 7 years as required under Indian financial regulations</li>
+            <li><strong>Support communications:</strong> Retained for 1 year from last contact</li>
+          </ul>
+          <p>When you delete your account, we remove all personally identifiable data within 30 days, except where retention is required by law.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="accord-item">
+      <button class="accord-trigger" onclick="toggleAccord(this)">
+        <span class="accord-num">07</span>
+        <span class="accord-title">Your Rights</span>
+        <span class="accord-icon">+</span>
+      </button>
+      <div class="accord-body">
+        <div class="accord-content">
+          <p>Under applicable data protection laws, you have the following rights regarding your personal data:</p>
+          <ul>
+            <li><strong>Right to access:</strong> Request a copy of all personal data we hold about you</li>
+            <li><strong>Right to correction:</strong> Request correction of any inaccurate or incomplete data</li>
+            <li><strong>Right to deletion:</strong> Request deletion of your account and associated personal data</li>
+            <li><strong>Right to portability:</strong> Request your data in a structured, machine-readable format</li>
+            <li><strong>Right to withdraw consent:</strong> Withdraw consent for processing at any time (note: this may affect platform functionality)</li>
+            <li><strong>Right to object:</strong> Object to specific types of data processing</li>
+          </ul>
+          <p>To exercise any of these rights, contact us at <a href="mailto:help.biluxe10@gmail.com" style="color:var(--gold)">help.biluxe10@gmail.com</a>. We will respond within 30 days.</p>
+          <div class="highlight-box">📬 Privacy requests: help.biluxe10@gmail.com · We respond within 30 days</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="accord-item">
+      <button class="accord-trigger" onclick="toggleAccord(this)">
+        <span class="accord-num">08</span>
+        <span class="accord-title">Children's Privacy</span>
+        <span class="accord-icon">+</span>
+      </button>
+      <div class="accord-body">
+        <div class="accord-content">
+          <p>Biluxe10 is not directed at children under the age of 13. We do not knowingly collect personal data from children under 13 years of age.</p>
+          <p>Users between 13 and 18 years of age may use the platform with the consent of a parent or legal guardian. If you are a parent and believe your child has provided us personal data without your consent, please contact us immediately at help.biluxe10@gmail.com and we will delete it promptly.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="accord-item">
+      <button class="accord-trigger" onclick="toggleAccord(this)">
+        <span class="accord-num">09</span>
+        <span class="accord-title">Changes to This Policy</span>
+        <span class="accord-icon">+</span>
+      </button>
+      <div class="accord-body">
+        <div class="accord-content">
+          <p>We may update this Privacy Policy from time to time to reflect changes in our practices, technology, or legal requirements. When we make material changes, we will:</p>
+          <ul>
+            <li>Update the "Last Updated" date at the top of this page</li>
+            <li>Notify active users via email or an in-platform banner</li>
+            <li>Give at least 7 days' notice before material changes take effect</li>
+          </ul>
+          <p>Continued use of the platform after changes take effect constitutes acceptance of the updated policy. We recommend reviewing this policy periodically.</p>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /accord-list -->
+
+  <!-- CONTACT CARD -->
+  <div class="contact-card">
+    <div class="cc-icon">📬</div>
+    <div class="cc-body">
+      <div class="cc-title">Privacy Questions or Requests?</div>
+      <p class="cc-desc">If you have any questions about this Privacy Policy, want to exercise your data rights, or need to report a privacy concern, reach out to us directly. We respond within 30 days.</p>
+      <div class="cc-links">
+        <a href="mailto:help.biluxe10@gmail.com" class="cc-link"><span class="cc-link-icon">📧</span>help.biluxe10@gmail.com</a>
+        <a href="https://wa.me/919019254743" class="cc-link" target="_blank" rel="noopener"><span class="cc-link-icon">💬</span>WhatsApp: +91 90192 54743</a>
+        <a href="mailto:biluxe10@gmail.com" class="cc-link"><span class="cc-link-icon">🏢</span>biluxe10@gmail.com (General)</a>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /legal-main -->
+
+<!-- FOOTER -->
+<footer class="legal-footer">
+  <div class="lf-inner">
+    <div class="lf-copy">© 2026 <span>Biluxe10</span> Advanced Ed-Tech · Hyderabad–Gulbarga, Karnataka, India</div>
+    <a href="index.html" class="lf-back">← Back to Home</a>
+  </div>
+</footer>
+
+<script>
+function toggleAccord(trigger){
+  const item=trigger.closest('.accord-item');
+  const isOpen=item.classList.contains('open');
+  document.querySelectorAll('.accord-item.open').forEach(el=>el.classList.remove('open'));
+  if(!isOpen)item.classList.add('open');
+}
+function openSection(idx){
+  const items=document.querySelectorAll('.accord-item');
+  if(!items[idx])return;
+  document.querySelectorAll('.accord-item.open').forEach(el=>el.classList.remove('open'));
+  items[idx].classList.add('open');
+  items[idx].scrollIntoView({behavior:'smooth',block:'start'});
+}
+// Block right-click
+document.addEventListener('contextmenu',e=>e.preventDefault());
+document.addEventListener('keydown',function(e){
+  if(e.key==='F12'||(e.ctrlKey&&['u','s'].includes(e.key.toLowerCase()))){e.preventDefault();return false;}
+});
+</script>
+</body>
+</html>
