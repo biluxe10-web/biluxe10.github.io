@@ -1,0 +1,1240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Biluxe10 — Advanced Ed-Tech Platform India</title>
+<meta name="description" content="Learn AI, Digital Marketing, Full Stack Development, Data Science & more with Biluxe10 — India's advanced ed-tech platform.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://biluxe10.com/">
+<meta property="og:title" content="Biluxe10 — Advanced Ed-Tech Platform India">
+<meta property="og:description" content="Learn AI, Marketing & Development with real projects, industry certificates & career support. From ₹499.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;0,9..144,900;1,9..144,400&family=Cabinet+Grotesk:wght@400;500;600;700;800&family=Instrument+Mono:ital@0;1&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#07070A;--bg2:#0D0D11;--bg3:#121216;--bg4:#181820;
+  --border:rgba(255,255,255,0.055);--border2:rgba(255,255,255,0.10);--border3:rgba(255,255,255,0.16);
+  --gold:#C8A96E;--gold2:#E2C48A;--gold3:#F0D9A8;
+  --goldA:rgba(200,169,110,0.08);--goldB:rgba(200,169,110,0.15);--goldC:rgba(200,169,110,0.22);
+  --ink:#07070A;--text:#EBEBF0;--text2:#9898A8;--text3:#50505F;
+  --green:#22c55e;--red:#ef4444;--pink:#F472B6;
+  --font-display:'Fraunces',Georgia,serif;
+  --font-ui:'Cabinet Grotesk',sans-serif;
+  --font-mono:'Instrument Mono',monospace;
+  --nav-h:64px;
+  --ease-out:cubic-bezier(0.16,1,0.3,1);
+  --ease-spring:cubic-bezier(0.34,1.56,0.64,1);
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--font-ui);overflow-x:hidden;line-height:1.6;font-size:15px}
+a{text-decoration:none;color:inherit}
+h1,h2,h3,h4{font-family:var(--font-display);line-height:1.05;letter-spacing:-0.025em}
+img{max-width:100%;display:block}
+::-webkit-scrollbar{width:2px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--gold);border-radius:2px}
+::selection{background:var(--goldB);color:var(--text)}
+.page{display:none;min-height:100vh}
+.page.active{display:block}
+#cursor-glow{position:fixed;width:500px;height:500px;border-radius:50%;pointer-events:none;background:radial-gradient(circle,rgba(200,169,110,0.045) 0%,transparent 65%);transform:translate(-50%,-50%);z-index:0;will-change:transform}
+#cursor-dot{position:fixed;width:5px;height:5px;background:var(--gold);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:transform 0.1s}
+#splash{position:fixed;inset:0;z-index:9998;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity 0.9s var(--ease-out),visibility 0.9s}
+#splash.hide{opacity:0;visibility:hidden;pointer-events:none}
+.sp-logo-wrap{display:flex;align-items:center;gap:16px;animation:spReveal 1.2s var(--ease-out) both}
+.sp-wordmark{font-family:var(--font-display);font-size:clamp(3rem,7vw,5rem);font-weight:900;color:transparent;background:linear-gradient(135deg,var(--gold3),var(--gold),var(--gold2));-webkit-background-clip:text;background-clip:text;letter-spacing:-0.04em}
+.sp-tagline{font-family:var(--font-mono);font-size:0.62rem;color:var(--text3);letter-spacing:0.22em;text-transform:uppercase;margin-top:10px;animation:spReveal 1s 0.25s var(--ease-out) both}
+.sp-bar{margin-top:52px;width:160px;animation:spReveal 0.6s 0.4s both}
+.sp-bar-track{height:1px;background:var(--bg3);border-radius:4px;overflow:hidden}
+.sp-bar-fill{height:100%;width:0;background:linear-gradient(90deg,var(--gold),rgba(200,169,110,0.25));animation:spLoad 2.1s 0.5s var(--ease-out) forwards}
+@keyframes spReveal{from{opacity:0;transform:translateY(22px) scale(0.97)}to{opacity:1;transform:none}}
+@keyframes spLoad{to{width:100%}}
+nav{position:fixed;top:0;left:0;right:0;z-index:500;height:var(--nav-h);display:flex;align-items:center;justify-content:space-between;padding:0 max(18px,4.5vw);background:rgba(7,7,10,0.75);backdrop-filter:blur(32px) saturate(1.4);border-bottom:1px solid var(--border);transition:all 0.3s}
+nav.scrolled{background:rgba(7,7,10,0.97);border-bottom-color:rgba(200,169,110,0.12)}
+.nav-logo{display:flex;align-items:center;gap:10px;cursor:pointer;transition:opacity 0.2s}
+.nav-logo:hover{opacity:0.8}
+.nav-logo-text{font-family:var(--font-display);font-size:1.15rem;font-weight:900;color:transparent;background:linear-gradient(120deg,var(--gold2),var(--gold));-webkit-background-clip:text;background-clip:text;letter-spacing:-0.025em}
+.nav-links{display:flex;gap:28px;align-items:center}
+.nav-links a{font-size:0.79rem;font-weight:600;color:var(--text2);transition:color 0.2s;position:relative;cursor:pointer}
+.nav-links a::after{content:'';position:absolute;bottom:-4px;left:0;right:0;height:1px;background:var(--gold);transform:scaleX(0);transform-origin:left;transition:transform 0.25s}
+.nav-links a:hover{color:var(--text)}
+.nav-links a:hover::after{transform:scaleX(1)}
+.nav-right{display:flex;gap:8px;align-items:center}
+.nav-ghost{padding:8px 18px;border:1px solid var(--border2);border-radius:8px;font-size:0.75rem;font-weight:600;color:var(--text2);cursor:pointer;font-family:var(--font-ui);background:transparent;transition:all 0.2s}
+.nav-ghost:hover{color:var(--text);border-color:var(--border3)}
+.nav-cta{padding:8px 20px;border-radius:8px;background:linear-gradient(135deg,var(--gold2),var(--gold));font-size:0.75rem;font-weight:700;color:var(--ink);font-family:var(--font-ui);cursor:pointer;border:none;transition:all 0.22s;box-shadow:0 2px 12px rgba(200,169,110,0.25)}
+.nav-cta:hover{transform:translateY(-1px);box-shadow:0 5px 20px rgba(200,169,110,0.35)}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:6px;border-radius:8px}
+.hamburger span{width:22px;height:1.5px;background:var(--text2);border-radius:2px;transition:all 0.35s var(--ease-out);display:block}
+.hamburger.open span:nth-child(1){transform:translateY(6.5px) rotate(45deg)}
+.hamburger.open span:nth-child(2){opacity:0;transform:scaleX(0)}
+.hamburger.open span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg)}
+#mobile-menu{position:fixed;top:var(--nav-h);left:0;right:0;bottom:0;background:var(--bg);z-index:498;transform:translateX(-100%);transition:transform 0.42s var(--ease-out);overflow-y:auto}
+#mobile-menu.open{transform:translateX(0)}
+.mm-inner{padding:24px 20px 48px}
+.mm-links{display:flex;flex-direction:column;gap:3px;margin-bottom:28px}
+.mm-link{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-radius:12px;font-size:0.95rem;font-weight:600;color:var(--text2);transition:all 0.2s;cursor:pointer;background:transparent;border:none;width:100%;text-align:left;font-family:var(--font-ui)}
+.mm-link:hover{background:var(--bg2);color:var(--text)}
+.mm-auth{display:flex;flex-direction:column;gap:10px;padding-top:20px;border-top:1px solid var(--border)}
+.mm-btn-p{padding:15px;border-radius:12px;background:linear-gradient(135deg,var(--gold2),var(--gold));color:var(--ink);border:none;font-family:var(--font-ui);font-size:0.85rem;font-weight:700;cursor:pointer}
+.mm-btn-s{padding:15px;border-radius:12px;background:transparent;color:var(--text2);border:1px solid var(--border2);font-family:var(--font-ui);font-size:0.85rem;font-weight:600;cursor:pointer}
+#video-modal{position:fixed;inset:0;z-index:9985;display:flex;align-items:center;justify-content:center;padding:0;opacity:0;visibility:hidden;transition:opacity 0.35s ease,visibility 0.35s;background:rgba(0,0,0,0.98);backdrop-filter:blur(20px)}
+#video-modal.open{opacity:1;visibility:visible}
+.vm-box{width:100%;max-width:980px;background:var(--bg2);border:1px solid var(--border3);border-radius:20px;box-shadow:0 48px 100px rgba(0,0,0,0.8);position:relative;display:flex;flex-direction:column;transform:translateY(24px) scale(0.97);transition:transform 0.35s var(--ease-spring);margin:16px;overflow:hidden}
+#video-modal.open .vm-box{transform:none}
+.vm-header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:18px 22px 14px;border-bottom:1px solid var(--border);flex-shrink:0}
+.vm-title{font-family:var(--font-display);font-size:1.05rem;font-weight:700;color:var(--text);line-height:1.3}
+.vm-cat{font-family:var(--font-mono);font-size:0.57rem;color:var(--gold);text-transform:uppercase;letter-spacing:0.1em;margin-top:4px}
+.vm-close{background:var(--bg3);border:1px solid var(--border);color:var(--text2);width:32px;height:32px;border-radius:8px;cursor:pointer;font-size:1rem;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all 0.2s;font-family:var(--font-ui)}
+.vm-close:hover{color:var(--text)}
+.vm-player-wrap{position:relative;margin:0;background:#000;user-select:none;-webkit-user-select:none}
+.player-ratio{position:relative;width:100%;padding-top:56.25%;overflow:hidden;background:#000}
+.player-ratio iframe{position:absolute;top:50%;left:50%;width:calc(100% + 2px);height:calc(100% + 120px);border:none;transform:translate(-50%,-50%);pointer-events:none;z-index:1}
+.yt-mask-top{position:absolute;top:0;left:0;right:0;height:52px;background:#000;z-index:8;pointer-events:none}
+.yt-mask-bottom{position:absolute;bottom:0;left:0;right:0;height:52px;background:#000;z-index:8;pointer-events:none}
+.player-guard{position:absolute;inset:0;z-index:10;background:transparent;cursor:default;user-select:none;-webkit-user-select:none}
+.player-controls{position:absolute;bottom:0;left:0;right:0;z-index:20;padding:6px 12px 12px;background:linear-gradient(to top,rgba(0,0,0,0.97) 0%,rgba(0,0,0,0.5) 60%,transparent 100%);display:flex;flex-direction:column;gap:6px;opacity:0;transition:opacity 0.3s}
+.vm-player-wrap:hover .player-controls,.vm-player-wrap.show-ctrl .player-controls{opacity:1}
+.ctrl-progress-bar{width:100%;height:4px;background:rgba(255,255,255,0.18);border-radius:3px;cursor:pointer;position:relative;overflow:hidden}
+.ctrl-progress-bar:hover{height:6px}
+.ctrl-progress-fill{position:absolute;top:0;left:0;height:100%;background:linear-gradient(90deg,var(--gold),var(--gold2));border-radius:3px;pointer-events:none;transition:width 0.15s}
+.ctrl-row{display:flex;align-items:center;gap:8px}
+.ctrl-btn{width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,0.12);border:none;color:#fff;font-size:0.78rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.18s;flex-shrink:0}
+.ctrl-btn:hover{background:rgba(200,169,110,0.7);transform:scale(1.1)}
+.ctrl-btn.big{width:36px;height:36px;font-size:0.9rem;background:rgba(200,169,110,0.85)}
+.ctrl-time{font-family:var(--font-mono);font-size:0.5rem;color:rgba(255,255,255,0.8);white-space:nowrap}
+.ctrl-vol{width:50px;height:3px;background:rgba(255,255,255,0.2);border-radius:3px;cursor:pointer;-webkit-appearance:none;appearance:none;accent-color:var(--gold)}
+.ctrl-spacer{flex:1}
+.video-watermark{position:absolute;z-index:15;font-family:var(--font-mono);font-size:0.58rem;color:rgba(200,169,110,0.28);letter-spacing:0.14em;pointer-events:none;text-transform:uppercase;animation:wm-move 22s ease-in-out infinite;white-space:nowrap;background:rgba(0,0,0,0.35);padding:3px 8px;border-radius:4px}
+@keyframes wm-move{0%{top:12%;left:8%}20%{top:68%;left:55%}40%{top:25%;left:72%}60%{top:75%;left:15%}80%{top:40%;left:80%}100%{top:12%;left:8%}}
+.player-shield-badge{position:absolute;bottom:60px;left:12px;z-index:20;display:flex;align-items:center;gap:5px;font-family:var(--font-mono);font-size:0.5rem;color:rgba(200,169,110,0.5);letter-spacing:0.1em;pointer-events:none}
+.preview-timer{font-family:var(--font-mono);font-size:0.66rem;color:var(--gold);position:absolute;top:60px;right:10px;z-index:20;background:rgba(7,7,10,0.88);padding:4px 10px;border-radius:5px;border:1px solid rgba(200,169,110,0.28);letter-spacing:0.04em}
+.preview-timer.hidden{display:none}
+.vm-overlay{position:absolute;inset:0;z-index:25;background:rgba(7,7,10,0.97);display:none;flex-direction:column;align-items:center;justify-content:center;gap:16px;text-align:center;padding:28px}
+.vm-overlay.show{display:flex}
+.vo-icon{font-size:2.8rem}
+.vo-title{font-family:var(--font-display);font-size:1.3rem;font-weight:900}
+.vo-desc{font-size:0.83rem;color:var(--text2);max-width:340px;line-height:1.8}
+.vo-cta{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:4px}
+.vo-btn-p{padding:11px 26px;background:var(--gold);color:var(--ink);border:none;border-radius:8px;font-weight:800;font-size:0.83rem;cursor:pointer;font-family:var(--font-ui)}
+.vo-btn-s{padding:11px 18px;background:transparent;color:var(--text2);border:1px solid var(--border2);border-radius:8px;font-size:0.8rem;cursor:pointer;font-family:var(--font-ui)}
+.vm-info{padding:14px 22px 20px;display:flex;flex-direction:column;gap:12px}
+.vm-meta-row{display:flex;gap:18px;flex-wrap:wrap}
+.vm-chip{display:flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:0.63rem;color:var(--text2)}
+.vm-enroll-cta{background:var(--bg3);border:1px solid var(--border2);border-radius:12px;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.vec-title{font-weight:700;font-size:0.88rem;color:var(--text)}
+.vec-sub{font-size:0.73rem;color:var(--text2)}
+.vec-price{font-family:var(--font-display);font-size:1.5rem;font-weight:900;color:var(--gold)}
+.vec-btn{padding:11px 24px;background:var(--gold);color:var(--ink);border:none;border-radius:8px;font-weight:800;font-size:0.83rem;cursor:pointer;font-family:var(--font-ui)}
+#cookie{position:fixed;bottom:18px;left:18px;z-index:8000;background:var(--bg3);border:1px solid var(--border3);border-radius:16px;padding:20px 22px;width:300px;box-shadow:0 24px 60px rgba(0,0,0,0.7);display:none;animation:ckIn 0.45s var(--ease-out) both}
+#cookie.show{display:block}
+@keyframes ckIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.ck-t{font-family:var(--font-display);font-size:1rem;font-weight:700;margin-bottom:5px}
+.ck-d{font-size:0.72rem;color:var(--text2);line-height:1.55;margin-bottom:14px}
+.ck-btns{display:flex;gap:8px}
+.ck-yes{flex:1;padding:9px;border:none;border-radius:8px;background:var(--gold);color:var(--ink);font-weight:700;font-size:0.72rem;cursor:pointer;font-family:var(--font-ui)}
+.ck-no{flex:1;padding:9px;border:1px solid var(--border2);border-radius:8px;background:transparent;color:var(--text2);font-size:0.72rem;cursor:pointer;font-family:var(--font-ui)}
+#scroll-top{position:fixed;bottom:22px;right:22px;z-index:700;width:42px;height:42px;border-radius:50%;background:var(--bg2);border:1px solid var(--border2);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:1rem;transition:all 0.3s;opacity:0;transform:translateY(14px);pointer-events:none;box-shadow:0 4px 20px rgba(0,0,0,0.4);font-family:var(--font-ui)}
+#scroll-top.vis{opacity:1;transform:none;pointer-events:all}
+#scroll-top:hover{background:var(--goldA);border-color:var(--goldC)}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(70px);z-index:9999;background:var(--bg3);border:1px solid var(--border2);border-radius:10px;padding:12px 18px;display:flex;align-items:center;gap:10px;font-size:0.78rem;color:var(--text);opacity:0;transition:all 0.35s var(--ease-spring);pointer-events:none;white-space:nowrap;box-shadow:0 8px 32px rgba(0,0,0,0.5)}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);pointer-events:all}
+section{padding:100px max(18px,5vw)}
+.container{max-width:1180px;margin:0 auto;width:100%}
+.sec-eyebrow{display:inline-flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);border-left:2px solid var(--gold);padding-left:12px;margin-bottom:16px}
+.sec-h{font-size:clamp(2rem,3.8vw,3.1rem);font-weight:900;margin-bottom:14px;color:var(--text)}
+.sec-h em{color:transparent;background:linear-gradient(120deg,var(--gold2),var(--gold));-webkit-background-clip:text;background-clip:text;font-style:italic}
+.sec-p{font-size:0.92rem;color:var(--text2);max-width:520px;line-height:1.85;margin-bottom:50px}
+.reveal{opacity:0;transform:translateY(26px);transition:opacity 0.68s ease,transform 0.68s ease}
+.reveal.visible{opacity:1;transform:none}
+.rd1{transition-delay:0.1s}.rd2{transition-delay:0.2s}.rd3{transition-delay:0.3s}.rd4{transition-delay:0.4s}
+.btn-gold{padding:13px 28px;background:linear-gradient(135deg,var(--gold2),var(--gold));color:var(--ink);border:none;border-radius:9px;font-family:var(--font-ui);font-size:0.8rem;font-weight:700;cursor:pointer;transition:all 0.22s;box-shadow:0 4px 20px rgba(200,169,110,0.28)}
+.btn-gold:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(200,169,110,0.38)}
+.btn-outline{padding:13px 28px;background:transparent;color:var(--text2);border:1px solid var(--border2);border-radius:9px;font-family:var(--font-ui);font-size:0.8rem;font-weight:600;cursor:pointer;transition:all 0.22s}
+.btn-outline:hover{border-color:var(--goldC);color:var(--text);background:var(--goldA)}
+#hero{min-height:100vh;display:flex;align-items:center;padding:calc(var(--nav-h) + 48px) max(18px,5vw) 80px;position:relative;overflow:hidden}
+.hero-bg-grid{position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(rgba(200,169,110,0.035) 1px,transparent 1px),linear-gradient(90deg,rgba(200,169,110,0.035) 1px,transparent 1px);background-size:72px 72px;-webkit-mask-image:radial-gradient(ellipse 80% 70% at 50% 40%,black 30%,transparent 100%);mask-image:radial-gradient(ellipse 80% 70% at 50% 40%,black 30%,transparent 100%)}
+.hero-blob1{position:absolute;top:-15%;right:-8%;width:680px;height:680px;background:radial-gradient(circle,rgba(200,169,110,0.06) 0%,transparent 60%);pointer-events:none;animation:blobPulse 7s ease-in-out infinite}
+.hero-blob2{position:absolute;bottom:-10%;left:-5%;width:480px;height:480px;background:radial-gradient(circle,rgba(200,169,110,0.04) 0%,transparent 60%);pointer-events:none;animation:blobPulse 9s 2s ease-in-out infinite}
+@keyframes blobPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.6;transform:scale(1.05)}}
+.hero-inner{max-width:1180px;margin:0 auto;width:100%;position:relative;z-index:1}
+.hero-pill{display:inline-flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:0.62rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);background:var(--goldA);border:1px solid rgba(200,169,110,0.2);padding:5px 14px 5px 8px;border-radius:20px;margin-bottom:26px}
+.pill-dot{width:6px;height:6px;background:var(--gold);border-radius:50%;animation:pillPulse 2s ease infinite;flex-shrink:0}
+@keyframes pillPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.4;transform:scale(0.7)}}
+.hero-h1{font-size:clamp(2.9rem,5.8vw,5.2rem);font-weight:900;margin-bottom:22px;color:var(--text);max-width:700px}
+.hero-h1 .line2{color:transparent;background:linear-gradient(120deg,var(--gold3),var(--gold),var(--gold2));-webkit-background-clip:text;background-clip:text;font-style:italic;position:relative;display:inline-block}
+.hero-h1 .line2::after{content:'';position:absolute;bottom:-6px;left:0;width:100%;height:2px;background:linear-gradient(90deg,var(--gold),rgba(200,169,110,0.15));border-radius:2px;animation:lineGrow 1.8s 0.8s var(--ease-out) both;transform-origin:left}
+@keyframes lineGrow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.hero-p{font-size:1rem;color:var(--text2);line-height:1.85;margin-bottom:36px;max-width:520px}
+.hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:52px}
+.hero-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;max-width:600px}
+.h-stat{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:16px 20px;transition:all 0.3s;position:relative;overflow:hidden}
+.h-stat::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(200,169,110,0.25),transparent);opacity:0;transition:opacity 0.3s}
+.h-stat:hover{border-color:rgba(200,169,110,0.2);background:var(--bg3)}
+.h-stat:hover::before{opacity:1}
+.h-stat-n{font-family:var(--font-display);font-size:1.75rem;font-weight:900;color:var(--gold);line-height:1}
+.h-stat-l{font-size:0.69rem;color:var(--text3);margin-top:4px;letter-spacing:0.04em}
+.marquee-wrap{background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:18px 0;overflow:hidden;position:relative}
+.marquee-wrap::before,.marquee-wrap::after{content:'';position:absolute;top:0;bottom:0;width:120px;z-index:2;pointer-events:none}
+.marquee-wrap::before{left:0;background:linear-gradient(90deg,var(--bg2),transparent)}
+.marquee-wrap::after{right:0;background:linear-gradient(270deg,var(--bg2),transparent)}
+.mq-inner{display:flex;width:max-content;animation:mq 22s linear infinite}
+.mq-inner:hover{animation-play-state:paused}
+.mq-group{display:flex}
+.mq-chip{margin:0 8px;white-space:nowrap;background:var(--bg3);border:1px solid var(--border);padding:5px 16px;border-radius:20px;font-family:var(--font-mono);font-size:0.75rem;color:var(--text3);display:inline-flex;align-items:center;gap:7px;transition:all 0.2s;cursor:default}
+.mq-chip:hover{border-color:rgba(200,169,110,0.22);color:var(--gold)}
+.mq-chip-dot{width:3px;height:3px;background:var(--gold);border-radius:50%;opacity:0.6}
+@keyframes mq{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+/* BUNDLES SECTION */
+#bundles{background:var(--bg2)}
+.bundles-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:10px}
+.bundle-card{background:var(--bg3);border:1px solid var(--border);border-radius:20px;overflow:hidden;cursor:pointer;transition:all 0.35s;position:relative}
+.bundle-card:hover{transform:translateY(-5px);box-shadow:0 24px 64px rgba(0,0,0,0.45)}
+.bc-accent{position:absolute;top:0;left:0;right:0;height:3px}
+.bc-head{padding:20px 20px 14px;position:relative}
+.bc-icon-row{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.bc-icon-box{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0}
+.bc-tier{font-family:var(--font-mono);font-size:0.52rem;letter-spacing:0.14em;text-transform:uppercase;margin-bottom:2px}
+.bc-name{font-family:var(--font-display);font-size:1.05rem;font-weight:700;color:var(--text);line-height:1.2}
+.bc-price-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.bc-price{font-family:var(--font-display);font-size:1.9rem;font-weight:900;color:#fff;line-height:1}
+.bc-lpa-pill{font-family:var(--font-mono);font-size:0.58rem;padding:4px 10px;border-radius:5px;background:rgba(52,211,153,0.15);color:#34D399;border:1px solid rgba(52,211,153,0.25)}
+.bc-desc{font-size:0.75rem;color:var(--text2);line-height:1.65;margin-bottom:14px}
+.bc-courses-label{font-family:var(--font-mono);font-size:0.5rem;color:var(--text3);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:8px}
+.bc-course-list{display:flex;flex-direction:column;gap:4px;margin-bottom:14px}
+.bc-course-item{display:flex;align-items:center;gap:7px;font-size:0.73rem;color:var(--text2)}
+.bc-course-dot{width:4px;height:4px;border-radius:50%;flex-shrink:0}
+.bc-more-tag{font-family:var(--font-mono);font-size:0.5rem;color:var(--text3);padding:2px 8px;border-radius:4px;background:var(--bg4);border:1px solid var(--border);display:inline-block}
+.bc-footer{padding:14px 20px 18px;display:flex;gap:8px;border-top:1px solid var(--border)}
+.bc-enroll{flex:1;padding:10px;border-radius:9px;font-family:var(--font-ui);font-size:0.74rem;font-weight:700;cursor:pointer;transition:all 0.2s;border:none}
+.bc-preview{flex:1;padding:10px;border-radius:9px;font-family:var(--font-mono);font-size:0.62rem;font-weight:600;cursor:pointer;transition:all 0.2s;letter-spacing:0.05em;text-transform:uppercase;border:1px solid var(--border2);background:transparent;color:var(--text3)}
+.bc-preview:hover{border-color:rgba(200,169,110,0.28);color:var(--gold)}
+
+.why-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1px;background:var(--border);border:1px solid var(--border);border-radius:16px;overflow:hidden}
+.why-card{background:var(--bg);padding:34px 28px;transition:background 0.3s;cursor:default;position:relative;overflow:hidden}
+.why-card::after{content:'';position:absolute;bottom:0;left:0;width:0;height:2px;background:linear-gradient(90deg,var(--gold),transparent);transition:width 0.4s var(--ease-out)}
+.why-card:hover{background:var(--bg2)}
+.why-card:hover::after{width:100%}
+.why-num{font-family:var(--font-mono);font-size:0.58rem;color:var(--text3);letter-spacing:0.14em;margin-bottom:22px}
+.why-icon{width:48px;height:48px;border-radius:12px;background:var(--goldA);border:1px solid rgba(200,169,110,0.12);display:flex;align-items:center;justify-content:center;font-size:1.5rem;margin-bottom:18px;transition:all 0.3s}
+.why-card:hover .why-icon{background:var(--goldB);border-color:rgba(200,169,110,0.28)}
+.why-t{font-family:var(--font-display);font-size:1rem;font-weight:700;margin-bottom:10px;color:var(--text)}
+.why-d{font-size:0.79rem;color:var(--text2);line-height:1.78}
+#how{background:var(--bg2)}
+.how-steps{display:grid;grid-template-columns:repeat(4,1fr);position:relative;margin-top:56px}
+.how-line{position:absolute;top:38px;left:12.5%;right:12.5%;height:1px;background:linear-gradient(90deg,transparent,var(--border2),var(--border2),transparent)}
+.how-step{padding:28px 22px;text-align:center;position:relative}
+.how-circle{width:76px;height:76px;border-radius:50%;background:var(--bg3);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:1.6rem;font-weight:900;color:var(--gold);margin:0 auto 22px;position:relative;z-index:1;transition:all 0.3s}
+.how-step:hover .how-circle{background:var(--goldA);border-color:var(--goldC);transform:scale(1.08)}
+.how-t{font-family:var(--font-display);font-size:0.95rem;font-weight:700;margin-bottom:9px;color:var(--text)}
+.how-d{font-size:0.78rem;color:var(--text2);line-height:1.78}
+#stats{background:var(--bg);padding:80px max(18px,5vw)}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:16px;overflow:hidden;max-width:900px;margin:0 auto}
+.stat-cell{background:var(--bg);padding:38px 20px;text-align:center;transition:background 0.3s;position:relative;overflow:hidden}
+.stat-cell::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:50%;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:0;transition:opacity 0.3s}
+.stat-cell:hover{background:var(--bg2)}
+.stat-cell:hover::before{opacity:1}
+.stat-n{font-family:var(--font-display);font-size:2.8rem;font-weight:900;color:var(--gold);line-height:1}
+.stat-l{font-size:0.71rem;color:var(--text3);margin-top:8px;letter-spacing:0.05em}
+
+/* COURSES PAGE */
+#page-courses{background:var(--bg)}
+.courses-hero{padding:calc(var(--nav-h) + 60px) max(18px,5vw) 50px;background:var(--bg2);border-bottom:1px solid var(--border);position:relative;overflow:hidden}
+.courses-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 600px 300px at 60% 50%,rgba(200,169,110,0.05),transparent);pointer-events:none}
+.courses-hero-inner{max-width:1180px;margin:0 auto;position:relative;z-index:1;text-align:center}
+.courses-main{max-width:1180px;margin:0 auto;padding:60px max(18px,5vw) 80px}
+.course-bundle-section{margin-bottom:72px}
+.cbs-header{display:flex;align-items:center;gap:16px;margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+.cbs-icon{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;flex-shrink:0}
+.cbs-tier{font-family:var(--font-mono);font-size:0.55rem;letter-spacing:0.14em;text-transform:uppercase;margin-bottom:3px}
+.cbs-name{font-family:var(--font-display);font-size:1.3rem;font-weight:900;color:var(--text)}
+.cbs-meta{display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin-top:5px}
+.cbs-chip{font-family:var(--font-mono);font-size:0.55rem;color:var(--text3)}
+.cbs-price-badge{font-family:var(--font-display);font-size:1.1rem;font-weight:900;margin-left:auto}
+.courses-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
+.course-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;overflow:hidden;cursor:pointer;transition:all 0.28s;position:relative}
+.course-card:hover{transform:translateY(-4px);box-shadow:0 16px 48px rgba(0,0,0,0.4)}
+.cc-thumb{height:150px;background:#000;position:relative;overflow:hidden}
+.cc-thumb-img{width:100%;height:100%;object-fit:cover;transition:transform 0.4s}
+.course-card:hover .cc-thumb-img{transform:scale(1.05)}
+.cc-play-btn{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.45);opacity:0;transition:opacity 0.25s}
+.course-card:hover .cc-play-btn{opacity:1}
+.cc-play-circle{width:52px;height:52px;border-radius:50%;background:rgba(200,169,110,0.9);display:flex;align-items:center;justify-content:center;font-size:1.2rem;transform:scale(0.85);transition:transform 0.25s}
+.course-card:hover .cc-play-circle{transform:scale(1)}
+.cc-duration{position:absolute;bottom:8px;right:8px;font-family:var(--font-mono);font-size:0.5rem;color:#fff;background:rgba(0,0,0,0.75);padding:3px 8px;border-radius:4px}
+.cc-body{padding:14px}
+.cc-num{font-family:var(--font-mono);font-size:0.5rem;color:var(--text3);letter-spacing:0.1em;margin-bottom:5px}
+.cc-name{font-family:var(--font-display);font-size:0.9rem;font-weight:700;color:var(--text);margin-bottom:5px;line-height:1.3}
+.cc-desc{font-size:0.72rem;color:var(--text2);line-height:1.6}
+
+/* REVIEWS */
+#page-reviews{background:var(--bg)}
+.reviews-hero{padding:calc(var(--nav-h) + 60px) max(18px,5vw) 60px;background:var(--bg2);border-bottom:1px solid var(--border);position:relative;overflow:hidden}
+.reviews-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 600px 300px at 60% 50%,rgba(200,169,110,0.05),transparent);pointer-events:none}
+.reviews-hero-inner{max-width:1180px;margin:0 auto;position:relative;z-index:1;text-align:center}
+.reviews-main{max-width:1180px;margin:0 auto;padding:60px max(18px,5vw) 80px}
+.reviews-cats{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:40px;justify-content:center}
+.rev-cat-btn{padding:8px 18px;border-radius:20px;border:1px solid var(--border);background:transparent;font-family:var(--font-ui);font-size:0.73rem;font-weight:600;color:var(--text3);cursor:pointer;transition:all 0.2s}
+.rev-cat-btn:hover{border-color:rgba(200,169,110,0.3);color:var(--text2)}
+.rev-cat-btn.active{background:var(--goldA);border-color:rgba(200,169,110,0.35);color:var(--gold)}
+.reviews-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:16px}
+.rev-card{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:24px;transition:all 0.32s;position:relative;overflow:hidden}
+.rev-card::before{content:'';position:absolute;top:-1px;left:20px;right:20px;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:0;transition:opacity 0.3s}
+.rev-card:hover{border-color:rgba(200,169,110,0.2);transform:translateY(-4px);box-shadow:0 14px 40px rgba(0,0,0,0.3)}
+.rev-card:hover::before{opacity:1}
+.rev-stars{color:var(--gold);font-size:0.76rem;letter-spacing:3px;margin-bottom:6px}
+.rev-category-badge{display:inline-block;font-family:var(--font-mono);font-size:0.48rem;letter-spacing:0.1em;text-transform:uppercase;padding:2px 8px;border-radius:4px;background:var(--goldA);color:var(--gold);border:1px solid rgba(200,169,110,0.18);margin-bottom:10px}
+.rev-text{font-size:0.81rem;color:var(--text2);line-height:1.9;margin-bottom:18px;font-style:italic}
+.rev-author{display:flex;align-items:center;gap:12px}
+.rev-av{width:40px;height:40px;border-radius:50%;flex-shrink:0;background:linear-gradient(135deg,var(--gold),rgba(200,169,110,0.35));display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:0.78rem;font-weight:700;color:var(--ink)}
+.rev-name{font-family:var(--font-display);font-size:0.82rem;font-weight:700;color:var(--text)}
+.rev-role{font-size:0.67rem;color:var(--text3);margin-top:2px}
+.rev-badge{margin-left:auto;padding:3px 10px;border-radius:4px;font-family:var(--font-mono);font-size:0.6rem;font-weight:600;background:rgba(52,211,153,0.08);color:#34D399;border:1px solid rgba(52,211,153,0.18);white-space:nowrap}
+.platform-ratings{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:60px}
+.pr-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:20px;text-align:center;transition:all 0.25s}
+.pr-card:hover{border-color:rgba(200,169,110,0.2);transform:translateY(-3px)}
+.pr-icon{font-size:2rem;margin-bottom:8px}
+.pr-score{font-family:var(--font-display);font-size:2rem;font-weight:900;color:var(--gold);line-height:1;margin-bottom:4px}
+.pr-label{font-size:0.7rem;color:var(--text2);margin-bottom:6px}
+.pr-stars{color:var(--gold);font-size:0.7rem;letter-spacing:2px}
+
+/* ABOUT */
+#about{background:var(--bg2)}
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start}
+.diff-table{width:100%;border-collapse:collapse;margin:28px 0}
+.diff-table th{font-family:var(--font-mono);font-size:0.59rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--text3);padding:9px 16px;background:var(--bg3);border:1px solid var(--border);text-align:left}
+.diff-table td{font-size:0.77rem;color:var(--text2);padding:11px 16px;border:1px solid var(--border);vertical-align:top;line-height:1.6;transition:background 0.2s}
+.diff-table tr:hover td{background:var(--bg3)}
+.diff-table td:first-child{color:var(--text3)}
+.diff-table td:last-child{color:var(--text)}
+
+/* FOUNDER */
+#founder{background:var(--bg);position:relative;overflow:hidden}
+#founder::before{content:'';position:absolute;top:-200px;left:50%;transform:translateX(-50%);width:800px;height:800px;background:radial-gradient(circle,rgba(200,169,110,0.05) 0%,transparent 65%);pointer-events:none}
+.founder-inner{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:380px 1fr;gap:80px;align-items:start;position:relative;z-index:1}
+.founder-card{background:var(--bg2);border:1px solid rgba(200,169,110,0.25);border-radius:24px;padding:36px;position:sticky;top:calc(var(--nav-h) + 24px);overflow:hidden}
+.founder-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--gold3),var(--gold),var(--gold2))}
+.founder-av{width:90px;height:90px;border-radius:50%;background:linear-gradient(135deg,var(--gold3),var(--gold));display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:2rem;font-weight:900;color:var(--ink);margin:0 auto 20px;border:3px solid rgba(200,169,110,0.3);box-shadow:0 0 40px rgba(200,169,110,0.25)}
+.founder-name{font-family:var(--font-display);font-size:1.3rem;font-weight:900;color:var(--text);text-align:center;margin-bottom:4px}
+.founder-title{font-family:var(--font-mono);font-size:0.55rem;color:var(--gold);text-align:center;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:20px}
+.founder-contact-list{display:flex;flex-direction:column;gap:8px;margin-bottom:20px}
+.f-contact-item{display:flex;align-items:center;gap:10px;padding:9px 12px;background:var(--bg3);border:1px solid var(--border);border-radius:10px;transition:all 0.2s;text-decoration:none}
+.f-contact-item:hover{border-color:rgba(200,169,110,0.3);background:var(--goldA);transform:translateX(3px)}
+.f-ci-icon{width:28px;height:28px;border-radius:7px;background:var(--goldA);display:flex;align-items:center;justify-content:center;font-size:0.85rem;flex-shrink:0}
+.f-ci-label{font-family:var(--font-mono);font-size:0.5rem;color:var(--text3);letter-spacing:0.08em;text-transform:uppercase}
+.f-ci-val{font-size:0.72rem;color:var(--text);font-weight:500}
+.founder-badges{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
+.f-badge{padding:4px 12px;border-radius:20px;font-family:var(--font-mono);font-size:0.5rem;letter-spacing:0.08em;text-transform:uppercase}
+.f-badge.gold{background:var(--goldA);color:var(--gold);border:1px solid rgba(200,169,110,0.2)}
+.f-badge.green{background:rgba(34,197,94,0.08);color:#34D399;border:1px solid rgba(34,197,94,0.2)}
+.f-badge.blue{background:rgba(96,165,250,0.08);color:#60A5FA;border:1px solid rgba(96,165,250,0.2)}
+.founder-content{padding-top:8px}
+.founder-eyebrow{font-family:var(--font-mono);font-size:0.6rem;color:var(--gold);letter-spacing:0.18em;text-transform:uppercase;border-left:2px solid var(--gold);padding-left:12px;margin-bottom:20px}
+.founder-headline{font-family:var(--font-display);font-size:clamp(1.8rem,3vw,2.8rem);font-weight:900;color:var(--text);line-height:1.1;margin-bottom:16px}
+.founder-headline em{font-style:italic;color:var(--gold)}
+.founder-bio{font-size:0.88rem;color:var(--text2);line-height:1.9;margin-bottom:28px}
+.founder-highlights{display:flex;flex-direction:column;gap:10px;margin-bottom:32px}
+.f-highlight{display:flex;align-items:flex-start;gap:14px;padding:16px 18px;background:var(--bg3);border:1px solid var(--border);border-radius:12px;transition:all 0.2s}
+.f-highlight:hover{border-color:rgba(200,169,110,0.22);background:var(--goldA)}
+.f-hl-icon{font-size:1.4rem;flex-shrink:0}
+.f-hl-title{font-family:var(--font-display);font-size:0.88rem;font-weight:700;color:var(--text);margin-bottom:3px}
+.f-hl-desc{font-size:0.74rem;color:var(--text2);line-height:1.6}
+.founder-mission{background:linear-gradient(135deg,var(--goldA),rgba(200,169,110,0.03));border:1px solid rgba(200,169,110,0.2);border-radius:16px;padding:24px;margin-bottom:28px}
+.founder-mission-label{font-family:var(--font-mono);font-size:0.52rem;color:var(--gold);letter-spacing:0.14em;text-transform:uppercase;margin-bottom:10px}
+.founder-mission-text{font-family:var(--font-display);font-size:1.05rem;font-weight:700;color:var(--text);line-height:1.5;font-style:italic}
+
+/* FAQ */
+#faq{background:var(--bg2)}
+.faq-inner{max-width:700px;margin:0 auto;display:flex;flex-direction:column;gap:8px;margin-top:40px}
+.faq-item{background:var(--bg);border:1px solid var(--border);border-radius:12px;overflow:hidden;transition:border-color 0.3s}
+.faq-item.open{border-color:rgba(200,169,110,0.22)}
+.faq-q{width:100%;padding:18px 22px;background:transparent;border:none;text-align:left;font-family:var(--font-display);font-size:0.88rem;font-weight:600;color:var(--text);cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:16px;transition:color 0.2s}
+.faq-q:hover{color:var(--gold)}
+.faq-icon{color:var(--gold);font-size:0.85rem;transition:transform 0.3s;flex-shrink:0;font-family:var(--font-mono);width:22px;height:22px;border-radius:50%;background:var(--goldA);display:flex;align-items:center;justify-content:center}
+.faq-item.open .faq-icon{transform:rotate(45deg);background:var(--goldB)}
+.faq-a{max-height:0;overflow:hidden;transition:max-height 0.38s ease}
+.faq-item.open .faq-a{max-height:220px}
+.faq-a p{padding:0 22px 18px;font-size:0.79rem;color:var(--text2);line-height:1.88}
+
+/* FOOTER */
+footer{background:var(--bg);position:relative;overflow:hidden}
+.ft-orb{position:absolute;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(200,169,110,0.04) 0%,transparent 65%);left:50%;top:-200px;transform:translateX(-50%);pointer-events:none}
+.ft-cta-band{position:relative;padding:52px max(18px,5vw);background:linear-gradient(135deg,rgba(200,169,110,0.07),rgba(200,169,110,0.02));border-top:1px solid rgba(200,169,110,0.14);border-bottom:1px solid rgba(200,169,110,0.08)}
+.ft-cta-band::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(45deg,transparent,transparent 60px,rgba(200,169,110,0.012) 60px,rgba(200,169,110,0.012) 61px);pointer-events:none}
+.ft-cta-inner{max-width:1180px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:32px;flex-wrap:wrap;position:relative;z-index:1}
+.ft-cta-text h3{font-family:var(--font-display);font-size:2rem;font-weight:900;color:var(--text);margin-bottom:6px}
+.ft-cta-text h3 em{font-style:italic;color:transparent;background:linear-gradient(120deg,var(--gold2),var(--gold));-webkit-background-clip:text;background-clip:text}
+.ft-cta-text p{font-size:0.84rem;color:var(--text2)}
+.ft-cta-actions{display:flex;gap:10px;flex-wrap:wrap}
+.ft-cta-btn-p{padding:13px 28px;background:linear-gradient(135deg,var(--gold2),var(--gold));color:var(--ink);border:none;border-radius:10px;font-family:var(--font-ui);font-size:0.82rem;font-weight:700;cursor:pointer;transition:all 0.22s;box-shadow:0 4px 24px rgba(200,169,110,0.3)}
+.ft-cta-btn-p:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(200,169,110,0.42)}
+.ft-cta-btn-s{padding:13px 26px;background:transparent;color:var(--text2);border:1px solid var(--border2);border-radius:10px;font-family:var(--font-ui);font-size:0.82rem;font-weight:600;cursor:pointer;transition:all 0.22s}
+.ft-cta-btn-s:hover{border-color:var(--goldC);color:var(--text)}
+.ft-trust-strip{background:rgba(34,197,94,0.04);border-bottom:1px solid rgba(34,197,94,0.1);padding:14px max(18px,5vw)}
+.ft-trust-inner{max-width:1180px;margin:0 auto;display:flex;align-items:center;gap:28px;flex-wrap:wrap;justify-content:center}
+.ft-trust-badge{display:flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:0.56rem;color:#34D399;letter-spacing:0.1em;text-transform:uppercase}
+.ft-trust-dot{width:4px;height:4px;border-radius:50%;background:rgba(34,197,94,0.35)}
+.ft-main{padding:52px max(18px,5vw) 40px}
+.ft-main-inner{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:48px}
+.ft-brand-name{font-family:var(--font-display);font-size:1.5rem;font-weight:900;color:transparent;background:linear-gradient(120deg,var(--gold2),var(--gold));-webkit-background-clip:text;background-clip:text;letter-spacing:-0.025em;display:block;margin-bottom:4px}
+.ft-brand-tagline{font-family:var(--font-mono);font-size:0.56rem;color:var(--text3);letter-spacing:0.16em;text-transform:uppercase;margin-bottom:14px}
+.ft-brand-desc{font-size:0.79rem;color:var(--text2);line-height:1.85;max-width:270px;margin-bottom:22px}
+.ft-contact-stack{display:flex;flex-direction:column;gap:6px;margin-bottom:20px}
+.ft-contact-item{display:flex;align-items:center;gap:10px;padding:9px 13px;background:var(--bg2);border:1px solid var(--border);border-radius:9px;transition:all 0.22s;text-decoration:none}
+.ft-contact-item:hover{border-color:rgba(200,169,110,0.22);transform:translateX(3px)}
+.ft-ci-icon{width:28px;height:28px;border-radius:6px;background:var(--goldA);display:flex;align-items:center;justify-content:center;font-size:0.85rem;flex-shrink:0}
+.ft-ci-label{font-family:var(--font-mono);font-size:0.5rem;color:var(--text3);letter-spacing:0.09em;text-transform:uppercase}
+.ft-ci-val{font-size:0.73rem;color:var(--text);font-weight:500}
+.ft-col-label{font-family:var(--font-mono);font-size:0.56rem;color:var(--gold);letter-spacing:0.18em;text-transform:uppercase;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+.ft-col-label::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent)}
+.ft-nav-list{display:flex;flex-direction:column;gap:2px}
+.ft-nav-item{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:8px;cursor:pointer;transition:all 0.2s;border:none;background:transparent;width:100%;text-align:left;font-family:var(--font-ui);font-size:0.76rem;color:var(--text2);font-weight:500}
+.ft-nav-item:hover{background:rgba(200,169,110,0.05);color:var(--text);padding-left:14px}
+.ft-nav-item .ni-arrow{margin-left:auto;color:var(--text3);font-size:0.6rem;transition:transform 0.2s}
+.ft-nav-item:hover .ni-arrow{transform:translateX(3px);color:var(--gold)}
+.ft-legal-list{display:flex;flex-direction:column;gap:6px}
+.ft-legal-link{display:flex;align-items:center;justify-content:space-between;padding:9px 14px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;cursor:pointer;transition:all 0.22s;text-decoration:none;font-size:0.74rem;color:var(--text2);font-weight:500;font-family:var(--font-ui)}
+.ft-legal-link:hover{border-color:rgba(200,169,110,0.28);color:var(--gold);background:var(--goldA);transform:translateX(3px)}
+.ft-legal-link .ll-icon{font-size:0.75rem;flex-shrink:0}
+.ft-legal-link .ll-ext{font-size:0.55rem;color:var(--text3);font-family:var(--font-mono);letter-spacing:0.06em}
+.ft-social-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px}
+.ft-soc-card{padding:12px;border:1px solid var(--border);border-radius:10px;background:var(--bg2);cursor:pointer;transition:all 0.25s;text-decoration:none;display:flex;flex-direction:column;gap:6px}
+.ft-soc-card:hover{transform:translateY(-3px);box-shadow:0 10px 28px rgba(0,0,0,0.3)}
+.ft-soc-icon{font-size:1.1rem}
+.ft-soc-name{font-size:0.71rem;font-weight:700;color:var(--text)}
+.ft-soc-handle{font-family:var(--font-mono);font-size:0.54rem;color:var(--text3)}
+.ft-soc-card.s-ig:hover{border-color:#dd2a7b;background:rgba(221,42,123,0.05)}
+.ft-soc-card.s-wa:hover{border-color:#25D366;background:rgba(37,211,102,0.05)}
+.ft-soc-card.s-tg:hover{border-color:#0088cc;background:rgba(0,136,204,0.05)}
+.ft-soc-card.s-tw:hover{border-color:#1DA1F2;background:rgba(29,161,242,0.05)}
+.ft-msme-block{background:linear-gradient(135deg,rgba(34,197,94,0.06),rgba(34,197,94,0.02));border:1px solid rgba(34,197,94,0.18);border-radius:12px;padding:14px 16px;display:flex;align-items:center;gap:12px;margin-top:16px}
+.ft-msme-icon{font-size:1.5rem;flex-shrink:0}
+.ft-msme-title{font-family:var(--font-display);font-size:0.82rem;font-weight:700;color:#34D399;margin-bottom:2px}
+.ft-msme-desc{font-size:0.66rem;color:var(--text2)}
+.ft-bottom{border-top:1px solid var(--border);padding:22px max(18px,5vw)}
+.ft-bottom-inner{max-width:1180px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px}
+.ft-copy{font-size:0.68rem;color:var(--text3);font-family:var(--font-mono)}
+.ft-copy span{color:var(--gold)}
+.ft-made{display:flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:0.62rem;color:var(--text3)}
+.ft-made span{color:var(--red)}
+
+@media(max-width:1100px){.bundles-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:1024px){.founder-inner{grid-template-columns:1fr}.founder-card{position:static;max-width:440px;margin:0 auto}}
+@media(max-width:980px){.about-grid{grid-template-columns:1fr}.nav-links{display:none}.hamburger{display:flex}.nav-ghost{display:none}.how-steps{grid-template-columns:1fr 1fr}.stats-grid{grid-template-columns:1fr 1fr}.ft-main-inner{grid-template-columns:1fr 1fr}.ft-cta-inner{flex-direction:column;align-items:flex-start}.hero-stats{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:680px){.bundles-grid{grid-template-columns:1fr}}
+@media(max-width:600px){section{padding:70px 16px}#stats{padding:60px 16px}.how-steps{grid-template-columns:1fr 1fr}.how-line{display:none}.ft-main-inner{grid-template-columns:1fr}.reviews-grid{grid-template-columns:1fr}.platform-ratings{grid-template-columns:1fr 1fr}.courses-grid{grid-template-columns:1fr}.ft-cta-text h3{font-size:1.4rem}}
+</style>
+</head>
+<body>
+<div id="cursor-glow"></div>
+<div id="cursor-dot"></div>
+
+<div id="splash">
+  <div class="sp-logo-wrap"><span class="sp-wordmark">Biluxe10</span></div>
+  <div class="sp-tagline">India's Advanced Ed-Tech Platform</div>
+  <div class="sp-bar"><div class="sp-bar-track"><div class="sp-bar-fill"></div></div></div>
+</div>
+
+<div id="cookie">
+  <div class="ck-t">We use cookies 🍪</div>
+  <p class="ck-d">We use cookies to deliver a better experience. <a href="privacy.html" style="color:var(--gold)">Privacy Policy</a>.</p>
+  <div class="ck-btns">
+    <button class="ck-yes" onclick="dismissCookie()">Accept All</button>
+    <button class="ck-no" onclick="dismissCookie()">Decline</button>
+  </div>
+</div>
+
+<button id="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Back to top">↑</button>
+<div class="toast" id="toast"><span id="toastIcon">✓</span><span id="toastMsg"></span></div>
+
+<nav id="navbar">
+  <div class="nav-logo" onclick="showPage('home')">
+    <span class="nav-logo-text">Biluxe10</span>
+  </div>
+  <div class="nav-links">
+    <a onclick="showPage('home');scrollToSec('hero')">Home</a>
+    <a onclick="showPage('home');scrollToSec('bundles')">Bundles</a>
+    <a onclick="showPage('courses')">Courses</a>
+    <a onclick="showPage('reviews')">Reviews</a>
+    <a onclick="showPage('home');scrollToSec('founder')">About</a>
+    <a onclick="showPage('home');scrollToSec('faq')">FAQ</a>
+  </div>
+  <div class="nav-right">
+    <button class="nav-ghost" onclick="location.href='auth.html'">Sign In</button>
+    <button class="nav-cta" onclick="location.href='auth.html'">Sign Up Free →</button>
+  </div>
+  <div class="hamburger" id="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></div>
+</nav>
+
+<div id="mobile-menu">
+  <div class="mm-inner">
+    <div class="mm-links">
+      <button class="mm-link" onclick="showPage('home');closeMenu();scrollToSec('hero')"><span>🏠 Home</span><span>›</span></button>
+      <button class="mm-link" onclick="showPage('home');closeMenu();scrollToSec('bundles')"><span>🚀 Bundles</span><span>›</span></button>
+      <button class="mm-link" onclick="showPage('courses');closeMenu()"><span>📚 All Courses</span><span>›</span></button>
+      <button class="mm-link" onclick="showPage('reviews');closeMenu()"><span>⭐ Reviews</span><span>›</span></button>
+      <button class="mm-link" onclick="showPage('home');closeMenu();scrollToSec('founder')"><span>👤 About Founder</span><span>›</span></button>
+      <button class="mm-link" onclick="showPage('home');closeMenu();scrollToSec('faq')"><span>❓ FAQ</span><span>›</span></button>
+    </div>
+    <div class="mm-auth">
+      <button class="mm-btn-p" onclick="location.href='auth.html'">Sign Up Free →</button>
+      <button class="mm-btn-s" onclick="location.href='auth.html'">Sign In</button>
+    </div>
+  </div>
+</div>
+
+<div id="video-modal" onclick="handleVmBgClick(event)">
+  <div class="vm-box" onclick="event.stopPropagation()">
+    <div class="vm-header">
+      <div>
+        <div class="vm-title" id="vmTitle">Course Preview</div>
+        <div class="vm-cat" id="vmCat">Biluxe10</div>
+      </div>
+      <button class="vm-close" onclick="closeVideoModal()">✕</button>
+    </div>
+    <div class="vm-player-wrap" id="vmPlayerWrap" oncontextmenu="return false" ondragstart="return false" onselectstart="return false">
+      <div class="player-ratio" id="vmPlayerRatio">
+        <div id="vmPlayerContainer"></div>
+        <div class="yt-mask-top"></div>
+        <div class="yt-mask-bottom"></div>
+        <div class="player-guard" oncontextmenu="return false" ondragstart="return false" onmousedown="return false" ontouchstart="return false"></div>
+        <div class="video-watermark" id="vmWatermark">🛡 BILUXE10 · PROTECTED</div>
+        <div class="player-shield-badge">🛡 Biluxe10 Protected Player</div>
+        <div class="preview-timer hidden" id="vmTimer">⏱ 5:00</div>
+        <div class="vm-overlay" id="vmPreviewOverlay">
+          <div class="vo-icon">🔒</div>
+          <div class="vo-title" style="color:var(--gold)">Preview Ended</div>
+          <div class="vo-desc">You've watched the free preview. Enroll now to unlock the full course with lifetime access.</div>
+          <div class="vo-cta">
+            <button class="vo-btn-p" onclick="closeVideoModal();location.href='auth.html'">Enroll Now →</button>
+            <button class="vo-btn-s" onclick="closeVideoModal()">Browse Bundles</button>
+          </div>
+        </div>
+        <div class="player-controls" id="vmControls">
+          <div class="ctrl-progress-bar" id="vmProgressBar" onclick="handleProgressClick(event)">
+            <div class="ctrl-progress-fill" id="vmProgressFill"></div>
+          </div>
+          <div class="ctrl-row">
+            <button class="ctrl-btn" onclick="vmSkip(-10)">⏮</button>
+            <button class="ctrl-btn big" id="vmPlayBtn" onclick="vmTogglePlay()">▶</button>
+            <button class="ctrl-btn" onclick="showToast('⚠','Forward skip disabled in preview.')">⏭</button>
+            <span class="ctrl-time" id="vmTimeDisplay">0:00 / 0:00</span>
+            <div class="ctrl-spacer"></div>
+            <button class="ctrl-btn" id="vmMuteBtn" onclick="vmToggleMute()">🔊</button>
+            <input class="ctrl-vol" id="vmVolume" type="range" min="0" max="100" value="100" oninput="vmSetVolume(this.value)">
+            <button class="ctrl-btn" onclick="vmFullscreen()">⛶</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="vm-info">
+      <div class="vm-meta-row" id="vmMetaRow"></div>
+      <div class="vm-enroll-cta">
+        <div>
+          <div class="vec-title">Get Full Access</div>
+          <div class="vec-sub">Certificate · Project files · Lifetime access</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+          <div class="vec-price" id="vmPrice">₹499</div>
+          <button class="vec-btn" onclick="closeVideoModal();location.href='auth.html'">Enroll Now →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE HOME -->
+<div id="page-home" class="page active">
+
+<section id="hero">
+  <div class="hero-bg-grid"></div>
+  <div class="hero-blob1"></div>
+  <div class="hero-blob2"></div>
+  <div class="hero-inner">
+    <div class="hero-pill"><span class="pill-dot"></span>India's Advanced Ed-Tech Platform</div>
+    <h1 class="hero-h1">Learn Digital Skills.<br><span class="line2">Build Your Career.</span></h1>
+    <p class="hero-p">8 structured bundles covering AI, Marketing, Development, Design, Cloud & more — with real projects, certificates, and career support. Built for India's next generation.</p>
+    <div class="hero-actions">
+      <button class="btn-gold" onclick="scrollToSec('bundles')">Explore 8 Bundles</button>
+      <button class="btn-outline" onclick="showPage('courses')">Browse All Courses →</button>
+    </div>
+    <div class="hero-stats">
+      <div class="h-stat reveal"><div class="h-stat-n">Growing</div><div class="h-stat-l">Learner Community</div></div>
+      <div class="h-stat reveal rd1"><div class="h-stat-n">82+</div><div class="h-stat-l">Expert Courses</div></div>
+      <div class="h-stat reveal rd2"><div class="h-stat-n">4.9★</div><div class="h-stat-l">Average Rating</div></div>
+      <div class="h-stat reveal rd3"><div class="h-stat-n">95%</div><div class="h-stat-l">Completion Rate</div></div>
+    </div>
+  </div>
+</section>
+
+<div class="marquee-wrap" aria-hidden="true">
+  <div class="mq-inner" id="mqInner">
+    <div class="mq-group" id="mqG1"></div>
+    <div class="mq-group" id="mqG2"></div>
+  </div>
+</div>
+
+<section id="bundles">
+  <div class="container">
+    <div class="sec-eyebrow">8 Learning Bundles</div>
+    <h2 class="sec-h reveal">Choose your <em>career path</em></h2>
+    <p class="sec-p reveal">Eight structured bundles with clear salary targets. Each includes real projects, certificate, career support, and affiliate earnings up to 65%.</p>
+    <div class="bundles-grid" id="bundlesGrid"></div>
+  </div>
+</section>
+
+<section id="why">
+  <div class="container">
+    <div class="sec-eyebrow">Why Biluxe10</div>
+    <h2 class="sec-h reveal">What makes us <em>different</em></h2>
+    <p class="sec-p reveal">We built Biluxe10 to solve a real problem — most online courses don't help you actually get a job or earn. We do both.</p>
+    <div class="why-grid">
+      <div class="why-card reveal"><div class="why-num">01</div><div class="why-icon">📁</div><div class="why-t">Project-Based Learning</div><div class="why-d">Build real portfolio projects as you learn. Employers want proof, not certificates alone.</div></div>
+      <div class="why-card reveal rd1"><div class="why-num">02</div><div class="why-icon">💰</div><div class="why-t">Earn While You Learn</div><div class="why-d">Learners earn up to 65% direct + 10% passive commission on every referral they make.</div></div>
+      <div class="why-card reveal rd2"><div class="why-num">03</div><div class="why-icon">♾️</div><div class="why-t">Lifetime Access</div><div class="why-d">One payment. You get every future update, new modules, and community access — permanently.</div></div>
+      <div class="why-card reveal rd3"><div class="why-num">04</div><div class="why-icon">🏛️</div><div class="why-t">MSME Registered</div><div class="why-d">Officially registered under the Govt of India MSME scheme. A legitimate, trusted platform.</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="how">
+  <div class="container">
+    <div class="sec-eyebrow" style="justify-content:center;margin:0 auto 14px">How It Works</div>
+    <h2 class="sec-h reveal" style="text-align:center;margin-bottom:0">Four steps to your <em>career goal</em></h2>
+    <div class="how-steps">
+      <div class="how-line"></div>
+      <div class="how-step reveal"><div class="how-circle">01</div><div class="how-t">Sign Up Free</div><div class="how-d">Create your account in under 2 minutes. No payment required to get started.</div></div>
+      <div class="how-step reveal rd1"><div class="how-circle">02</div><div class="how-t">Choose Your Bundle</div><div class="how-d">Pick from 8 bundles aligned to Indian salary targets of ₹3–25 LPA.</div></div>
+      <div class="how-step reveal rd2"><div class="how-circle">03</div><div class="how-t">Learn & Build</div><div class="how-d">Video lessons, hands-on projects, AI Tutor, and weekly live doubt sessions.</div></div>
+      <div class="how-step reveal rd3"><div class="how-circle">04</div><div class="how-t">Earn & Get Certified</div><div class="how-d">Get certified, land your role, and earn from every person you refer.</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="stats">
+  <div class="container">
+    <div class="stats-grid">
+      <div class="stat-cell reveal"><div class="stat-n">82+</div><div class="stat-l">Expert Courses</div></div>
+      <div class="stat-cell reveal rd1"><div class="stat-n">8</div><div class="stat-l">Career Bundles</div></div>
+      <div class="stat-cell reveal rd2"><div class="stat-n">95%</div><div class="stat-l">Completion Rate</div></div>
+      <div class="stat-cell reveal rd3"><div class="stat-n">4.9★</div><div class="stat-l">Learner Rating</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="founder">
+  <div class="container">
+    <div class="founder-inner">
+      <div class="founder-card reveal">
+        <div class="founder-av">SA</div>
+        <div class="founder-name">Syed Afshar Khadri</div>
+        <div class="founder-title">Founder & CEO · Biluxe10 Ed-Tech</div>
+        <div class="founder-contact-list">
+          <a href="mailto:syedafsharkhadri63@gmail.com" class="f-contact-item">
+            <div class="f-ci-icon">📧</div>
+            <div><div class="f-ci-label">Personal Email</div><div class="f-ci-val">syedafsharkhadri63@gmail.com</div></div>
+          </a>
+          <a href="mailto:biluxe10@gmail.com" class="f-contact-item">
+            <div class="f-ci-icon">🏢</div>
+            <div><div class="f-ci-label">Business Email</div><div class="f-ci-val">biluxe10@gmail.com</div></div>
+          </a>
+          <a href="https://wa.me/919019254743" target="_blank" rel="noopener" class="f-contact-item">
+            <div class="f-ci-icon">💬</div>
+            <div><div class="f-ci-label">WhatsApp</div><div class="f-ci-val">+91 90192 54743</div></div>
+          </a>
+          <div class="f-contact-item">
+            <div class="f-ci-icon">📍</div>
+            <div><div class="f-ci-label">Location</div><div class="f-ci-val">Gulbarga / Hyderabad, Karnataka, India</div></div>
+          </div>
+        </div>
+        <div class="founder-badges">
+          <span class="f-badge gold">🏛️ MSME Registered</span>
+          <span class="f-badge green">✅ Govt Verified</span>
+          <span class="f-badge blue">🎓 Ed-Tech Founder</span>
+          <span class="f-badge gold">🇮🇳 Made in India</span>
+        </div>
+      </div>
+      <div class="founder-content reveal rd1">
+        <div class="founder-eyebrow">The Story Behind Biluxe10</div>
+        <h2 class="founder-headline">Built by an Indian,<br>for <em>every Indian</em> who wants to grow.</h2>
+        <p class="founder-bio">I started Biluxe10 after seeing how many talented people in India lacked access to quality, affordable, outcome-focused digital education. Most platforms just sell certificates — we build careers and create earning opportunities at the same time.</p>
+        <div class="founder-mission">
+          <div class="founder-mission-label">🎯 Our Mission</div>
+          <div class="founder-mission-text">"To empower 1 million Indians with job-ready digital skills and real earning opportunities by 2029."</div>
+        </div>
+        <div class="founder-highlights">
+          <div class="f-highlight"><div class="f-hl-icon">🏛️</div><div><div class="f-hl-title">MSME Registered — Govt of India</div><div class="f-hl-desc">Biluxe10 is officially registered under India's MSME Development Act — a real, government-recognized business.</div></div></div>
+          <div class="f-highlight"><div class="f-hl-icon">💡</div><div><div class="f-hl-title">Practical-First Education Philosophy</div><div class="f-hl-desc">Every course is built around doing, not watching. Real projects, real submissions, real certificates employers respect.</div></div></div>
+          <div class="f-highlight"><div class="f-hl-icon">🤝</div><div><div class="f-hl-title">Best Affiliate System in Indian Ed-Tech</div><div class="f-hl-desc">Learners earn 65% direct + 10% passive commission. No other Indian platform gives learners this kind of earning power.</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="about">
+  <div class="container">
+    <div class="about-grid">
+      <div>
+        <div class="sec-eyebrow">About Biluxe10</div>
+        <h2 class="sec-h reveal">Built for India's <em>next generation</em></h2>
+        <p style="font-size:0.88rem;color:var(--text2);line-height:1.9;margin-bottom:20px;max-width:480px" class="reveal">Biluxe10 is an ed-tech platform built with a single focus: make quality digital skill development accessible, affordable, and outcome-driven for India.</p>
+        <table class="diff-table reveal">
+          <tr><th>Traditional Ed-Tech</th><th>Biluxe10</th></tr>
+          <tr><td>Theory-heavy content</td><td>Project-based curriculum</td></tr>
+          <tr><td>No career support</td><td>Resume + LinkedIn + mock interviews</td></tr>
+          <tr><td>No earning opportunity</td><td>65% affiliate commission for learners</td></tr>
+          <tr><td>No salary targets</td><td>Clear ₹3–25 LPA targets per bundle</td></tr>
+          <tr><td>Unregistered platforms</td><td>MSME Registered · Govt of India</td></tr>
+        </table>
+      </div>
+      <div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px">
+          <div style="background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:18px 20px" class="reveal"><div style="font-family:var(--font-display);font-size:1.65rem;font-weight:900;color:var(--gold)">82+</div><div style="font-size:0.69rem;color:var(--text3);margin-top:3px">Job-Ready Courses</div></div>
+          <div style="background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:18px 20px" class="reveal rd1"><div style="font-family:var(--font-display);font-size:1.65rem;font-weight:900;color:var(--gold)">8</div><div style="font-size:0.69rem;color:var(--text3);margin-top:3px">Career Bundles</div></div>
+          <div style="background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:18px 20px" class="reveal rd2"><div style="font-family:var(--font-display);font-size:1.65rem;font-weight:900;color:var(--gold)">95%</div><div style="font-size:0.69rem;color:var(--text3);margin-top:3px">Completion Rate</div></div>
+          <div style="background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:18px 20px" class="reveal rd3"><div style="font-family:var(--font-display);font-size:1.65rem;font-weight:900;color:var(--gold)">4.9★</div><div style="font-size:0.69rem;color:var(--text3);margin-top:3px">Learner Rating</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="faq">
+  <div class="container">
+    <div class="sec-eyebrow" style="justify-content:center;margin:0 auto 14px">FAQ</div>
+    <h2 class="sec-h reveal" style="text-align:center">Common <em>questions</em></h2>
+    <div class="faq-inner">
+      <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)">How long does it take to get a reply? <span class="faq-icon">+</span></button><div class="faq-a"><p>Within 12 hours — usually 2 to 4 hours. Our support team is active 9 AM to 9 PM IST, Monday to Saturday, via WhatsApp and email.</p></div></div>
+      <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)">Can I get a demo before enrolling? <span class="faq-icon">+</span></button><div class="faq-a"><p>Yes! Every bundle has a free 3–5 minute video preview. Click "Preview" on any bundle card or visit the Courses page — no login required.</p></div></div>
+      <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)">Do I get lifetime access? <span class="faq-icon">+</span></button><div class="faq-a"><p>Yes. One payment gives you permanent access — all future updates, new modules, and community access are included.</p></div></div>
+      <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)">How do I earn from referrals? <span class="faq-icon">+</span></button><div class="faq-a"><p>As a Learner, you earn 65% of every bundle your referral buys, plus 10% passive when their referrals buy. As a Partner, you earn 40% direct. Withdraw from ₹500 via UPI or bank transfer.</p></div></div>
+      <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)">Is Biluxe10 MSME registered? <span class="faq-icon">+</span></button><div class="faq-a"><p>Yes. Biluxe10 Advanced Ed-Tech is officially registered under the Govt of India's MSME Development Act, based in Hyderabad–Gulbarga, Karnataka.</p></div></div>
+      <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)">What career support do you provide? <span class="faq-icon">+</span></button><div class="faq-a"><p>Resume review, LinkedIn profile optimisation, and mock interview practice — included in every bundle.</p></div></div>
+      <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)">I'm facing a technical issue. Who do I contact? <span class="faq-icon">+</span></button><div class="faq-a"><p>WhatsApp us at +91 90192 54743 or email help.biluxe10@gmail.com with a screenshot. We resolve issues quickly.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="ft-orb"></div>
+  <div class="ft-cta-band">
+    <div class="ft-cta-inner">
+      <div class="ft-cta-text">
+        <h3>Ready to start your <em>career journey?</em></h3>
+        <p>Join thousands of learners building real skills and real earnings with Biluxe10.</p>
+      </div>
+      <div class="ft-cta-actions">
+        <button class="ft-cta-btn-p" onclick="location.href='auth.html'">Sign Up Free →</button>
+        <button class="ft-cta-btn-s" onclick="scrollToSec('bundles')">Browse Bundles</button>
+      </div>
+    </div>
+  </div>
+  <div class="ft-trust-strip">
+    <div class="ft-trust-inner">
+      <div class="ft-trust-badge">🏛️ MSME Registered · Govt of India</div>
+      <div class="ft-trust-dot"></div>
+      <div class="ft-trust-badge">✅ MSME Verified · Ed-Tech</div>
+      <div class="ft-trust-dot"></div>
+      <div class="ft-trust-badge">🇮🇳 Made in India · Hyderabad–Gulbarga, KA</div>
+      <div class="ft-trust-dot"></div>
+      <div class="ft-trust-badge">🔒 Secure Platform · Encrypted</div>
+      <div class="ft-trust-dot"></div>
+      <div class="ft-trust-badge">📜 Govt Recognized Business</div>
+    </div>
+  </div>
+  <div class="ft-main">
+    <div class="ft-main-inner">
+      <div>
+        <span class="ft-brand-name">Biluxe10</span>
+        <div class="ft-brand-tagline">Advanced Ed-Tech · India</div>
+        <p class="ft-brand-desc">An ed-tech platform built to make quality digital skill development accessible, structured, and outcome-focused for India's next generation.</p>
+        <div class="ft-contact-stack">
+          <a href="mailto:biluxe10@gmail.com" class="ft-contact-item"><div class="ft-ci-icon">📧</div><div><div class="ft-ci-label">General</div><div class="ft-ci-val">biluxe10@gmail.com</div></div></a>
+          <a href="mailto:help.biluxe10@gmail.com" class="ft-contact-item"><div class="ft-ci-icon">🆘</div><div><div class="ft-ci-label">Support</div><div class="ft-ci-val">help.biluxe10@gmail.com</div></div></a>
+          <a href="https://wa.me/919019254743" class="ft-contact-item" target="_blank" rel="noopener"><div class="ft-ci-icon">💬</div><div><div class="ft-ci-label">WhatsApp</div><div class="ft-ci-val">+91 90192 54743</div></div></a>
+          <a href="mailto:syedafsharkhadri63@gmail.com" class="ft-contact-item"><div class="ft-ci-icon">👤</div><div><div class="ft-ci-label">Founder</div><div class="ft-ci-val">syedafsharkhadri63@gmail.com</div></div></a>
+        </div>
+        <div class="ft-msme-block">
+          <div class="ft-msme-icon">🏛️</div>
+          <div>
+            <div class="ft-msme-title">MSME Registered · Govt of India</div>
+            <div class="ft-msme-desc">Biluxe10 Advanced Ed-Tech · Hyderabad–Gulbarga, Karnataka, India</div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="ft-col-label">Explore</div>
+        <div class="ft-nav-list">
+          <button class="ft-nav-item" onclick="showPage('home');scrollToSec('hero')">🏠 Home <span class="ni-arrow">›</span></button>
+          <button class="ft-nav-item" onclick="showPage('home');scrollToSec('bundles')">🚀 All 8 Bundles <span class="ni-arrow">›</span></button>
+          <button class="ft-nav-item" onclick="showPage('courses')">📚 All Courses <span class="ni-arrow">›</span></button>
+          <button class="ft-nav-item" onclick="showPage('reviews')">⭐ Reviews <span class="ni-arrow">›</span></button>
+          <button class="ft-nav-item" onclick="showPage('home');scrollToSec('founder')">👤 About Founder <span class="ni-arrow">›</span></button>
+          <button class="ft-nav-item" onclick="showPage('home');scrollToSec('faq')">❓ FAQ <span class="ni-arrow">›</span></button>
+          <button class="ft-nav-item" onclick="location.href='auth.html'">→ Sign Up Free <span class="ni-arrow">›</span></button>
+        </div>
+      </div>
+      <div>
+        <div class="ft-col-label">Legal</div>
+        <div class="ft-legal-list">
+          <a href="privacy.html" class="ft-legal-link"><span class="ll-icon">⊛</span> Privacy Policy <span class="ll-ext">↗</span></a>
+          <a href="terms.html" class="ft-legal-link"><span class="ll-icon">≡</span> Terms & Conditions <span class="ll-ext">↗</span></a>
+          <a href="disclaimer.html" class="ft-legal-link"><span class="ll-icon">△</span> Disclaimer <span class="ll-ext">↗</span></a>
+          <a href="refund.html" class="ft-legal-link"><span class="ll-icon">↺</span> Refund Policy <span class="ll-ext">↗</span></a>
+          <a href="affiliate.html" class="ft-legal-link"><span class="ll-icon">◆</span> Affiliate Terms <span class="ll-ext">↗</span></a>
+        </div>
+      </div>
+      <div>
+        <div class="ft-col-label">Connect</div>
+        <div class="ft-social-grid">
+          <a href="https://instagram.com/bilu_xe10" class="ft-soc-card s-ig" target="_blank" rel="noopener"><div class="ft-soc-icon">📸</div><div class="ft-soc-name">Instagram</div><div class="ft-soc-handle">@bilu_xe10</div></a>
+          <a href="https://wa.me/919019254743" class="ft-soc-card s-wa" target="_blank" rel="noopener"><div class="ft-soc-icon">💬</div><div class="ft-soc-name">WhatsApp</div><div class="ft-soc-handle">Chat Now</div></a>
+          <a href="https://t.me/biluxe10_support" class="ft-soc-card s-tg" target="_blank" rel="noopener"><div class="ft-soc-icon">✈️</div><div class="ft-soc-name">Telegram</div><div class="ft-soc-handle">Community</div></a>
+          <a href="https://twitter.com/biluxe10" class="ft-soc-card s-tw" target="_blank" rel="noopener"><div class="ft-soc-icon">𝕏</div><div class="ft-soc-name">Twitter/X</div><div class="ft-soc-handle">@biluxe10</div></a>
+        </div>
+        <div class="ft-made">Made with <span>♥</span> in India · Hyderabad–Gulbarga</div>
+      </div>
+    </div>
+  </div>
+  <div class="ft-bottom">
+    <div class="ft-bottom-inner">
+      <div class="ft-copy">© 2026 <span>Biluxe10</span> Advanced Ed-Tech · MSME Registered · Hyderabad–Gulbarga, Karnataka, India</div>
+      <div class="ft-made">🏛️ MSME Verified &nbsp;·&nbsp; ✅ Govt Registered &nbsp;·&nbsp; 🇮🇳 Made in India</div>
+    </div>
+  </div>
+</footer>
+</div>
+
+<!-- PAGE COURSES -->
+<div id="page-courses" class="page">
+  <div style="padding-top:var(--nav-h)">
+    <div class="courses-hero">
+      <div class="courses-hero-inner">
+        <div class="sec-eyebrow" style="justify-content:center;margin:0 auto 14px">All Courses</div>
+        <h1 style="font-family:var(--font-display);font-size:clamp(2.4rem,5vw,4rem);font-weight:900;margin-bottom:12px">Browse all <em style="color:transparent;background:linear-gradient(120deg,var(--gold2),var(--gold));-webkit-background-clip:text;background-clip:text;font-style:italic">82+ courses</em></h1>
+        <p style="font-size:0.9rem;color:var(--text2);max-width:520px;margin:0 auto 28px;line-height:1.8">Every course across all 8 bundles — watch a free preview of any course before you enroll.</p>
+        <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+          <button class="btn-gold" onclick="showPage('home');scrollToSec('bundles')">← Back to Bundles</button>
+          <button class="btn-outline" onclick="location.href='auth.html'">Enroll Now →</button>
+        </div>
+      </div>
+    </div>
+    <div class="courses-main" id="coursesMain"></div>
+    <div style="background:var(--bg3);border-top:1px solid var(--border);padding:28px max(18px,5vw);text-align:center">
+      <div style="font-family:var(--font-mono);font-size:0.65rem;color:var(--text3)">© 2026 Biluxe10 Advanced Ed-Tech · MSME Registered · <span style="color:var(--gold)">biluxe10.com</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE REVIEWS -->
+<div id="page-reviews" class="page">
+  <div style="padding-top:var(--nav-h)">
+    <div class="reviews-hero">
+      <div class="reviews-hero-inner">
+        <div class="sec-eyebrow" style="justify-content:center;margin:0 auto 14px">Real Learner Stories</div>
+        <h1 style="font-family:var(--font-display);font-size:clamp(2.4rem,5vw,4rem);font-weight:900;margin-bottom:12px">What our <em style="color:transparent;background:linear-gradient(120deg,var(--gold2),var(--gold));-webkit-background-clip:text;background-clip:text;font-style:italic">learners say</em></h1>
+        <p style="font-size:0.9rem;color:var(--text2);max-width:500px;margin:0 auto 28px;line-height:1.8">Real reviews from real people who transformed their careers, income, and skills with Biluxe10.</p>
+        <button class="btn-outline" onclick="showPage('home')">← Back to Home</button>
+      </div>
+    </div>
+    <div class="reviews-main">
+      <div style="margin-bottom:16px">
+        <div class="sec-eyebrow" style="margin-bottom:16px">Platform Performance</div>
+        <div class="platform-ratings" id="platformRatings"></div>
+      </div>
+      <div class="reviews-cats" id="reviewsCats"></div>
+      <div class="reviews-grid" id="reviewsGrid"></div>
+    </div>
+    <div style="background:var(--bg3);border-top:1px solid var(--border);padding:28px max(18px,5vw);text-align:center">
+      <div style="font-family:var(--font-mono);font-size:0.65rem;color:var(--text3)">© 2026 Biluxe10 Advanced Ed-Tech · MSME Registered · <span style="color:var(--gold)">biluxe10.com</span></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const GH='https://raw.githubusercontent.com/Biluxe10/biluxe10-assets/main/bundles/';
+
+const BUNDLES=[
+{idx:0,icon:'🌟',tier:'Starter',name:'Starter Bundle',price:'₹499',lpa:'₹3 LPA',
+ theme:{accent:'#C8A96E',label:'rgba(200,169,110,0.12)',labelText:'#C8A96E'},
+ img:GH+'1776792956316 (1).png',
+ previewId:'CcwYCG0Gggw',
+ courses:[
+  {num:'01',name:'Digital Entrepreneurship Basics',desc:'Start and grow a digital business from scratch with the right mindset and tools.',dur:'4 hrs',ytId:'CcwYCG0Gggw'},
+  {num:'02',name:'Canva & Content Creation',desc:'Design stunning graphics, social posts and presentations using Canva.',dur:'5 hrs',ytId:'x7-XSJHcaVI'},
+  {num:'03',name:'WhatsApp Business Marketing',desc:'Generate leads and grow revenue with WhatsApp Business automation.',dur:'3 hrs',ytId:'PlVxtty0wrI'},
+  {num:'04',name:'ChatGPT for Daily Work',desc:'Leverage ChatGPT and AI tools to supercharge productivity at work.',dur:'3 hrs',ytId:'IcCAEudzEDw'},
+ ]},
+{idx:1,icon:'📈',tier:'Pro',name:'Pro Bundle',price:'₹999',lpa:'₹3–4 LPA',
+ theme:{accent:'#60A5FA',label:'rgba(96,165,250,0.12)',labelText:'#60A5FA'},
+ img:GH+'1776793161257.png',
+ previewId:'TF3BhN_dTdo',
+ courses:[
+  {num:'01',name:'Affiliate Marketing Mastery',desc:'Earn commissions promoting products online. Build niche sites and scale.',dur:'8 hrs',ytId:'TF3BhN_dTdo'},
+  {num:'02',name:'SEO & Blogging',desc:'Rank on Google and build traffic-generating blogs that earn.',dur:'5 hrs',ytId:'pDUMhloKybU'},
+  {num:'03',name:'Social Media Management',desc:'Grow Instagram, LinkedIn, YouTube for brands and businesses.',dur:'6 hrs',ytId:'9WVGLqiHVuk'},
+  {num:'04',name:'Email Marketing',desc:'Build email lists and write high-converting automated campaigns.',dur:'4 hrs',ytId:'yn6L7q4V1xg'},
+  {num:'05',name:'Google Ads Complete',desc:'Run profitable Google Search, Display, and YouTube ads.',dur:'7 hrs',ytId:'autzRHtt-RM'},
+  {num:'06',name:'Facebook Ads Mastery',desc:'Master Meta Ads — Facebook & Instagram ad campaigns.',dur:'7 hrs',ytId:'WNiU5ZxazI4'},
+  {num:'07',name:'Freelancing Mastery',desc:'Build a profitable freelance career on Fiverr and Upwork.',dur:'9 hrs',ytId:'gMmTpoiITM4'},
+ ]},
+{idx:2,icon:'🎨',tier:'Professional',name:'Professional Bundle',price:'₹2,499',lpa:'₹3–4 LPA',
+ theme:{accent:'#A78BFA',label:'rgba(167,139,250,0.12)',labelText:'#A78BFA'},
+ img:GH+'1776793252294.png',
+ previewId:'PL7ZIgV4R67IOMRiW_Q7vZqLulb0xyKDHD',isPlaylist:true,
+ courses:[
+  {num:'01',name:'UI/UX Design Complete',desc:'Master user experience and interface design with Figma — 12 hrs.',dur:'12 hrs',ytId:'PL7ZIgV4R67IOMRiW_Q7vZqLulb0xyKDHD',isPlaylist:true},
+  {num:'02',name:'No-Code Web Development',desc:'Build professional websites without writing code using Webflow.',dur:'6 hrs',ytId:'9nIwTjG2fdI'},
+  {num:'03',name:'Video Editing with CapCut',desc:'Create viral short-form videos and reels using CapCut.',dur:'5 hrs',ytId:'nXeslaOL_BE'},
+  {num:'04',name:'Podcast & Audio Production',desc:'Record, edit, and launch your podcast from scratch.',dur:'4 hrs',ytId:'cGWFvYknE7o'},
+  {num:'05',name:'Ecommerce Complete',desc:'Launch and grow an e-commerce store from zero using Shopify.',dur:'8 hrs',ytId:'5d9jtO0uOpk'},
+  {num:'06',name:'Dropshipping & Print on Demand',desc:'Build a dropshipping or print-on-demand business with zero inventory.',dur:'6 hrs',ytId:'thYCp3y1Yuw'},
+ ]},
+{idx:3,icon:'📊',tier:'Elite',name:'Elite Bundle',price:'₹3,699',lpa:'₹4–6 LPA',
+ theme:{accent:'#22D3EE',label:'rgba(34,211,238,0.12)',labelText:'#22D3EE'},
+ img:GH+'1776793943019.png',
+ previewId:'Kjz_DDO4Fzs',
+ courses:[
+  {num:'01',name:'Excel for Data Analysis',desc:'Master Excel for data analysis, pivot tables, and dashboards.',dur:'8 hrs',ytId:'Kjz_DDO4Fzs'},
+  {num:'02',name:'SQL for Beginners',desc:'Learn SQL from scratch for data analytics and querying.',dur:'6 hrs',ytId:'7azCOKryADA'},
+  {num:'03',name:'Power BI & Tableau',desc:'Build stunning interactive dashboards for business intelligence.',dur:'9 hrs',ytId:'Gmk3DWOxVKQ'},
+  {num:'04',name:'Python Basics',desc:'Learn Python for data work with Pandas and NumPy.',dur:'7 hrs',ytId:'LgW6Vla0kXA'},
+  {num:'05',name:'Business Analytics',desc:'Apply data analysis to real business decisions and KPIs.',dur:'5 hrs',ytId:'cCTuOBOqSaM'},
+  {num:'06',name:'Financial Accounting Basics',desc:'P&L, balance sheet, cash flow — accounting fundamentals.',dur:'5 hrs',ytId:'vO09q2V8TGQ'},
+ ]},
+{idx:4,icon:'☁️',tier:'Master',name:'Master Bundle',price:'₹6,999',lpa:'₹8–12 LPA',
+ theme:{accent:'#F59E0B',label:'rgba(245,158,11,0.12)',labelText:'#F59E0B'},
+ img:GH+'1776794316762.png',
+ previewId:'a8FFknuJwB0',
+ courses:[
+  {num:'01',name:'AWS Cloud Practitioner',desc:'Master Amazon Web Services — EC2, S3, RDS, Lambda, IAM.',dur:'12 hrs',ytId:'a8FFknuJwB0'},
+  {num:'02',name:'Docker & Kubernetes',desc:'Containerise apps with Docker and orchestrate with Kubernetes.',dur:'14 hrs',ytId:'PLhNrFKat_aeLmPHBkS42O1pdN8Pt-tfF9',isPlaylist:true},
+  {num:'03',name:'CI/CD Pipelines',desc:'Automate software delivery with GitHub Actions pipelines.',dur:'8 hrs',ytId:'Ke_Wr5zPE0A'},
+  {num:'04',name:'Linux for DevOps',desc:'Master Linux command line and shell scripting for DevOps.',dur:'7 hrs',ytId:'e01GGTKmtpc'},
+  {num:'05',name:'Cybersecurity Fundamentals',desc:'Learn threats, defence, network security and OWASP Top 10.',dur:'10 hrs',ytId:'z2hVCeiwvGk'},
+  {num:'06',name:'Ethical Hacking',desc:'Learn penetration testing and ethical hacking methodology.',dur:'10 hrs',ytId:'2eLJNBroFrg'},
+  {num:'07',name:'Cloud Security',desc:'Secure cloud infrastructure on AWS and Azure environments.',dur:'8 hrs',ytId:'a58CqpP6vEw'},
+  {num:'08',name:'DevOps Capstone Project',desc:'End-to-end DevOps project deploying a full-stack application.',dur:'6 hrs',ytId:'H5FAxTBuNM8'},
+ ]},
+{idx:5,icon:'🧠',tier:'Elite Pro',name:'Elite Pro Bundle',price:'₹11,999',lpa:'₹12–16 LPA',
+ theme:{accent:'#A78BFA',label:'rgba(167,139,250,0.14)',labelText:'#A78BFA'},
+ img:GH+'1776794484559.png',
+ previewId:'hR-tMLTMw0s',
+ courses:[
+  {num:'01',name:'Python for Data Science',desc:'Advanced Python: NumPy, Pandas, Matplotlib, Seaborn.',dur:'10 hrs',ytId:'CMEWVn1uZpQ'},
+  {num:'02',name:'Machine Learning Fundamentals',desc:'Core ML algorithms — regression, trees, SVM, clustering.',dur:'12 hrs',ytId:'hR-tMLTMw0s'},
+  {num:'03',name:'Deep Learning & Neural Networks',desc:'Build neural networks with TensorFlow and Keras.',dur:'14 hrs',ytId:'G1P2IaBcXx8'},
+  {num:'04',name:'Natural Language Processing',desc:'NLP with transformers, BERT and HuggingFace.',dur:'12 hrs',ytId:'BCLjPLeVCBY'},
+  {num:'05',name:'Computer Vision',desc:'Build computer vision apps with YOLO and OpenCV.',dur:'12 hrs',ytId:'PLPTV0NXA_ZSgmWYoSpY_2EJzPJjkke4Az',isPlaylist:true},
+  {num:'06',name:'Big Data Engineering',desc:'Process large datasets with Hadoop, Spark, and Kafka.',dur:'8 hrs',ytId:'H5SHmiKTFsM'},
+  {num:'07',name:'Data Engineering',desc:'Build data pipelines, warehouses, and ETL workflows.',dur:'8 hrs',ytId:'hf2go3E2m8g'},
+  {num:'08',name:'MLOps Fundamentals',desc:'Deploy and monitor ML models in production environments.',dur:'8 hrs',ytId:'dPmH3G9NQtY'},
+  {num:'09',name:'End-to-End ML Project',desc:'Build and deploy a complete real-world ML solution.',dur:'5 hrs',ytId:'o6vbe5G7xNo'},
+  {num:'10',name:'Data Science Interview Prep',desc:'Crack data science interviews at top companies in India.',dur:'6 hrs',ytId:'A3ZSv6IqXY8'},
+ ]},
+{idx:6,icon:'✨',tier:'Legend',name:'Legend Bundle',price:'₹15,999',lpa:'₹14–18 LPA',
+ theme:{accent:'#C8A96E',label:'rgba(200,169,110,0.15)',labelText:'#F0D9A8'},
+ img:GH+'1776794544438.png',
+ previewId:'d4yCWBGFCEs',
+ courses:[
+  {num:'01',name:'Generative AI & LLMs',desc:'Understand and work with Large Language Models — GPT, Llama, Mistral.',dur:'12 hrs',ytId:'d4yCWBGFCEs'},
+  {num:'02',name:'Agentic AI Development',desc:'Build autonomous AI agents that plan, use tools and self-direct.',dur:'14 hrs',ytId:'-rUKr8JDits'},
+  {num:'03',name:'LangChain & LlamaIndex',desc:'Build production LLM applications with LangChain.',dur:'10 hrs',ytId:'-8IUWRtznX8'},
+  {num:'04',name:'Vector Databases',desc:'Pinecone, Weaviate, Chroma for semantic search.',dur:'6 hrs',ytId:'8KrTO9bS91s'},
+  {num:'05',name:'RAG Implementation',desc:'Build Retrieval Augmented Generation pipelines.',dur:'9 hrs',ytId:'o126p1QN_RI'},
+  {num:'06',name:'LLM Fine-Tuning',desc:'Fine-tune large language models with LoRA and QLoRA.',dur:'12 hrs',ytId:'iOdFUJiB0Zc'},
+  {num:'07',name:'Multi-Agent Systems',desc:'Design and deploy complex multi-agent architectures.',dur:'10 hrs',ytId:'rHtRWyxVQps'},
+  {num:'08',name:'AI Safety & Governance',desc:'AI safety, alignment, ethics, and EU AI Act governance.',dur:'6 hrs',ytId:'b6HwyKFShek'},
+  {num:'09',name:'AI Agents Capstone Project',desc:'Build a production-grade agentic AI system.',dur:'8 hrs',ytId:'HVi0F3YT13I'},
+  {num:'10',name:'Prompt Engineering Mastery',desc:'Chain-of-thought, few-shot, and production prompt patterns.',dur:'6 hrs',ytId:'YhRfgYH_AoU'},
+  {num:'11',name:'AI API Integration',desc:'Integrate OpenAI, Anthropic, Google, and open source APIs.',dur:'5 hrs',ytId:'xcP9NE6C5EI'},
+ ]},
+{idx:7,icon:'🎯',tier:'Ultimate',name:'Ultimate Bundle',price:'₹23,999',lpa:'₹16–25 LPA',
+ theme:{accent:'#22C55E',label:'rgba(34,197,94,0.12)',labelText:'#22C55E'},
+ img:GH+'1776794673990.png',
+ previewId:'IfW1FMDkw4k',
+ courses:[
+  {num:'01',name:'AI Product Management',desc:'Manage AI products from concept to launch — roadmaps, metrics, GTM.',dur:'9 hrs',ytId:'IfW1FMDkw4k'},
+  {num:'02',name:'AI Strategy & Roadmap',desc:'Develop AI transformation strategies for organisations.',dur:'8 hrs',ytId:'zwUSZD3t_BU'},
+  {num:'03',name:'AI Team Leadership',desc:'Lead and build high-performing AI teams.',dur:'6 hrs',ytId:'1NMM9Q_TjxE'},
+  {num:'04',name:'AI Project Management',desc:'Manage AI projects with agile and data-driven approaches.',dur:'6 hrs',ytId:'lADZ6Pxy9m8'},
+  {num:'05',name:'AI Ethics & Governance',desc:'AI ethics, bias, fairness, privacy, and EU AI Act.',dur:'5 hrs',ytId:'VugSwwHaOgQ'},
+  {num:'06',name:'AI Career Mastery',desc:'Build a career in AI — portfolio, interviews, system design.',dur:'7 hrs',ytId:'aIuPQjPQEb4'},
+  {num:'07',name:'Resume & LinkedIn for AI',desc:'Craft a winning AI resume and LinkedIn profile.',dur:'4 hrs',ytId:'qCZlSCmphMM'},
+  {num:'08',name:'Salary Negotiation',desc:'Negotiate your salary confidently with scripts and tactics.',dur:'3 hrs',ytId:'vLbrwSzXUro'},
+  {num:'09',name:'AI Freelancing & Consulting',desc:'Build a high-income AI freelancing career.',dur:'6 hrs',ytId:'Ozp3k4qzmHo'},
+  {num:'10',name:'AI for Finance & Banking',desc:'AI applications in fintech, banking, and investment.',dur:'5 hrs',ytId:'Nh7OhW7ZcIU'},
+  {num:'11',name:'AI for Healthcare',desc:'AI in medical imaging, diagnostics, and clinical NLP.',dur:'5 hrs',ytId:'eZFtf69sido'},
+  {num:'12',name:'AI for E-commerce & Retail',desc:'Recommendation systems, demand forecasting, churn prediction.',dur:'5 hrs',ytId:'plo5kk_MzL4'},
+  {num:'13',name:'AI for Manufacturing',desc:'Predictive maintenance, computer vision QC, supply chain.',dur:'5 hrs',ytId:'bNiThiN8cLg'},
+  {num:'14',name:'Edge AI & TinyML',desc:'Deploy AI on edge devices, microcontrollers, and IoT.',dur:'8 hrs',ytId:'PL7VEa1KauMQppUExiIOfxxk_2ta94EEpd',isPlaylist:true},
+  {num:'15',name:'AI Model Optimisation',desc:'Quantisation, pruning, distillation, and inference optimisation.',dur:'5 hrs',ytId:'zqoJCOgMd_4'},
+  {num:'16',name:'Federated Learning',desc:'Train ML models across distributed devices without sharing data.',dur:'6 hrs',ytId:'PLNG4feLHqCWkdlSrEL2xbCtGa6QBxlUZb',isPlaylist:true},
+  {num:'17',name:'Graph Neural Networks',desc:'GNNs for recommendation, fraud detection, social networks.',dur:'7 hrs',ytId:'PLPTV0NXA_ZSg4Pimkso0nHxwYMB6IGX7l',isPlaylist:true},
+  {num:'18',name:'Reinforcement Learning',desc:'Q-learning, policy gradients, deep RL for real applications.',dur:'8 hrs',ytId:'VnpRp7ZglfA'},
+  {num:'19',name:'Time Series Forecasting',desc:'ARIMA, Prophet, LSTM, and Transformer-based forecasting.',dur:'6 hrs',ytId:'qx5055j0U6c'},
+  {num:'20',name:'Recommendation Systems',desc:'Collaborative filtering, content-based, and hybrid engines.',dur:'6 hrs',ytId:'F2tn-BviO_U'},
+  {num:'21',name:'AI Research Paper Implementation',desc:'Read, understand, and implement state-of-the-art AI papers.',dur:'6 hrs',ytId:'onU5Hbb3qao'},
+  {num:'22',name:'Building AI Startups',desc:'From AI idea to funded startup — product, team, fundraising.',dur:'7 hrs',ytId:'zO1098PFOw8'},
+ ]},
+];
+
+const REVIEWS=[
+  {name:'Priya S.',role:'ML Engineer · Bengaluru',init:'PS',text:'The Legend Bundle completely changed my career trajectory. Got placed as a ML Engineer within 3 months. The AI Tutor was insanely helpful for clearing doubts at 2 AM.',stars:5,badge:'₹15 LPA',category:'Learning'},
+  {name:'Rahul M.',role:'Freelancer · Pune',init:'RM',text:'The Freelance Formula inside the Pro Bundle got me my first Fiverr client within 2 weeks. Now earning ₹80K/month steadily from home. Best ₹999 I ever spent.',stars:5,badge:'₹80K/mo',category:'Freelancing'},
+  {name:'Ananya K.',role:'Marketing Executive · Hyderabad',init:'AK',text:'The career support team was genuinely helpful at every stage. Mock interviews prepared me perfectly. The affiliate system also helped me earn back my course fees within a week.',stars:5,badge:'Placed',category:'Career Support'},
+  {name:'Vikram T.',role:'Data Analyst · Chennai',init:'VT',text:'The Elite Bundle\'s Power BI and SQL modules are industry-level. Got a data analyst job at a mid-size firm. The projects in the course literally became my portfolio.',stars:5,badge:'₹5.5 LPA',category:'Learning'},
+  {name:'Arjun P.',role:'DevOps Engineer · Delhi',init:'AP',text:'Master Bundle is solid for cloud and DevOps. AWS + Docker + CI/CD all in one place with real projects. Worth every rupee.',stars:5,badge:'₹10 LPA',category:'Learning'},
+  {name:'Sameer K.',role:'AI Engineer · Hyderabad',init:'SK',text:'The Legend Bundle + Ultimate Bundle together gave me everything needed for generative AI roles. The agentic AI modules are cutting-edge. Best AI course in India.',stars:5,badge:'₹18 LPA',category:'Learning'},
+  {name:'Rohit G.',role:'Affiliate Marketer · Indore',init:'RG',text:'Joined as a Partner (free). Made back ₹12,000 in commissions in the first month just by sharing my referral link in WhatsApp groups. The 40% commission is real and paid on time.',stars:5,badge:'₹12K/mo',category:'Affiliate System'},
+  {name:'Sneha T.',role:'UI/UX Designer · Bangalore',init:'ST',text:'Professional Bundle\'s Figma modules are genuinely advanced. Portfolio went from 0 to 8 case studies. Landing interviews now.',stars:5,badge:'Interviews',category:'Learning'},
+  {name:'Preethi L.',role:'Learner → Partner · Chennai',init:'PL',text:'I was a learner first, then became an affiliate. My learner path gives 65% commission. I\'ve earned ₹45,000 in commissions while finishing my own course.',stars:5,badge:'₹45K Earned',category:'Affiliate System'},
+  {name:'Nisha B.',role:'Content Creator · Delhi',init:'NB',text:'Starter Bundle was perfect for me as a housewife wanting to earn online. ChatGPT + Canva + WhatsApp Business — within 3 months I started a small digital services business.',stars:5,badge:'₹25K/mo',category:'Career Support'},
+  {name:'Ravi S.',role:'Student · Coimbatore',init:'RS',text:'The AI Tutor inside the learning hub is like having a personal teacher 24/7. I cleared my Python and ML doubts instantly. This alone is worth the price.',stars:5,badge:'Top Student',category:'Learning'},
+];
+
+const PLATFORM_RATINGS=[
+  {icon:'⭐',score:'4.9/5',label:'Overall Rating',stars:'★★★★★'},
+  {icon:'📚',score:'95%',label:'Course Completion',stars:'★★★★★'},
+  {icon:'💰',score:'65%',label:'Max Commission',stars:'★★★★★'},
+  {icon:'⚡',score:'<4 hrs',label:'Support Response',stars:'★★★★★'},
+  {icon:'🏛️',score:'MSME',label:'Govt Registered',stars:'★★★★★'},
+];
+
+function buildBundleGrid(){
+  const grid=document.getElementById('bundlesGrid');
+  if(!grid)return;
+  grid.innerHTML=BUNDLES.map(b=>{
+    const showCourses=b.courses.slice(0,4);
+    const extra=b.courses.length-4;
+    return`<div class="bundle-card" onclick="openBundlePreview(${b.idx})">
+      <div class="bc-accent" style="background:linear-gradient(90deg,${b.theme.accent},rgba(0,0,0,0))"></div>
+      <div class="bc-head">
+        <div class="bc-icon-row">
+          <div class="bc-icon-box" style="background:${b.theme.label};border:1px solid ${b.theme.accent}40">${b.icon}</div>
+          <div>
+            <div class="bc-tier" style="color:${b.theme.accent}">${b.tier}</div>
+            <div class="bc-name">${b.name}</div>
+          </div>
+        </div>
+        <div class="bc-price-row">
+          <div class="bc-price">${b.price}</div>
+          <div class="bc-lpa-pill">🚀 ${b.lpa}</div>
+        </div>
+        <div class="bc-courses-label">Courses in this bundle</div>
+        <div class="bc-course-list">
+          ${showCourses.map(c=>`<div class="bc-course-item"><span class="bc-course-dot" style="background:${b.theme.accent}"></span>${c.name}</div>`).join('')}
+          ${extra>0?`<div style="margin-top:3px"><span class="bc-more-tag">+${extra} more courses →</span></div>`:''}
+        </div>
+      </div>
+      <div class="bc-footer">
+        <button class="bc-enroll" style="background:linear-gradient(135deg,${b.theme.accent},${b.theme.accent}bb);color:var(--ink)" onclick="event.stopPropagation();location.href='auth.html'">Enroll Now →</button>
+        <button class="bc-preview" onclick="event.stopPropagation();openBundlePreview(${b.idx})">▶ Preview</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function buildCoursesPage(){
+  const main=document.getElementById('coursesMain');
+  if(!main)return;
+  main.innerHTML=BUNDLES.map(b=>`
+    <div class="course-bundle-section">
+      <div class="cbs-header">
+        <div class="cbs-icon" style="background:${b.theme.label};border:1px solid ${b.theme.accent}40">${b.icon}</div>
+        <div class="cbs-info">
+          <div class="cbs-tier" style="color:${b.theme.accent}">${b.tier}</div>
+          <div class="cbs-name">${b.name}</div>
+          <div class="cbs-meta">
+            <span class="cbs-chip">📋 ${b.courses.length} Courses</span>
+            <span class="cbs-chip">♾ Lifetime Access</span>
+          </div>
+        </div>
+        <div class="cbs-price-badge" style="color:${b.theme.accent}">${b.price}</div>
+      </div>
+      <div class="courses-grid">
+        ${b.courses.map((c,ci)=>`
+          <div class="course-card" onclick="openCoursePreview(${b.idx},${ci})">
+            <div class="cc-thumb">
+              <img class="cc-thumb-img" src="https://img.youtube.com/vi/${c.isPlaylist?b.previewId:c.ytId}/mqdefault.jpg" alt="${c.name}" loading="lazy" onerror="this.style.opacity=0.3">
+              <div class="cc-play-btn"><div class="cc-play-circle">▶</div></div>
+              <div class="cc-duration">⏱ ${c.dur}</div>
+            </div>
+            <div class="cc-body">
+              <div class="cc-num" style="color:${b.theme.accent}">Course ${c.num}</div>
+              <div class="cc-name">${c.name}</div>
+              <div class="cc-desc">${c.desc}</div>
+            </div>
+          </div>`).join('')}
+      </div>
+    </div>`).join('');
+}
+
+/* VIDEO PLAYER */
+let vmTimer=null,vmSeconds=300,vmPlayerEl=null,vmPlaying=false,vmMuted=false,vmVol=100,vmDur=0,vmCT=0,vmPoll=null;
+
+function buildEmbedUrl(ytId,start,isPlaylist){
+  const base='https://www.youtube.com/embed/';
+  const p='&rel=0&modestbranding=1&iv_load_policy=3&controls=0&disablekb=1&fs=1&playsinline=1&enablejsapi=1&autoplay=1&showinfo=0';
+  if(isPlaylist)return base+'videoseries?list='+ytId+'&index=1'+p;
+  return base+ytId+'?start='+(start||0)+p;
+}
+
+function openBundlePreview(idx){
+  const b=BUNDLES[idx];
+  document.getElementById('vmTitle').textContent=b.name+' — Free Preview';
+  document.getElementById('vmCat').textContent=b.tier+' Bundle · '+b.lpa;
+  document.getElementById('vmPrice').textContent=b.price;
+  document.getElementById('vmMetaRow').innerHTML=`
+    <div class="vm-chip"><span>⏱</span>5 min preview</div>
+    <div class="vm-chip"><span>🎓</span>Certificate Included</div>
+    <div class="vm-chip"><span>♾</span>Lifetime Access</div>
+    <div class="vm-chip"><span>💰</span>Earn up to 65%</div>`;
+  launchPlayer(buildEmbedUrl(b.previewId,0,b.isPlaylist));
+}
+
+function openCoursePreview(bi,ci){
+  const b=BUNDLES[bi],c=b.courses[ci];
+  document.getElementById('vmTitle').textContent=c.name+' — Free Preview';
+  document.getElementById('vmCat').textContent=b.name+' · Course '+c.num;
+  document.getElementById('vmPrice').textContent=b.price;
+  document.getElementById('vmMetaRow').innerHTML=`
+    <div class="vm-chip"><span>⏱</span>${c.dur}</div>
+    <div class="vm-chip"><span>📋</span>Course ${c.num} of ${b.courses.length}</div>
+    <div class="vm-chip"><span>🎓</span>Certificate on completion</div>`;
+  launchPlayer(buildEmbedUrl(c.ytId,0,c.isPlaylist));
+}
+
+function launchPlayer(url){
+  stopVmPlayer();
+  document.getElementById('vmPreviewOverlay').classList.remove('show');
+  document.getElementById('vmTimer').classList.remove('hidden');
+  const container=document.getElementById('vmPlayerContainer');
+  container.innerHTML='';
+  const iframe=document.createElement('iframe');
+  iframe.src=url;
+  iframe.allow='autoplay;encrypted-media;fullscreen';
+  iframe.style.cssText='position:absolute;top:50%;left:50%;width:calc(100% + 2px);height:calc(100% + 120px);border:none;transform:translate(-50%,-50%);pointer-events:none;z-index:1;';
+  container.appendChild(iframe);
+  vmPlayerEl=iframe;vmPlaying=true;vmSeconds=300;
+  updateVmTimer();
+  clearInterval(vmTimer);
+  vmTimer=setInterval(()=>{
+    vmSeconds--;updateVmTimer();
+    if(vmSeconds<=0){clearInterval(vmTimer);stopVmPlayer();document.getElementById('vmTimer').classList.add('hidden');document.getElementById('vmPreviewOverlay').classList.add('show');}
+  },1000);
+  document.getElementById('video-modal').classList.add('open');
+  document.body.style.overflow='hidden';
+  document.getElementById('vmPlayBtn').textContent='⏸';
+  window.addEventListener('message',handleVmMsg);
+  clearInterval(vmPoll);
+  vmPoll=setInterval(()=>{if(vmPlayerEl)try{vmPlayerEl.contentWindow.postMessage('{"event":"listening"}','*');}catch(e){}},1000);
+}
+
+function handleVmMsg(e){
+  if(!e.data||!vmPlayerEl)return;
+  try{
+    const d=typeof e.data==='string'?JSON.parse(e.data):e.data;
+    if(d.event==='infoDelivery'&&d.info){
+      const ct=d.info.currentTime||0,dur=d.info.duration||0,st=d.info.playerState;
+      if(dur>0){vmCT=ct;vmDur=dur;const pct=(ct/dur)*100;const fill=document.getElementById('vmProgressFill');if(fill)fill.style.width=pct+'%';const tm=document.getElementById('vmTimeDisplay');if(tm)tm.textContent=ft(ct)+' / '+ft(dur);}
+      if(st===1){vmPlaying=true;const b=document.getElementById('vmPlayBtn');if(b)b.textContent='⏸';}
+      else if(st===2||st===0){vmPlaying=false;const b=document.getElementById('vmPlayBtn');if(b)b.textContent='▶';}
+    }
+  }catch(er){}
+}
+
+function ft(s){const m=Math.floor(s/60),sec=Math.floor(s%60);return m+':'+String(sec).padStart(2,'0');}
+function updateVmTimer(){const el=document.getElementById('vmTimer');if(!el)return;const m=Math.floor(vmSeconds/60),s=vmSeconds%60;el.textContent='⏱ '+m+':'+String(s).padStart(2,'0');}
+function vmTogglePlay(){if(!vmPlayerEl)return;try{if(vmPlaying){vmPlayerEl.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}','*');vmPlaying=false;document.getElementById('vmPlayBtn').textContent='▶';}else{vmPlayerEl.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}','*');vmPlaying=true;document.getElementById('vmPlayBtn').textContent='⏸';}}catch(e){}}
+function vmSkip(n){if(!vmPlayerEl||n>0)return;const nt=Math.max(0,vmCT+n);try{vmPlayerEl.contentWindow.postMessage('{"event":"command","func":"seekTo","args":['+nt+',true]}','*');}catch(e){}}
+function vmToggleMute(){vmMuted=!vmMuted;try{vmPlayerEl?.contentWindow.postMessage('{"event":"command","func":"'+(vmMuted?'mute':'unMute')+'","args":""}','*');document.getElementById('vmMuteBtn').textContent=vmMuted?'🔇':'🔊';}catch(e){}}
+function vmSetVolume(v){vmVol=parseInt(v);try{vmPlayerEl?.contentWindow.postMessage('{"event":"command","func":"setVolume","args":['+vmVol+']}','*');}catch(e){}}
+function vmFullscreen(){const w=document.getElementById('vmPlayerWrap');if(!document.fullscreenElement){w.requestFullscreen?.().catch(()=>{});w.classList.add('show-ctrl');}else{document.exitFullscreen?.();w.classList.remove('show-ctrl');}}
+function handleProgressClick(e){if(!vmDur)return;const bar=document.getElementById('vmProgressBar'),rect=bar.getBoundingClientRect();const pct=(e.clientX-rect.left)/rect.width,st=pct*vmDur;if(st>vmCT){showToast('⚠','Forward skip disabled.');return;}try{vmPlayerEl?.contentWindow.postMessage('{"event":"command","func":"seekTo","args":['+st+',true]}','*');}catch(e){}}
+function stopVmPlayer(){clearInterval(vmTimer);clearInterval(vmPoll);if(vmPlayerEl)try{vmPlayerEl.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}','*');}catch(e){}vmPlayerEl=null;vmPlaying=false;window.removeEventListener('message',handleVmMsg);}
+function closeVideoModal(){stopVmPlayer();document.getElementById('video-modal').classList.remove('open');document.body.style.overflow='';document.getElementById('vmPlayerContainer').innerHTML='';}
+function handleVmBgClick(e){if(e.target===document.getElementById('video-modal'))closeVideoModal();}
+
+/* MARQUEE */
+const mqTerms=['Python','Meta Ads','ChatGPT','Canva','SQL','Tableau','Power BI','React','Node.js','AWS','Docker','Figma','LangChain','TensorFlow','MongoDB','Git','SEO','UI/UX','Kubernetes','Generative AI','MLOps','MERN Stack','Digital Marketing'];
+[document.getElementById('mqG1'),document.getElementById('mqG2')].forEach(g=>{if(!g)return;mqTerms.forEach(t=>{const s=document.createElement('span');s.className='mq-chip';s.innerHTML='<span class="mq-chip-dot"></span>'+t;g.appendChild(s);});});
+
+/* REVIEWS */
+let activeRevCat='All';
+const revCats=['All','Learning','Freelancing','Career Support','Affiliate System'];
+function buildReviews(){
+  const pr=document.getElementById('platformRatings');
+  if(pr)pr.innerHTML=PLATFORM_RATINGS.map(r=>`<div class="pr-card"><div class="pr-icon">${r.icon}</div><div class="pr-score">${r.score}</div><div class="pr-label">${r.label}</div><div class="pr-stars">${r.stars}</div></div>`).join('');
+  const cats=document.getElementById('reviewsCats');
+  if(cats)cats.innerHTML=revCats.map(c=>`<button class="rev-cat-btn${c===activeRevCat?' active':''}" onclick="filterRevs('${c}',this)">${c}</button>`).join('');
+  renderReviews();
+}
+function filterRevs(cat,btn){activeRevCat=cat;document.querySelectorAll('.rev-cat-btn').forEach(b=>b.classList.remove('active'));if(btn)btn.classList.add('active');renderReviews();}
+function renderReviews(){
+  const grid=document.getElementById('reviewsGrid');if(!grid)return;
+  const filtered=activeRevCat==='All'?REVIEWS:REVIEWS.filter(r=>r.category===activeRevCat);
+  grid.innerHTML=filtered.map(r=>`<div class="rev-card"><div class="rev-stars">${'★'.repeat(r.stars)}</div><span class="rev-category-badge">${r.category}</span><p class="rev-text">"${r.text}"</p><div class="rev-author"><div class="rev-av">${r.init}</div><div><div class="rev-name">${r.name}</div><div class="rev-role">${r.role}</div></div><span class="rev-badge">${r.badge}</span></div></div>`).join('');
+}
+
+/* ROUTING */
+let currentPage='home';
+function showPage(p){
+  document.querySelectorAll('.page').forEach(el=>el.classList.remove('active'));
+  document.getElementById('page-'+p).classList.add('active');
+  currentPage=p;
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(p==='home')setTimeout(()=>observeReveal(),100);
+  if(p==='reviews')buildReviews();
+  if(p==='courses')buildCoursesPage();
+}
+function scrollToSec(id){setTimeout(()=>{const el=document.getElementById(id);if(el)el.scrollIntoView({behavior:'smooth'});},100);}
+
+/* CURSOR */
+const glow=document.getElementById('cursor-glow'),dot=document.getElementById('cursor-dot');
+let mx=0,my=0,gx=0,gy=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;dot.style.left=mx+'px';dot.style.top=my+'px'});
+(function animC(){gx+=(mx-gx)*0.06;gy+=(my-gy)*0.06;glow.style.left=gx+'px';glow.style.top=gy+'px';requestAnimationFrame(animC)})();
+
+/* SPLASH */
+window.addEventListener('load',()=>{setTimeout(()=>{document.getElementById('splash').classList.add('hide');setTimeout(()=>document.getElementById('cookie').classList.add('show'),700);},2900);});
+function dismissCookie(){document.getElementById('cookie').style.display='none';}
+
+/* SCROLL */
+window.addEventListener('scroll',()=>{
+  document.getElementById('navbar').classList.toggle('scrolled',scrollY>50);
+  document.getElementById('scroll-top').classList.toggle('vis',scrollY>280);
+});
+
+/* TOAST */
+let toastT=null;
+function showToast(icon,msg){document.getElementById('toastIcon').textContent=icon;document.getElementById('toastMsg').textContent=msg;const t=document.getElementById('toast');t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),3400);}
+
+/* HAMBURGER */
+let mmOpen=false;
+function toggleMenu(){mmOpen=!mmOpen;document.getElementById('mobile-menu').classList.toggle('open',mmOpen);document.getElementById('hamburger').classList.toggle('open',mmOpen);document.body.style.overflow=mmOpen?'hidden':'';}
+function closeMenu(){mmOpen=false;document.getElementById('mobile-menu').classList.remove('open');document.getElementById('hamburger').classList.remove('open');document.body.style.overflow='';}
+
+/* FAQ */
+function toggleFaq(btn){const item=btn.closest('.faq-item');const isOpen=item.classList.contains('open');document.querySelectorAll('.faq-item.open').forEach(el=>el.classList.remove('open'));if(!isOpen)item.classList.add('open');}
+
+/* REVEAL */
+function observeReveal(){
+  const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target)}});},{threshold:0.07});
+  document.querySelectorAll('.reveal:not(.visible)').forEach(el=>obs.observe(el));
+}
+
+/* KEYBOARD & SECURITY */
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeVideoModal();if(e.key==='F12'||(e.ctrlKey&&e.shiftKey&&['i','j','c'].includes(e.key.toLowerCase()))||(e.ctrlKey&&e.key.toLowerCase()==='u')){e.preventDefault();return false;}});
+document.addEventListener('contextmenu',e=>e.preventDefault());
+document.addEventListener('selectstart',e=>{if(e.target.tagName!=='INPUT'&&e.target.tagName!=='TEXTAREA')e.preventDefault();});
+
+/* INIT */
+document.addEventListener('DOMContentLoaded',()=>{buildBundleGrid();observeReveal();});
+</script>
+</body>
+</html>
