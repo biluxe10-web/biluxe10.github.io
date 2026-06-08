@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Verify Certificate — Biluxe10</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,700;0,9..144,900;1,9..144,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+--bg:#07070A;--bg2:#0D0D12;--bg3:#121218;--bg4:#18181F;--bg5:#1E1E28;
+--border:rgba(255,255,255,0.055);--border2:rgba(255,255,255,0.1);--border3:rgba(255,255,255,0.16);
+--gold:#C8A96E;--gold2:#E2C48A;--gold3:#F0D9A8;
+--gA:rgba(200,169,110,0.08);--gB:rgba(200,169,110,0.15);--gC:rgba(200,169,110,0.04);
+--green:#22C55E;--grA:rgba(34,197,94,0.1);--grB:rgba(34,197,94,0.18);
+--red:#EF4444;--reA:rgba(239,68,68,0.1);
+--blue:#60A5FA;--blA:rgba(96,165,250,0.1);
+--amber:#F59E0B;--amA:rgba(245,158,11,0.1);
+--cyan:#22D3EE;--cyA:rgba(34,211,238,0.1);
+--ink:#07070A;--text:#EDEDF0;--t2:#9B9BA8;--t3:#4B4B5A;--t4:#2A2A35;
+--fd:'Fraunces',serif;--fb:'Plus Jakarta Sans',sans-serif;--fm:'JetBrains Mono',monospace;
+--r:14px;--rs:10px;
+--ease:cubic-bezier(0.16,1,0.3,1);--spring:cubic-bezier(0.34,1.56,0.64,1);
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--fb);line-height:1.6;overflow-x:hidden;min-height:100vh}
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-thumb{background:rgba(200,169,110,0.25);border-radius:2px}
+button,input,select,textarea{font-family:var(--fb)}
+
+/* BG */
+body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+background:radial-gradient(ellipse 700px 500px at 15% -10%,rgba(200,169,110,0.06),transparent),
+           radial-gradient(ellipse 500px 400px at 85% 95%,rgba(34,197,94,0.03),transparent),
+           radial-gradient(ellipse 400px 300px at 50% 50%,rgba(200,169,110,0.02),transparent)}
+
+/* PARTICLES */
+#particles{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.pt{position:absolute;border-radius:50%;animation:ptFloat linear infinite;opacity:0}
+@keyframes ptFloat{0%{transform:translateY(100vh) rotate(0deg);opacity:0}10%{opacity:.5}90%{opacity:.15}100%{transform:translateY(-100px) rotate(720deg);opacity:0}}
+
+/* TOPBAR */
+.topbar{position:sticky;top:0;z-index:100;height:60px;background:rgba(7,7,10,0.92);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 20px;gap:12px}
+.tb-logo{font-family:var(--fd);font-size:1.05rem;font-weight:900;color:var(--gold);text-decoration:none;letter-spacing:-0.01em}
+.tb-logo sup{font-size:0.45em;color:var(--t3);font-weight:400;vertical-align:super}
+.tb-r{display:flex;align-items:center;gap:8px}
+.tb-pill{padding:4px 10px;background:var(--bg3);border:1px solid var(--border);border-radius:20px;font-family:var(--fm);font-size:0.52rem;color:var(--t2)}
+.tb-btn{padding:7px 14px;background:var(--gA);color:var(--gold);border:1px solid rgba(200,169,110,0.2);border-radius:8px;font-weight:700;font-size:0.7rem;cursor:pointer;text-decoration:none;transition:all 0.2s;white-space:nowrap}
+.tb-btn:hover{background:var(--gB)}
+
+/* LAYOUT */
+.page{position:relative;z-index:1;min-height:calc(100vh - 60px);display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:24px 16px 60px}
+.container{width:100%;max-width:660px}
+
+/* SEARCH BAR */
+.search-wrap{background:var(--bg2);border:1px solid var(--border2);border-radius:18px;padding:24px;margin-bottom:20px}
+.search-title{font-family:var(--fd);font-size:1.15rem;font-weight:900;margin-bottom:4px}
+.search-sub{font-size:0.75rem;color:var(--t2);margin-bottom:16px;line-height:1.7}
+.search-row{display:flex;gap:0;overflow:hidden;border:1px solid var(--border2);border-radius:10px}
+.search-inp{flex:1;background:var(--bg3);border:none;padding:12px 14px;font-size:0.82rem;color:var(--text);outline:none;font-family:var(--fm);letter-spacing:0.03em;min-width:0}
+.search-inp::placeholder{color:var(--t4);font-family:var(--fb);letter-spacing:0;font-size:0.78rem}
+.search-inp:focus{background:var(--bg4)}
+.search-btn{padding:12px 18px;background:linear-gradient(135deg,var(--gold),var(--gold2));border:none;color:var(--ink);font-weight:800;font-size:0.76rem;cursor:pointer;white-space:nowrap;transition:all 0.2s;flex-shrink:0}
+.search-btn:hover{filter:brightness(1.08)}
+.search-btn:disabled{opacity:0.5;cursor:not-allowed}
+
+/* LOADING */
+.loading-wrap{text-align:center;padding:48px 20px}
+.spin{width:40px;height:40px;border:3px solid rgba(200,169,110,0.12);border-top-color:var(--gold);border-radius:50%;animation:spin 0.9s linear infinite;margin:0 auto 16px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-t{font-family:var(--fd);font-size:1rem;font-weight:700;color:var(--t2);margin-bottom:4px}
+.loading-s{font-family:var(--fm);font-size:0.55rem;color:var(--t3);letter-spacing:0.1em;text-transform:uppercase}
+
+/* VERIFIED CARD */
+.verified-card{background:var(--bg2);border:1px solid var(--border);border-radius:20px;overflow:hidden;margin-bottom:16px;animation:cardIn 0.4s var(--ease)}
+@keyframes cardIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+/* STATUS BANNER */
+.status-banner{padding:14px 20px;display:flex;align-items:center;gap:12px}
+.status-banner.verified{background:linear-gradient(135deg,rgba(34,197,94,0.12),rgba(34,197,94,0.06));border-bottom:1px solid rgba(34,197,94,0.2)}
+.status-banner.invalid{background:linear-gradient(135deg,var(--reA),rgba(239,68,68,0.04));border-bottom:1px solid rgba(239,68,68,0.2)}
+.status-ic{font-size:1.8rem;flex-shrink:0}
+.status-t{font-family:var(--fd);font-size:1.1rem;font-weight:900}
+.status-t.ok{color:var(--green)}
+.status-t.fail{color:var(--red)}
+.status-s{font-family:var(--fm);font-size:0.52rem;color:var(--t3);margin-top:2px;letter-spacing:0.06em}
+.status-badge{margin-left:auto;flex-shrink:0}
+.sbadge{display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:20px;font-family:var(--fm);font-size:0.52rem;font-weight:700;letter-spacing:0.06em}
+.sbadge.ok{background:var(--grB);color:var(--green);border:1px solid rgba(34,197,94,0.3)}
+.sbadge.fail{background:var(--reA);color:var(--red);border:1px solid rgba(239,68,68,0.25)}
+.sbadge-dot{width:5px;height:5px;border-radius:50%;background:currentColor;animation:pdot 2s ease infinite}
+@keyframes pdot{0%,100%{opacity:1}50%{opacity:0.3}}
+
+/* CERT PREVIEW */
+.cert-preview-wrap{padding:20px;border-bottom:1px solid var(--border);background:var(--bg3);position:relative;overflow:hidden}
+.cert-preview-wrap::before{content:'';position:absolute;top:-30px;right:-30px;width:140px;height:140px;border-radius:50%;background:radial-gradient(circle,rgba(200,169,110,0.1),transparent);pointer-events:none}
+.cert-preview-inner{display:flex;align-items:center;gap:16px;position:relative;z-index:1}
+.cert-icon-big{width:64px;height:64px;border-radius:14px;background:linear-gradient(135deg,rgba(200,169,110,0.15),rgba(200,169,110,0.05));border:1px solid rgba(200,169,110,0.25);display:flex;align-items:center;justify-content:center;font-size:1.9rem;flex-shrink:0}
+.cert-info{flex:1;min-width:0}
+.cert-course{font-family:var(--fd);font-size:1rem;font-weight:900;color:var(--text);margin-bottom:3px;line-height:1.3}
+.cert-student{font-size:0.76rem;color:var(--t2);margin-bottom:6px}
+.cert-student strong{color:var(--gold)}
+.cert-meta-pills{display:flex;gap:6px;flex-wrap:wrap}
+.cpill{font-family:var(--fm);font-size:0.5rem;padding:3px 8px;border-radius:5px;border:1px solid var(--border);color:var(--t3)}
+.cpill.gold{background:var(--gA);color:var(--gold);border-color:rgba(200,169,110,0.2)}
+.cpill.green{background:var(--grA);color:var(--green);border-color:rgba(34,197,94,0.2)}
+
+/* DETAILS GRID */
+.details-grid{padding:20px;display:grid;grid-template-columns:1fr 1fr;gap:0;border-bottom:1px solid var(--border)}
+.drow{padding:10px 0;border-bottom:1px solid var(--border);display:flex;flex-direction:column;gap:3px}
+.drow:nth-last-child(-n+2){border-bottom:none}
+.drow-label{font-family:var(--fm);font-size:0.5rem;color:var(--t3);text-transform:uppercase;letter-spacing:0.1em}
+.drow-val{font-size:0.78rem;font-weight:600;color:var(--text);word-break:break-all}
+.drow-val.mono{font-family:var(--fm);font-size:0.68rem;color:var(--gold);word-break:break-all}
+.drow-val.green{color:var(--green)}
+
+/* CRITERIA */
+.criteria-wrap{padding:20px;border-bottom:1px solid var(--border)}
+.criteria-title{font-family:var(--fd);font-size:0.85rem;font-weight:700;margin-bottom:12px;color:var(--text)}
+.criteria-list{display:flex;flex-direction:column;gap:8px}
+.crit-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;background:var(--bg3);border:1px solid var(--border)}
+.crit-item.pass{background:rgba(34,197,94,0.06);border-color:rgba(34,197,94,0.18)}
+.crit-item.fail{background:var(--reA);border-color:rgba(239,68,68,0.18)}
+.crit-item.pending{background:var(--amA);border-color:rgba(245,158,11,0.18)}
+.crit-ic{font-size:1.1rem;flex-shrink:0;width:28px;text-align:center}
+.crit-body{flex:1}
+.crit-t{font-size:0.76rem;font-weight:700;color:var(--text);margin-bottom:2px}
+.crit-s{font-family:var(--fm);font-size:0.52rem;color:var(--t3)}
+
+/* CERT ID BOX */
+.certid-wrap{padding:20px;border-bottom:1px solid var(--border)}
+.certid-label{font-family:var(--fm);font-size:0.5rem;color:var(--t3);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px}
+.certid-box{background:var(--bg3);border:1px solid var(--border2);border-radius:10px;padding:12px 14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.certid-val{font-family:var(--fm);font-size:0.72rem;color:var(--gold);letter-spacing:0.08em;flex:1;min-width:0;word-break:break-all}
+.copy-btn{padding:5px 11px;background:var(--gA);color:var(--gold);border:1px solid rgba(200,169,110,0.2);border-radius:6px;font-weight:700;font-size:0.62rem;cursor:pointer;white-space:nowrap;transition:all 0.18s;flex-shrink:0}
+.copy-btn:hover{background:var(--gB)}
+.copy-btn:active{transform:scale(0.96)}
+
+/* QR SECTION */
+.qr-wrap{padding:20px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;border-bottom:1px solid var(--border)}
+.qr-box{width:88px;height:88px;border-radius:10px;background:white;display:flex;align-items:center;justify-content:center;border:2px solid rgba(200,169,110,0.22);padding:4px;flex-shrink:0;overflow:hidden}
+.qr-box canvas{width:80px!important;height:80px!important}
+.qr-info-t{font-family:var(--fd);font-size:0.88rem;font-weight:700;margin-bottom:3px}
+.qr-info-s{font-size:0.7rem;color:var(--t2);line-height:1.65}
+
+/* ACTIONS */
+.actions-wrap{padding:16px 20px;display:flex;gap:8px;flex-wrap:wrap}
+.btn-g{padding:9px 18px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--ink);border:none;border-radius:var(--rs);font-weight:800;font-size:0.72rem;cursor:pointer;transition:all 0.2s}
+.btn-g:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(200,169,110,0.28)}
+.btn-o{padding:9px 18px;background:transparent;color:var(--t2);border:1px solid var(--border2);border-radius:var(--rs);font-weight:600;font-size:0.72rem;cursor:pointer;transition:all 0.2s}
+.btn-o:hover{border-color:var(--border3);color:var(--text)}
+
+/* ISSUER FOOTER */
+.issuer-wrap{padding:14px 20px;background:var(--bg3);border-top:1px solid var(--border);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.issuer-logo{font-family:var(--fd);font-size:0.85rem;font-weight:900;color:var(--gold)}
+.issuer-logo sup{font-size:0.4em;color:var(--t3)}
+.issuer-text{font-size:0.68rem;color:var(--t3);line-height:1.6}
+
+/* INVALID STATE */
+.invalid-card{background:var(--bg2);border:1px solid rgba(239,68,68,0.2);border-radius:18px;padding:32px 24px;text-align:center;margin-bottom:16px;animation:cardIn 0.4s var(--ease)}
+.invalid-ic{font-size:3rem;margin-bottom:12px}
+.invalid-t{font-family:var(--fd);font-size:1.2rem;font-weight:900;color:var(--red);margin-bottom:8px}
+.invalid-s{font-size:0.76rem;color:var(--t2);line-height:1.75;margin-bottom:18px}
+.invalid-reasons{display:flex;flex-direction:column;gap:8px;text-align:left;max-width:360px;margin:0 auto 18px}
+.ireason{display:flex;align-items:center;gap:8px;padding:9px 12px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;font-size:0.72rem;color:var(--t2)}
+
+/* HOW IT WORKS */
+.how-card{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:16px}
+.how-t{font-family:var(--fd);font-size:0.95rem;font-weight:700;margin-bottom:14px}
+.how-steps{display:flex;flex-direction:column;gap:10px}
+.hstep{display:flex;align-items:flex-start;gap:12px;padding:11px 13px;background:var(--bg3);border:1px solid var(--border);border-radius:10px}
+.hstep-n{width:24px;height:24px;border-radius:50%;background:var(--gA);border:1px solid rgba(200,169,110,0.25);color:var(--gold);font-family:var(--fm);font-size:0.58rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.hstep-t{font-size:0.76rem;font-weight:700;color:var(--text);margin-bottom:2px}
+.hstep-s{font-size:0.65rem;color:var(--t3);line-height:1.55}
+
+/* EMPTY STATE */
+.empty-state{text-align:center;padding:48px 20px}
+.empty-ic{font-size:3rem;margin-bottom:14px}
+.empty-t{font-family:var(--fd);font-size:1.1rem;font-weight:700;margin-bottom:6px}
+.empty-s{font-size:0.75rem;color:var(--t2);line-height:1.75;max-width:320px;margin:0 auto 18px}
+
+/* ALERT */
+.alert{padding:11px 14px;border-radius:var(--rs);font-size:0.74rem;line-height:1.65;margin-bottom:12px;display:none;animation:cardIn 0.28s var(--ease)}
+.alert.show{display:flex;gap:8px;align-items:flex-start}
+.alert.err{background:var(--reA);border:1px solid rgba(239,68,68,0.22);color:#FCA5A5}
+.alert.info{background:var(--gA);border:1px solid rgba(200,169,110,0.22);color:var(--gold2)}
+.alert-ic{font-size:1rem;flex-shrink:0}
+
+/* TOAST */
+#toast{position:fixed;bottom:20px;right:20px;z-index:9999;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--rs);padding:11px 16px;max-width:280px;display:flex;align-items:center;gap:8px;transform:translateY(80px);opacity:0;transition:all 0.35s var(--spring);font-size:0.74rem;color:var(--text);box-shadow:0 12px 40px rgba(0,0,0,0.45)}
+#toast.on{transform:translateY(0);opacity:1}
+
+/* FOOTER */
+.footer{position:relative;z-index:1;padding:20px;text-align:center;border-top:1px solid var(--border);background:var(--bg2)}
+.footer-logo{font-family:var(--fd);font-size:1rem;font-weight:900;color:var(--gold);margin-bottom:4px}
+.footer-logo sup{font-size:0.45em;color:var(--t3)}
+.footer-text{font-family:var(--fm);font-size:0.52rem;color:var(--t3);letter-spacing:0.06em;margin-bottom:10px}
+.footer-links{display:flex;justify-content:center;gap:14px;flex-wrap:wrap}
+.footer-links a{font-family:var(--fm);font-size:0.5rem;color:var(--t3);text-decoration:none;transition:color 0.2s}
+.footer-links a:hover{color:var(--gold)}
+
+/* PRINT */
+@media print{
+  body{background:white;color:#000}
+  .topbar,.search-wrap,.how-card,.footer,.actions-wrap{display:none!important}
+  .verified-card{border:2px solid #C8A96E;border-radius:12px}
+  .status-banner.verified{background:#f0fdf4}
+  .status-t.ok{color:#16a34a}
+}
+
+@media(max-width:520px){
+  .details-grid{grid-template-columns:1fr}
+  .drow:nth-last-child(-n+2){border-bottom:1px solid var(--border)}
+  .drow:last-child{border-bottom:none}
+  .cert-preview-inner{flex-direction:column;align-items:flex-start;gap:12px}
+  .cert-icon-big{width:50px;height:50px;font-size:1.5rem}
+}
+</style>
+</head>
+<body>
+<div id="particles"></div>
+<div id="toast"></div>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <a href="index.html" class="tb-logo">Biluxe<sup>10</sup></a>
+  <div class="tb-r">
+    <div class="tb-pill" id="tbStatus">🔍 Certificate Verifier</div>
+    <a href="dashboard.html" class="tb-btn">Dashboard →</a>
+  </div>
+</div>
+
+<!-- PAGE -->
+<div class="page">
+  <div class="container">
+
+    <!-- SEARCH BOX -->
+    <div class="search-wrap">
+      <div class="search-title">🔐 Certificate Verification</div>
+      <div class="search-sub">Enter a Biluxe10 Certificate ID to verify its authenticity in real-time. All certificates are stored on secure servers and cannot be forged.</div>
+      <div class="search-row">
+        <input class="search-inp" type="text" id="searchInp" placeholder="e.g. B10-ML2-1A2B3C4D5E" autocomplete="off" oninput="onSearchInput()" onkeydown="if(event.key==='Enter')doVerify()">
+        <button class="search-btn" id="searchBtn" onclick="doVerify()">🔍 Verify</button>
+      </div>
+      <div class="alert info" id="searchAlert" style="margin-top:10px;margin-bottom:0"><span class="alert-ic">ℹ</span><span id="searchAlertMsg"></span></div>
+    </div>
+
+    <!-- RESULT AREA -->
+    <div id="resultArea"></div>
+
+    <!-- HOW IT WORKS (default) -->
+    <div class="how-card" id="howCard">
+      <div class="how-t">How Certificate Verification Works</div>
+      <div class="how-steps">
+        <div class="hstep">
+          <div class="hstep-n">1</div>
+          <div><div class="hstep-t">Complete Your Course</div><div class="hstep-s">Watch all chapters (100%), pass the exam with 60%+ score, and submit your project.</div></div>
+        </div>
+        <div class="hstep">
+          <div class="hstep-n">2</div>
+          <div><div class="hstep-t">Certificate is Issued</div><div class="hstep-s">Biluxe10 auto-generates a tamper-proof certificate with a unique ID and stores it on secure servers.</div></div>
+        </div>
+        <div class="hstep">
+          <div class="hstep-n">3</div>
+          <div><div class="hstep-t">Share & Verify</div><div class="hstep-s">Share your certificate ID or QR code. Anyone can verify authenticity here — employers, clients, or institutions.</div></div>
+        </div>
+        <div class="hstep">
+          <div class="hstep-n">4</div>
+          <div><div class="hstep-t">Real-time Validation</div><div class="hstep-s">Every certificate check queries Biluxe10's live Firestore database. Results are instant and 100% accurate.</div></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <div class="footer-logo">Biluxe<sup>10</sup></div>
+  <div class="footer-text">© 2026 Biluxe10 Ed-Tech · Gulbarga / Hyderabad · India</div>
+  <div class="footer-links">
+    <a href="index.html">Home</a>
+    <a href="dashboard.html">Dashboard</a>
+    <a href="privacy.html">Privacy</a>
+    <a href="terms.html">Terms</a>
+    <a href="https://wa.me/919019254743" target="_blank">Support</a>
+  </div>
+</div>
+
+<script>
+/* ═══ FIREBASE INIT ═══ */
+const firebaseConfig={
+  apiKey:"AIzaSyDxxkC9iD1V1w-53Kf4oBrHEXlBLvCc7sE",
+  authDomain:"biluxe10-3e894.firebaseapp.com",
+  projectId:"biluxe10-3e894",
+  storageBucket:"biluxe10-3e894.appspot.com",
+  messagingSenderId:"804749588233",
+  appId:"1:804749588233:web:7777648c0c7834733c05d8"
+};
+if(!firebase.apps.length)firebase.initializeApp(firebaseConfig);
+const DB=firebase.firestore();
+
+/* ═══ COURSE DATA MAP ═══ */
+const COURSE_MAP={
+  // Starter
+  s1:{title:'Digital Entrepreneurship Basics',icon:'🚀',bundle:'Starter Bundle',modules:8},
+  s2:{title:'Canva & Content Creation',icon:'🎨',bundle:'Starter Bundle',modules:12},
+  s3:{title:'WhatsApp Business Marketing',icon:'💬',bundle:'Starter Bundle',modules:6},
+  s4:{title:'ChatGPT for Daily Work',icon:'🤖',bundle:'Starter Bundle',modules:6},
+  // Pro
+  d1:{title:'Affiliate Marketing Mastery',icon:'💰',bundle:'Pro Bundle',modules:8},
+  d2:{title:'SEO & Blogging',icon:'🔍',bundle:'Pro Bundle',modules:7},
+  d3:{title:'Social Media Management',icon:'📱',bundle:'Pro Bundle',modules:6},
+  d4:{title:'Email Marketing',icon:'📧',bundle:'Pro Bundle',modules:5},
+  d5:{title:'Google Ads Complete',icon:'🎯',bundle:'Pro Bundle',modules:6},
+  d6:{title:'Facebook Ads Mastery',icon:'📘',bundle:'Pro Bundle',modules:6},
+  d7:{title:'Freelancing Mastery',icon:'💼',bundle:'Pro Bundle',modules:7},
+  // Professional
+  c1:{title:'UI/UX Design Complete',icon:'🖌️',bundle:'Professional Bundle',modules:10},
+  c2:{title:'No-Code Web Development',icon:'🌐',bundle:'Professional Bundle',modules:6},
+  c3:{title:'Video Editing with CapCut',icon:'🎬',bundle:'Professional Bundle',modules:6},
+  c4:{title:'Podcast & Audio Production',icon:'🎙️',bundle:'Professional Bundle',modules:6},
+  c5:{title:'Ecommerce Complete',icon:'🛒',bundle:'Professional Bundle',modules:6},
+  c6:{title:'Dropshipping & Print on Demand',icon:'📦',bundle:'Professional Bundle',modules:6},
+  // Elite
+  da1:{title:'Excel for Data Analysis',icon:'📈',bundle:'Elite Bundle',modules:7},
+  da2:{title:'SQL for Beginners',icon:'🗄️',bundle:'Elite Bundle',modules:6},
+  da3:{title:'Power BI & Tableau',icon:'📉',bundle:'Elite Bundle',modules:7},
+  da4:{title:'Python Basics',icon:'🐍',bundle:'Elite Bundle',modules:7},
+  da5:{title:'Business Analytics',icon:'💹',bundle:'Elite Bundle',modules:5},
+  da6:{title:'Financial Accounting Basics',icon:'💰',bundle:'Elite Bundle',modules:6},
+  // Master
+  do1:{title:'AWS Cloud Practitioner',icon:'☁️',bundle:'Master Bundle',modules:8},
+  do2:{title:'Docker & Kubernetes',icon:'🐳',bundle:'Master Bundle',modules:6},
+  do3:{title:'CI/CD Pipelines',icon:'🔄',bundle:'Master Bundle',modules:4},
+  do4:{title:'Linux for DevOps',icon:'🐧',bundle:'Master Bundle',modules:5},
+  do5:{title:'Cybersecurity Fundamentals',icon:'🔒',bundle:'Master Bundle',modules:6},
+  do6:{title:'Ethical Hacking',icon:'🕵️',bundle:'Master Bundle',modules:6},
+  do7:{title:'Cloud Security',icon:'🛡️',bundle:'Master Bundle',modules:5},
+  do8:{title:'DevOps Project',icon:'🚀',bundle:'Master Bundle',modules:6},
+  // Elite Pro
+  ml1:{title:'Python for Data Science',icon:'🐍',bundle:'Elite Pro Bundle',modules:5},
+  ml2:{title:'Machine Learning Fundamentals',icon:'🤖',bundle:'Elite Pro Bundle',modules:6},
+  ml3:{title:'Deep Learning & Neural Networks',icon:'🔬',bundle:'Elite Pro Bundle',modules:6},
+  ml4:{title:'Natural Language Processing',icon:'💬',bundle:'Elite Pro Bundle',modules:5},
+  ml5:{title:'Computer Vision',icon:'👁️',bundle:'Elite Pro Bundle',modules:5},
+  ml6:{title:'Big Data Engineering',icon:'🏗️',bundle:'Elite Pro Bundle',modules:5},
+  ml7:{title:'Data Engineering',icon:'⚙️',bundle:'Elite Pro Bundle',modules:5},
+  ml8:{title:'MLOps Fundamentals',icon:'🔧',bundle:'Elite Pro Bundle',modules:6},
+  ml9:{title:'End-to-End ML Project',icon:'🏆',bundle:'Elite Pro Bundle',modules:4},
+  ml10:{title:'Data Science Interview Prep',icon:'📋',bundle:'Elite Pro Bundle',modules:5},
+  // Legend
+  g1:{title:'Generative AI & LLMs',icon:'🤖',bundle:'Legend Bundle',modules:6},
+  g2:{title:'Agentic AI Development',icon:'🕹️',bundle:'Legend Bundle',modules:6},
+  g3:{title:'LangChain & LlamaIndex',icon:'🔗',bundle:'Legend Bundle',modules:5},
+  g4:{title:'Vector Databases',icon:'🗃️',bundle:'Legend Bundle',modules:5},
+  g5:{title:'RAG Implementation',icon:'📚',bundle:'Legend Bundle',modules:5},
+  g6:{title:'LLM Fine-Tuning',icon:'⚙️',bundle:'Legend Bundle',modules:5},
+  g7:{title:'Multi-Agent Systems',icon:'🕸️',bundle:'Legend Bundle',modules:5},
+  g8:{title:'AI Safety & Governance',icon:'⚖️',bundle:'Legend Bundle',modules:4},
+  g9:{title:'AI Agents Capstone Project',icon:'🏆',bundle:'Legend Bundle',modules:5},
+  g10:{title:'Prompt Engineering Mastery',icon:'✍️',bundle:'Legend Bundle',modules:4},
+  g11:{title:'AI API Integration',icon:'🔌',bundle:'Legend Bundle',modules:5},
+  // Ultimate
+  cr1:{title:'AI Product Management',icon:'📋',bundle:'Ultimate Bundle',modules:5},
+  cr2:{title:'AI Strategy & Roadmap',icon:'🗺️',bundle:'Ultimate Bundle',modules:5},
+  cr22:{title:'Building AI Startups',icon:'🚀',bundle:'Ultimate Bundle',modules:5},
+  // Special
+  sp1:{title:'Professional Make-up Course',icon:'💄',bundle:'Special Courses',modules:10},
+  sp2:{title:'Fashion Designer Course',icon:'👗',bundle:'Special Courses',modules:10},
+  sp3:{title:'Bridal Mehendi Designer',icon:'🌿',bundle:'Special Courses',modules:42},
+};
+
+/* ═══ PARTICLES ═══ */
+function initParticles(){
+  const c=document.getElementById('particles');if(!c)return;
+  for(let i=0;i<10;i++){
+    const p=document.createElement('div');p.className='pt';
+    const sz=Math.random()*2.5+1;
+    p.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;background:rgba(200,169,110,${Math.random()*.25+.08});animation-duration:${Math.random()*22+16}s;animation-delay:${Math.random()*18}s`;
+    c.appendChild(p);
+  }
+}
+initParticles();
+
+/* ═══ TOAST ═══ */
+let _tt;
+function toast(ic,msg,dur=3200){
+  const el=document.getElementById('toast');
+  el.innerHTML=`<span style="font-size:1rem">${ic}</span><span>${msg}</span>`;
+  el.classList.add('on');clearTimeout(_tt);
+  _tt=setTimeout(()=>el.classList.remove('on'),dur);
+}
+
+function copyText(t){
+  navigator.clipboard.writeText(t).then(()=>toast('📋','Copied to clipboard!'));
+}
+
+/* ═══ URL PARAM ═══ */
+const urlParams=new URLSearchParams(window.location.search);
+const URL_ID=(urlParams.get('id')||urlParams.get('cert')||'').trim().toUpperCase();
+
+/* ═══ INIT ═══ */
+window.addEventListener('DOMContentLoaded',()=>{
+  if(URL_ID){
+    const inp=document.getElementById('searchInp');
+    if(inp)inp.value=URL_ID;
+    doVerify();
+  }
+});
+
+/* ═══ INPUT HANDLER ═══ */
+function onSearchInput(){
+  const al=document.getElementById('searchAlert');
+  if(al)al.classList.remove('show');
+}
+
+/* ═══ MAIN VERIFY ═══ */
+async function doVerify(){
+  const rawVal=(document.getElementById('searchInp')?.value||'').trim().toUpperCase();
+  if(!rawVal){
+    showSearchAlert('Please enter a Certificate ID to verify.','err');return;
+  }
+  // Basic format check — B10-XXXXX-XXXXX
+  if(!rawVal.startsWith('B10')){
+    showSearchAlert('Invalid format. Biluxe10 certificate IDs start with B10.','err');return;
+  }
+
+  const btn=document.getElementById('searchBtn');
+  if(btn){btn.disabled=true;btn.textContent='Verifying…';}
+  const howCard=document.getElementById('howCard');
+  if(howCard)howCard.style.display='none';
+  document.getElementById('resultArea').innerHTML=renderLoading();
+  clearSearchAlert();
+
+  try{
+    // Query collectionGroup 'certificates' across all users
+    const snap=await DB.collectionGroup('certificates')
+      .where('certId','==',rawVal)
+      .limit(1)
+      .get();
+
+    if(snap.empty){
+      // Secondary search by partial certId (case-insensitive fallback)
+      await showNotFound(rawVal);
+    }else{
+      const certData=snap.docs[0].data();
+      const parentPath=snap.docs[0].ref.path;
+      // parentPath is like: user_collection/{emailId}/certificates/{courseId}
+      const pathParts=parentPath.split('/');
+      const emailId=pathParts[1]||'';
+      // Fetch user doc for extra context
+      let userData={};
+      try{
+        const userSnap=await DB.collection('user_collection').doc(emailId).get();
+        if(userSnap.exists)userData=userSnap.data();
+      }catch(e){}
+      // Fetch exam data for completion criteria
+      let examData={};
+      try{
+        const courseId=certData.courseId||'';
+        const examSnap=await DB.collection('user_collection').doc(emailId)
+          .collection('exams').doc(courseId).get();
+        if(examSnap.exists)examData=examSnap.data();
+      }catch(e){}
+      // Fetch progress data
+      let progressData={};
+      try{
+        const courseId=certData.courseId||'';
+        const progSnap=await DB.collection('user_collection').doc(emailId)
+          .collection('progress').doc(courseId).get();
+        if(progSnap.exists)progressData=progSnap.data();
+      }catch(e){}
+      showVerified(certData,userData,examData,progressData);
+    }
+  }catch(e){
+    // If collectionGroup fails (index not set), try alternative methods
+    await tryAlternativeSearch(rawVal);
+  }
+
+  if(btn){btn.disabled=false;btn.textContent='🔍 Verify';}
+}
+
+/* ═══ ALTERNATIVE SEARCH (if collectionGroup index missing) ═══ */
+async function tryAlternativeSearch(certId){
+  try{
+    // Try searching main collections
+    const COLS=['user_collection','User-collection','users','user-collection'];
+    for(const col of COLS){
+      try{
+        // Check if certId exists in any user's certificates subcollection
+        // We do this by searching users who have this certId field
+        const q=await DB.collection(col)
+          .where('certificates','array-contains',certId)
+          .limit(1).get();
+        if(!q.empty){
+          const userData=q.docs[0].data();
+          const emailId=q.docs[0].id;
+          // Found via array — fetch certificate doc
+          const certSnap=await DB.collection(col).doc(emailId)
+            .collection('certificates').get();
+          for(const cd of certSnap.docs){
+            const d=cd.data();
+            if((d.certId||'').toUpperCase()===certId.toUpperCase()){
+              showVerified(d,userData,{},{});
+              return;
+            }
+          }
+        }
+      }catch(ce){}
+    }
+    await showNotFound(certId);
+  }catch(e){
+    await showNotFound(certId);
+  }
+}
+
+/* ═══ SHOW LOADING ═══ */
+function renderLoading(){
+  return`<div class="loading-wrap">
+    <div class="spin"></div>
+    <div class="loading-t">Checking Biluxe10 Database…</div>
+    <div class="loading-s">Querying secure certificate records</div>
+  </div>`;
+}
+
+/* ═══ SHOW VERIFIED ═══ */
+function showVerified(cert,user,exam,progress){
+  const courseInfo=COURSE_MAP[cert.courseId]||{
+    title:cert.courseName||'Unknown Course',
+    icon:'🎓',
+    bundle:'Biluxe10',
+    modules:0
+  };
+
+  const issuedDate=cert.issuedAt
+    ?(cert.issuedAt.toDate?cert.issuedAt.toDate():new Date(cert.issuedAt)).toLocaleDateString('en-IN',{year:'numeric',month:'long',day:'numeric'})
+    :'—';
+
+  const score=cert.score||exam?.score||100;
+  const chapsDone=progressData_safe(progress,courseInfo.modules);
+  const chapsTotal=courseInfo.modules||0;
+  const hasProject=!!(exam?.project||exam?.projectAt||cert.project);
+  const examPassed=!!(exam?.passed||score>=60);
+
+  // Criteria
+  const chapsPct=chapsTotal>0?Math.min(100,Math.round(chapsDone/chapsTotal*100)):100;
+  const chapsDone100=chapsPct>=100;
+
+  const verifyUrl=`${window.location.origin}/verify.html?id=${cert.certId}`;
+
+  document.getElementById('resultArea').innerHTML=`
+    <div class="verified-card">
+
+      <!-- STATUS BANNER -->
+      <div class="status-banner verified">
+        <div class="status-ic">🏆</div>
+        <div>
+          <div class="status-t ok">Certificate Verified</div>
+          <div class="status-s">AUTHENTICATED · BILUXE10 ED-TECH · INDIA</div>
+        </div>
+        <div class="status-badge">
+          <span class="sbadge ok"><span class="sbadge-dot"></span>VALID</span>
+        </div>
+      </div>
+
+      <!-- CERT PREVIEW -->
+      <div class="cert-preview-wrap">
+        <div class="cert-preview-inner">
+          <div class="cert-icon-big">${courseInfo.icon}</div>
+          <div class="cert-info">
+            <div class="cert-course">${courseInfo.title}</div>
+            <div class="cert-student">Awarded to <strong>${cert.studentName||cert.name||'—'}</strong></div>
+            <div class="cert-meta-pills">
+              <span class="cpill gold">📦 ${courseInfo.bundle}</span>
+              <span class="cpill green">⭐ ${score}% Score</span>
+              <span class="cpill">📅 ${issuedDate}</span>
+              ${chapsTotal>0?`<span class="cpill">📋 ${chapsTotal} Chapters</span>`:''}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DETAILS GRID -->
+      <div class="details-grid">
+        <div class="drow">
+          <div class="drow-label">Full Name</div>
+          <div class="drow-val">${cert.studentName||cert.name||'—'}</div>
+        </div>
+        <div class="drow">
+          <div class="drow-label">Email</div>
+          <div class="drow-val" style="font-size:0.68rem">${maskEmail(cert.email||'—')}</div>
+        </div>
+        <div class="drow">
+          <div class="drow-label">Course</div>
+          <div class="drow-val">${courseInfo.title}</div>
+        </div>
+        <div class="drow">
+          <div class="drow-label">Bundle</div>
+          <div class="drow-val">${courseInfo.bundle}</div>
+        </div>
+        <div class="drow">
+          <div class="drow-label">Exam Score</div>
+          <div class="drow-val green">${score}% ${score>=80?'· With Distinction':score>=60?'· Passed':''}</div>
+        </div>
+        <div class="drow">
+          <div class="drow-label">Issue Date</div>
+          <div class="drow-val">${issuedDate}</div>
+        </div>
+        <div class="drow">
+          <div class="drow-label">Referral Code</div>
+          <div class="drow-val mono">${cert.referral||user.referralCode||'—'}</div>
+        </div>
+        <div class="drow">
+          <div class="drow-label">Platform</div>
+          <div class="drow-val">Biluxe10 Ed-Tech</div>
+        </div>
+      </div>
+
+      <!-- COMPLETION CRITERIA -->
+      <div class="criteria-wrap">
+        <div class="criteria-title">📋 Completion Criteria</div>
+        <div class="criteria-list">
+          <div class="crit-item ${chapsDone100?'pass':'fail'}">
+            <div class="crit-ic">${chapsDone100?'✅':'❌'}</div>
+            <div class="crit-body">
+              <div class="crit-t">All Chapters Watched</div>
+              <div class="crit-s">${chapsTotal>0?`${chapsDone100?chapsTotal:chapsDone}/${chapsTotal} chapters completed (${chapsPct}%)`:'Completed'}</div>
+            </div>
+          </div>
+          <div class="crit-item ${examPassed?'pass':'fail'}">
+            <div class="crit-ic">${examPassed?'✅':'❌'}</div>
+            <div class="crit-body">
+              <div class="crit-t">Exam Passed (60% Minimum)</div>
+              <div class="crit-s">Score: ${score}% — ${score>=80?'Excellent · With Distinction':score>=60?'Passed':'Not Passed'}</div>
+            </div>
+          </div>
+          <div class="crit-item ${hasProject?'pass':'fail'}">
+            <div class="crit-ic">${hasProject?'✅':'❌'}</div>
+            <div class="crit-body">
+              <div class="crit-t">Project Submitted & Reviewed</div>
+              <div class="crit-s">${hasProject?'Project submitted and approved by instructor':'Project not submitted'}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CERT ID -->
+      <div class="certid-wrap">
+        <div class="certid-label">Certificate ID</div>
+        <div class="certid-box">
+          <div class="certid-val">${cert.certId||'—'}</div>
+          <button class="copy-btn" onclick="copyText('${cert.certId||''}')">📋 Copy</button>
+        </div>
+      </div>
+
+      <!-- QR CODE -->
+      <div class="qr-wrap">
+        <div class="qr-box"><canvas id="qrCanvas"></canvas></div>
+        <div>
+          <div class="qr-info-t">Verification QR</div>
+          <div class="qr-info-s">Scan to verify this certificate instantly.<br>Points to: biluxe10.com/verify</div>
+          <button class="copy-btn" style="margin-top:8px" onclick="copyText('${verifyUrl}')">🔗 Copy Link</button>
+        </div>
+      </div>
+
+      <!-- ACTIONS -->
+      <div class="actions-wrap">
+        <button class="btn-g" onclick="window.print()">🖨️ Print</button>
+        <button class="btn-o" onclick="shareVerify('${cert.certId||''}','${cert.studentName||''}','${courseInfo.title}')">💬 Share</button>
+        <button class="btn-o" onclick="copyText('${verifyUrl}')">🔗 Copy Verify URL</button>
+      </div>
+
+      <!-- ISSUER FOOTER -->
+      <div class="issuer-wrap">
+        <div>
+          <div class="issuer-logo">Biluxe<sup>10</sup></div>
+        </div>
+        <div class="issuer-text">
+          Issued by <strong style="color:var(--text)">Biluxe10 Ed-Tech</strong> · 
+          Founder: Syed Afshar Khadri · 
+          Gulbarga / Hyderabad, India<br>
+          biluxe10.com · help.biluxe10@gmail.com · +91 90192 54743
+        </div>
+      </div>
+    </div>
+  `;
+
+  // Generate QR
+  try{
+    if(typeof QRCode!=='undefined'){
+      QRCode.toCanvas(document.getElementById('qrCanvas'),verifyUrl,
+        {width:80,margin:1,color:{dark:'#C8A96E',light:'#FFFFFF'}},
+        err=>{if(err)console.warn('QR error:',err);}
+      );
+    }
+  }catch(e){}
+
+  // Update topbar
+  document.getElementById('tbStatus').textContent='✅ Certificate Verified';
+
+  // Update URL without reload
+  try{
+    const newUrl=`${window.location.pathname}?id=${cert.certId}`;
+    window.history.replaceState({},'',newUrl);
+  }catch(e){}
+
+  toast('✅','Certificate verified successfully!');
+}
+
+/* ═══ SHOW NOT FOUND ═══ */
+async function showNotFound(certId){
+  document.getElementById('resultArea').innerHTML=`
+    <div class="invalid-card">
+      <div class="invalid-ic">❌</div>
+      <div class="invalid-t">Certificate Not Found</div>
+      <div class="invalid-s">No certificate matching <strong style="font-family:var(--fm);color:var(--text)">${certId}</strong> was found in the Biluxe10 database.</div>
+      <div class="invalid-reasons">
+        <div class="ireason">🔤 <span>Double-check the certificate ID — it's case-sensitive and must start with B10</span></div>
+        <div class="ireason">⏳ <span>The certificate may not have been issued yet (pending exam/project approval)</span></div>
+        <div class="ireason">🔗 <span>Make sure you copied the full ID — no extra spaces or characters</span></div>
+        <div class="ireason">🚫 <span>Certificates that were revoked will not appear here</span></div>
+      </div>
+      <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
+        <button class="btn-g" onclick="clearResult()">🔍 Try Again</button>
+        <a href="https://wa.me/919019254743" target="_blank" class="btn-o" style="text-decoration:none;display:inline-flex;align-items:center">💬 Contact Support</a>
+      </div>
+      <div style="margin-top:14px;font-size:0.68rem;color:var(--t3)">
+        If you believe this is an error, contact <a href="mailto:help.biluxe10@gmail.com" style="color:var(--gold)">help.biluxe10@gmail.com</a> with your certificate ID.
+      </div>
+    </div>
+  `;
+  const howCard=document.getElementById('howCard');
+  if(howCard)howCard.style.display='';
+  document.getElementById('tbStatus').textContent='❌ Not Found';
+  toast('⚠','Certificate not found in database.', 4000);
+}
+
+/* ═══ HELPERS ═══ */
+function progressData_safe(progress,moduleCount){
+  if(!progress)return 0;
+  const done=(progress.done||[]).length;
+  if(done>0)return done;
+  // Fallback: if watchedPct or similar field
+  if(progress.chaptersCompleted)return parseInt(progress.chaptersCompleted)||0;
+  return moduleCount; // If we have a cert, assume all done
+}
+
+function maskEmail(email){
+  if(!email||email==='—')return'—';
+  const parts=email.split('@');
+  if(parts.length<2)return email;
+  const local=parts[0];
+  const masked=local.slice(0,2)+'*'.repeat(Math.max(1,local.length-3))+local.slice(-1);
+  return masked+'@'+parts[1];
+}
+
+function clearResult(){
+  document.getElementById('resultArea').innerHTML='';
+  const inp=document.getElementById('searchInp');
+  if(inp){inp.value='';inp.focus();}
+  const howCard=document.getElementById('howCard');
+  if(howCard)howCard.style.display='';
+  document.getElementById('tbStatus').textContent='🔍 Certificate Verifier';
+  try{window.history.replaceState({},'',window.location.pathname);}catch(e){}
+}
+
+function showSearchAlert(msg,type='info'){
+  const al=document.getElementById('searchAlert');
+  const alMsg=document.getElementById('searchAlertMsg');
+  if(!al||!alMsg)return;
+  alMsg.textContent=msg;
+  al.className='alert show '+(type==='err'?'err':'info');
+  const ic=al.querySelector('.alert-ic');
+  if(ic)ic.textContent=type==='err'?'⚠':'ℹ';
+}
+function clearSearchAlert(){
+  const al=document.getElementById('searchAlert');
+  if(al)al.classList.remove('show');
+}
+
+function shareVerify(certId,studentName,courseName){
+  const url=`${window.location.origin}/verify.html?id=${certId}`;
+  const msg=`🏆 Certificate of Completion\n\nStudent: ${studentName}\nCourse: ${courseName}\n\nVerify at: ${url}\n\n— Biluxe10 Ed-Tech`;
+  if(navigator.share){
+    navigator.share({title:`Biluxe10 Certificate — ${courseName}`,text:msg,url}).catch(()=>copyText(url));
+  }else{
+    copyText(url);
+  }
+}
+</script>
+</body>
+</html>
