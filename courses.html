@@ -1,0 +1,2123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Biluxe10 — Learning Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,700;0,9..144,900;1,9..144,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+<script>
+const firebaseConfig={apiKey:"AIzaSyDxxkC9iD1V1w-53Kf4oBrHEXlBLvCc7sE",authDomain:"biluxe10-3e894.firebaseapp.com",projectId:"biluxe10-3e894",storageBucket:"biluxe10-3e894.appspot.com",messagingSenderId:"804749588233",appId:"1:804749588233:web:7777648c0c7834733c05d8"};
+if(!firebase.apps.length)firebase.initializeApp(firebaseConfig);
+const AUTH=firebase.auth(),DB=firebase.firestore();
+const GROQ_KEY='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';
+const DS_KEY='sk-75b8373d8cf5457e9c25684483a3cf2d';
+const TG_BOT='8234849380:AAE8WhIn1eHnsPa2dlYZaTKr8qRAcjtt54o';
+const TG_CHAT='7592977302';
+</script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+--bg:#07070A;--bg2:#0D0D12;--bg3:#121218;--bg4:#18181F;--bg5:#1E1E28;
+--border:rgba(255,255,255,0.055);--border2:rgba(255,255,255,0.1);--border3:rgba(255,255,255,0.16);
+--gold:#C8A96E;--gold2:#E2C48A;--gold3:#F0D9A8;
+--gA:rgba(200,169,110,0.08);--gB:rgba(200,169,110,0.15);
+--green:#22C55E;--grA:rgba(34,197,94,0.1);
+--red:#EF4444;--reA:rgba(239,68,68,0.1);
+--blue:#60A5FA;--blA:rgba(96,165,250,0.1);
+--vio:#A78BFA;--viA:rgba(167,139,250,0.1);
+--amber:#F59E0B;--amA:rgba(245,158,11,0.1);
+--cyan:#22D3EE;--cyA:rgba(34,211,238,0.1);
+--pink:#F472B6;--pkA:rgba(244,114,182,0.1);
+--ink:#07070A;--text:#EDEDF0;--t2:#9B9BA8;--t3:#4B4B5A;--t4:#2A2A35;
+--fd:'Fraunces',serif;--fb:'Plus Jakarta Sans',sans-serif;--fm:'JetBrains Mono',monospace;
+--r:14px;--rs:10px;--nav:64px;--sbw:60px;--sbx:244px;
+--ease:cubic-bezier(0.16,1,0.3,1);--spring:cubic-bezier(0.34,1.56,0.64,1);
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--fb);line-height:1.6;overflow-x:hidden;min-height:100vh}
+body.lock{overflow:hidden}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-thumb{background:rgba(200,169,110,0.25);border-radius:2px}
+button,input,select,textarea{font-family:var(--fb)}
+
+/* GUARD */
+#guard{position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;transition:opacity .7s ease}
+#guard.fade{opacity:0;pointer-events:none}
+#guard.gone{display:none}
+.g-logo{font-family:var(--fd);font-size:clamp(2.5rem,8vw,4rem);font-weight:900;color:var(--gold);letter-spacing:-.03em;animation:logoPulse 2s ease infinite}
+@keyframes logoPulse{0%,100%{text-shadow:0 0 30px rgba(200,169,110,0.3)}50%{text-shadow:0 0 60px rgba(200,169,110,0.6)}}
+.g-logo sup{font-size:.4em;color:var(--t3);font-weight:400;vertical-align:super}
+.g-spin{width:32px;height:32px;border:2.5px solid rgba(200,169,110,.12);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.g-msg{font-family:var(--fm);font-size:.58rem;color:var(--t3);letter-spacing:.2em;text-transform:uppercase}
+.g-err{display:none;flex-direction:column;align-items:center;gap:12px;text-align:center;padding:24px;max-width:340px}
+.g-err-t{font-family:var(--fd);font-size:1.1rem;color:var(--red)}
+.g-err-d{font-size:.8rem;color:var(--t2);line-height:1.75}
+.g-btn{padding:11px 26px;background:var(--gold);color:var(--ink);border:none;border-radius:8px;font-weight:800;font-size:.8rem;cursor:pointer}
+
+/* DISCLAIMER */
+#discOv{position:fixed;inset:0;z-index:8000;background:rgba(0,0,0,0.88);backdrop-filter:blur(12px);display:none;align-items:center;justify-content:center;padding:20px}
+#discOv.on{display:flex}
+.disc-box{background:var(--bg2);border:1px solid rgba(200,169,110,0.25);border-radius:18px;padding:32px 28px;max-width:420px;width:100%;text-align:center}
+.disc-ic{font-size:2.5rem;margin-bottom:12px}
+.disc-title{font-family:var(--fd);font-size:1.15rem;font-weight:900;color:var(--gold);margin-bottom:10px}
+.disc-body{font-size:.78rem;color:var(--t2);line-height:1.85;margin-bottom:20px}
+.disc-check{display:flex;align-items:flex-start;gap:9px;text-align:left;padding:12px;background:var(--bg3);border:1px solid var(--border);border-radius:9px;cursor:pointer;margin-bottom:16px}
+.disc-check input{margin-top:2px;accent-color:var(--gold);flex-shrink:0}
+.disc-check span{font-size:.74rem;color:var(--t2);line-height:1.6}
+.disc-proceed{width:100%;padding:13px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--ink);border:none;border-radius:9px;font-weight:800;font-size:.82rem;cursor:pointer;opacity:.5;pointer-events:none;transition:all .2s}
+.disc-proceed.ready{opacity:1;pointer-events:all}
+
+/* APP */
+#app{display:flex;min-height:100vh;opacity:0;transition:opacity .5s ease}
+#app.show{opacity:1}
+
+/* SIDEBAR */
+#sb{position:fixed;left:0;top:0;bottom:0;z-index:400;width:var(--sbw);background:rgba(13,13,18,0.97);backdrop-filter:blur(20px);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;transition:width .35s var(--ease)}
+#sb:hover,#sb.open{width:var(--sbx)}
+.sb-top{height:var(--nav);display:flex;align-items:center;padding:0 14px;border-bottom:1px solid var(--border);gap:10px;overflow:hidden;flex-shrink:0}
+.sb-mark{width:30px;height:30px;border-radius:8px;flex-shrink:0;background:linear-gradient(135deg,var(--gold),var(--gold2));display:flex;align-items:center;justify-content:center;font-family:var(--fd);font-size:.65rem;font-weight:900;color:var(--ink)}
+.sb-word{font-family:var(--fd);font-size:1rem;font-weight:900;color:var(--gold);white-space:nowrap;opacity:0;transition:opacity .2s .08s}
+#sb:hover .sb-word,#sb.open .sb-word{opacity:1}
+.sb-nav{flex:1;overflow-y:auto;overflow-x:hidden;padding:10px 0}
+.sb-nav::-webkit-scrollbar{width:0}
+.sb-sec{font-family:var(--fm);font-size:.48rem;color:var(--t3);letter-spacing:.18em;text-transform:uppercase;padding:10px 16px 4px;opacity:0;white-space:nowrap;transition:opacity .15s}
+#sb:hover .sb-sec,#sb.open .sb-sec{opacity:1}
+.si{display:flex;align-items:center;gap:11px;width:100%;padding:10px 14px;border:none;background:none;text-align:left;white-space:nowrap;cursor:pointer;position:relative;transition:all .2s;border-radius:0}
+.si::before{content:'';position:absolute;left:0;top:4px;bottom:4px;width:3px;background:linear-gradient(180deg,var(--gold),var(--gold2));transform:scaleY(0);transition:transform .25s var(--spring);border-radius:0 3px 3px 0}
+.si:hover{background:var(--gA)}
+.si.on{background:var(--gB)}
+.si.on::before{transform:scaleY(1)}
+.si-ic{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.95rem;flex-shrink:0}
+.si-lbl{font-size:.76rem;font-weight:600;color:var(--t2);opacity:0;transition:opacity .15s .06s;flex:1}
+#sb:hover .si-lbl,#sb.open .si-lbl{opacity:1}
+.si.on .si-lbl{color:var(--gold)}
+.sb-div{height:1px;background:var(--border);margin:5px 10px}
+.sb-foot{border-top:1px solid var(--border);padding:8px 0}
+.sb-usr{display:flex;align-items:center;gap:10px;padding:10px 14px;white-space:nowrap}
+.sb-av{width:30px;height:30px;border-radius:50%;flex-shrink:0;background:linear-gradient(135deg,var(--gold),rgba(200,169,110,.4));display:flex;align-items:center;justify-content:center;font-family:var(--fd);font-size:.8rem;font-weight:700;color:var(--ink);border:2px solid rgba(200,169,110,.22)}
+.sb-uinf{opacity:0;transition:opacity .15s .06s;min-width:0}
+#sb:hover .sb-uinf,#sb.open .sb-uinf{opacity:1}
+.sb-uname{font-size:.73rem;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sb-utier{font-family:var(--fm);font-size:.5rem;color:var(--gold)}
+
+/* MAIN */
+#main{margin-left:var(--sbw);flex:1;display:flex;flex-direction:column;min-height:100vh}
+
+/* TOPBAR */
+.topbar{height:var(--nav);background:rgba(7,7,10,0.92);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 18px;position:sticky;top:0;z-index:100;gap:12px}
+.tb-l{display:flex;align-items:center;gap:10px}
+.tb-ham{display:none;flex-direction:column;gap:4px;cursor:pointer;padding:4px}
+.tb-ham span{width:18px;height:1.5px;background:var(--t2);border-radius:1px;transition:all .3s;display:block}
+.tb-ham.open span:nth-child(1){transform:translateY(5.5px) rotate(45deg)}
+.tb-ham.open span:nth-child(2){opacity:0}
+.tb-ham.open span:nth-child(3){transform:translateY(-5.5px) rotate(-45deg)}
+.tb-pg{font-family:var(--fd);font-size:1.05rem;font-weight:700}
+.tb-r{display:flex;align-items:center;gap:8px}
+.tb-pill{padding:4px 11px;background:var(--bg3);border:1px solid var(--border);border-radius:20px;font-family:var(--fm);font-size:.55rem;color:var(--t2)}
+.tb-out{padding:7px 14px;border:1px solid var(--border2);background:transparent;color:var(--t2);border-radius:8px;font-size:.7rem;font-weight:600;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:5px}
+.tb-out:hover{border-color:rgba(239,68,68,.4);color:var(--red)}
+
+@media(max-width:860px){
+#sb{width:0!important;transform:translateX(-100%);transition:transform .3s var(--ease)}
+#sb.open{width:var(--sbx)!important;transform:translateX(0)}
+#main{margin-left:0!important}
+.tb-ham{display:flex}
+}
+
+/* PAGES */
+.pg{flex:1;padding:20px;display:none;flex-direction:column;gap:18px;animation:pgIn .3s var(--ease)}
+.pg.on{display:flex}
+@keyframes pgIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* BUTTONS */
+.btn-g{padding:9px 18px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--ink);border:none;border-radius:var(--rs);font-weight:800;font-size:.72rem;cursor:pointer;transition:all .22s;display:inline-flex;align-items:center;gap:6px;box-shadow:0 4px 14px rgba(200,169,110,.25)}
+.btn-g:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(200,169,110,.4)}
+.btn-o{padding:9px 18px;background:var(--bg3);color:var(--t2);border:1px solid var(--border2);border-radius:var(--rs);font-weight:600;font-size:.72rem;cursor:pointer;transition:all .22s;display:inline-flex;align-items:center;gap:6px}
+.btn-o:hover{border-color:var(--border3);color:var(--text);transform:translateY(-1px)}
+.btn-sm{padding:6px 14px;background:var(--gA);color:var(--gold);border:1px solid rgba(200,169,110,.2);border-radius:8px;font-weight:700;font-size:.68rem;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:5px}
+.btn-sm:hover{background:var(--gB);transform:translateY(-1px)}
+.btn-pink{padding:6px 14px;background:rgba(244,114,182,.1);color:var(--pink);border:1px solid rgba(244,114,182,.25);border-radius:8px;font-weight:700;font-size:.68rem;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:5px}
+.btn-pink:hover{background:rgba(244,114,182,.2);transform:translateY(-1px)}
+
+/* TOAST */
+#toast{position:fixed;bottom:20px;right:20px;z-index:9999;background:var(--bg3);border:1px solid var(--border2);border-radius:12px;padding:11px 16px;max-width:300px;display:flex;align-items:center;gap:8px;transform:translateY(80px);opacity:0;transition:all .35s var(--spring);font-size:.74rem;color:var(--text);box-shadow:0 12px 40px rgba(0,0,0,.45)}
+#toast.on{transform:translateY(0);opacity:1}
+
+/* BUNDLE GRID */
+.bundle-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+.bcard{background:var(--bg2);border:1px solid var(--border);border-radius:18px;padding:20px;cursor:pointer;transition:all .25s var(--ease);position:relative;overflow:hidden}
+.bcard::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--bc-color,rgba(200,169,110,0.06)),transparent);opacity:0;transition:opacity .3s}
+.bcard:hover{transform:translateY(-4px);border-color:var(--bc-border,rgba(200,169,110,.22));box-shadow:0 16px 48px rgba(0,0,0,.4)}
+.bcard:hover::after{opacity:1}
+.bcard.locked{opacity:.6;cursor:default}
+.bcard.locked:hover{transform:none;box-shadow:none}
+.bc-em{font-size:2.2rem;margin-bottom:12px}
+.bc-name{font-family:var(--fd);font-size:1.05rem;font-weight:900;margin-bottom:2px}
+.bc-price-row{display:flex;align-items:center;gap:6px;margin-bottom:8px}
+.bc-price{font-family:var(--fm);font-size:.56rem;color:var(--t3)}
+.bc-lpa{font-family:var(--fm);font-size:.5rem;padding:2px 7px;border-radius:4px;background:var(--gA);color:var(--gold);border:1px solid rgba(200,169,110,.15)}
+.bc-label{font-family:var(--fm);font-size:.52rem;color:var(--gold);margin-bottom:6px}
+.bc-desc{font-size:.74rem;color:var(--t2);line-height:1.65;margin-bottom:12px}
+.bc-tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px}
+.bc-tag{font-family:var(--fm);font-size:.48rem;padding:3px 7px;border-radius:4px;border:1px solid var(--border);color:var(--t3)}
+.bc-pb{height:3px;background:var(--bg4);border-radius:3px;overflow:hidden;margin-bottom:4px}
+.bc-pf{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold2));border-radius:3px;transition:width .8s var(--ease)}
+.bc-pl{font-family:var(--fm);font-size:.5rem;color:var(--t3)}
+.bc-lock{position:absolute;top:14px;right:14px;font-size:1.1rem;opacity:.4}
+
+/* PROG OVERVIEW */
+.prog-ov{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:9px}
+.pstat{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rs);padding:12px;text-align:center}
+.pstat-v{font-family:var(--fd);font-size:1.4rem;font-weight:900;color:var(--gold);margin-bottom:2px}
+.pstat-l{font-family:var(--fm);font-size:.48rem;color:var(--t3);text-transform:uppercase;letter-spacing:.1em}
+
+/* COURSE VIEWER */
+#cv{display:none;flex-direction:column;flex:1}
+#cv.on{display:flex}
+
+/* CV TOP BAR */
+.cv-top{display:flex;align-items:center;gap:8px;padding:10px 16px;background:var(--bg2);border-bottom:1px solid var(--border);flex-wrap:wrap;flex-shrink:0}
+.cv-back-btn{display:flex;align-items:center;gap:6px;padding:7px 13px;background:var(--bg3);border:1px solid var(--border2);border-radius:8px;font-size:.72rem;font-weight:700;color:var(--t2);cursor:pointer;transition:all .2s;flex-shrink:0}
+.cv-back-btn:hover{color:var(--text);border-color:var(--border3)}
+.cv-title{font-family:var(--fd);font-size:.95rem;font-weight:700;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* CV ACTION BUTTONS — SVG image style */
+.cv-actions{display:flex;gap:7px;flex-wrap:wrap}
+.cv-act{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border:none;border-radius:9px;font-size:.7rem;font-weight:700;cursor:pointer;transition:all .22s;white-space:nowrap}
+.cv-act.ai{background:linear-gradient(135deg,#6D28D9,#8B5CF6);color:#fff;box-shadow:0 3px 12px rgba(109,40,217,.35)}
+.cv-act.ai:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(109,40,217,.5)}
+.cv-act.exam{background:linear-gradient(135deg,#0369A1,#38BDF8);color:#fff;box-shadow:0 3px 12px rgba(3,105,161,.35)}
+.cv-act.exam:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(3,105,161,.5)}
+.cv-act.submit{background:linear-gradient(135deg,#065F46,#34D399);color:#fff;box-shadow:0 3px 12px rgba(6,95,70,.35)}
+.cv-act.submit:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(6,95,70,.5)}
+
+/* CV BODY */
+.cv-body{display:grid;grid-template-columns:1fr 310px;flex:1;min-height:calc(100vh - var(--nav) - 54px);overflow:hidden}
+.cv-left{padding:16px;display:flex;flex-direction:column;gap:12px;overflow-y:auto;max-height:calc(100vh - var(--nav) - 54px)}
+.cv-right{border-left:1px solid var(--border);overflow-y:auto;max-height:calc(100vh - var(--nav) - 54px);display:flex;flex-direction:column}
+
+/* ══════════════════════════════════════════
+   PLAYER — Full YouTube branding removal
+   Oversized iframe + clip container hides
+   YouTube logo, title bar, and controls
+   No black bars — pure video
+══════════════════════════════════════════ */
+.player-outer{
+  position:relative;
+  width:100%;
+  aspect-ratio:16/9;
+  background:#000;
+  border-radius:14px;
+  overflow:hidden;
+  border:1px solid rgba(0,0,0,.6);
+  user-select:none;
+  -webkit-user-select:none;
+  box-shadow:0 8px 32px rgba(0,0,0,.6);
+}
+/* Clip wrapper — iframe oversized to push YT chrome outside bounds */
+.p-clip{
+  position:absolute;
+  /* Expand 12% on all sides so YouTube's top bar (~10%) and bottom bar (~7%) are clipped */
+  top:-12.5%;
+  left:-12.5%;
+  width:125%;
+  height:125%;
+  pointer-events:none;
+  overflow:hidden;
+}
+.p-clip iframe{
+  position:absolute;
+  top:0;left:0;
+  width:100%;height:100%;
+  border:none;
+}
+/* Black masks for any residual chrome */
+.p-mask-t{position:absolute;top:0;left:0;right:0;height:10%;background:#000;z-index:5;pointer-events:none}
+.p-mask-b{position:absolute;bottom:0;left:0;right:0;height:10%;background:#000;z-index:5;pointer-events:none}
+/* Transparent shield — catches all pointer events */
+.p-shield{
+  position:absolute;inset:0;z-index:10;
+  background:transparent;cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+}
+/* Biluxe10 watermark */
+.p-wm{
+  position:absolute;top:10px;left:12px;z-index:15;
+  pointer-events:none;display:none;align-items:center;gap:6px;
+  background:rgba(7,7,10,.78);border:1px solid rgba(200,169,110,.32);
+  border-radius:7px;padding:5px 10px;backdrop-filter:blur(8px);
+}
+.p-wm.on{display:flex}
+.wm-dot{width:7px;height:7px;border-radius:50%;background:var(--gold);animation:wmPulse 2s ease infinite}
+@keyframes wmPulse{0%,100%{opacity:.5}50%{opacity:1;box-shadow:0 0 8px rgba(200,169,110,.8)}}
+.wm-logo{font-family:var(--fd);font-size:.66rem;font-weight:900;color:var(--gold)}
+.wm-ref{font-family:var(--fm);font-size:.46rem;color:rgba(200,169,110,.65)}
+/* Placeholder */
+.p-ph{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:var(--bg3);z-index:8}
+.p-ph-icon{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold2));display:flex;align-items:center;justify-content:center;box-shadow:0 8px 24px rgba(200,169,110,.4)}
+.p-ph-txt{font-family:var(--fd);font-size:.9rem;font-weight:700;color:var(--t2)}
+.p-ph-sub{font-size:.66rem;color:var(--t3)}
+/* Skip warning */
+.p-skip{
+  position:absolute;top:10%;left:0;right:0;z-index:16;
+  background:linear-gradient(135deg,rgba(239,68,68,.95),rgba(220,38,38,.95));
+  padding:8px 14px;font-family:var(--fm);font-size:.55rem;color:#fff;
+  display:none;align-items:center;gap:6px;pointer-events:none;
+}
+.p-skip.on{display:flex}
+
+/* ══ CUSTOM CONTROLS — SVG image-style attractive buttons ══ */
+.p-ctrl{
+  position:absolute;bottom:0;left:0;right:0;z-index:14;
+  padding:4px 12px 12px;
+  background:linear-gradient(to top,rgba(0,0,0,.99) 0%,rgba(0,0,0,.7) 50%,transparent 100%);
+  opacity:0;transition:opacity .3s;
+  display:none;flex-direction:column;gap:7px;
+}
+.player-outer:hover .p-ctrl,.player-outer.sc .p-ctrl{opacity:1}
+
+/* Progress bar */
+.p-prog{
+  width:100%;height:5px;background:rgba(255,255,255,.15);
+  border-radius:5px;position:relative;cursor:pointer;
+  transition:height .15s;overflow:visible;
+}
+.p-prog:hover{height:7px}
+.p-wf{position:absolute;left:0;top:0;height:100%;background:rgba(200,169,110,.28);border-radius:5px;pointer-events:none}
+.p-pf{position:absolute;left:0;top:0;height:100%;background:linear-gradient(90deg,var(--gold),var(--gold2));border-radius:5px;pointer-events:none;transition:width .15s}
+.p-thumb{position:absolute;top:50%;width:14px;height:14px;border-radius:50%;background:var(--gold2);transform:translate(-50%,-50%);display:none;cursor:grab;box-shadow:0 2px 8px rgba(0,0,0,.6);border:2px solid rgba(255,255,255,.4)}
+.p-prog:hover .p-thumb{display:block}
+
+/* Controls row */
+.p-row{display:flex;align-items:center;gap:6px}
+
+/* SVG icon buttons */
+.p-btn{
+  width:36px;height:36px;border-radius:9px;
+  background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.12);
+  color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;
+  transition:all .18s;flex-shrink:0;backdrop-filter:blur(4px);
+}
+.p-btn:hover{background:rgba(200,169,110,.55);border-color:rgba(200,169,110,.6);transform:scale(1.08)}
+.p-btn.play{
+  width:44px;height:44px;border-radius:50%;
+  background:linear-gradient(135deg,var(--gold),var(--gold2));
+  border:none;color:var(--ink);
+  box-shadow:0 4px 16px rgba(200,169,110,.5);
+}
+.p-btn.play:hover{transform:scale(1.12);box-shadow:0 6px 22px rgba(200,169,110,.7)}
+
+.p-time{font-family:var(--fm);font-size:.52rem;color:rgba(255,255,255,.85);white-space:nowrap}
+.p-sp{flex:1}
+.p-brand{font-family:var(--fd);font-size:.6rem;font-weight:700;color:rgba(200,169,110,.7);letter-spacing:.02em}
+.p-vol{width:55px;height:3px;background:rgba(255,255,255,.2);border-radius:3px;cursor:pointer;-webkit-appearance:none;appearance:none;accent-color:var(--gold)}
+.p-vol::-webkit-slider-thumb{-webkit-appearance:none;width:11px;height:11px;border-radius:50%;background:var(--gold);cursor:pointer;box-shadow:0 0 4px rgba(0,0,0,.4)}
+
+/* MODULE SIDEBAR */
+.cv-sb-hd{padding:10px 13px;border-bottom:1px solid var(--border);font-family:var(--fd);font-size:.85rem;font-weight:700;background:var(--bg2);position:sticky;top:0;z-index:5;flex-shrink:0}
+.mod-item{padding:11px 13px;border-bottom:1px solid var(--border);cursor:pointer;transition:all .18s;display:flex;align-items:flex-start;gap:9px}
+.mod-item:hover{background:var(--gA)}
+.mod-item.active{background:var(--gB);border-left:3px solid var(--gold)}
+.mod-item.done .mi-num{background:var(--green);color:#fff}
+.mod-item.active .mi-num{background:var(--gold);color:var(--ink)}
+.mi-num{width:22px;height:22px;border-radius:50%;background:var(--bg4);display:flex;align-items:center;justify-content:center;font-family:var(--fm);font-size:.5rem;font-weight:700;flex-shrink:0;color:var(--t3);margin-top:1px}
+.mi-info{flex:1;min-width:0}
+.mi-title{font-size:.73rem;font-weight:600;color:var(--text);margin-bottom:2px;line-height:1.35}
+.mi-dur{font-family:var(--fm);font-size:.48rem;color:var(--t3)}
+.mi-wb{height:2px;background:var(--bg4);border-radius:2px;margin-top:4px;overflow:hidden}
+.mi-wf{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold2));border-radius:2px;transition:width .5s}
+
+/* CV TABS */
+.cv-tabs{display:flex;border-bottom:1px solid var(--border);overflow-x:auto;flex-shrink:0}
+.cv-tab{padding:9px 14px;border:none;background:none;font-size:.72rem;font-weight:600;color:var(--t3);cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;white-space:nowrap}
+.cv-tab.on{color:var(--gold);border-bottom-color:var(--gold)}
+.cv-tb{padding:14px;flex:1;overflow-y:auto}
+.cv-tp{display:none}
+.cv-tp.on{display:block}
+
+/* CERT STEPS */
+.cert-steps{display:flex;flex-direction:column;gap:6px;margin:4px 0}
+.cs{display:flex;align-items:center;gap:10px;padding:10px 13px;border-radius:10px;border:1px solid var(--border)}
+.cs.done{border-color:rgba(34,197,94,.3);background:var(--grA)}
+.cs.todo{background:var(--bg3)}
+.cs-ic{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.65rem;flex-shrink:0;font-weight:700}
+.cs.done .cs-ic{background:var(--green);color:#fff}
+.cs.todo .cs-ic{background:var(--bg4);color:var(--t3);border:1px solid var(--border2)}
+.cs-lbl{font-size:.74rem;font-weight:600}
+.cs-sub{font-family:var(--fm);font-size:.48rem;color:var(--t3);margin-top:1px}
+
+/* AI TUTOR */
+.tutor-wrap{display:flex;flex-direction:column;height:calc(100vh - var(--nav) - 38px)}
+.tutor-msgs{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px}
+.msg{display:flex;gap:8px;max-width:86%;animation:msgIn .24s var(--ease)}
+@keyframes msgIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+.msg.user{align-self:flex-end;flex-direction:row-reverse}
+.msg-av{width:28px;height:28px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:var(--fd);font-size:.7rem;font-weight:700}
+.msg-av.bot{background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--ink)}
+.msg-av.usr{background:linear-gradient(135deg,var(--vio),var(--blue));color:#fff}
+.msg-bbl{padding:9px 12px;border-radius:12px;font-size:.77rem;line-height:1.7}
+.msg.bot .msg-bbl{background:var(--bg3);border:1px solid var(--border);border-radius:4px 12px 12px 12px;color:var(--text)}
+.msg.user .msg-bbl{background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--ink);border-radius:12px 4px 12px 12px;font-weight:600}
+.typing-ind{display:flex;align-items:center;gap:4px;padding:8px 10px;background:var(--bg3);border:1px solid var(--border);border-radius:4px 12px 12px 12px;width:fit-content}
+.typing-ind span{width:5px;height:5px;border-radius:50%;background:var(--gold);animation:typDot 1.2s ease infinite}
+.typing-ind span:nth-child(2){animation-delay:.2s}
+.typing-ind span:nth-child(3){animation-delay:.4s}
+@keyframes typDot{0%,80%,100%{transform:scale(.7);opacity:.4}40%{transform:scale(1.1);opacity:1}}
+.tutor-inp-wrap{padding:10px 14px;border-top:1px solid var(--border);background:var(--bg2);flex-shrink:0}
+.tutor-chips{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px}
+.chip{padding:4px 11px;background:var(--bg3);border:1px solid var(--border);border-radius:20px;font-size:.68rem;cursor:pointer;transition:all .16s;color:var(--t2)}
+.chip:hover{border-color:rgba(200,169,110,.3);color:var(--gold);background:var(--gA)}
+.tutor-row{display:flex;gap:8px;align-items:flex-end}
+.tutor-inp{flex:1;background:var(--bg3);border:1px solid var(--border2);border-radius:9px;padding:9px 12px;font-size:.78rem;color:var(--text);outline:none;resize:none;max-height:110px;transition:border-color .2s;line-height:1.5}
+.tutor-inp:focus{border-color:rgba(200,169,110,.4)}
+.tutor-send{width:38px;height:38px;background:linear-gradient(135deg,var(--gold),var(--gold2));border:none;border-radius:9px;color:var(--ink);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s;box-shadow:0 4px 12px rgba(200,169,110,.3)}
+.tutor-send:hover{transform:scale(1.06);box-shadow:0 6px 18px rgba(200,169,110,.45)}
+.tutor-send:disabled{opacity:.5;cursor:not-allowed;transform:none}
+
+/* EXAM */
+.exam-q{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:10px}
+.eq-num{font-family:var(--fm);font-size:.52rem;color:var(--t3);margin-bottom:5px}
+.eq-txt{font-size:.84rem;font-weight:600;margin-bottom:10px;line-height:1.5}
+.eq-opts{display:flex;flex-direction:column;gap:7px}
+.eq-opt{display:flex;align-items:center;gap:9px;padding:9px 12px;background:var(--bg4);border:1px solid var(--border);border-radius:8px;cursor:pointer;transition:all .18s;font-size:.77rem}
+.eq-opt:hover{border-color:rgba(200,169,110,.3);background:var(--gA)}
+.eq-opt.sel{border-color:var(--gold);background:var(--gA);color:var(--gold)}
+.eq-opt.correct{border-color:var(--green);background:var(--grA);color:var(--green)}
+.eq-opt.wrong{border-color:var(--red);background:var(--reA);color:var(--red)}
+
+/* SPECIAL */
+.special-hero{background:linear-gradient(135deg,rgba(244,114,182,.08),rgba(167,139,250,.08));border:1px solid rgba(244,114,182,.2);border-radius:18px;padding:28px;text-align:center}
+
+/* SUB TABS */
+.sub-tabs{display:flex;gap:5px;margin-bottom:10px}
+.sub-tab{padding:5px 12px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;font-size:.7rem;font-weight:600;color:var(--t3);cursor:pointer;transition:all .18s}
+.sub-tab.on{background:var(--gA);color:var(--gold);border-color:rgba(200,169,110,.25)}
+
+/* CERT GALLERY */
+.cert-gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
+.cert-thumb{background:var(--bg3);border:1px solid var(--border);border-radius:var(--rs);padding:14px;cursor:pointer;transition:all .2s;text-align:center}
+.cert-thumb:hover{transform:translateY(-2px);border-color:rgba(200,169,110,.25)}
+
+/* MY LEARNING */
+#mlGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
+
+/* BADGES */
+.bdg{display:inline-flex;align-items:center;padding:2px 8px;border-radius:5px;font-family:var(--fm);font-size:.48rem;font-weight:700}
+.bdg.ok{background:var(--grA);color:var(--green);border:1px solid rgba(34,197,94,.2)}
+.bdg.rd{background:var(--reA);color:var(--red);border:1px solid rgba(239,68,68,.2)}
+
+@media(max-width:860px){
+.cv-body{grid-template-columns:1fr;overflow:auto}
+.cv-right{border-left:none;border-top:1px solid var(--border);max-height:260px}
+.bundle-grid{grid-template-columns:1fr 1fr}
+.cv-left{max-height:none}
+}
+@media(max-width:500px){.bundle-grid{grid-template-columns:1fr}.prog-ov{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+
+<div id="toast"></div>
+
+<!-- DISCLAIMER -->
+<div id="discOv">
+  <div class="disc-box">
+    <div class="disc-ic">🎬</div>
+    <div class="disc-title">Before You Watch</div>
+    <div class="disc-body">All content is <strong style="color:var(--text)">exclusively for Biluxe10 members</strong>. Do not record, share, or redistribute any material.</div>
+    <label class="disc-check">
+      <input type="checkbox" id="discChk" onchange="document.getElementById('discBtn').classList.toggle('ready',this.checked)">
+      <span>I understand this is proprietary Biluxe10 content and agree not to share it.</span>
+    </label>
+    <button class="disc-proceed" id="discBtn" onclick="proceedDisc()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+      Start Learning
+    </button>
+  </div>
+</div>
+
+<!-- GUARD -->
+<div id="guard">
+  <div class="g-logo">Biluxe<sup>10</sup></div>
+  <div class="g-spin" id="gSpin"></div>
+  <div class="g-msg" id="gMsg">Authenticating…</div>
+  <div class="g-err" id="gErr">
+    <div class="g-err-t">⚠ Access Denied</div>
+    <div class="g-err-d" id="gErrD">Something went wrong.</div>
+    <button class="g-btn" onclick="location.href='auth.html'">← Back to Login</button>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <!-- SIDEBAR -->
+  <div id="sb">
+    <div class="sb-top">
+      <div class="sb-mark">B10</div>
+      <div class="sb-word">Biluxe10</div>
+    </div>
+    <nav class="sb-nav">
+      <div class="sb-sec">Main</div>
+      <button class="si on" onclick="goPage('home')"><div class="si-ic">🏠</div><span class="si-lbl">All Bundles</span></button>
+      <button class="si" onclick="goPage('my-learning')"><div class="si-ic">▶️</div><span class="si-lbl">My Learning</span></button>
+      <button class="si" onclick="goPage('ai-tutor')"><div class="si-ic">🤖</div><span class="si-lbl">AI Tutor</span></button>
+      <div class="sb-sec">Special</div>
+      <button class="si" onclick="goPage('special')"><div class="si-ic">✨</div><span class="si-lbl">Special Courses</span></button>
+      <div class="sb-sec">Progress</div>
+      <button class="si" onclick="goPage('certificates')"><div class="si-ic">🏆</div><span class="si-lbl">Certificates</span></button>
+      <button class="si" onclick="goPage('exam')"><div class="si-ic">📝</div><span class="si-lbl">Exams</span></button>
+      <div class="sb-div"></div>
+      <button class="si" onclick="location.href='dashboard.html'"><div class="si-ic">📊</div><span class="si-lbl">Dashboard</span></button>
+    </nav>
+    <div class="sb-foot">
+      <div class="sb-usr">
+        <div class="sb-av" id="sbAv">U</div>
+        <div class="sb-uinf">
+          <div class="sb-uname" id="sbName">Loading…</div>
+          <div class="sb-utier" id="sbTier">🌟 Member</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div id="main">
+    <div class="topbar">
+      <div class="tb-l">
+        <div class="tb-ham" id="ham" onclick="toggleSb()"><span></span><span></span><span></span></div>
+        <div class="tb-pg" id="tbPg">🎓 Learning Hub</div>
+      </div>
+      <div class="tb-r">
+        <div class="tb-pill" id="tbBundle">🌟 Loading…</div>
+        <div class="tb-pill" id="tbPct">0% done</div>
+        <button class="tb-out" onclick="location.href='dashboard.html'">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+          Dashboard
+        </button>
+      </div>
+    </div>
+
+    <!-- HOME -->
+    <div class="pg on" id="pg-home">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
+        <div>
+          <div style="font-family:var(--fd);font-size:1.3rem;font-weight:900;margin-bottom:2px">Choose Your Bundle</div>
+          <div style="font-size:.78rem;color:var(--t2)" id="homeSubtitle">Loading…</div>
+        </div>
+        <div style="display:flex;gap:7px;flex-wrap:wrap">
+          <button class="btn-sm" onclick="goPage('my-learning')">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            Continue
+          </button>
+          <button class="btn-sm" onclick="goPage('ai-tutor')">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+            AI Tutor
+          </button>
+          <button class="btn-pink" onclick="goPage('special')">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            Special
+          </button>
+        </div>
+      </div>
+      <div class="prog-ov" id="progOv"></div>
+      <div class="bundle-grid" id="bundleGrid"></div>
+    </div>
+
+    <!-- BUNDLE COURSES -->
+    <div class="pg" id="pg-bundle-courses">
+      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+        <button class="btn-o" onclick="goPage('home')">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+          Bundles
+        </button>
+        <div>
+          <div style="font-family:var(--fd);font-size:1.2rem;font-weight:900" id="bcTitle">Bundle</div>
+          <div style="font-size:.75rem;color:var(--t2)" id="bcSub">Courses</div>
+        </div>
+      </div>
+      <div id="bcList" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px"></div>
+    </div>
+
+    <!-- COURSE VIEWER -->
+    <div id="cv">
+      <div class="cv-top">
+        <button class="cv-back-btn" id="cvBack">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+          Back
+        </button>
+        <div class="cv-title" id="cvTitle">Course</div>
+        <div class="cv-actions">
+          <!-- Ask AI -->
+          <button class="cv-act ai" onclick="openAITutor()">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+            Ask AI
+          </button>
+          <!-- Exam -->
+          <button class="cv-act exam" onclick="switchTab('exam',null)">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+            Exam
+          </button>
+          <!-- Submit -->
+          <button class="cv-act submit" onclick="switchTab('project',null)">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+            Submit
+          </button>
+        </div>
+      </div>
+      <div class="cv-body">
+        <!-- LEFT -->
+        <div class="cv-left">
+          <!-- PLAYER -->
+          <div class="player-outer" id="playerOuter">
+            <!-- Placeholder -->
+            <div class="p-ph" id="pPh">
+              <div class="p-ph-icon">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="var(--ink)"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              </div>
+              <div class="p-ph-txt">Select a chapter to begin</div>
+              <div class="p-ph-sub">Progress saved automatically</div>
+            </div>
+            <!-- iframe clip container -->
+            <div class="p-clip" id="pClip"></div>
+            <!-- Black masks -->
+            <div class="p-mask-t"></div>
+            <div class="p-mask-b"></div>
+            <!-- Shield -->
+            <div class="p-shield" id="pShield" onclick="togglePlay()"></div>
+            <!-- Watermark -->
+            <div class="p-wm" id="pWm">
+              <div class="wm-dot"></div>
+              <span class="wm-logo">Biluxe10</span>
+              <span class="wm-ref" id="wmRef"></span>
+            </div>
+            <!-- Skip warning -->
+            <div class="p-skip" id="pSkip">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+              Forward skip disabled — watch completely to unlock
+            </div>
+            <!-- Controls -->
+            <div class="p-ctrl" id="pCtrl">
+              <div class="p-prog" id="pProg" onmousedown="scrubStart(event)" ontouchstart="scrubStartT(event)">
+                <div class="p-wf" id="pWf"></div>
+                <div class="p-pf" id="pPf"></div>
+                <div class="p-thumb" id="pThumb"></div>
+              </div>
+              <div class="p-row">
+                <!-- Back 10s -->
+                <button class="p-btn" onclick="skipSec(-10)" title="Back 10s">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 1 0 .49-3.28"/><text x="8" y="15" font-size="6" fill="currentColor" stroke="none" font-family="sans-serif" font-weight="bold">10</text></svg>
+                </button>
+                <!-- Play/Pause -->
+                <button class="p-btn play" id="pPlayBtn" onclick="togglePlay()">
+                  <svg id="pPlayIc" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                  <svg id="pPauseIc" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style="display:none"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+                </button>
+                <!-- Fwd 10s -->
+                <button class="p-btn" onclick="skipSec(10)" title="Forward 10s">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 1 1-.49-3.28"/></svg>
+                </button>
+                <span class="p-time" id="pTime">0:00 / 0:00</span>
+                <span class="p-sp"></span>
+                <span class="p-brand">Biluxe10</span>
+                <!-- Mute -->
+                <button class="p-btn" id="pMuteBtn" onclick="toggleMute()" title="Mute/Unmute">
+                  <svg id="pVolIc" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+                  <svg id="pMuteIc" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+                </button>
+                <!-- Volume -->
+                <input class="p-vol" id="pVol" type="range" min="0" max="100" value="100" oninput="setVol(this.value)">
+                <!-- Fullscreen -->
+                <button class="p-btn" onclick="doFullscreen()" title="Fullscreen">
+                  <svg id="pFsIc" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Course info -->
+          <div style="font-family:var(--fd);font-size:1rem;font-weight:700" id="cvCTitle"></div>
+          <div style="display:flex;gap:9px;flex-wrap:wrap;font-family:var(--fm);font-size:.54rem;color:var(--t3)" id="cvMeta"></div>
+          <div style="font-size:.78rem;color:var(--t2);line-height:1.75" id="cvDesc"></div>
+          <!-- Cert steps -->
+          <div class="cert-steps" id="certSteps"></div>
+          <!-- Tabs -->
+          <div class="cv-tabs">
+            <button class="cv-tab on" onclick="switchTab('overview',this)">Overview</button>
+            <button class="cv-tab" onclick="switchTab('notes',this)">AI Notes</button>
+            <button class="cv-tab" onclick="switchTab('resources',this)">Resources</button>
+            <button class="cv-tab" onclick="switchTab('project',this)">Submit</button>
+            <button class="cv-tab" onclick="switchTab('exam',this)">Exam</button>
+          </div>
+          <div class="cv-tb">
+            <div class="cv-tp on" id="cvt-overview"><div id="cvOverview" style="font-size:.78rem;color:var(--t2);line-height:1.8"></div></div>
+            <div class="cv-tp" id="cvt-notes">
+              <div id="cvNotes"><div style="color:var(--t3);font-size:.75rem;padding:10px 0">Click "Generate AI Notes" to get smart notes for the current chapter.</div></div>
+              <button class="btn-sm" style="margin-top:10px" onclick="genNotes()">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                Generate AI Notes
+              </button>
+            </div>
+            <div class="cv-tp" id="cvt-resources"><div id="cvResources" style="font-size:.78rem;color:var(--t2);line-height:1.8"></div></div>
+            <div class="cv-tp" id="cvt-project"><div id="cvProject"></div></div>
+            <div class="cv-tp" id="cvt-exam"><div id="cvExam"></div></div>
+          </div>
+        </div>
+        <!-- RIGHT -->
+        <div class="cv-right" id="cvRight">
+          <div class="cv-sb-hd">📋 Chapters <span id="cvModCount" style="font-family:var(--fm);font-size:.52rem;color:var(--t3);font-weight:400"></span></div>
+          <div id="cvMods" style="flex:1;overflow-y:auto"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MY LEARNING -->
+    <div class="pg" id="pg-my-learning">
+      <div><div style="font-family:var(--fd);font-size:1.2rem;font-weight:900;margin-bottom:2px">My Learning</div><div style="font-size:.78rem;color:var(--t2)">Courses you've started</div></div>
+      <div id="mlGrid"></div>
+    </div>
+
+    <!-- SPECIAL -->
+    <div class="pg" id="pg-special">
+      <div class="special-hero">
+        <div style="font-size:2.8rem;margin-bottom:10px">✨</div>
+        <div style="font-family:var(--fd);font-size:1.4rem;font-weight:900;color:var(--pink);margin-bottom:6px">Special Courses</div>
+        <div style="font-size:.78rem;color:var(--t2);line-height:1.7">Make-up, Fashion Design & Bridal Mehendi — requires separate admin approval.</div>
+      </div>
+      <div id="specialGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px"></div>
+    </div>
+
+    <!-- AI TUTOR -->
+    <div class="pg" id="pg-ai-tutor" style="padding:0;gap:0">
+      <div class="tutor-wrap">
+        <div style="padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;background:var(--bg2);flex-shrink:0">
+          <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold2));display:flex;align-items:center;justify-content:center;flex-shrink:0">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--ink)" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+          </div>
+          <div>
+            <div style="font-family:var(--fd);font-size:.9rem;font-weight:700">Biluxe10 AI Tutor</div>
+            <div style="font-family:var(--fm);font-size:.5rem;color:var(--green);display:flex;align-items:center;gap:4px">
+              <span style="width:5px;height:5px;border-radius:50%;background:var(--green);display:inline-block"></span>
+              Online · DeepSeek AI
+            </div>
+          </div>
+          <div style="margin-left:auto;display:flex;gap:6px">
+            <button class="btn-sm" onclick="clearChat()">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+              Clear
+            </button>
+            <button class="btn-sm" onclick="exportChat()">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Save
+            </button>
+          </div>
+        </div>
+        <div class="tutor-msgs" id="tutorMsgs"></div>
+        <div class="tutor-inp-wrap">
+          <div class="tutor-chips" id="tutorChips"></div>
+          <div class="tutor-row">
+            <textarea class="tutor-inp" id="tutorInp" placeholder="Ask anything about your courses…" rows="1" onkeydown="tutorKey(event)" oninput="autoR(this)"></textarea>
+            <button class="tutor-send" id="tutorSend" onclick="sendMsg()">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            </button>
+          </div>
+          <div style="font-family:var(--fm);font-size:.47rem;color:var(--t3);margin-top:5px;text-align:center">Powered by DeepSeek AI · Biluxe10 Private · History auto-saved</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CERTIFICATES -->
+    <div class="pg" id="pg-certificates">
+      <div><div style="font-family:var(--fd);font-size:1.2rem;font-weight:900;margin-bottom:2px">🏆 My Certificates</div><div style="font-size:.78rem;color:var(--t2)">Watch 80%+ · Pass exam 60%+ · Submit project or seminar</div></div>
+      <div class="cert-gal" id="certGal"></div>
+    </div>
+
+    <!-- EXAM -->
+    <div class="pg" id="pg-exam">
+      <div><div style="font-family:var(--fd);font-size:1.2rem;font-weight:900;margin-bottom:2px">📝 Course Exams</div><div style="font-size:.78rem;color:var(--t2)">Complete 80%+ chapters first</div></div>
+      <div id="examPg"><div style="text-align:center;padding:40px;color:var(--t3)"><div style="font-size:2rem;margin-bottom:8px">📝</div><p style="font-size:.75rem">Open a course and click the Exam tab</p></div></div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ══════════════════════════════════════════════════
+   ALL 72+ COURSES — Complete data unchanged
+══════════════════════════════════════════════════ */
+const BUNDLES=[
+{id:'b499',price:499,name:'Starter Bundle',label:'Digital Entrepreneurship',ic:'🌟',lpa:'₹3 LPA',
+ color:'rgba(200,169,110,0.07)',border:'rgba(200,169,110,0.25)',
+ desc:'Master Canva, ChatGPT, WhatsApp Business, and digital entrepreneurship basics.',
+ courses:[
+  {id:'s1',title:'Digital Entrepreneurship Basics',dur:'4 hrs',icon:'🚀',desc:'Start and grow a digital business from scratch.',
+   modules:[
+    {id:'s1m1',title:'Introduction to Digital Business',dur:'28 min',yt:'CcwYCG0Gggw',start:0},
+    {id:'s1m2',title:'Business Models & Monetisation',dur:'32 min',yt:'CcwYCG0Gggw',start:1680},
+    {id:'s1m3',title:'Finding Your Niche',dur:'25 min',yt:'CcwYCG0Gggw',start:3600},
+    {id:'s1m4',title:'Building Your First Product',dur:'30 min',yt:'CcwYCG0Gggw',start:5100},
+    {id:'s1m5',title:'Marketing Fundamentals',dur:'35 min',yt:'CcwYCG0Gggw',start:6900},
+    {id:'s1m6',title:'Sales & Conversion',dur:'28 min',yt:'CcwYCG0Gggw',start:9000},
+    {id:'s1m7',title:'Scaling Your Business',dur:'32 min',yt:'CcwYCG0Gggw',start:10680},
+    {id:'s1m8',title:'Project & Next Steps',dur:'20 min',yt:'CcwYCG0Gggw',start:12600},
+   ],resources:['Business Model Canvas Template','Niche Research Checklist','Marketing Funnel Guide'],
+   project:'Create a 1-page digital business plan for your idea.'},
+  {id:'s2',title:'Canva & Content Creation',dur:'5 hrs',icon:'🎨',desc:'Design stunning graphics and create viral content using Canva.',
+   modules:[
+    {id:'s2m1',title:'Canva Interface & Getting Started',dur:'22 min',yt:'x7-XSJHcaVI',start:0},
+    {id:'s2m2',title:'Brand Kit & Color Theory',dur:'20 min',yt:'x7-XSJHcaVI',start:1320},
+    {id:'s2m3',title:'Social Media Templates',dur:'25 min',yt:'x7-XSJHcaVI',start:2520},
+    {id:'s2m4',title:'Presentations & Pitch Decks',dur:'28 min',yt:'x7-XSJHcaVI',start:4020},
+    {id:'s2m5',title:'Video & Reels Design',dur:'30 min',yt:'x7-XSJHcaVI',start:5700},
+    {id:'s2m6',title:'Content Calendar Planning',dur:'22 min',yt:'x7-XSJHcaVI',start:7500},
+    {id:'s2m7',title:'Portfolio & Final Project',dur:'15 min',yt:'x7-XSJHcaVI',start:8820},
+   ],resources:['Canva Brand Kit Guide','100 Content Ideas','Color Psychology PDF'],
+   project:'Design a complete brand identity + 5 social media content pieces.'},
+  {id:'s3',title:'WhatsApp Business Marketing',dur:'3 hrs',icon:'💬',desc:'Generate leads and grow revenue with WhatsApp Business.',
+   modules:[
+    {id:'s3m1',title:'Setting Up WhatsApp Business',dur:'20 min',yt:'PlVxtty0wrI',start:0},
+    {id:'s3m2',title:'Catalog & Product Lists',dur:'22 min',yt:'PlVxtty0wrI',start:1200},
+    {id:'s3m3',title:'Broadcast Lists & Groups',dur:'28 min',yt:'PlVxtty0wrI',start:2520},
+    {id:'s3m4',title:'Automated Replies',dur:'25 min',yt:'PlVxtty0wrI',start:4200},
+    {id:'s3m5',title:'Lead Generation Tactics',dur:'30 min',yt:'PlVxtty0wrI',start:5700},
+    {id:'s3m6',title:'Case Studies & Project',dur:'15 min',yt:'PlVxtty0wrI',start:7500},
+   ],resources:['WA Business Setup Checklist','Message Templates PDF','Lead Gen Scripts'],
+   project:'Set up a WhatsApp Business profile with catalog and auto-reply templates.'},
+  {id:'s4',title:'ChatGPT for Daily Work',dur:'3 hrs',icon:'🤖',desc:'Leverage ChatGPT and AI tools to supercharge productivity.',
+   modules:[
+    {id:'s4m1',title:'ChatGPT Basics & Interface',dur:'20 min',yt:'IcCAEudzEDw',start:0},
+    {id:'s4m2',title:'Prompt Engineering Secrets',dur:'28 min',yt:'IcCAEudzEDw',start:1200},
+    {id:'s4m3',title:'Content & Copywriting with AI',dur:'30 min',yt:'IcCAEudzEDw',start:2880},
+    {id:'s4m4',title:'AI for Research & Analysis',dur:'25 min',yt:'IcCAEudzEDw',start:4680},
+    {id:'s4m5',title:'Automating Work with AI',dur:'30 min',yt:'IcCAEudzEDw',start:6180},
+    {id:'s4m6',title:'Project: Build an AI Workflow',dur:'17 min',yt:'IcCAEudzEDw',start:7980},
+   ],resources:['500 ChatGPT Prompts','AI Tools Directory','Automation Recipes'],
+   project:'Create a complete AI-powered content workflow using ChatGPT.'},
+ ]},
+{id:'b999',price:999,name:'Pro Bundle',label:'Digital Marketing Mastery',ic:'📈',lpa:'₹3–4 LPA',
+ color:'rgba(96,165,250,0.07)',border:'rgba(96,165,250,0.25)',
+ desc:'Affiliate marketing, SEO, social media, email, Google Ads, Facebook Ads, and freelancing.',
+ courses:[
+  {id:'d1',title:'Affiliate Marketing Mastery',dur:'8 hrs',icon:'💰',desc:'Earn commissions promoting products online.',
+   modules:[
+    {id:'d1m1',title:'What is Affiliate Marketing?',dur:'35 min',yt:'TF3BhN_dTdo',start:0},
+    {id:'d1m2',title:'Choosing the Right Niche',dur:'40 min',yt:'TF3BhN_dTdo',start:2100},
+    {id:'d1m3',title:'Top Affiliate Networks',dur:'35 min',yt:'TF3BhN_dTdo',start:4500},
+    {id:'d1m4',title:'Building a Niche Website',dur:'50 min',yt:'TF3BhN_dTdo',start:6600},
+    {id:'d1m5',title:'SEO for Affiliate Sites',dur:'45 min',yt:'TF3BhN_dTdo',start:9600},
+    {id:'d1m6',title:'Content That Converts',dur:'40 min',yt:'TF3BhN_dTdo',start:12300},
+    {id:'d1m7',title:'Email List Building',dur:'35 min',yt:'TF3BhN_dTdo',start:14700},
+    {id:'d1m8',title:'Scaling to ₹1L+/month',dur:'40 min',yt:'TF3BhN_dTdo',start:16800},
+   ],resources:['Affiliate Niche Guide','Top 50 Programs List'],project:'Set up an affiliate review site with 3+ products.'},
+  {id:'d2',title:'SEO & Blogging',dur:'5 hrs',icon:'🔍',desc:'Rank on Google and build traffic-generating blogs.',
+   modules:[
+    {id:'d2m1',title:'How Search Engines Work',dur:'30 min',yt:'pDUMhloKybU',start:0},
+    {id:'d2m2',title:'Keyword Research Mastery',dur:'35 min',yt:'pDUMhloKybU',start:1800},
+    {id:'d2m3',title:'On-Page SEO',dur:'40 min',yt:'pDUMhloKybU',start:3900},
+    {id:'d2m4',title:'Technical SEO',dur:'35 min',yt:'pDUMhloKybU',start:6300},
+    {id:'d2m5',title:'Link Building Strategies',dur:'40 min',yt:'pDUMhloKybU',start:8400},
+    {id:'d2m6',title:'Blogging for Traffic',dur:'35 min',yt:'pDUMhloKybU',start:10800},
+    {id:'d2m7',title:'Measuring SEO Success',dur:'25 min',yt:'pDUMhloKybU',start:12900},
+   ],resources:['Keyword Spreadsheet','SEO Audit Checklist','Blog Post Template'],project:'Publish 3 SEO-optimized blog posts.'},
+  {id:'d3',title:'Social Media Management',dur:'6 hrs',icon:'📱',desc:'Grow Instagram, LinkedIn, YouTube for brands.',
+   modules:[
+    {id:'d3m1',title:'Social Media Strategy',dur:'35 min',yt:'9WVGLqiHVuk',start:0},
+    {id:'d3m2',title:'Instagram Growth System',dur:'40 min',yt:'9WVGLqiHVuk',start:2100},
+    {id:'d3m3',title:'LinkedIn for Business',dur:'35 min',yt:'9WVGLqiHVuk',start:4500},
+    {id:'d3m4',title:'YouTube Channel Building',dur:'40 min',yt:'9WVGLqiHVuk',start:6600},
+    {id:'d3m5',title:'Content Batching & Scheduling',dur:'30 min',yt:'9WVGLqiHVuk',start:9000},
+    {id:'d3m6',title:'Analytics & Reporting',dur:'28 min',yt:'9WVGLqiHVuk',start:12300},
+   ],resources:['Social Media Calendar','Hashtag Research Guide'],project:'Create a 30-day social media content plan.'},
+  {id:'d4',title:'Email Marketing',dur:'4 hrs',icon:'📧',desc:'Build email lists and write high-converting campaigns.',
+   modules:[
+    {id:'d4m1',title:'Email Marketing Fundamentals',dur:'30 min',yt:'yn6L7q4V1xg',start:0},
+    {id:'d4m2',title:'Building Your List',dur:'35 min',yt:'yn6L7q4V1xg',start:1800},
+    {id:'d4m3',title:'Writing Compelling Emails',dur:'35 min',yt:'yn6L7q4V1xg',start:3900},
+    {id:'d4m4',title:'Automation Sequences',dur:'35 min',yt:'yn6L7q4V1xg',start:7800},
+    {id:'d4m5',title:'A/B Testing & Analytics',dur:'25 min',yt:'yn6L7q4V1xg',start:9900},
+   ],resources:['Email Swipe File','Subject Line Formulas'],project:'Set up a 5-email welcome sequence.'},
+  {id:'d5',title:'Google Ads Complete',dur:'7 hrs',icon:'🎯',desc:'Run profitable Google Search, Display, and YouTube ads.',
+   modules:[
+    {id:'d5m1',title:'Google Ads Overview',dur:'35 min',yt:'autzRHtt-RM',start:0},
+    {id:'d5m2',title:'Account & Campaign Setup',dur:'40 min',yt:'autzRHtt-RM',start:2100},
+    {id:'d5m3',title:'Keyword Research for Ads',dur:'40 min',yt:'autzRHtt-RM',start:4500},
+    {id:'d5m4',title:'Writing High-CTR Ad Copy',dur:'35 min',yt:'autzRHtt-RM',start:6900},
+    {id:'d5m5',title:'Display & YouTube Ads',dur:'40 min',yt:'autzRHtt-RM',start:11100},
+    {id:'d5m6',title:'Optimisation & Scaling',dur:'35 min',yt:'autzRHtt-RM',start:17400},
+   ],resources:['Google Ads Checklist','Ad Copy Templates'],project:'Create a mock Google Ads campaign for a local business.'},
+  {id:'d6',title:'Facebook Ads Mastery',dur:'7 hrs',icon:'📘',desc:'Master Meta Ads (Facebook & Instagram).',
+   modules:[
+    {id:'d6m1',title:'Meta Ads Manager Overview',dur:'35 min',yt:'WNiU5ZxazI4',start:0},
+    {id:'d6m2',title:'Pixel Setup & Events',dur:'30 min',yt:'WNiU5ZxazI4',start:2100},
+    {id:'d6m3',title:'Audience Research & Targeting',dur:'40 min',yt:'WNiU5ZxazI4',start:3900},
+    {id:'d6m4',title:'Creative Strategy',dur:'40 min',yt:'WNiU5ZxazI4',start:8400},
+    {id:'d6m5',title:'Scaling Profitable Campaigns',dur:'40 min',yt:'WNiU5ZxazI4',start:14700},
+    {id:'d6m6',title:'Client Reporting',dur:'25 min',yt:'WNiU5ZxazI4',start:18900},
+   ],resources:['Ad Creative Framework','ROAS Calculator'],project:'Plan a Facebook Ads strategy for an e-commerce product.'},
+  {id:'d7',title:'Freelancing Mastery',dur:'9 hrs',icon:'💼',desc:'Build a profitable freelance career on Fiverr and Upwork.',
+   modules:[
+    {id:'d7m1',title:'Freelancing Mindset',dur:'35 min',yt:'gMmTpoiITM4',start:0},
+    {id:'d7m2',title:'Setting Up Fiverr',dur:'40 min',yt:'gMmTpoiITM4',start:4500},
+    {id:'d7m3',title:'Setting Up Upwork',dur:'40 min',yt:'gMmTpoiITM4',start:6900},
+    {id:'d7m4',title:'Writing Winning Proposals',dur:'40 min',yt:'gMmTpoiITM4',start:11400},
+    {id:'d7m5',title:'Pricing & Packages',dur:'35 min',yt:'gMmTpoiITM4',start:13800},
+    {id:'d7m6',title:'Getting Reviews & Repeat Clients',dur:'30 min',yt:'gMmTpoiITM4',start:19800},
+    {id:'d7m7',title:'Scaling to Agency',dur:'35 min',yt:'gMmTpoiITM4',start:21600},
+   ],resources:['Proposal Templates','Rate Calculator','Portfolio Template'],project:'Create a complete freelance profile + write 3 proposals.'},
+ ]},
+{id:'b2499',price:2499,name:'Professional Bundle',label:'Design & No-Code',ic:'🎨',lpa:'₹3–4 LPA',
+ color:'rgba(167,139,250,0.07)',border:'rgba(167,139,250,0.25)',
+ desc:'UI/UX design, no-code web dev, video editing, podcast production, and e-commerce.',
+ courses:[
+  {id:'c1',title:'UI/UX Design Complete',dur:'12 hrs',icon:'🖌️',desc:'Master user experience and interface design with Figma.',
+   modules:[
+    {id:'c1m1',title:'Design Thinking Fundamentals',dur:'45 min',yt:'PL7ZIgV4R67IOMRiW_Q7vZqLulb0xyKDHD',isPlaylist:true,plIndex:0},
+    {id:'c1m2',title:'Figma Interface & Tools',dur:'50 min',yt:'PL7ZIgV4R67IOMRiW_Q7vZqLulb0xyKDHD',isPlaylist:true,plIndex:1},
+    {id:'c1m3',title:'Typography & Color Theory',dur:'45 min',yt:'PL7ZIgV4R67IOMRiW_Q7vZqLulb0xyKDHD',isPlaylist:true,plIndex:2},
+    {id:'c1m4',title:'Layout & Grid Systems',dur:'40 min',yt:'PL7ZIgV4R67IOMRiW_Q7vZqLulb0xyKDHD',isPlaylist:true,plIndex:3},
+    {id:'c1m5',title:'Component & Design Systems',dur:'50 min',yt:'PL7ZIgV4R67IOMRiW_Q7vZqLulb0xyKDHD',isPlaylist:true,plIndex:4},
+    {id:'c1m6',title:'User Research Methods',dur:'45 min',yt:'PL7ZIgV4R67IOMRiW_Q7vZqLulb0xyKDHD',isPlaylist:true,plIndex:5},
+    {id:'c1m7',title:'Wireframing',dur:'40 min',yt:'PL7ZIgV4R67IOMRiW_Q7vZqLulb0xyKDHD',isPlaylist:true,plIndex:6},
+    {id:'c1m8',title:'Prototyping & Interactions',dur:'45 min',yt:'PL7ZIgV4R67IOMRiW_Q7vZqLulb0xyKDHD',isPlaylist:true,plIndex:7},
+    {id:'c1m9',title:'Mobile App Design',dur:'50 min',yt:'PL7ZIgV4R67IOMRiW_Q7vZqLulb0xyKDHD',isPlaylist:true,plIndex:8},
+    {id:'c1m10',title:'Portfolio & Presentation',dur:'45 min',yt:'PL7ZIgV4R67IOMRiW_Q7vZqLulb0xyKDHD',isPlaylist:true,plIndex:9},
+   ],resources:['Figma UI Kit','Design System Template','UX Research Template'],project:'Design a complete mobile app in Figma with 10+ screens.'},
+  {id:'c2',title:'No-Code Web Development',dur:'6 hrs',icon:'🌐',desc:'Build professional websites without code.',
+   modules:[
+    {id:'c2m1',title:'No-Code Revolution Overview',dur:'30 min',yt:'9nIwTjG2fdI',start:0},
+    {id:'c2m2',title:'Webflow Foundations',dur:'45 min',yt:'9nIwTjG2fdI',start:1800},
+    {id:'c2m3',title:'Responsive Design',dur:'40 min',yt:'9nIwTjG2fdI',start:4500},
+    {id:'c2m4',title:'CMS & Dynamic Content',dur:'40 min',yt:'9nIwTjG2fdI',start:6900},
+    {id:'c2m5',title:'E-commerce with No-Code',dur:'35 min',yt:'9nIwTjG2fdI',start:11700},
+    {id:'c2m6',title:'SEO & Publishing',dur:'30 min',yt:'9nIwTjG2fdI',start:13800},
+   ],resources:['Webflow CMS Guide','Landing Page Templates'],project:'Build a complete 5-page website for a local business.'},
+  {id:'c3',title:'Video Editing with CapCut',dur:'5 hrs',icon:'🎬',desc:'Create viral short-form videos and reels using CapCut.',
+   modules:[
+    {id:'c3m1',title:'CapCut Interface & Basics',dur:'25 min',yt:'nXeslaOL_BE',start:0},
+    {id:'c3m2',title:'Cuts, Trims & Timeline',dur:'30 min',yt:'nXeslaOL_BE',start:1500},
+    {id:'c3m3',title:'Transitions & Effects',dur:'35 min',yt:'nXeslaOL_BE',start:3300},
+    {id:'c3m4',title:'Auto Captions & Text',dur:'30 min',yt:'nXeslaOL_BE',start:5400},
+    {id:'c3m5',title:'Music, Sound & Audio',dur:'28 min',yt:'nXeslaOL_BE',start:7200},
+    {id:'c3m6',title:'Reels & Short-form Strategy',dur:'35 min',yt:'nXeslaOL_BE',start:10680},
+   ],resources:['CapCut Shortcuts','Short-form Script Templates'],project:'Edit 3 short-form videos under 60 seconds each.'},
+  {id:'c4',title:'Podcast & Audio Production',dur:'4 hrs',icon:'🎙️',desc:'Record, edit, and launch your podcast.',
+   modules:[
+    {id:'c4m1',title:'Podcast Planning & Niche',dur:'28 min',yt:'cGWFvYknE7o',start:0},
+    {id:'c4m2',title:'Recording Setup & Equipment',dur:'35 min',yt:'cGWFvYknE7o',start:1680},
+    {id:'c4m3',title:'Audio Editing Fundamentals',dur:'40 min',yt:'cGWFvYknE7o',start:3780},
+    {id:'c4m4',title:'Intro, Outro & Music',dur:'30 min',yt:'cGWFvYknE7o',start:6180},
+    {id:'c4m5',title:'Publishing & Distribution',dur:'32 min',yt:'cGWFvYknE7o',start:7980},
+    {id:'c4m6',title:'Growing Your Audience',dur:'25 min',yt:'cGWFvYknE7o',start:9900},
+   ],resources:['Podcast Launch Checklist','Editing Guide'],project:'Record and publish your first podcast episode.'},
+  {id:'c5',title:'Ecommerce Complete',dur:'8 hrs',icon:'🛒',desc:'Launch and grow an e-commerce store using Shopify.',
+   modules:[
+    {id:'c5m1',title:'Ecommerce Business Models',dur:'35 min',yt:'5d9jtO0uOpk',start:0},
+    {id:'c5m2',title:'Product Research',dur:'45 min',yt:'5d9jtO0uOpk',start:2100},
+    {id:'c5m3',title:'Shopify Store Setup',dur:'50 min',yt:'5d9jtO0uOpk',start:4800},
+    {id:'c5m4',title:'Product Listings & Photography',dur:'40 min',yt:'5d9jtO0uOpk',start:7800},
+    {id:'c5m5',title:'Ads for Ecommerce',dur:'45 min',yt:'5d9jtO0uOpk',start:14700},
+    {id:'c5m6',title:'Scaling & Automation',dur:'25 min',yt:'5d9jtO0uOpk',start:21300},
+   ],resources:['Product Research Framework','Shopify Theme Guide'],project:'Launch a Shopify store with at least 5 products.'},
+  {id:'c6',title:'Dropshipping & Print on Demand',dur:'6 hrs',icon:'📦',desc:'Build a dropshipping or print-on-demand business.',
+   modules:[
+    {id:'c6m1',title:'Dropshipping Fundamentals',dur:'35 min',yt:'thYCp3y1Yuw',start:0},
+    {id:'c6m2',title:'Finding Winning Products',dur:'45 min',yt:'thYCp3y1Yuw',start:2100},
+    {id:'c6m3',title:'Supplier Sourcing (AliExpress, CJ)',dur:'40 min',yt:'thYCp3y1Yuw',start:4800},
+    {id:'c6m4',title:'Print on Demand Setup',dur:'40 min',yt:'thYCp3y1Yuw',start:7200},
+    {id:'c6m5',title:'Marketing Your Store',dur:'45 min',yt:'thYCp3y1Yuw',start:9600},
+    {id:'c6m6',title:'Scaling & Automating',dur:'35 min',yt:'thYCp3y1Yuw',start:12300},
+   ],resources:['Product Research Toolkit','Supplier List','POD Platform Comparison'],project:'Launch a dropshipping store and run your first ad campaign.'},
+ ]},
+{id:'b3699',price:3699,name:'Elite Bundle',label:'Data & Business Analytics',ic:'📊',lpa:'₹4–6 LPA',
+ color:'rgba(34,211,238,0.07)',border:'rgba(34,211,238,0.25)',
+ desc:'Excel, SQL, Power BI, Python basics, business analytics, and financial accounting.',
+ courses:[
+  {id:'da1',title:'Excel for Data Analysis',dur:'8 hrs',icon:'📈',desc:'Master Excel for data analysis, pivot tables, and dashboards.',
+   modules:[
+    {id:'da1m1',title:'Excel Interface & Basics',dur:'35 min',yt:'Kjz_DDO4Fzs',start:0},
+    {id:'da1m2',title:'Formulas & Functions',dur:'45 min',yt:'Kjz_DDO4Fzs',start:2100},
+    {id:'da1m3',title:'VLOOKUP & XLOOKUP',dur:'40 min',yt:'Kjz_DDO4Fzs',start:4800},
+    {id:'da1m4',title:'Pivot Tables',dur:'45 min',yt:'Kjz_DDO4Fzs',start:7200},
+    {id:'da1m5',title:'Charts & Visualisation',dur:'40 min',yt:'Kjz_DDO4Fzs',start:9900},
+    {id:'da1m6',title:'Data Cleaning & Dashboards',dur:'45 min',yt:'Kjz_DDO4Fzs',start:16200},
+    {id:'da1m7',title:'Macros & Automation',dur:'40 min',yt:'Kjz_DDO4Fzs',start:18900},
+   ],resources:['Excel Shortcuts PDF','100 Useful Formulas','Dashboard Template'],project:'Build a sales analytics dashboard in Excel.'},
+  {id:'da2',title:'SQL for Beginners',dur:'6 hrs',icon:'🗄️',desc:'Learn SQL from scratch for data analytics.',
+   modules:[
+    {id:'da2m1',title:'What is SQL & Databases?',dur:'30 min',yt:'7azCOKryADA',start:0},
+    {id:'da2m2',title:'SELECT, WHERE & ORDER BY',dur:'35 min',yt:'7azCOKryADA',start:1800},
+    {id:'da2m3',title:'Aggregate Functions & GROUP BY',dur:'35 min',yt:'7azCOKryADA',start:5700},
+    {id:'da2m4',title:'JOINs (INNER, LEFT, RIGHT)',dur:'40 min',yt:'7azCOKryADA',start:9900},
+    {id:'da2m5',title:'Subqueries',dur:'35 min',yt:'7azCOKryADA',start:12300},
+    {id:'da2m6',title:'Real-world SQL Project',dur:'30 min',yt:'7azCOKryADA',start:16200},
+   ],resources:['SQL Cheat Sheet','Practice Datasets','Query Library'],project:'Write 20 SQL queries on a provided dataset.'},
+  {id:'da3',title:'Power BI & Tableau',dur:'9 hrs',icon:'📉',desc:'Build stunning interactive dashboards.',
+   modules:[
+    {id:'da3m1',title:'BI Tools Overview',dur:'30 min',yt:'Gmk3DWOxVKQ',start:0},
+    {id:'da3m2',title:'Power BI Interface',dur:'40 min',yt:'Gmk3DWOxVKQ',start:1800},
+    {id:'da3m3',title:'Data Import & Transform',dur:'45 min',yt:'Gmk3DWOxVKQ',start:4200},
+    {id:'da3m4',title:'DAX Formulas',dur:'50 min',yt:'Gmk3DWOxVKQ',start:6900},
+    {id:'da3m5',title:'Visualisations & Dashboards',dur:'45 min',yt:'Gmk3DWOxVKQ',start:9900},
+    {id:'da3m6',title:'Tableau Interface & Charts',dur:'40 min',yt:'Gmk3DWOxVKQ',start:17400},
+    {id:'da3m7',title:'Capstone Dashboard Project',dur:'35 min',yt:'Gmk3DWOxVKQ',start:21900},
+   ],resources:['Power BI Sample Data','DAX Quick Reference'],project:'Build a complete business dashboard in Power BI.'},
+  {id:'da4',title:'Python Basics',dur:'7 hrs',icon:'🐍',desc:'Learn Python for data work with Pandas.',
+   modules:[
+    {id:'da4m1',title:'Python Setup & Hello World',dur:'25 min',yt:'LgW6Vla0kXA',start:0},
+    {id:'da4m2',title:'Variables, Data Types & Operators',dur:'35 min',yt:'LgW6Vla0kXA',start:1500},
+    {id:'da4m3',title:'Lists, Tuples & Dictionaries',dur:'40 min',yt:'LgW6Vla0kXA',start:5700},
+    {id:'da4m4',title:'Loops & Functions',dur:'40 min',yt:'LgW6Vla0kXA',start:8100},
+    {id:'da4m5',title:'Pandas Introduction',dur:'45 min',yt:'LgW6Vla0kXA',start:15000},
+    {id:'da4m6',title:'Data Analysis with Pandas',dur:'45 min',yt:'LgW6Vla0kXA',start:17700},
+    {id:'da4m7',title:'Mini Data Project',dur:'20 min',yt:'LgW6Vla0kXA',start:20400},
+   ],resources:['Python Cheat Sheet','Pandas Quick Reference','Practice Datasets'],project:'Write a Python script that reads a CSV and outputs a summary.'},
+  {id:'da5',title:'Business Analytics',dur:'5 hrs',icon:'💹',desc:'Apply data analysis to real business decisions.',
+   modules:[
+    {id:'da5m1',title:'Analytics for Business',dur:'30 min',yt:'cCTuOBOqSaM',start:0},
+    {id:'da5m2',title:'Key Performance Indicators',dur:'35 min',yt:'cCTuOBOqSaM',start:1800},
+    {id:'da5m3',title:'Market & Customer Analysis',dur:'40 min',yt:'cCTuOBOqSaM',start:5700},
+    {id:'da5m4',title:'Forecasting & Reporting',dur:'40 min',yt:'cCTuOBOqSaM',start:10500},
+    {id:'da5m5',title:'Analytics Strategy Project',dur:'20 min',yt:'cCTuOBOqSaM',start:12600},
+   ],resources:['KPI Framework Guide','Business Report Template'],project:'Create a business analytics report with 5 KPIs.'},
+  {id:'da6',title:'Financial Accounting Basics',dur:'5 hrs',icon:'💰',desc:'P&L, balance sheet, cash flow, financial ratios.',
+   modules:[
+    {id:'da6m1',title:'Accounting Fundamentals',dur:'35 min',yt:'vO09q2V8TGQ',start:0},
+    {id:'da6m2',title:'Profit & Loss Statement',dur:'40 min',yt:'vO09q2V8TGQ',start:2100},
+    {id:'da6m3',title:'Balance Sheet',dur:'40 min',yt:'vO09q2V8TGQ',start:4500},
+    {id:'da6m4',title:'Cash Flow Statement',dur:'40 min',yt:'vO09q2V8TGQ',start:6900},
+    {id:'da6m5',title:'Financial Ratios & Analysis',dur:'35 min',yt:'vO09q2V8TGQ',start:9300},
+    {id:'da6m6',title:'Budgeting & Forecasting',dur:'30 min',yt:'vO09q2V8TGQ',start:11400},
+   ],resources:['Accounting Cheat Sheet','P&L Template','Budget Template'],project:'Create a complete financial model for a small business.'},
+ ]},
+{id:'b6999',price:6999,name:'Master Bundle',label:'Cloud & DevOps & Security',ic:'☁️',lpa:'₹8–12 LPA',
+ color:'rgba(245,158,11,0.07)',border:'rgba(245,158,11,0.25)',
+ desc:'AWS, Docker, Kubernetes, CI/CD, Linux, Cybersecurity, Ethical Hacking, and Cloud Security.',
+ courses:[
+  {id:'do1',title:'AWS Cloud Practitioner',dur:'12 hrs',icon:'☁️',desc:'Master Amazon Web Services from scratch.',
+   modules:[
+    {id:'do1m1',title:'Cloud Computing Fundamentals',dur:'50 min',yt:'a8FFknuJwB0',start:0},
+    {id:'do1m2',title:'IAM & Security',dur:'55 min',yt:'a8FFknuJwB0',start:5700},
+    {id:'do1m3',title:'EC2 & Compute',dur:'60 min',yt:'a8FFknuJwB0',start:9000},
+    {id:'do1m4',title:'S3 & Storage',dur:'55 min',yt:'a8FFknuJwB0',start:12600},
+    {id:'do1m5',title:'RDS & VPC Networking',dur:'55 min',yt:'a8FFknuJwB0',start:15900},
+    {id:'do1m6',title:'Lambda & Serverless',dur:'55 min',yt:'a8FFknuJwB0',start:22500},
+    {id:'do1m7',title:'Architecture Best Practices',dur:'50 min',yt:'a8FFknuJwB0',start:30900},
+    {id:'do1m8',title:'Exam Prep & Project',dur:'35 min',yt:'a8FFknuJwB0',start:33900},
+   ],resources:['AWS Services Cheat Sheet','Architecture Diagrams'],project:'Design a 3-tier AWS architecture for a web application.'},
+  {id:'do2',title:'Docker & Kubernetes',dur:'14 hrs',icon:'🐳',desc:'Containerise apps with Docker and orchestrate with Kubernetes.',
+   modules:[
+    {id:'do2m1',title:'Containers & Docker Concepts',dur:'55 min',yt:'PLhNrFKat_aeLmPHBkS42O1pdN8Pt-tfF9',isPlaylist:true,plIndex:0},
+    {id:'do2m2',title:'Docker CLI & Images',dur:'60 min',yt:'PLhNrFKat_aeLmPHBkS42O1pdN8Pt-tfF9',isPlaylist:true,plIndex:1},
+    {id:'do2m3',title:'Dockerfile & Compose',dur:'60 min',yt:'PLhNrFKat_aeLmPHBkS42O1pdN8Pt-tfF9',isPlaylist:true,plIndex:2},
+    {id:'do2m4',title:'Kubernetes Architecture',dur:'60 min',yt:'PLhNrFKat_aeLmPHBkS42O1pdN8Pt-tfF9',isPlaylist:true,plIndex:3},
+    {id:'do2m5',title:'Pods, Services & Deployments',dur:'65 min',yt:'PLhNrFKat_aeLmPHBkS42O1pdN8Pt-tfF9',isPlaylist:true,plIndex:4},
+    {id:'do2m6',title:'Helm Charts & Production',dur:'55 min',yt:'PLhNrFKat_aeLmPHBkS42O1pdN8Pt-tfF9',isPlaylist:true,plIndex:5},
+   ],resources:['Docker Cheat Sheet','K8s Quick Reference'],project:'Dockerise a Node.js app and deploy to Kubernetes.'},
+  {id:'do3',title:'CI/CD Pipelines',dur:'8 hrs',icon:'🔄',desc:'Automate software delivery with GitHub Actions.',
+   modules:[
+    {id:'do3m1',title:'CI/CD Concepts',dur:'40 min',yt:'Ke_Wr5zPE0A',start:0},
+    {id:'do3m2',title:'GitHub Actions Basics',dur:'50 min',yt:'Ke_Wr5zPE0A',start:2400},
+    {id:'do3m3',title:'Build, Test & Deploy Pipelines',dur:'55 min',yt:'Ke_Wr5zPE0A',start:5400},
+    {id:'do3m4',title:'Secrets Management',dur:'40 min',yt:'Ke_Wr5zPE0A',start:21000},
+   ],resources:['GitHub Actions Templates','Pipeline Guide'],project:'Build a complete CI/CD pipeline using GitHub Actions.'},
+  {id:'do4',title:'Linux for DevOps',dur:'7 hrs',icon:'🐧',desc:'Master Linux command line and shell scripting.',
+   modules:[
+    {id:'do4m1',title:'Linux & Terminal Basics',dur:'40 min',yt:'e01GGTKmtpc',start:0},
+    {id:'do4m2',title:'File System & Permissions',dur:'40 min',yt:'e01GGTKmtpc',start:2400},
+    {id:'do4m3',title:'Users, Packages & Services',dur:'40 min',yt:'e01GGTKmtpc',start:7200},
+    {id:'do4m4',title:'Shell Scripting',dur:'55 min',yt:'e01GGTKmtpc',start:14400},
+    {id:'do4m5',title:'Networking & SSH',dur:'45 min',yt:'e01GGTKmtpc',start:17700},
+   ],resources:['Linux Command Cheat Sheet','Shell Script Library'],project:'Write a bash script that automates server setup.'},
+  {id:'do5',title:'Cybersecurity Fundamentals',dur:'10 hrs',icon:'🔒',desc:'Learn threats, defense, network and web security.',
+   modules:[
+    {id:'do5m1',title:'Cybersecurity Landscape',dur:'45 min',yt:'z2hVCeiwvGk',start:0},
+    {id:'do5m2',title:'Types of Attacks',dur:'50 min',yt:'z2hVCeiwvGk',start:2700},
+    {id:'do5m3',title:'Network Security',dur:'55 min',yt:'z2hVCeiwvGk',start:5700},
+    {id:'do5m4',title:'Web Security & OWASP Top 10',dur:'60 min',yt:'z2hVCeiwvGk',start:9000},
+    {id:'do5m5',title:'Cryptography Basics',dur:'55 min',yt:'z2hVCeiwvGk',start:12600},
+    {id:'do5m6',title:'Security Audit Project',dur:'35 min',yt:'z2hVCeiwvGk',start:27900},
+   ],resources:['Security Checklist','OWASP Top 10 Guide'],project:'Perform a security audit on a sample web application.'},
+  {id:'do6',title:'Ethical Hacking',dur:'10 hrs',icon:'🕵️',desc:'Learn penetration testing and ethical hacking.',
+   modules:[
+    {id:'do6m1',title:'Ethical Hacking Intro & Law',dur:'40 min',yt:'2eLJNBroFrg',start:0},
+    {id:'do6m2',title:'Reconnaissance Techniques',dur:'50 min',yt:'2eLJNBroFrg',start:2400},
+    {id:'do6m3',title:'Scanning & Enumeration',dur:'55 min',yt:'2eLJNBroFrg',start:5400},
+    {id:'do6m4',title:'Exploitation Basics',dur:'60 min',yt:'2eLJNBroFrg',start:9000},
+    {id:'do6m5',title:'Web App Hacking',dur:'60 min',yt:'2eLJNBroFrg',start:13200},
+    {id:'do6m6',title:'Report Writing & Project',dur:'35 min',yt:'2eLJNBroFrg',start:21600},
+   ],resources:['Ethical Hacking Methodology','Tool Reference'],project:'Complete a CTF challenge and write a penetration test report.'},
+  {id:'do7',title:'Cloud Security',dur:'8 hrs',icon:'🛡️',desc:'Secure cloud infrastructure on AWS and Azure.',
+   modules:[
+    {id:'do7m1',title:'Cloud Security Fundamentals',dur:'45 min',yt:'a58CqpP6vEw',start:0},
+    {id:'do7m2',title:'IAM & Identity Management',dur:'50 min',yt:'a58CqpP6vEw',start:2700},
+    {id:'do7m3',title:'Network Security in Cloud',dur:'55 min',yt:'a58CqpP6vEw',start:5700},
+    {id:'do7m4',title:'Data Encryption & Key Management',dur:'50 min',yt:'a58CqpP6vEw',start:9000},
+    {id:'do7m5',title:'Compliance & Governance',dur:'50 min',yt:'a58CqpP6vEw',start:12600},
+   ],resources:['Cloud Security Framework','Compliance Checklist'],project:'Design a secure cloud architecture with IAM policies.'},
+  {id:'do8',title:'DevOps Capstone Project',dur:'6 hrs',icon:'🚀',desc:'End-to-end DevOps project deploying a full-stack app.',
+   modules:[
+    {id:'do8m1',title:'Project Architecture Overview',dur:'35 min',yt:'H5FAxTBuNM8',start:0},
+    {id:'do8m2',title:'Dockerising the Application',dur:'45 min',yt:'H5FAxTBuNM8',start:2100},
+    {id:'do8m3',title:'Setting Up CI/CD Pipeline',dur:'50 min',yt:'H5FAxTBuNM8',start:4800},
+    {id:'do8m4',title:'Deploying to AWS',dur:'55 min',yt:'H5FAxTBuNM8',start:7800},
+    {id:'do8m5',title:'Monitoring & Alerting',dur:'45 min',yt:'H5FAxTBuNM8',start:11100},
+    {id:'do8m6',title:'Production Optimisation',dur:'30 min',yt:'H5FAxTBuNM8',start:13800},
+   ],resources:['Project GitHub Template','AWS Deployment Guide'],project:'Deploy a full-stack app using Docker, CI/CD, and AWS.'},
+ ]},
+{id:'b11999',price:11999,name:'Elite Pro Bundle',label:'Data Science & Machine Learning',ic:'🧠',lpa:'₹12–16 LPA',
+ color:'rgba(167,139,250,0.09)',border:'rgba(167,139,250,0.28)',
+ desc:'Python for data science, ML algorithms, deep learning, NLP, computer vision, and MLOps.',
+ courses:[
+  {id:'ml1',title:'Python for Data Science',dur:'10 hrs',icon:'🐍',desc:'Advanced Python: NumPy, Pandas, Matplotlib, Seaborn.',
+   modules:[
+    {id:'ml1m1',title:'NumPy Foundations',dur:'55 min',yt:'CMEWVn1uZpQ',start:0},
+    {id:'ml1m2',title:'Pandas Series & DataFrames',dur:'60 min',yt:'CMEWVn1uZpQ',start:6600},
+    {id:'ml1m3',title:'Data Cleaning & EDA',dur:'60 min',yt:'CMEWVn1uZpQ',start:13800},
+    {id:'ml1m4',title:'Matplotlib Visualisations',dur:'55 min',yt:'CMEWVn1uZpQ',start:17400},
+    {id:'ml1m5',title:'Feature Engineering & Project',dur:'35 min',yt:'CMEWVn1uZpQ',start:27300},
+   ],resources:['NumPy Cheat Sheet','Pandas Reference'],project:'Perform full EDA on a real Kaggle dataset.'},
+  {id:'ml2',title:'Machine Learning Fundamentals',dur:'12 hrs',icon:'🤖',desc:'Core ML algorithms with scikit-learn.',
+   modules:[
+    {id:'ml2m1',title:'What is ML?',dur:'45 min',yt:'hR-tMLTMw0s',start:0},
+    {id:'ml2m2',title:'Linear & Logistic Regression',dur:'60 min',yt:'hR-tMLTMw0s',start:6000},
+    {id:'ml2m3',title:'Decision Trees & Random Forests',dur:'60 min',yt:'hR-tMLTMw0s',start:13200},
+    {id:'ml2m4',title:'SVM & K-Means',dur:'60 min',yt:'hR-tMLTMw0s',start:20400},
+    {id:'ml2m5',title:'Model Evaluation & Tuning',dur:'60 min',yt:'hR-tMLTMw0s',start:27300},
+    {id:'ml2m6',title:'End-to-End ML Project',dur:'55 min',yt:'hR-tMLTMw0s',start:37500},
+   ],resources:['ML Algorithm Cheat Sheet','Scikit-learn Reference'],project:'Build an end-to-end ML pipeline.'},
+  {id:'ml3',title:'Deep Learning & Neural Networks',dur:'14 hrs',icon:'🔬',desc:'Build neural networks with TensorFlow and Keras.',
+   modules:[
+    {id:'ml3m1',title:'Neural Network Basics',dur:'60 min',yt:'G1P2IaBcXx8',start:0},
+    {id:'ml3m2',title:'TensorFlow & Keras Setup',dur:'60 min',yt:'G1P2IaBcXx8',start:3600},
+    {id:'ml3m3',title:'Backpropagation & Optimisers',dur:'65 min',yt:'G1P2IaBcXx8',start:14700},
+    {id:'ml3m4',title:'Convolutional Networks',dur:'70 min',yt:'G1P2IaBcXx8',start:22200},
+    {id:'ml3m5',title:'Transfer Learning',dur:'65 min',yt:'G1P2IaBcXx8',start:30300},
+    {id:'ml3m6',title:'Capstone DL Project',dur:'55 min',yt:'G1P2IaBcXx8',start:41400},
+   ],resources:['TensorFlow Quick Reference','CNN Architecture Diagrams'],project:'Train an image classification model with CNNs.'},
+  {id:'ml4',title:'Natural Language Processing',dur:'12 hrs',icon:'💬',desc:'NLP with transformers and BERT.',
+   modules:[
+    {id:'ml4m1',title:'NLP Introduction & Text Preprocessing',dur:'55 min',yt:'BCLjPLeVCBY',start:0},
+    {id:'ml4m2',title:'TF-IDF & Word Embeddings',dur:'60 min',yt:'BCLjPLeVCBY',start:6900},
+    {id:'ml4m3',title:'Sentiment Analysis & Classification',dur:'60 min',yt:'BCLjPLeVCBY',start:14400},
+    {id:'ml4m4',title:'Transformers & BERT',dur:'70 min',yt:'BCLjPLeVCBY',start:25800},
+    {id:'ml4m5',title:'NLP Project Deployment',dur:'45 min',yt:'BCLjPLeVCBY',start:38100},
+   ],resources:['NLP Pipeline Guide','HuggingFace Quickstart'],project:'Build a sentiment analysis app using a transformer.'},
+  {id:'ml5',title:'Computer Vision',dur:'12 hrs',icon:'👁️',desc:'Build computer vision apps with YOLO and OpenCV.',
+   modules:[
+    {id:'ml5m1',title:'Computer Vision Fundamentals',dur:'55 min',yt:'PLPTV0NXA_ZSgmWYoSpY_2EJzPJjkke4Az',isPlaylist:true,plIndex:0},
+    {id:'ml5m2',title:'OpenCV Basics & Transformations',dur:'60 min',yt:'PLPTV0NXA_ZSgmWYoSpY_2EJzPJjkke4Az',isPlaylist:true,plIndex:1},
+    {id:'ml5m3',title:'Object Detection (YOLO)',dur:'70 min',yt:'PLPTV0NXA_ZSgmWYoSpY_2EJzPJjkke4Az',isPlaylist:true,plIndex:2},
+    {id:'ml5m4',title:'Face Detection & Real-time Video',dur:'65 min',yt:'PLPTV0NXA_ZSgmWYoSpY_2EJzPJjkke4Az',isPlaylist:true,plIndex:3},
+    {id:'ml5m5',title:'CV Deployment Project',dur:'45 min',yt:'PLPTV0NXA_ZSgmWYoSpY_2EJzPJjkke4Az',isPlaylist:true,plIndex:4},
+   ],resources:['OpenCV Cheat Sheet','YOLO Config Guide'],project:'Build a real-time object detection app using YOLO.'},
+  {id:'ml6',title:'Big Data Engineering',dur:'8 hrs',icon:'🏗️',desc:'Process large datasets with Hadoop, Spark, and Kafka.',
+   modules:[
+    {id:'ml6m1',title:'Big Data Fundamentals',dur:'45 min',yt:'H5SHmiKTFsM',start:0},
+    {id:'ml6m2',title:'Apache Spark Basics',dur:'55 min',yt:'H5SHmiKTFsM',start:2700},
+    {id:'ml6m3',title:'Spark DataFrames & SQL',dur:'60 min',yt:'H5SHmiKTFsM',start:6000},
+    {id:'ml6m4',title:'Kafka & Streaming',dur:'55 min',yt:'H5SHmiKTFsM',start:13800},
+    {id:'ml6m5',title:'Data Pipelines Project',dur:'45 min',yt:'H5SHmiKTFsM',start:21600},
+   ],resources:['Spark Quick Reference','Kafka Setup Guide'],project:'Build a real-time data pipeline using Kafka and Spark.'},
+  {id:'ml7',title:'Data Engineering',dur:'8 hrs',icon:'⚙️',desc:'Build data pipelines, warehouses, and ETL workflows.',
+   modules:[
+    {id:'ml7m1',title:'Data Engineering Fundamentals',dur:'45 min',yt:'hf2go3E2m8g',start:0},
+    {id:'ml7m2',title:'ETL Pipelines with Airflow',dur:'60 min',yt:'hf2go3E2m8g',start:2700},
+    {id:'ml7m3',title:'Data Warehousing (Snowflake/BigQuery)',dur:'60 min',yt:'hf2go3E2m8g',start:6300},
+    {id:'ml7m4',title:'dbt for Transformations',dur:'55 min',yt:'hf2go3E2m8g',start:9900},
+    {id:'ml7m5',title:'Data Engineering Project',dur:'40 min',yt:'hf2go3E2m8g',start:16200},
+   ],resources:['Airflow Guide','dbt Reference'],project:'Build an end-to-end data pipeline with Airflow and dbt.'},
+  {id:'ml8',title:'MLOps Fundamentals',dur:'8 hrs',icon:'🔧',desc:'Deploy and monitor ML models in production.',
+   modules:[
+    {id:'ml8m1',title:'MLOps Introduction',dur:'40 min',yt:'dPmH3G9NQtY',start:0},
+    {id:'ml8m2',title:'ML Model Packaging',dur:'50 min',yt:'dPmH3G9NQtY',start:2400},
+    {id:'ml8m3',title:'Model Versioning with MLflow',dur:'55 min',yt:'dPmH3G9NQtY',start:5400},
+    {id:'ml8m4',title:'Model Deployment & API',dur:'55 min',yt:'dPmH3G9NQtY',start:9000},
+    {id:'ml8m5',title:'Monitoring & Drift Detection',dur:'50 min',yt:'dPmH3G9NQtY',start:13200},
+    {id:'ml8m6',title:'MLOps Project',dur:'40 min',yt:'dPmH3G9NQtY',start:17400},
+   ],resources:['MLflow Guide','Deployment Checklist'],project:'Deploy an ML model with monitoring using MLflow and FastAPI.'},
+  {id:'ml9',title:'End-to-End ML Project',dur:'5 hrs',icon:'🏆',desc:'Build and deploy a complete ML solution.',
+   modules:[
+    {id:'ml9m1',title:'Project Planning & Data',dur:'35 min',yt:'o6vbe5G7xNo',start:0},
+    {id:'ml9m2',title:'EDA & Feature Engineering',dur:'45 min',yt:'o6vbe5G7xNo',start:2100},
+    {id:'ml9m3',title:'Model Training & Selection',dur:'50 min',yt:'o6vbe5G7xNo',start:4800},
+    {id:'ml9m4',title:'Deployment & Presentation',dur:'50 min',yt:'o6vbe5G7xNo',start:7800},
+   ],resources:['Project Template','Presentation Guide'],project:'Complete and deploy a real-world ML application.'},
+  {id:'ml10',title:'Data Science Interview Prep',dur:'6 hrs',icon:'📋',desc:'Crack data science interviews at top companies.',
+   modules:[
+    {id:'ml10m1',title:'Statistics Interview Questions',dur:'50 min',yt:'A3ZSv6IqXY8',start:0},
+    {id:'ml10m2',title:'ML Concepts & Algorithms Q&A',dur:'60 min',yt:'A3ZSv6IqXY8',start:3000},
+    {id:'ml10m3',title:'SQL Interview Questions',dur:'50 min',yt:'A3ZSv6IqXY8',start:6600},
+    {id:'ml10m4',title:'Case Studies & ML System Design',dur:'60 min',yt:'A3ZSv6IqXY8',start:9600},
+    {id:'ml10m5',title:'Behavioral & Resume Tips',dur:'40 min',yt:'A3ZSv6IqXY8',start:13200},
+   ],resources:['200 DS Interview Qs','System Design Guide'],project:'Complete 5 mock interviews and document your answers.'},
+ ]},
+{id:'b15999',price:15999,name:'Legend Bundle',label:'GenAI & Agentic AI',ic:'✨',lpa:'₹14–18 LPA',
+ color:'rgba(200,169,110,0.1)',border:'rgba(200,169,110,0.3)',
+ desc:'LLMs, Agentic AI, LangChain, RAG, fine-tuning, prompt engineering, and AI safety.',
+ courses:[
+  {id:'g1',title:'Generative AI & LLMs',dur:'12 hrs',icon:'🤖',desc:'Understand and work with Large Language Models.',
+   modules:[
+    {id:'g1m1',title:'GenAI Revolution & LLM Basics',dur:'50 min',yt:'d4yCWBGFCEs',start:0},
+    {id:'g1m2',title:'Transformer Architecture',dur:'65 min',yt:'d4yCWBGFCEs',start:6900},
+    {id:'g1m3',title:'GPT & OpenAI API',dur:'65 min',yt:'d4yCWBGFCEs',start:10800},
+    {id:'g1m4',title:'Open Source Models (Llama, Mistral)',dur:'65 min',yt:'d4yCWBGFCEs',start:21900},
+    {id:'g1m5',title:'Building LLM Applications',dur:'65 min',yt:'d4yCWBGFCEs',start:29400},
+    {id:'g1m6',title:'GenAI Capstone Project',dur:'50 min',yt:'d4yCWBGFCEs',start:36600},
+   ],resources:['LLM Comparison Guide','API Integration Templates'],project:'Build an LLM-powered application using at least 2 model APIs.'},
+  {id:'g2',title:'Agentic AI Development',dur:'14 hrs',icon:'🕹️',desc:'Build autonomous AI agents that plan and use tools.',
+   modules:[
+    {id:'g2m1',title:'What are AI Agents?',dur:'55 min',yt:'-rUKr8JDits',start:0},
+    {id:'g2m2',title:'ReAct Framework & Tool Use',dur:'65 min',yt:'-rUKr8JDits',start:3300},
+    {id:'g2m3',title:'Memory Systems for Agents',dur:'65 min',yt:'-rUKr8JDits',start:11400},
+    {id:'g2m4',title:'Multi-Agent Systems',dur:'70 min',yt:'-rUKr8JDits',start:23400},
+    {id:'g2m5',title:'AutoGen & CrewAI',dur:'65 min',yt:'-rUKr8JDits',start:31500},
+    {id:'g2m6',title:'Agent Capstone Project',dur:'50 min',yt:'-rUKr8JDits',start:42600},
+   ],resources:['Agent Design Patterns','Multi-Agent Blueprint'],project:'Build a multi-agent system that researches a topic and writes a report.'},
+  {id:'g3',title:'LangChain & LlamaIndex',dur:'10 hrs',icon:'🔗',desc:'Build production LLM applications.',
+   modules:[
+    {id:'g3m1',title:'LangChain Fundamentals',dur:'55 min',yt:'-8IUWRtznX8',start:0},
+    {id:'g3m2',title:'Chains, Prompts & Memory',dur:'60 min',yt:'-8IUWRtznX8',start:3300},
+    {id:'g3m3',title:'LangChain Agents & Tools',dur:'65 min',yt:'-8IUWRtznX8',start:10500},
+    {id:'g3m4',title:'LlamaIndex & Document Indexing',dur:'60 min',yt:'-8IUWRtznX8',start:14400},
+    {id:'g3m5',title:'Production App Project',dur:'50 min',yt:'-8IUWRtznX8',start:31800},
+   ],resources:['LangChain Templates','LlamaIndex Cookbook'],project:'Build a document Q&A application using LangChain + LlamaIndex.'},
+  {id:'g4',title:'Vector Databases & RAG',dur:'8 hrs',icon:'🗃️',desc:'Pinecone, Weaviate, Chroma for semantic search + RAG.',
+   modules:[
+    {id:'g4m1',title:'What are Vector Databases?',dur:'40 min',yt:'8KrTO9bS91s',start:0},
+    {id:'g4m2',title:'Embeddings & Semantic Search',dur:'55 min',yt:'8KrTO9bS91s',start:2400},
+    {id:'g4m3',title:'Pinecone Setup & Queries',dur:'55 min',yt:'8KrTO9bS91s',start:5700},
+    {id:'g4m4',title:'RAG Implementation',dur:'60 min',yt:'o126p1QN_RI',start:0},
+    {id:'g4m5',title:'Production RAG Project',dur:'60 min',yt:'o126p1QN_RI',start:6300},
+   ],resources:['Vector DB Comparison','RAG Architecture Diagrams'],project:'Build a RAG system over a custom knowledge base.'},
+  {id:'g5',title:'LLM Fine-Tuning',dur:'12 hrs',icon:'⚙️',desc:'Fine-tune large language models with LoRA and QLoRA.',
+   modules:[
+    {id:'g5m1',title:'Why Fine-Tune?',dur:'55 min',yt:'iOdFUJiB0Zc',start:0},
+    {id:'g5m2',title:'LoRA & QLoRA',dur:'75 min',yt:'iOdFUJiB0Zc',start:7500},
+    {id:'g5m3',title:'Fine-Tuning with HuggingFace',dur:'75 min',yt:'iOdFUJiB0Zc',start:12000},
+    {id:'g5m4',title:'RLHF & DPO Concepts',dur:'65 min',yt:'iOdFUJiB0Zc',start:24600},
+    {id:'g5m5',title:'Fine-Tuning Capstone',dur:'55 min',yt:'iOdFUJiB0Zc',start:35700},
+   ],resources:['LoRA Config Templates','HuggingFace Fine-Tuning Guide'],project:'Fine-tune a Llama or Mistral model. Deploy with Ollama.'},
+  {id:'g6',title:'Prompt Engineering Mastery',dur:'6 hrs',icon:'✍️',desc:'Master prompting: chain-of-thought, few-shot, and production patterns.',
+   modules:[
+    {id:'g6m1',title:'Prompting Fundamentals',dur:'40 min',yt:'YhRfgYH_AoU',start:0},
+    {id:'g6m2',title:'Zero-Shot & Few-Shot',dur:'45 min',yt:'YhRfgYH_AoU',start:2400},
+    {id:'g6m3',title:'Chain-of-Thought (CoT)',dur:'50 min',yt:'YhRfgYH_AoU',start:5100},
+    {id:'g6m4',title:'Advanced Techniques & Production Library',dur:'50 min',yt:'YhRfgYH_AoU',start:16500},
+   ],resources:['500 Prompt Templates','CoT Examples Library'],project:'Create a prompt library of 30 production-quality prompts.'},
+  {id:'g7',title:'Multi-Agent Systems',dur:'10 hrs',icon:'🕸️',desc:'Design and deploy complex multi-agent architectures.',
+   modules:[
+    {id:'g7m1',title:'Multi-Agent Foundations',dur:'50 min',yt:'rHtRWyxVQps',start:0},
+    {id:'g7m2',title:'Agent Communication Protocols',dur:'60 min',yt:'rHtRWyxVQps',start:3000},
+    {id:'g7m3',title:'Hierarchical Agent Systems',dur:'65 min',yt:'rHtRWyxVQps',start:6600},
+    {id:'g7m4',title:'CrewAI & AutoGen Deep Dive',dur:'70 min',yt:'rHtRWyxVQps',start:10500},
+    {id:'g7m5',title:'Production Multi-Agent Project',dur:'55 min',yt:'rHtRWyxVQps',start:17100},
+   ],resources:['Multi-Agent Design Patterns','CrewAI Cookbook'],project:'Build a multi-agent research assistant with 5+ specialized agents.'},
+  {id:'g8',title:'AI Safety & Governance',dur:'6 hrs',icon:'⚖️',desc:'AI safety, alignment, ethics, and governance.',
+   modules:[
+    {id:'g8m1',title:'AI Safety Fundamentals',dur:'50 min',yt:'b6HwyKFShek',start:0},
+    {id:'g8m2',title:'Alignment Problem',dur:'55 min',yt:'b6HwyKFShek',start:3000},
+    {id:'g8m3',title:'AI Regulation & EU AI Act',dur:'55 min',yt:'b6HwyKFShek',start:6300},
+    {id:'g8m4',title:'Responsible AI Implementation',dur:'50 min',yt:'b6HwyKFShek',start:9600},
+   ],resources:['EU AI Act Summary','Responsible AI Toolkit'],project:'Conduct an AI safety review for a real-world use case.'},
+  {id:'g9',title:'AI API Integration',dur:'5 hrs',icon:'🔌',desc:'Integrate OpenAI, Anthropic, Google, and open source APIs.',
+   modules:[
+    {id:'g9m1',title:'API Integration Fundamentals',dur:'40 min',yt:'xcP9NE6C5EI',start:0},
+    {id:'g9m2',title:'OpenAI API Deep Dive',dur:'50 min',yt:'xcP9NE6C5EI',start:2400},
+    {id:'g9m3',title:'Anthropic & Google APIs',dur:'50 min',yt:'xcP9NE6C5EI',start:5400},
+    {id:'g9m4',title:'Streaming & Function Calling',dur:'55 min',yt:'xcP9NE6C5EI',start:8700},
+    {id:'g9m5',title:'Production API Project',dur:'45 min',yt:'xcP9NE6C5EI',start:12000},
+   ],resources:['API Reference Cards','Integration Templates'],project:'Build a multi-provider AI API hub with fallbacks.'},
+ ]},
+{id:'b23999',price:23999,name:'Ultimate Bundle',label:'AI Leadership & Entrepreneurship',ic:'🎯',lpa:'₹16–25 LPA',
+ color:'rgba(34,197,94,0.08)',border:'rgba(34,197,94,0.28)',
+ desc:'AI product management, strategy, leadership, career mastery, ethics, AI for 5 industries, advanced AI, and Building AI Startups.',
+ courses:[
+  {id:'cr1',title:'AI Product Management',dur:'9 hrs',icon:'📋',desc:'Manage AI products from concept to launch.',
+   modules:[
+    {id:'cr1m1',title:'AI PM vs Traditional PM',dur:'50 min',yt:'IfW1FMDkw4k',start:0},
+    {id:'cr1m2',title:'AI Product Discovery & Roadmap',dur:'60 min',yt:'IfW1FMDkw4k',start:3000},
+    {id:'cr1m3',title:'AI Metrics & Experimentation',dur:'60 min',yt:'IfW1FMDkw4k',start:13800},
+    {id:'cr1m4',title:'Go-to-Market for AI',dur:'55 min',yt:'IfW1FMDkw4k',start:21000},
+    {id:'cr1m5',title:'AI PM Interview Prep',dur:'45 min',yt:'IfW1FMDkw4k',start:27300},
+   ],resources:['AI PM Framework','Roadmap Templates'],project:'Write a complete PRD for an AI feature.'},
+  {id:'cr2',title:'AI Strategy & Roadmap',dur:'8 hrs',icon:'🗺️',desc:'Develop AI transformation strategies.',
+   modules:[
+    {id:'cr2m1',title:'AI Transformation Framework',dur:'60 min',yt:'zwUSZD3t_BU',start:0},
+    {id:'cr2m2',title:'AI Maturity & Use Case Assessment',dur:'60 min',yt:'zwUSZD3t_BU',start:3600},
+    {id:'cr2m3',title:'ROI, Business Case & Governance',dur:'60 min',yt:'zwUSZD3t_BU',start:10800},
+    {id:'cr2m4',title:'AI Team Building & Change Mgmt',dur:'60 min',yt:'zwUSZD3t_BU',start:14400},
+    {id:'cr2m5',title:'Strategy Presentation',dur:'60 min',yt:'zwUSZD3t_BU',start:25200},
+   ],resources:['AI Maturity Model','ROI Calculator'],project:'Create a 3-year AI transformation roadmap as a 15-slide deck.'},
+  {id:'cr3',title:'AI Team Leadership',dur:'6 hrs',icon:'👥',desc:'Lead and build high-performing AI teams.',
+   modules:[
+    {id:'cr3m1',title:'AI Leadership Fundamentals',dur:'50 min',yt:'1NMM9Q_TjxE',start:0},
+    {id:'cr3m2',title:'Hiring AI Talent',dur:'55 min',yt:'1NMM9Q_TjxE',start:3000},
+    {id:'cr3m3',title:'Managing Data Scientists & MLEs',dur:'55 min',yt:'1NMM9Q_TjxE',start:6300},
+    {id:'cr3m4',title:'AI Culture & Innovation',dur:'50 min',yt:'1NMM9Q_TjxE',start:9600},
+   ],resources:['AI Team Structure Guide','Hiring Framework'],project:'Design a complete AI team structure and hiring plan.'},
+  {id:'cr4',title:'AI Ethics & Governance',dur:'5 hrs',icon:'⚖️',desc:'AI ethics, bias, fairness, privacy, and regulation.',
+   modules:[
+    {id:'cr4m1',title:'AI Ethics Foundations',dur:'50 min',yt:'VugSwwHaOgQ',start:0},
+    {id:'cr4m2',title:'Bias, Fairness & Discrimination',dur:'55 min',yt:'VugSwwHaOgQ',start:3000},
+    {id:'cr4m3',title:'Privacy, Data & Compliance',dur:'55 min',yt:'VugSwwHaOgQ',start:6300},
+    {id:'cr4m4',title:'Responsible AI Frameworks',dur:'55 min',yt:'VugSwwHaOgQ',start:9600},
+    {id:'cr4m5',title:'Ethics Audit Project',dur:'30 min',yt:'VugSwwHaOgQ',start:16200},
+   ],resources:['EU AI Act Summary','Bias Audit Framework'],project:'Conduct an AI ethics audit on a publicly available AI system.'},
+  {id:'cr5',title:'AI Career Mastery',dur:'7 hrs',icon:'🚀',desc:'Build a career in AI from scratch.',
+   modules:[
+    {id:'cr5m1',title:'AI Career Landscape',dur:'45 min',yt:'aIuPQjPQEb4',start:0},
+    {id:'cr5m2',title:'Building Your AI Portfolio',dur:'55 min',yt:'aIuPQjPQEb4',start:2700},
+    {id:'cr5m3',title:'Technical Interviews',dur:'60 min',yt:'aIuPQjPQEb4',start:9300},
+    {id:'cr5m4',title:'ML System Design Interviews',dur:'60 min',yt:'aIuPQjPQEb4',start:12900},
+   ],resources:['AI Resume Template','Interview Q&A Bank'],project:'Build a complete AI portfolio: GitHub with 3 projects, LinkedIn, resume.'},
+  {id:'cr6',title:'AI Freelancing & Consulting',dur:'6 hrs',icon:'💼',desc:'Build a high-income AI freelancing career.',
+   modules:[
+    {id:'cr6m1',title:'AI Freelancing Landscape',dur:'40 min',yt:'Ozp3k4qzmHo',start:0},
+    {id:'cr6m2',title:'Positioning & Client Acquisition',dur:'55 min',yt:'Ozp3k4qzmHo',start:5400},
+    {id:'cr6m3',title:'Pricing & Delivering AI Projects',dur:'55 min',yt:'Ozp3k4qzmHo',start:12000},
+    {id:'cr6m4',title:'Scaling to Agency',dur:'55 min',yt:'Ozp3k4qzmHo',start:18300},
+   ],resources:['AI Services Pricing Guide','Client Proposal Template'],project:'Create a complete AI freelancing pitch with service offerings.'},
+  {id:'cr7',title:'AI for Finance & Banking',dur:'5 hrs',icon:'🏦',desc:'AI applications in fintech, banking, and investment.',
+   modules:[
+    {id:'cr7m1',title:'AI in Financial Services',dur:'45 min',yt:'Nh7OhW7ZcIU',start:0},
+    {id:'cr7m2',title:'Credit Scoring & Risk Models',dur:'55 min',yt:'Nh7OhW7ZcIU',start:2700},
+    {id:'cr7m3',title:'Fraud Detection with ML',dur:'55 min',yt:'Nh7OhW7ZcIU',start:6000},
+    {id:'cr7m4',title:'Algorithmic Trading Basics',dur:'55 min',yt:'Nh7OhW7ZcIU',start:9300},
+    {id:'cr7m5',title:'Fintech Innovation Project',dur:'30 min',yt:'Nh7OhW7ZcIU',start:12900},
+   ],resources:['Fintech AI Use Cases','Risk Model Template'],project:'Build a basic credit scoring model with explainability.'},
+  {id:'cr8',title:'AI for Healthcare',dur:'5 hrs',icon:'🏥',desc:'AI applications in medical imaging, diagnostics.',
+   modules:[
+    {id:'cr8m1',title:'AI in Healthcare Overview',dur:'45 min',yt:'eZFtf69sido',start:0},
+    {id:'cr8m2',title:'Medical Imaging & Diagnostics AI',dur:'60 min',yt:'eZFtf69sido',start:2700},
+    {id:'cr8m3',title:'Clinical NLP & EHR Analysis',dur:'55 min',yt:'eZFtf69sido',start:6300},
+    {id:'cr8m4',title:'Drug Discovery & Genomics',dur:'55 min',yt:'eZFtf69sido',start:9600},
+   ],resources:['Healthcare AI Use Cases','Compliance Guide'],project:'Analyze a public medical dataset and build a diagnostic classifier.'},
+  {id:'cr9',title:'AI for E-commerce & Retail',dur:'5 hrs',icon:'🛍️',desc:'AI for personalization, demand forecasting.',
+   modules:[
+    {id:'cr9m1',title:'AI in E-commerce Overview',dur:'40 min',yt:'plo5kk_MzL4',start:0},
+    {id:'cr9m2',title:'Recommendation Systems',dur:'55 min',yt:'plo5kk_MzL4',start:2400},
+    {id:'cr9m3',title:'Demand Forecasting',dur:'55 min',yt:'plo5kk_MzL4',start:5700},
+    {id:'cr9m4',title:'Customer Segmentation & Churn',dur:'50 min',yt:'plo5kk_MzL4',start:9000},
+   ],resources:['E-commerce AI Playbook','Recommendation System Template'],project:'Build a product recommendation system for an e-commerce dataset.'},
+  {id:'cr10',title:'Edge AI & TinyML',dur:'8 hrs',icon:'⚡',desc:'Deploy AI on edge devices, microcontrollers, and IoT hardware.',
+   modules:[
+    {id:'cr10m1',title:'Edge AI Fundamentals',dur:'50 min',yt:'PL7VEa1KauMQppUExiIOfxxk_2ta94EEpd',isPlaylist:true,plIndex:0},
+    {id:'cr10m2',title:'TensorFlow Lite Basics',dur:'55 min',yt:'PL7VEa1KauMQppUExiIOfxxk_2ta94EEpd',isPlaylist:true,plIndex:1},
+    {id:'cr10m3',title:'Model Quantisation & Pruning',dur:'55 min',yt:'PL7VEa1KauMQppUExiIOfxxk_2ta94EEpd',isPlaylist:true,plIndex:2},
+    {id:'cr10m4',title:'Deploying on Microcontrollers',dur:'60 min',yt:'PL7VEa1KauMQppUExiIOfxxk_2ta94EEpd',isPlaylist:true,plIndex:3},
+    {id:'cr10m5',title:'Edge AI Project',dur:'40 min',yt:'PL7VEa1KauMQppUExiIOfxxk_2ta94EEpd',isPlaylist:true,plIndex:4},
+   ],resources:['TFLite Guide','Edge Device Comparison'],project:'Deploy a TinyML model on a microcontroller or edge device.'},
+  {id:'cr11',title:'Reinforcement Learning',dur:'8 hrs',icon:'🎮',desc:'Q-learning, policy gradients, and deep RL.',
+   modules:[
+    {id:'cr11m1',title:'RL Fundamentals & MDP',dur:'55 min',yt:'VnpRp7ZglfA',start:0},
+    {id:'cr11m2',title:'Q-Learning & Deep Q-Networks',dur:'65 min',yt:'VnpRp7ZglfA',start:3300},
+    {id:'cr11m3',title:'Policy Gradient Methods',dur:'65 min',yt:'VnpRp7ZglfA',start:7200},
+    {id:'cr11m4',title:'PPO & Actor-Critic',dur:'65 min',yt:'VnpRp7ZglfA',start:11400},
+    {id:'cr11m5',title:'RL Project: Game Agent',dur:'50 min',yt:'VnpRp7ZglfA',start:17100},
+   ],resources:['RL Algorithm Comparison','OpenAI Gym Guide'],project:'Train a DQN agent to play a classic Atari game.'},
+  {id:'cr12',title:'Federated Learning',dur:'6 hrs',icon:'🌐',desc:'Train ML models across distributed devices.',
+   modules:[
+    {id:'cr12m1',title:'Federated Learning Concepts',dur:'50 min',yt:'PLNG4feLHqCWkdlSrEL2xbCtGa6QBxlUZb',isPlaylist:true,plIndex:0},
+    {id:'cr12m2',title:'FedAvg & Aggregation Strategies',dur:'60 min',yt:'PLNG4feLHqCWkdlSrEL2xbCtGa6QBxlUZb',isPlaylist:true,plIndex:1},
+    {id:'cr12m3',title:'Privacy-Preserving ML',dur:'55 min',yt:'PLNG4feLHqCWkdlSrEL2xbCtGa6QBxlUZb',isPlaylist:true,plIndex:2},
+    {id:'cr12m4',title:'Federated Learning Project',dur:'45 min',yt:'PLNG4feLHqCWkdlSrEL2xbCtGa6QBxlUZb',isPlaylist:true,plIndex:3},
+   ],resources:['Flower Framework Guide','FL Privacy Toolkit'],project:'Implement a federated learning experiment with 3+ simulated clients.'},
+  {id:'cr13',title:'Graph Neural Networks',dur:'7 hrs',icon:'🕸️',desc:'GNNs for recommendation, fraud detection.',
+   modules:[
+    {id:'cr13m1',title:'Graph Theory for ML',dur:'50 min',yt:'PLPTV0NXA_ZSg4Pimkso0nHxwYMB6IGX7l',isPlaylist:true,plIndex:0},
+    {id:'cr13m2',title:'Graph Convolutional Networks',dur:'60 min',yt:'PLPTV0NXA_ZSg4Pimkso0nHxwYMB6IGX7l',isPlaylist:true,plIndex:1},
+    {id:'cr13m3',title:'GraphSAGE & GAT',dur:'60 min',yt:'PLPTV0NXA_ZSg4Pimkso0nHxwYMB6IGX7l',isPlaylist:true,plIndex:2},
+    {id:'cr13m4',title:'GNN Applications & Project',dur:'50 min',yt:'PLPTV0NXA_ZSg4Pimkso0nHxwYMB6IGX7l',isPlaylist:true,plIndex:3},
+   ],resources:['PyTorch Geometric Guide','GNN Architecture Diagrams'],project:'Build a GNN-based recommendation or fraud detection system.'},
+  {id:'cr14',title:'Building AI Startups',dur:'7 hrs',icon:'🦄',desc:'From AI idea to funded startup.',
+   modules:[
+    {id:'cr14m1',title:'Identifying AI Startup Opportunities',dur:'50 min',yt:'zO1098PFOw8',start:0},
+    {id:'cr14m2',title:'Building MVP with AI',dur:'60 min',yt:'zO1098PFOw8',start:3000},
+    {id:'cr14m3',title:'Fundraising for AI Startups',dur:'60 min',yt:'zO1098PFOw8',start:6600},
+    {id:'cr14m4',title:'Go-to-Market & Growth',dur:'55 min',yt:'zO1098PFOw8',start:10200},
+    {id:'cr14m5',title:'Scaling & Exit Strategies',dur:'55 min',yt:'zO1098PFOw8',start:13500},
+   ],resources:['Startup Pitch Deck Template','VC Fundraising Guide'],project:'Create a complete AI startup pitch deck for a real or fictional AI product.'},
+ ]},
+];
+
+const SPECIAL_COURSES=[
+{id:'sp1',title:'Professional Make-up Course',icon:'💄',fk:'professional_makeup_course',
+ desc:'10 chapters covering skin types, tools, contouring, eye art, bridal looks and MUA business setup.',
+ modules:[
+  {id:'sp1m1',title:'Ch.1 — Makeup Basics & Intro',dur:'35 min',yt:'PLnormvp3UHAqpl1-m47DBTBMSXv1PCRL3',isPlaylist:true,plIndex:0},
+  {id:'sp1m2',title:'Ch.2 — Skin Prep & Tools',dur:'38 min',yt:'PLnormvp3UHAqpl1-m47DBTBMSXv1PCRL3',isPlaylist:true,plIndex:1},
+  {id:'sp1m3',title:'Ch.3 — Foundation Techniques',dur:'42 min',yt:'PLnormvp3UHAqpl1-m47DBTBMSXv1PCRL3',isPlaylist:true,plIndex:2},
+  {id:'sp1m4',title:'Ch.4 — Eye Makeup',dur:'45 min',yt:'PLnormvp3UHAqpl1-m47DBTBMSXv1PCRL3',isPlaylist:true,plIndex:3},
+  {id:'sp1m5',title:'Ch.5 — Contouring & Highlight',dur:'40 min',yt:'PLnormvp3UHAqpl1-m47DBTBMSXv1PCRL3',isPlaylist:true,plIndex:4},
+  {id:'sp1m6',title:'Ch.6 — Lip Art',dur:'35 min',yt:'PLnormvp3UHAqpl1-m47DBTBMSXv1PCRL3',isPlaylist:true,plIndex:5},
+  {id:'sp1m7',title:'Ch.7 — Colour Theory',dur:'38 min',yt:'PLnormvp3UHAqpl1-m47DBTBMSXv1PCRL3',isPlaylist:true,plIndex:6},
+  {id:'sp1m8',title:'Ch.8 — Bridal Makeup',dur:'55 min',yt:'PLnormvp3UHAqpl1-m47DBTBMSXv1PCRL3',isPlaylist:true,plIndex:7},
+  {id:'sp1m9',title:'Ch.9 — Party & Evening Looks',dur:'45 min',yt:'PLnormvp3UHAqpl1-m47DBTBMSXv1PCRL3',isPlaylist:true,plIndex:8},
+  {id:'sp1m10',title:'Ch.10 — MUA Business & Pricing',dur:'40 min',yt:'PLnormvp3UHAqpl1-m47DBTBMSXv1PCRL3',isPlaylist:true,plIndex:9},
+ ],resources:['Makeup Tool Kit List','Skin Type Guide','Colour Wheel for MUAs'],
+ project:'Create a full makeup portfolio with 5 different looks photographed.'},
+{id:'sp2',title:'Fashion Designer Course',icon:'👗',fk:'fashion_designer_course',
+ desc:'10 chapters — sketching, fabric selection, garment construction, digital design, and brand launch.',
+ modules:[
+  {id:'sp2m1',title:'Ch.1 — Fashion Design Basics',dur:'50 min',yt:'PLQqMYWJXgJhjgb54-c2RWAVx4Ln6BfPcQ',isPlaylist:true,plIndex:0},
+  {id:'sp2m2',title:'Ch.2 — Fashion Illustration',dur:'55 min',yt:'PLQqMYWJXgJhjgb54-c2RWAVx4Ln6BfPcQ',isPlaylist:true,plIndex:1},
+  {id:'sp2m3',title:'Ch.3 — Fabric & Textiles',dur:'50 min',yt:'PLQqMYWJXgJhjgb54-c2RWAVx4Ln6BfPcQ',isPlaylist:true,plIndex:2},
+  {id:'sp2m4',title:'Ch.4 — Pattern Making',dur:'55 min',yt:'PLQqMYWJXgJhjgb54-c2RWAVx4Ln6BfPcQ',isPlaylist:true,plIndex:3},
+  {id:'sp2m5',title:'Ch.5 — Garment Construction',dur:'60 min',yt:'PLQqMYWJXgJhjgb54-c2RWAVx4Ln6BfPcQ',isPlaylist:true,plIndex:4},
+  {id:'sp2m6',title:'Ch.6 — Colour Theory in Fashion',dur:'45 min',yt:'PLQqMYWJXgJhjgb54-c2RWAVx4Ln6BfPcQ',isPlaylist:true,plIndex:5},
+  {id:'sp2m7',title:'Ch.7 — Trend Research',dur:'50 min',yt:'PLQqMYWJXgJhjgb54-c2RWAVx4Ln6BfPcQ',isPlaylist:true,plIndex:6},
+  {id:'sp2m8',title:'Ch.8 — Sustainable Fashion',dur:'45 min',yt:'PLQqMYWJXgJhjgb54-c2RWAVx4Ln6BfPcQ',isPlaylist:true,plIndex:7},
+  {id:'sp2m9',title:'Ch.9 — Digital Fashion Design',dur:'50 min',yt:'PLQqMYWJXgJhjgb54-c2RWAVx4Ln6BfPcQ',isPlaylist:true,plIndex:8},
+  {id:'sp2m10',title:'Ch.10 — Brand Identity & Launch',dur:'55 min',yt:'PLQqMYWJXgJhjgb54-c2RWAVx4Ln6BfPcQ',isPlaylist:true,plIndex:9},
+ ],resources:['Fashion Illustration Templates','Fabric Guide PDF','Brand Kit Template'],
+ project:'Design a 5-piece mini fashion collection as a PDF portfolio.'},
+{id:'sp3',title:'Bridal Mehendi Designer',icon:'🌿',fk:'bridal_mehndi_designer',
+ desc:'42 chapters — from basic cones and patterns through Arabic, traditional Indian, full bridal hands, and business setup.',
+ modules:[
+  {id:'sp3m1',title:'Part 1 — Tools, Cones & Basics',dur:'35 min',yt:'7ZqkiTDOrBQ',start:0},
+  {id:'sp3m2',title:'Part 2 — Basic Patterns',dur:'35 min',yt:'zfAiB0R1rlM',start:0},
+  {id:'sp3m3',title:'Part 3 — Floral Designs',dur:'40 min',yt:'2dMBULmJY2Y',start:0},
+  {id:'sp3m4',title:'Part 4 — Arabic Style',dur:'42 min',yt:'4QPzvawirzM',start:0},
+  {id:'sp3m5',title:'Part 5 — Filling Techniques',dur:'38 min',yt:'KLhVTmWC11w',start:0},
+  {id:'sp3m6',title:'Part 6 — Peacock Designs',dur:'42 min',yt:'YcRrtl23-Rg',start:0},
+  {id:'sp3m7',title:'Part 7 — Leaf Patterns',dur:'38 min',yt:'125BS2PVYD0',start:0},
+  {id:'sp3m8',title:'Part 8 — Back Hand Designs',dur:'42 min',yt:'Y_SR17eTNt8',start:0},
+  {id:'sp3m9',title:'Part 9 — Traditional Indian',dur:'45 min',yt:'G3LDg3qORFM',start:0},
+  {id:'sp3m10',title:'Part 10 — Bridal Full Hand Pt.1',dur:'50 min',yt:'5aMpbLWqMk0',start:0},
+  {id:'sp3m11',title:'Part 11 — Bridal Full Hand Pt.2',dur:'50 min',yt:'6Te6cklQtWk',start:0},
+  {id:'sp3m12',title:'Part 12 — Dulha Mehendi',dur:'45 min',yt:'jQQQssCFdEY',start:0},
+  {id:'sp3m13',title:'Part 13 — Feet & Leg Designs',dur:'45 min',yt:'q9T4Qmuk9mc',start:0},
+  {id:'sp3m14',title:'Part 14 — Rajasthani Style',dur:'48 min',yt:'BWTLRmRYC-c',start:0},
+  {id:'sp3m15',title:'Part 15 — Fusion Modern Designs',dur:'45 min',yt:'u49SmoSaTk8',start:0},
+  {id:'sp3m16',title:'Part 16 — Net Pattern Designs',dur:'42 min',yt:'3LwoQlw1Wzw',start:0},
+  {id:'sp3m17',title:'Part 17 — Mandala Designs',dur:'45 min',yt:'hwDxsBDOJPQ',start:0},
+  {id:'sp3m18',title:'Part 18 — Indo-Arabic Fusion',dur:'48 min',yt:'uWpvvLskYFk',start:0},
+  {id:'sp3m19',title:'Part 19 — Fine Line Mehendi',dur:'42 min',yt:'32S-25ax_aE',start:0},
+  {id:'sp3m20',title:'Part 20 — Geometric Patterns',dur:'45 min',yt:'mhIi1z_7aWU',start:0},
+  {id:'sp3m21',title:'Part 21 — Bridal Armband',dur:'45 min',yt:'fpvNSfzthwU',start:0},
+  {id:'sp3m22',title:'Part 22 — Finger Designs',dur:'40 min',yt:'cNVU-4LyYyQ',start:0},
+  {id:'sp3m23',title:'Part 23 — Wrist Band Designs',dur:'42 min',yt:'wgoSbB1jy6c',start:0},
+  {id:'sp3m24',title:'Part 24 — Advanced Floral',dur:'48 min',yt:'e-c7RJBQGSU',start:0},
+  {id:'sp3m25',title:'Part 25 — Rose & Flower Motifs',dur:'44 min',yt:'TbvCruBXrEc',start:0},
+  {id:'sp3m26',title:'Part 26 — Full Palm Design',dur:'50 min',yt:'fcW05mJoBhc',start:0},
+  {id:'sp3m27',title:'Part 27 — Half Hand Design',dur:'46 min',yt:'SeA08YQQFcE',start:0},
+  {id:'sp3m28',title:'Part 28 — Back & Front Combo',dur:'52 min',yt:'L6t09bkqbcA',start:0},
+  {id:'sp3m29',title:'Part 29 — Mughal Inspired',dur:'48 min',yt:'X5kmVd25bJ8',start:0},
+  {id:'sp3m30',title:'Part 30 — Heritage Patterns',dur:'50 min',yt:'5GJHpZB1gF4',start:0},
+  {id:'sp3m31',title:'Part 31 — Intricate Detail Work',dur:'52 min',yt:'zZ2t_B4NOS4',start:0},
+  {id:'sp3m32',title:'Part 32 — Bridal Showcase Pt.1',dur:'55 min',yt:'PgiayPy13m8',start:0},
+  {id:'sp3m33',title:'Part 33 — Bridal Showcase Pt.2',dur:'55 min',yt:'yBspCHOgs3E',start:0},
+  {id:'sp3m34',title:'Part 34 — Bridal Showcase Pt.3',dur:'55 min',yt:'VU7vtAUSwQg',start:0},
+  {id:'sp3m35',title:'Part 35 — Advanced Arabic',dur:'48 min',yt:'-f7v69f9sBc',start:0},
+  {id:'sp3m36',title:'Part 36 — Contemporary Fusion',dur:'46 min',yt:'hmSeQ_Ocjlo',start:0},
+  {id:'sp3m37',title:'Part 37 — Lotus & Paisley Motifs',dur:'48 min',yt:'4Xf403jpMsM',start:0},
+  {id:'sp3m38',title:'Part 38 — Symmetrical Designs',dur:'45 min',yt:'a7GvmLWT9X0',start:0},
+  {id:'sp3m39',title:'Part 39 — Ankle & Foot Art',dur:'45 min',yt:'mcbWEadqdN0',start:0},
+  {id:'sp3m40',title:'Part 40 — Competition Designs',dur:'52 min',yt:'agxRyZj8C6A',start:0},
+  {id:'sp3m41',title:'Part 41 — Professional Portfolio',dur:'48 min',yt:'fJkaPMabYK0',start:0},
+  {id:'sp3m42',title:'Part 42 — Business & Pricing Guide',dur:'35 min',yt:'m2mI2bcPfxk',start:0},
+ ],resources:['Mehendi Design Book','Cone Filling Guide','Pattern Reference Library','Pricing Calculator'],
+ project:'Create a portfolio of 10 different mehendi designs including one full bridal hand combo.'},
+];
+
+const EXAM_QS=[
+ {q:'What does ROI stand for?',opts:['Rate of Interest','Return on Investment','Risk of Implementation','Revenue of Industry'],ans:1},
+ {q:'What is the best way to validate a new business idea?',opts:['Launch immediately','Test with a small audience','Wait until plan is perfect','Copy a competitor'],ans:1},
+ {q:'Which mindset is most important for career growth?',opts:['Fixed mindset','Growth mindset','Competitive mindset','Passive mindset'],ans:1},
+ {q:'What does "conversion" mean in digital marketing?',opts:['Currency exchange','A visitor completing a desired action','Editing a video','Translating content'],ans:1},
+ {q:'What is the purpose of a professional portfolio?',opts:['Store personal files','Showcase work to clients','Track expenses','List certifications only'],ans:1},
+ {q:'What is the key to mastering any digital skill?',opts:['Watching videos only','Practice on real projects','Reading books only','Attending seminars only'],ans:1},
+ {q:'What does "scaling" mean in business?',opts:['Making things smaller','Growing revenue without proportionally growing costs','Hiring more people only','Reducing quality'],ans:1},
+ {q:'Which metric is most important for SEO?',opts:['Number of posts','Organic traffic and rankings','Social followers','Email list size'],ans:1},
+ {q:'What is affiliate marketing?',opts:['Creating your own product','Earning commissions promoting others products','Social media management','Email campaigns'],ans:1},
+ {q:'What is the first step in any freelance project?',opts:['Start immediately','Understand client requirements clearly','Ask for full payment','Use a template'],ans:1},
+];
+
+/* ═══ STATE ═══ */
+let U={},UD={},BPRICE=0,COL='User-collection';
+let WATCH_DATA={},EXAM_DATA={},CERT_DATA={},SPC_ACCESS={};
+let currentCourse=null,currentModule=null,currentBundleId=null,isSpc=false;
+let prevPage='home',userRef='';
+let modWatch={},saveWT={};
+let ytFrame=null,isPlaying=false,isMuted=false,vol=100;
+let curDur=0,curTime=0,pollTimer=null,scrubbing=false;
+let discShown=false,discCb=null;
+let examState={courseId:null,qs:[],ans:{},done:false};
+let chatLocal=[],chatG=[];
+
+/* ═══ HELPERS ═══ */
+const $=id=>document.getElementById(id);
+const T=(id,v)=>{const e=$(id);if(e)e.textContent=v};
+const san=e=>e.toLowerCase().trim().replace(/\./g,'_').replace(/@/g,'__at__');
+const toINR=n=>'₹'+(Number(n)||0).toLocaleString('en-IN');
+const fts=()=>firebase.firestore.FieldValue.serverTimestamp();
+const fmt=s=>{const m=Math.floor(s/60),x=Math.floor(s%60);return`${m}:${x.toString().padStart(2,'0')}`};
+
+let _tt;
+function toast(ic,msg,dur=3200){
+  const el=$('toast');
+  el.innerHTML=`<span style="font-size:.95rem">${ic}</span><span>${msg}</span>`;
+  el.classList.add('on');clearTimeout(_tt);
+  _tt=setTimeout(()=>el.classList.remove('on'),dur);
+}
+
+/* ═══ AUTH ═══ */
+let authDone=false;
+const authTO=setTimeout(()=>{
+  if(!authDone){
+    $('gSpin').style.display='none';T('gMsg','');
+    $('gErr').style.display='flex';
+    $('gErrD').innerHTML='Timeout. <a href="auth.html" style="color:var(--gold)">Re-login</a>';
+  }
+},12000);
+
+AUTH.onAuthStateChanged(async fbUser=>{
+  if(authDone)return;clearTimeout(authTO);authDone=true;
+  if(!fbUser){location.href='auth.html';return;}
+  try{
+    T('gMsg','Loading courses…');
+    const emailId=san(fbUser.email);
+    U={email:fbUser.email,emailId,name:fbUser.displayName||fbUser.email.split('@')[0]};
+    let docData=null;
+    for(const c of['User-collection','user_collection','users','user-collection','learners']){
+      try{const s=await DB.collection(c).doc(emailId).get();if(s.exists){docData=s.data();COL=c;break;}}catch(e){}
+    }
+    if(!docData)docData={paymentStatus:'approved',bundlePrice:499,fullName:U.name};
+    if(docData.paymentStatus&&docData.paymentStatus!=='approved'&&docData.paymentStatus!=='not_applicable'){
+      showErr('Payment not approved. <a href="https://wa.me/919019254743" style="color:var(--gold)">Contact support</a>');return;
+    }
+    if(docData.blocked===true){showErr('Account blocked. <a href="https://wa.me/919019254743" style="color:var(--gold)">Contact support</a>');return;}
+    UD=docData;
+    BPRICE=parseInt(docData.bundlePrice||docData.bundleAmount||0)||499;
+    if(docData.fullName)U.name=docData.fullName;
+    userRef=docData.referralCode||docData.referral||U.emailId.slice(0,8).toUpperCase();
+    SPECIAL_COURSES.forEach(sc=>{
+      if(UD[sc.fk]===true||UD['access_'+sc.fk]===true||UD['approved_'+sc.fk]===true||UD[sc.id]===true)SPC_ACCESS[sc.id]=true;
+    });
+    await loadProgress();
+    initApp();
+    const g=$('guard');g.classList.add('fade');
+    setTimeout(()=>{g.classList.add('gone');$('app').classList.add('show');},600);
+  }catch(err){showErr('Error: '+err.message);}
+});
+function showErr(html){$('gSpin').style.display='none';T('gMsg','');$('gErr').style.display='flex';$('gErrD').innerHTML=html;}
+
+/* ═══ PROGRESS ═══ */
+async function loadProgress(){
+  try{
+    const[ps,ws,es,cs]=await Promise.all([
+      DB.collection(COL).doc(U.emailId).collection('progress').get(),
+      DB.collection(COL).doc(U.emailId).collection('watchseconds').get(),
+      DB.collection(COL).doc(U.emailId).collection('exams').get(),
+      DB.collection(COL).doc(U.emailId).collection('certificates').get()
+    ]);
+    ps.forEach(d=>{WATCH_DATA[d.id]=d.data();});
+    ws.forEach(d=>{const x=d.data();modWatch[d.id]={watched:new Set(x.watched||[]),total:x.total||0};});
+    es.forEach(d=>{EXAM_DATA[d.id]=d.data();});
+    cs.forEach(d=>{CERT_DATA[d.id]=d.data();});
+  }catch(e){console.warn('loadProgress:',e);}
+}
+async function saveModDone(courseId,moduleId){
+  const d=WATCH_DATA[courseId]||{done:[],lastModule:moduleId};
+  if(!Array.isArray(d.done))d.done=[];
+  if(!d.done.includes(moduleId))d.done.push(moduleId);
+  d.lastModule=moduleId;d.updatedAt=fts();WATCH_DATA[courseId]=d;
+  try{await DB.collection(COL).doc(U.emailId).collection('progress').doc(courseId).set(d,{merge:true});}catch(e){}
+}
+async function saveWS(modId){
+  const d=modWatch[modId];if(!d)return;
+  try{await DB.collection(COL).doc(U.emailId).collection('watchseconds').doc(modId).set({watched:[...d.watched],total:d.total,updatedAt:fts()},{merge:true});}catch(e){}
+}
+function schedSave(id){clearTimeout(saveWT[id]);saveWT[id]=setTimeout(()=>saveWS(id),5000);}
+function isModDone(cid,mid){return(WATCH_DATA[cid]?.done||[]).includes(mid);}
+function cPct(cid,total){const d=WATCH_DATA[cid];if(!d)return 0;return Math.min(100,Math.round((d.done||[]).length/Math.max(total,1)*100));}
+function mWPct(mid){const d=modWatch[mid];if(!d||!d.total)return 0;return Math.min(100,Math.round(d.watched.size/d.total*100));}
+
+/* ═══ INIT ═══ */
+function initApp(){
+  const b=bundleForPrice(BPRICE);
+  T('sbAv',U.name?.[0]?.toUpperCase()||'U');T('sbName',U.name);
+  T('sbTier',(b?.ic||'🌟')+' '+(b?.name||'Member'));
+  T('tbBundle',(b?.ic||'🌟')+' '+(b?.name||'Member'));
+  updatePct();
+  renderBundleGrid();renderProgOv();renderML();renderCertGal();renderSpecial();
+  initTutor();loadChatHistory();
+}
+function bundleForPrice(p){return BUNDLES.filter(b=>b.price<=p).sort((a,b)=>b.price-a.price)[0]||BUNDLES[0];}
+function bunUnlocked(b){return b.price<=BPRICE;}
+function cUnlocked(courseId){
+  const b=BUNDLES.find(b=>b.courses.some(c=>c.id===courseId));
+  if(b&&bunUnlocked(b))return true;
+  if(UD['course_'+courseId]===true||UD.courses?.includes(courseId))return true;
+  return false;
+}
+function sUnlocked(spId){return SPC_ACCESS[spId]===true;}
+function updatePct(){
+  let total=0,done=0;
+  BUNDLES.forEach(b=>{if(!bunUnlocked(b))return;b.courses.forEach(c=>{total+=c.modules.length;done+=(WATCH_DATA[c.id]?.done||[]).length;});});
+  T('tbPct',(total?Math.round(done/total*100):0)+'% done');
+}
+
+/* ═══ BUNDLE GRID ═══ */
+function renderBundleGrid(){
+  const grid=$('bundleGrid');if(!grid)return;
+  const unlocked=BUNDLES.filter(b=>bunUnlocked(b));
+  const locked=BUNDLES.filter(b=>!bunUnlocked(b));
+  T('homeSubtitle',`${unlocked.length} bundle${unlocked.length!==1?'s':''} unlocked · ${locked.length} locked`);
+  grid.innerHTML=[...unlocked,...locked].map(b=>{
+    const lk=!bunUnlocked(b);
+    const tm=b.courses.reduce((s,c)=>s+c.modules.length,0);
+    const dm=b.courses.reduce((s,c)=>s+(WATCH_DATA[c.id]?.done||[]).length,0);
+    const pct=tm?Math.round(dm/tm*100):0;
+    return`<div class="bcard${lk?' locked':''}" style="--bc-color:${b.color};--bc-border:${b.border}" onclick="${lk?`upgPrompt('${b.name}',${b.price})`:`openBundle('${b.id}')`}">
+      ${lk?'<div class="bc-lock">🔒</div>':''}
+      <div class="bc-em">${b.ic}</div>
+      <div class="bc-name">${b.name}</div>
+      <div class="bc-price-row"><span class="bc-price">${lk?toINR(b.price)+' — Upgrade':'✅ Unlocked'}</span><span class="bc-lpa">🚀 ${b.lpa}</span></div>
+      <div class="bc-label">${b.label}</div>
+      <div class="bc-desc">${b.desc}</div>
+      <div class="bc-tags">${b.courses.slice(0,5).map(c=>`<span class="bc-tag">${c.icon} ${c.title.split(' ').slice(0,2).join(' ')}</span>`).join('')}${b.courses.length>5?`<span class="bc-tag">+${b.courses.length-5} more</span>`:''}</div>
+      ${!lk?`<div class="bc-pb"><div class="bc-pf" style="width:${pct}%"></div></div><div class="bc-pl">${pct}% · ${dm}/${tm} done</div>`:''}
+    </div>`;
+  }).join('');
+}
+function upgPrompt(name,price){
+  toast('🔒',`${name} needs ${toINR(price)} — contacting support…`,3500);
+  setTimeout(()=>window.open('https://wa.me/919019254743?text=Hi, upgrade to '+name+'. Email: '+U.email,'_blank'),1200);
+}
+
+/* ═══ BUNDLE COURSES ═══ */
+function openBundle(bId){
+  currentBundleId=bId;
+  const b=BUNDLES.find(x=>x.id===bId);if(!b)return;
+  T('bcTitle',b.ic+' '+b.name);T('bcSub',b.courses.length+' courses · '+b.label+' · '+b.lpa);
+  $('bcList').innerHTML=b.courses.map(c=>{
+    const unlocked=cUnlocked(c.id);
+    const pct=cPct(c.id,c.modules.length);
+    const dm=(WATCH_DATA[c.id]?.done||[]).length;
+    return`<div style="background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:17px;cursor:${unlocked?'pointer':'default'};opacity:${unlocked?1:.6};transition:all .2s" ${unlocked?`onmouseenter="this.style.borderColor='${b.border}';this.style.transform='translateY(-2px)'" onmouseleave="this.style.borderColor='';this.style.transform=''" onclick="openCourse('${bId}','${c.id}')"`:''}> 
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:7px;margin-bottom:7px">
+        <div style="display:flex;align-items:center;gap:8px"><span style="font-size:1.5rem">${c.icon}</span><div style="font-family:var(--fd);font-size:.9rem;font-weight:700">${c.title}</div></div>
+        <span class="bdg ${unlocked?'ok':'rd'}">${unlocked?'✅ Access':'🔒 Locked'}</span>
+      </div>
+      <div style="font-size:.73rem;color:var(--t2);margin-bottom:8px;line-height:1.6">${c.desc}</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;font-family:var(--fm);font-size:.5rem;color:var(--t3);margin-bottom:8px"><span>⏱ ${c.dur}</span><span>📋 ${c.modules.length} ch.</span><span>✅ ${dm} done</span></div>
+      ${unlocked?`<div class="bc-pb"><div class="bc-pf" style="width:${pct}%"></div></div><div class="bc-pl">${pct}%</div>`:
+      `<div style="font-size:.7rem;color:var(--t3)">🔒 <span style="color:var(--gold);cursor:pointer" onclick="event.stopPropagation();upgPrompt('${b.name}',${b.price})">Upgrade →</span></div>`}
+    </div>`;
+  }).join('');
+  goPage('bundle-courses');
+}
+
+/* ═══ DISCLAIMER ═══ */
+function showDisc(cb){
+  if(discShown){cb&&cb();return;}
+  discCb=cb;$('discChk').checked=false;$('discBtn').classList.remove('ready');
+  $('discOv').classList.add('on');
+}
+function proceedDisc(){
+  discShown=true;$('discOv').classList.remove('on');
+  if(discCb){const c=discCb;discCb=null;c();}
+}
+
+/* ═══ COURSE VIEWER ═══ */
+function openCourse(bId,courseId,special=false){
+  if(!special&&!cUnlocked(courseId)){toast('🔒','Not in your bundle. Upgrade to access.');return;}
+  let b,c;
+  if(special){c=SPECIAL_COURSES.find(x=>x.id===courseId);b={id:'special',name:'Special Courses',ic:'✨'};}
+  else{b=BUNDLES.find(x=>x.id===bId);c=b?.courses.find(x=>x.id===courseId);}
+  if(!c)return;
+  currentCourse=c;currentBundleId=bId;isSpc=special;prevPage=special?'special':'bundle-courses';
+  document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));
+  $('cv').classList.add('on');
+  T('cvTitle',c.title);T('cvCTitle',c.icon+' '+c.title);
+  $('cvMeta').innerHTML=`<span>⏱ ${c.dur||'—'}</span><span>📋 ${c.modules.length} chapters</span><span>${b.ic} ${b.name}</span>`;
+  $('cvDesc').textContent=c.desc;
+  $('cvBack').onclick=()=>{stopPlayer();$('cv').classList.remove('on');goPage(prevPage);};
+  T('cvModCount',`${(WATCH_DATA[courseId]?.done||[]).length}/${c.modules.length} done`);
+  $('cvOverview').innerHTML=`<div style="margin-bottom:11px"><b style="color:var(--text)">About</b><p style="margin-top:4px">${c.desc}</p></div><div style="margin-bottom:11px"><b style="color:var(--text)">Chapters</b><ul style="margin-top:4px;padding-left:16px;display:flex;flex-direction:column;gap:2px">${c.modules.map(m=>`<li>${m.title} <span style="color:var(--t3);font-size:.62rem">(${m.dur||'—'})</span></li>`).join('')}</ul></div><div><b style="color:var(--text)">Project</b><p style="margin-top:4px;background:var(--bg3);padding:10px;border-radius:8px;border:1px solid var(--border)">${c.project}</p></div>`;
+  $('cvResources').innerHTML=`<div style="font-weight:700;margin-bottom:9px">📎 Resources</div>${(c.resources||[]).map(r=>`<div style="display:flex;align-items:center;gap:7px;padding:7px 0;border-bottom:1px solid var(--border);font-size:.75rem"><span style="color:var(--gold)">📄</span>${r}</div>`).join('')}`;
+  renderProjectTab(courseId,c);renderExamTab(courseId,c);renderCertSteps(courseId,c);renderModList(c,courseId);
+  const lastMod=WATCH_DATA[courseId]?.lastModule;
+  const si=lastMod?Math.max(0,c.modules.findIndex(m=>m.id===lastMod)):0;
+  showDisc(()=>playMod(courseId,c.modules[si].id,si));
+}
+
+function renderModList(course,courseId){
+  const list=$('cvMods');if(!list)return;
+  list.innerHTML=course.modules.map((m,i)=>{
+    const done=isModDone(courseId,m.id);
+    const wp=mWPct(m.id);
+    return`<div class="mod-item${done?' done':''}" id="mi-${m.id}" onclick="showDisc(()=>playMod('${courseId}','${m.id}',${i}))">
+      <div class="mi-num">${done?'✓':(i+1)}</div>
+      <div class="mi-info">
+        <div class="mi-title">${m.title}</div>
+        <div class="mi-dur">⏱ ${m.dur||'—'}</div>
+        <div class="mi-wb"><div class="mi-wf" id="mwf-${m.id}" style="width:${wp}%"></div></div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/* ═══ PLAYER ═══
+   Uses 125% scaled iframe inside overflow:hidden container
+   YT logo bar (~10% top) and controls (~7% bottom) are clipped
+   Black masks add extra safety. Shield catches all clicks.
+*/
+function buildUrl(mod){
+  const p='&rel=0&modestbranding=1&showinfo=0&iv_load_policy=3&enablejsapi=1&autoplay=1&controls=0&disablekb=1&fs=0&playsinline=1&cc_load_policy=0&origin='+encodeURIComponent(location.origin);
+  if(mod.isPlaylist)return`https://www.youtube.com/embed/videoseries?list=${mod.yt}&index=${(mod.plIndex||0)+1}${p}`;
+  return`https://www.youtube.com/embed/${mod.yt}?start=${mod.start||0}${p}`;
+}
+
+function stopPlayer(){
+  clearInterval(pollTimer);
+  if(ytFrame)try{ytFrame.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}','*');}catch(e){}
+  ytFrame=null;isPlaying=false;
+  $('pClip').innerHTML='';
+  $('pCtrl').style.display='none';
+  $('pWm').classList.remove('on');
+  $('pPh').style.display='flex';
+  $('pSkip').classList.remove('on');
+  curDur=0;curTime=0;
+  $('pPlayIc').style.display='';$('pPauseIc').style.display='none';
+}
+
+function playMod(courseId,moduleId,idx){
+  const c=currentCourse;if(!c)return;
+  const mod=c.modules[idx];if(!mod)return;
+  currentModule=mod;clearInterval(pollTimer);
+  document.querySelectorAll('.mod-item').forEach(e=>e.classList.remove('active'));
+  const mi=$('mi-'+moduleId);if(mi){mi.classList.add('active');mi.scrollIntoView({behavior:'smooth',block:'nearest'});}
+  isPlaying=false;curDur=0;curTime=0;
+  if(!modWatch[moduleId])modWatch[moduleId]={watched:new Set(),total:0};
+  const clip=$('pClip');clip.innerHTML='';
+  const iframe=document.createElement('iframe');
+  iframe.src=buildUrl(mod);
+  iframe.allow='autoplay;encrypted-media;picture-in-picture';
+  iframe.style.cssText='position:absolute;top:0;left:0;width:100%;height:100%;border:none;';
+  clip.appendChild(iframe);ytFrame=iframe;
+  $('pPh').style.display='none';
+  $('pCtrl').style.display='flex';$('pCtrl').style.flexDirection='column';
+  $('pWm').classList.add('on');$('pSkip').classList.remove('on');
+  $('pPlayIc').style.display='none';$('pPauseIc').style.display='';
+  T('pTime','0:00 / 0:00');$('pPf').style.width='0%';$('pWf').style.width='0%';
+  T('wmRef',userRef);
+  T('cvModCount',`${(WATCH_DATA[courseId]?.done||[]).length}/${c.modules.length} done`);
+  isPlaying=true;
+  window.onmessage=handleYT;
+  pollTimer=setInterval(()=>{if(ytFrame)try{ytFrame.contentWindow.postMessage('{"event":"listening"}','*');}catch(e){}},1000);
+}
+
+function handleYT(e){
+  if(!e.data||!ytFrame)return;
+  try{
+    const d=typeof e.data==='string'?JSON.parse(e.data):e.data;
+    if(d.event==='infoDelivery'&&d.info){
+      const ct=Math.max(0,d.info.currentTime||0);
+      const dur=d.info.duration||0;
+      const state=d.info.playerState;
+      if(dur>0){
+        curTime=ct;curDur=dur;
+        const mid=currentModule?.id;
+        if(mid){
+          if(!modWatch[mid])modWatch[mid]={watched:new Set(),total:0};
+          modWatch[mid].total=Math.ceil(dur);
+          modWatch[mid].watched.add(Math.floor(ct));
+          if(Math.floor(ct)>0)modWatch[mid].watched.add(Math.floor(ct)-1);
+          schedSave(mid);
+          if(!scrubbing){const p=(ct/dur)*100;$('pPf').style.width=p+'%';$('pThumb').style.left=p+'%';}
+          const wp=(modWatch[mid].watched.size/modWatch[mid].total)*100;
+          $('pWf').style.width=Math.min(100,wp)+'%';
+          T('pTime',`${fmt(ct)} / ${fmt(dur)}`);
+          const mwf=$('mwf-'+mid);if(mwf)mwf.style.width=Math.min(100,wp)+'%';
+          if(wp>=90&&!isModDone(currentCourse?.id||'',mid))markDone(currentCourse.id,mid);
+        }
+      }
+      if(state===1){isPlaying=true;$('pPlayIc').style.display='none';$('pPauseIc').style.display='';}
+      else if(state===2||state===0){isPlaying=false;$('pPlayIc').style.display='';$('pPauseIc').style.display='none';}
+      if(state===0&&dur>0){
+        const c=currentCourse;if(c){
+          const idx=c.modules.findIndex(m=>m.id===currentModule?.id);
+          if(idx<c.modules.length-1)setTimeout(()=>showDisc(()=>playMod(currentCourse.id,c.modules[idx+1].id,idx+1)),1500);
+          else toast('🎉','All chapters done! Take the exam now.',4500);
+        }
+      }
+    }
+  }catch(err){}
+}
+
+function markDone(courseId,moduleId){
+  saveModDone(courseId,moduleId);
+  const mi=$('mi-'+moduleId);
+  if(mi){mi.classList.add('done');const n=mi.querySelector('.mi-num');if(n)n.textContent='✓';}
+  T('cvModCount',`${(WATCH_DATA[courseId]?.done||[]).length}/${currentCourse?.modules.length||0} done`);
+  updatePct();renderCertSteps(courseId,currentCourse);
+  toast('✅','Chapter completed! 🎯',2200);
+  if((WATCH_DATA[courseId]?.done||[]).length>=currentCourse?.modules.length){
+    toast('🎉','All chapters done! Take the exam.',4500);
+    sendTG(`🎉 *Course Done!*\n${U.name} (${U.email})\nCourse: ${currentCourse?.title}`);
+  }
+}
+
+/* PLAYER CONTROLS */
+function togglePlay(){
+  if(!ytFrame)return;
+  try{
+    if(isPlaying){ytFrame.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}','*');isPlaying=false;$('pPlayIc').style.display='';$('pPauseIc').style.display='none';}
+    else{ytFrame.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}','*');isPlaying=true;$('pPlayIc').style.display='none';$('pPauseIc').style.display='';}
+  }catch(e){}
+}
+function skipSec(n){
+  if(!ytFrame||!curDur)return;
+  if(n>0){$('pSkip').classList.add('on');setTimeout(()=>$('pSkip').classList.remove('on'),2200);return;}
+  const t=Math.max(0,curTime+n);
+  try{ytFrame.contentWindow.postMessage(`{"event":"command","func":"seekTo","args":[${t},true]}`,'*');}catch(e){}
+}
+function toggleMute(){
+  isMuted=!isMuted;
+  try{ytFrame?.contentWindow.postMessage(`{"event":"command","func":"${isMuted?'mute':'unMute'}","args":""}`,'*');
+  $('pVolIc').style.display=isMuted?'none':'';$('pMuteIc').style.display=isMuted?'':'none';}catch(e){}
+}
+function setVol(v){
+  vol=parseInt(v);
+  try{ytFrame?.contentWindow.postMessage(`{"event":"command","func":"setVolume","args":[${vol}]}`,'*');}catch(e){}
+  if(vol===0){isMuted=true;$('pVolIc').style.display='none';$('pMuteIc').style.display='';}
+  else{isMuted=false;$('pVolIc').style.display='';$('pMuteIc').style.display='none';}
+}
+function doFullscreen(){
+  const o=$('playerOuter');
+  if(!document.fullscreenElement){o.requestFullscreen?.().catch(()=>{});o.classList.add('sc');}
+  else{document.exitFullscreen?.();o.classList.remove('sc');}
+}
+function scrubStart(e){if(!curDur)return;scrubbing=true;doScrub(e);document.addEventListener('mousemove',doScrub);document.addEventListener('mouseup',scrubEnd);}
+function scrubStartT(e){if(!curDur)return;scrubbing=true;doScrubT(e);document.addEventListener('touchmove',doScrubT,{passive:false});document.addEventListener('touchend',scrubEnd);}
+function doScrub(e){
+  const b=$('pProg');if(!b)return;
+  const r=b.getBoundingClientRect();
+  const x=Math.max(0,Math.min(e.clientX-r.left,r.width));
+  const pct=x/r.width,st=pct*curDur;
+  if(st>curTime){$('pSkip').classList.add('on');setTimeout(()=>$('pSkip').classList.remove('on'),1800);scrubbing=false;document.removeEventListener('mousemove',doScrub);document.removeEventListener('mouseup',scrubEnd);return;}
+  $('pPf').style.width=(pct*100)+'%';$('pThumb').style.left=(pct*100)+'%';
+  T('pTime',`${fmt(st)} / ${fmt(curDur)}`);
+  try{ytFrame?.contentWindow.postMessage(`{"event":"command","func":"seekTo","args":[${st},true]}`,'*');}catch(er){}
+}
+function doScrubT(e){e.preventDefault();if(e.touches[0])doScrub({clientX:e.touches[0].clientX});}
+function scrubEnd(){scrubbing=false;document.removeEventListener('mousemove',doScrub);document.removeEventListener('mouseup',scrubEnd);document.removeEventListener('touchmove',doScrubT);document.removeEventListener('touchend',scrubEnd);}
+
+/* ═══ TABS ═══ */
+function switchTab(tab,btn){
+  document.querySelectorAll('.cv-tab').forEach(b=>b.classList.remove('on'));
+  document.querySelectorAll('.cv-tp').forEach(p=>p.classList.remove('on'));
+  if(btn)btn.classList.add('on');
+  else document.querySelectorAll('.cv-tab').forEach(b=>{if(b.getAttribute('onclick')?.includes("'"+tab+"'"))b.classList.add('on');});
+  const p=$('cvt-'+tab);if(p)p.classList.add('on');
+}
+
+/* ═══ CERT STEPS ═══ */
+function renderCertSteps(courseId,course){
+  const el=$('certSteps');if(!el||!course)return;
+  const pct=cPct(courseId,course.modules.length);
+  const watched=pct>=80;const passed=EXAM_DATA[courseId]?.passed===true;
+  const hasSub=!!(EXAM_DATA[courseId]?.project||EXAM_DATA[courseId]?.seminar);
+  const hasCert=!!CERT_DATA[courseId];
+  const step=(done,lbl,sub)=>`<div class="cs ${done?'done':'todo'}"><div class="cs-ic">${done?'✓':'○'}</div><div><div class="cs-lbl">${lbl}</div><div class="cs-sub">${sub}</div></div></div>`;
+  el.innerHTML=`<div style="font-family:var(--fm);font-size:.5rem;color:var(--t3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:5px">Certificate Progress</div>
+    ${step(watched,'Watch 80%+ chapters',`${pct}% watched`)}
+    ${step(passed,'Pass Exam 60%+',passed?`Score: ${EXAM_DATA[courseId]?.score}%`:'Not attempted')}
+    ${step(hasSub,'Submit Project or Seminar',hasSub?'Submitted ✓':'Not submitted')}
+    ${hasCert?`<div style="background:var(--gA);border:1px solid rgba(200,169,110,.3);border-radius:10px;padding:10px 13px;display:flex;align-items:center;gap:9px"><span>🏆</span><div><div style="font-weight:700;color:var(--gold);font-size:.78rem">Certificate Earned!</div><div style="font-family:var(--fm);font-size:.48rem;color:var(--t3)">${CERT_DATA[courseId]?.certId}</div></div><button class="btn-sm" style="margin-left:auto" onclick="viewCert('${courseId}')">View →</button></div>`:
+    (watched&&passed&&hasSub?`<div style="background:var(--grA);border:1px solid rgba(34,197,94,.3);border-radius:10px;padding:10px 13px;text-align:center"><div style="font-size:.74rem;color:var(--green);font-weight:700;margin-bottom:5px">🎉 All steps complete!</div><button class="btn-g" onclick="issueCert('${courseId}',currentCourse)">🏆 Get Certificate</button></div>`:'')}`;
+}
+
+/* ═══ AI NOTES ═══ */
+async function genNotes(){
+  if(!currentModule||!currentCourse){toast('⚠','Select a chapter first.');return;}
+  const el=$('cvNotes');
+  el.innerHTML=`<div style="display:flex;align-items:center;gap:8px;color:var(--t3);font-size:.74rem;padding:8px 0"><div style="width:14px;height:14px;border:2px solid var(--gold);border-top-color:transparent;border-radius:50%;animation:spin .7s linear infinite"></div>Generating notes for "${currentModule.title}"…</div>`;
+  try{
+    const prompt=`Generate comprehensive study notes:\nCourse: ${currentCourse.title}\nChapter: ${currentModule.title} (${currentModule.dur||'—'})\n\nInclude:\n1. Key Concepts (5 bullets)\n2. Detailed Explanation (2 paragraphs)\n3. Important Terms (5 definitions)\n4. Practical Tips for Indian students (4 tips)\n5. Practice Q&A (3 questions)\n6. Quick Summary\n\nUse clear headers. Be practical with Indian market context.`;
+    const reply=await callDS([{role:'user',content:prompt}],1200);
+    el.innerHTML=`<div style="font-size:.78rem;line-height:1.8;color:var(--t2)">${fmtAI(reply)}</div>`;
+  }catch(e){el.innerHTML=`<div style="color:var(--red);font-size:.75rem">❌ Failed: ${e.message}</div>`;}
+}
+
+/* ═══ PROJECT/SEMINAR ═══ */
+function renderProjectTab(courseId,course){
+  const el=$('cvProject');if(!el)return;
+  const ex=EXAM_DATA[courseId];
+  const hasPrj=!!ex?.project,hasSem=!!ex?.seminar;
+  el.innerHTML=`<div style="margin-bottom:10px"><div style="font-weight:700;font-size:.83rem;margin-bottom:5px">📋 Project Brief</div><div style="background:var(--bg3);border:1px solid rgba(200,169,110,.2);border-radius:10px;padding:11px;font-size:.76rem;color:var(--t2);line-height:1.7">${course.project}</div></div>
+    <div class="sub-tabs"><div class="sub-tab on" id="stP" onclick="swSub('P')">📤 Project</div><div class="sub-tab" id="stS" onclick="swSub('S')">🎤 Seminar</div></div>
+    <div id="subP">
+      ${hasPrj?`<div style="background:var(--grA);border:1px solid rgba(34,197,94,.2);border-radius:10px;padding:11px;margin-bottom:8px"><div style="font-weight:700;color:var(--green);margin-bottom:3px">✅ Project Submitted</div><div style="font-size:.72rem;color:var(--t2)">${ex.project}</div></div><button class="btn-sm" onclick="clearSub('${courseId}','project')">Resubmit</button>`
+      :`<textarea id="projInp" style="width:100%;background:var(--bg3);border:1.5px solid var(--border2);border-radius:10px;padding:10px;font-size:.76rem;color:var(--text);outline:none;resize:vertical;min-height:85px;margin-bottom:9px" placeholder="GitHub URL, Google Drive link, or describe what you built…"></textarea><div style="display:flex;gap:6px"><button class="btn-g" onclick="submitWork('${courseId}','project')">📤 Submit</button><button class="btn-sm" onclick="openAITutor()">🤖 Get Help</button></div>`}
+    </div>
+    <div id="subS" style="display:none">
+      ${hasSem?`<div style="background:var(--grA);border:1px solid rgba(34,197,94,.2);border-radius:10px;padding:11px;margin-bottom:8px"><div style="font-weight:700;color:var(--green);margin-bottom:3px">✅ Seminar Submitted</div><div style="font-size:.72rem;color:var(--t2)">${ex.seminar}</div></div><button class="btn-sm" onclick="clearSub('${courseId}','seminar')">Resubmit</button>`
+      :`<div style="font-size:.72rem;color:var(--t2);margin-bottom:8px;background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:10px;line-height:1.7"><strong style="color:var(--text)">Alternative:</strong> Record a 5–10 min video presentation and submit the link.</div><textarea id="semInp" style="width:100%;background:var(--bg3);border:1.5px solid var(--border2);border-radius:10px;padding:10px;font-size:.76rem;color:var(--text);outline:none;resize:vertical;min-height:70px;margin-bottom:9px" placeholder="YouTube, Loom, or Google Drive link…"></textarea><button class="btn-g" onclick="submitWork('${courseId}','seminar')">🎤 Submit Seminar</button>`}
+    </div>`;
+}
+function swSub(t){
+  ['P','S'].forEach(x=>{$('st'+x).classList.toggle('on',x===t);$('sub'+x).style.display=x===t?'block':'none';});
+}
+async function submitWork(courseId,type){
+  const inp=$(type==='project'?'projInp':'semInp');
+  const val=inp?.value?.trim();if(!val){toast('⚠','Fill in your submission first.');return;}
+  const d=EXAM_DATA[courseId]||{};d[type]=val;d[type+'At']=fts();EXAM_DATA[courseId]=d;
+  try{await DB.collection(COL).doc(U.emailId).collection('exams').doc(courseId).set(d,{merge:true});}catch(e){}
+  toast('✅',`${type==='project'?'Project':'Seminar'} submitted! 🎉`);
+  sendTG(`📤 *${type} Submitted*\n${U.name} (${U.email})\nCourse: ${currentCourse?.title}\n${val}`);
+  renderProjectTab(courseId,currentCourse);renderCertSteps(courseId,currentCourse);checkCertElig(courseId);
+}
+async function clearSub(courseId,type){
+  const d=EXAM_DATA[courseId]||{};delete d[type];EXAM_DATA[courseId]=d;
+  try{await DB.collection(COL).doc(U.emailId).collection('exams').doc(courseId).set(d,{merge:true});}catch(e){}
+  renderProjectTab(courseId,currentCourse);
+}
+
+/* ═══ EXAM ═══ */
+function renderExamTab(courseId,course){
+  const el=$('cvExam');if(!el)return;
+  if(EXAM_DATA[courseId]?.passed){
+    el.innerHTML=`<div style="text-align:center;padding:20px"><div style="font-size:2.5rem;margin-bottom:8px">🎉</div><div style="font-family:var(--fd);font-size:1rem;font-weight:700;color:var(--green);margin-bottom:4px">Exam Passed!</div><div style="font-family:var(--fm);font-size:.76rem;color:var(--green)">Score: ${EXAM_DATA[courseId].score}%</div></div>`;return;
+  }
+  const pct=cPct(courseId,course.modules.length);
+  if(pct<80){
+    el.innerHTML=`<div style="text-align:center;padding:22px;color:var(--t3)"><div style="font-size:1.8rem;margin-bottom:8px">🔒</div><div style="font-size:.78rem;margin-bottom:6px">Watch <strong style="color:var(--text)">80%+</strong> chapters first</div><div style="font-family:var(--fm);font-size:.62rem;color:var(--amber)">Current: ${pct}%</div></div>`;return;
+  }
+  examState={courseId,qs:EXAM_QS,ans:{},done:false};
+  el.innerHTML=`<div style="font-weight:700;font-size:.88rem;margin-bottom:3px">${course.title} — Final Exam</div>
+    <div style="font-size:.72rem;color:var(--t2);margin-bottom:10px">${EXAM_QS.length} questions · Pass: 60%</div>
+    <div style="height:3px;background:var(--bg4);border-radius:3px;margin-bottom:12px;overflow:hidden"><div id="exPrg" style="height:100%;background:linear-gradient(90deg,var(--gold),var(--gold2));width:0%;border-radius:3px;transition:width .3s"></div></div>
+    <div id="exQs">${EXAM_QS.map((q,i)=>`<div class="exam-q" id="eq${i}"><div class="eq-num">Q${i+1} of ${EXAM_QS.length}</div><div class="eq-txt">${q.q}</div><div class="eq-opts">${q.opts.map((o,j)=>`<div class="eq-opt" id="eo${i}-${j}" onclick="pickOpt(${i},${j})">${String.fromCharCode(65+j)}. ${o}</div>`).join('')}</div></div>`).join('')}</div>
+    <div style="margin-top:12px;display:flex;gap:6px"><button class="btn-g" onclick="submitExam('${courseId}')">Submit Exam →</button></div>`;
+}
+function pickOpt(qi,oi){
+  if(examState.done)return;
+  examState.ans[qi]=oi;
+  document.querySelectorAll(`#eq${qi} .eq-opt`).forEach((e,j)=>e.classList.toggle('sel',j===oi));
+  const p=Math.round(Object.keys(examState.ans).length/examState.qs.length*100);
+  const b=$('exPrg');if(b)b.style.width=p+'%';
+}
+async function submitExam(courseId){
+  if(Object.keys(examState.ans).length<examState.qs.length){toast('⚠','Answer all questions first.');return;}
+  examState.done=true;
+  let correct=0;
+  examState.qs.forEach((q,i)=>{
+    const ok=examState.ans[i]===q.ans;if(ok)correct++;
+    document.querySelectorAll(`#eq${i} .eq-opt`).forEach((e,j)=>{
+      e.classList.remove('sel');
+      if(j===q.ans)e.classList.add('correct');
+      else if(j===examState.ans[i])e.classList.add('wrong');
+    });
+  });
+  const score=Math.round(correct/examState.qs.length*100),passed=score>=60;
+  const ed={score,passed,correct,total:examState.qs.length,takenAt:fts()};
+  if(passed)ed.passedAt=fts();
+  EXAM_DATA[courseId]={...(EXAM_DATA[courseId]||{}),...ed};
+  try{await DB.collection(COL).doc(U.emailId).collection('exams').doc(courseId).set(ed,{merge:true});}catch(e){}
+  const pop=document.createElement('div');
+  pop.style.cssText=`position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:9000;background:var(--bg2);border:1px solid ${passed?'rgba(34,197,94,.3)':'rgba(239,68,68,.3)'};border-radius:18px;padding:28px 32px;text-align:center;box-shadow:0 18px 50px rgba(0,0,0,.7);max-width:340px;width:90%`;
+  pop.innerHTML=`<div style="font-size:2.8rem;margin-bottom:7px">${passed?'🎉':'😔'}</div>
+    <div style="font-family:var(--fd);font-size:1.2rem;font-weight:900;color:${passed?'var(--green)':'var(--red)'};margin-bottom:4px">${passed?'Passed!':'Not Passed'}</div>
+    <div style="font-family:var(--fm);font-size:.76rem;color:var(--t2);margin-bottom:4px">${score}% · ${correct}/${examState.qs.length}</div>
+    <div style="font-size:.74rem;color:var(--t2);margin-bottom:16px">${passed?'Submit project or seminar to earn your certificate!':'Need 60% to pass. Review chapters and retry.'}</div>
+    <div style="display:flex;gap:6px;justify-content:center;flex-wrap:wrap">
+      ${passed?`<button class="btn-g" onclick="this.closest('[style*=fixed]').remove();checkCertElig('${courseId}')">🏆 Get Certificate</button>`:''}
+      <button class="btn-o" onclick="this.closest('[style*=fixed]').remove()">Close</button>
+      ${!passed?`<button class="btn-sm" onclick="this.closest('[style*=fixed]').remove();renderExamTab('${courseId}',currentCourse)">Retry</button>`:''}
+    </div>`;
+  document.body.appendChild(pop);
+  sendTG(`📝 *Exam ${passed?'Passed':'Failed'}*\n${U.name} (${U.email})\nCourse: ${currentCourse?.title||courseId}\nScore: ${score}%`);
+  if(passed){checkCertElig(courseId);renderCertSteps(courseId,currentCourse);}
+}
+
+/* ═══ CERTIFICATE ═══ */
+async function checkCertElig(courseId){
+  const course=[...BUNDLES.flatMap(b=>b.courses),...SPECIAL_COURSES].find(c=>c.id===courseId);if(!course)return;
+  const pct=cPct(courseId,course.modules.length);
+  const passed=EXAM_DATA[courseId]?.passed;
+  const hasSub=!!(EXAM_DATA[courseId]?.project||EXAM_DATA[courseId]?.seminar);
+  if(pct>=80&&passed&&hasSub)await issueCert(courseId,course);
+  else{
+    const m=[];
+    if(pct<80)m.push(`Watch 80%+ (${pct}% done)`);
+    if(!passed)m.push('Pass exam (60%+)');
+    if(!hasSub)m.push('Submit project or seminar');
+    toast('📋','To earn cert: '+m.join(' · '),5000);
+  }
+}
+async function issueCert(courseId,course){
+  if(CERT_DATA[courseId]){viewCert(courseId);return;}
+  const certId='B10-'+courseId.toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,6)+'-'+Date.now().toString(36).toUpperCase();
+  const cd={courseId,courseName:course.title,studentName:U.name,email:U.email,certId,referral:userRef,issuedAt:fts(),score:EXAM_DATA[courseId]?.score||100};
+  CERT_DATA[courseId]=cd;
+  try{await DB.collection(COL).doc(U.emailId).collection('certificates').doc(courseId).set(cd);}catch(e){}
+  sendTG(`🏆 *Certificate Issued!*\n${U.name} (${U.email})\nCourse: ${course.title}\nID: ${certId}`);
+  renderCertGal();renderCertSteps(courseId,course);
+  toast('🎉','Certificate earned! 🏆',4000);
+}
+function viewCert(courseId){
+  const cert=CERT_DATA[courseId];
+  if(!cert){toast('⚠','Certificate not earned yet.');return;}
+  const p=new URLSearchParams({certId:cert.certId,courseId,name:encodeURIComponent(cert.studentName||U.name),email:cert.email||U.email,course:encodeURIComponent(cert.courseName||''),score:cert.score||100,ref:cert.referral||userRef});
+  window.open(`certificate.html?${p.toString()}`,'_blank');
+}
+function renderCertGal(){
+  const el=$('certGal');if(!el)return;
+  const certs=Object.values(CERT_DATA);
+  if(!certs.length){el.innerHTML='<div style="text-align:center;padding:40px;color:var(--t3);grid-column:1/-1"><div style="font-size:2rem;margin-bottom:8px">🏆</div><p style="font-size:.75rem;line-height:1.7">Watch 80%+ chapters, pass exam (60%+), and submit project or seminar to earn a certificate.</p></div>';return;}
+  el.innerHTML=certs.map(c=>`<div class="cert-thumb" onclick="viewCert('${c.courseId}')"><div style="font-size:1.8rem;margin-bottom:6px">🏆</div><div style="font-size:.78rem;font-weight:700;margin-bottom:2px">${c.courseName}</div><div style="font-family:var(--fm);font-size:.48rem;color:var(--t3)">${c.certId}</div><div style="font-family:var(--fm);font-size:.5rem;color:var(--green);margin-top:3px">${c.score||100}% · Tap to view</div></div>`).join('');
+}
+
+/* ═══ MY LEARNING ═══ */
+function renderML(){
+  const el=$('mlGrid');if(!el)return;
+  const started=[];
+  BUNDLES.forEach(b=>{b.courses.forEach(c=>{if(!cUnlocked(c.id))return;const d=WATCH_DATA[c.id];if(d&&(d.done||[]).length>0)started.push({...c,bid:b.id,dm:(d.done||[]).length});});});
+  SPECIAL_COURSES.forEach(c=>{if(!sUnlocked(c.id))return;const d=WATCH_DATA[c.id];if(d&&(d.done||[]).length>0)started.push({...c,bid:'special',sp:true,dm:(d.done||[]).length});});
+  if(!started.length){el.innerHTML='<div style="text-align:center;padding:40px;color:var(--t3)"><div style="font-size:1.8rem;margin-bottom:7px">▶</div><p style="font-size:.73rem">Start watching any course to see it here</p></div>';return;}
+  el.innerHTML=started.map(c=>{
+    const pct=cPct(c.id,c.modules.length);
+    return`<div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:14px;cursor:pointer;transition:all .2s" onmouseenter="this.style.transform='translateY(-2px)';this.style.borderColor='rgba(200,169,110,.22)'" onmouseleave="this.style.transform='';this.style.borderColor=''" onclick="showDisc(()=>openCourse('${c.bid}','${c.id}',${!!c.sp}))">
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:7px"><span style="font-size:1.2rem">${c.icon}</span><div style="font-family:var(--fd);font-size:.88rem;font-weight:700;flex:1">${c.title}</div>${pct===100?'<span class="bdg ok">✓</span>':''}</div>
+      <div class="bc-pb"><div class="bc-pf" style="width:${pct}%"></div></div>
+      <div style="font-family:var(--fm);font-size:.5rem;color:var(--t3);margin-top:3px">${c.dm}/${c.modules.length} chapters · ${pct}%</div>
+    </div>`;
+  }).join('');
+}
+
+/* ═══ PROGRESS OVERVIEW ═══ */
+function renderProgOv(){
+  const el=$('progOv');if(!el)return;
+  let tc=0,cc=0,tm=0,dm=0;
+  BUNDLES.forEach(b=>{b.courses.forEach(c=>{if(!cUnlocked(c.id))return;tc++;tm+=c.modules.length;const d=(WATCH_DATA[c.id]?.done||[]).length;dm+=d;if(d>=c.modules.length)cc++;});});
+  const certs=Object.keys(CERT_DATA).length;
+  const exams=Object.values(EXAM_DATA).filter(e=>e.passed).length;
+  el.innerHTML=[{v:tc,l:'Courses'},{v:cc,l:'Completed'},{v:dm+'/'+tm,l:'Chapters'},{v:exams,l:'Exams Passed'},{v:certs,l:'Certificates'}].map(s=>`<div class="pstat"><div class="pstat-v">${s.v}</div><div class="pstat-l">${s.l}</div></div>`).join('');
+}
+
+/* ═══ SPECIAL ═══ */
+function renderSpecial(){
+  const el=$('specialGrid');if(!el)return;
+  el.innerHTML=SPECIAL_COURSES.map(sc=>{
+    const unlocked=sUnlocked(sc.id);
+    const pct=cPct(sc.id,sc.modules.length);
+    const dm=(WATCH_DATA[sc.id]?.done||[]).length;
+    return`<div style="background:var(--bg2);border:1px solid ${unlocked?'rgba(244,114,182,0.28)':'var(--border)'};border-radius:15px;padding:18px;position:relative;transition:all .22s">
+      <div style="position:absolute;top:12px;right:12px;font-family:var(--fm);font-size:.44rem;padding:2px 7px;border-radius:4px;background:${unlocked?'rgba(34,197,94,.1)':'rgba(244,114,182,.1)'};color:${unlocked?'var(--green)':'var(--pink)'};border:1px solid ${unlocked?'rgba(34,197,94,.2)':'rgba(244,114,182,.25)'}">
+        ${unlocked?'✅ Access':'🔐 Approval Required'}
+      </div>
+      <div style="font-size:2rem;margin-bottom:9px">${sc.icon}</div>
+      <div style="font-family:var(--fd);font-size:.95rem;font-weight:900;margin-bottom:4px">${sc.title}</div>
+      <div style="font-size:.72rem;color:var(--t2);margin-bottom:9px;line-height:1.65;padding-right:70px">${sc.desc}</div>
+      <div style="display:flex;gap:7px;flex-wrap:wrap;font-family:var(--fm);font-size:.5rem;color:var(--t3);margin-bottom:9px"><span>📋 ${sc.modules.length} chapters</span><span>✅ ${dm} done</span></div>
+      ${unlocked?`<div class="bc-pb"><div class="bc-pf" style="width:${pct}%;background:linear-gradient(90deg,var(--pink),rgba(244,114,182,.6))"></div></div><div class="bc-pl">${pct}% complete</div><button class="btn-pink" style="margin-top:10px" onclick="showDisc(()=>openCourse('special','${sc.id}',true))">▶ Watch Now</button>`:
+      `<button class="btn-pink" onclick="window.open('https://wa.me/919019254743?text=Hi, I want access to the ${sc.title} on Biluxe10. Email: '+U.email,'_blank')">Request Access →</button>`}
+    </div>`;
+  }).join('');
+}
+
+/* ═══ DEEPSEEK AI ═══ */
+async function callDS(messages,maxTokens=1024){
+  const resp=await fetch('https://api.deepseek.com/chat/completions',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','Authorization':'Bearer '+DS_KEY},
+    body:JSON.stringify({model:'deepseek-chat',max_tokens:maxTokens,temperature:0.72,messages})
+  });
+  if(!resp.ok){const err=await resp.json();throw new Error(err.error?.message||'DeepSeek error '+resp.status);}
+  const data=await resp.json();
+  return data.choices?.[0]?.message?.content||'';
+}
+
+function fmtAI(text){
+  return text
+    .replace(/^###\s+(.+)$/gm,'<h4 style="color:var(--gold);font-family:var(--fd);margin:10px 0 4px;font-size:.86rem">$1</h4>')
+    .replace(/^##\s+(.+)$/gm,'<h3 style="color:var(--text);font-family:var(--fd);margin:12px 0 4px">$1</h3>')
+    .replace(/^#\s+(.+)$/gm,'<h2 style="color:var(--gold2);font-family:var(--fd);margin:13px 0 5px">$1</h2>')
+    .replace(/\*\*(.+?)\*\*/g,'<strong style="color:var(--text)">$1</strong>')
+    .replace(/`(.+?)`/g,'<code style="background:var(--bg4);padding:1px 5px;border-radius:3px;font-family:var(--fm);font-size:.67rem">$1</code>')
+    .replace(/^-\s+(.+)$/gm,'<div style="display:flex;gap:5px;margin:2px 0"><span style="color:var(--gold);flex-shrink:0">•</span><span>$1</span></div>')
+    .replace(/\n\n/g,'<br><br>').replace(/\n/g,'<br>');
+}
+
+/* ═══ AI TUTOR (DeepSeek) ═══ */
+function loadChatHistory(){
+  try{const s=localStorage.getItem('b10chat_'+U.emailId);if(s){chatLocal=JSON.parse(s);chatLocal.forEach(m=>{if(m.role==='user')addUsrRaw(m.content);else addBotRaw(m.content);});}}catch(e){}
+}
+function saveChat(){try{localStorage.setItem('b10chat_'+U.emailId,JSON.stringify(chatLocal.slice(-60)));}catch(e){}}
+
+function initTutor(){
+  if(!chatLocal.length)addBotRaw(`👋 Welcome to **Biluxe10 AI Tutor**, ${U.name}!\n\nPowered by **DeepSeek AI**. I can help with:\n• Course concepts & doubt clearing\n• Exam preparation & practice questions\n• Project guidance & code review\n• Career advice for the Indian market\n\nWhat would you like to learn today?`);
+  const chips=$('tutorChips');
+  if(chips)chips.innerHTML=['Explain a concept','Practice questions','Career advice India','Help with project','Exam tips','Code review'].map(c=>`<div class="chip" onclick="sendChip('${c}')">${c}</div>`).join('');
+}
+function addBotRaw(text){
+  const m=$('tutorMsgs');if(!m)return;
+  const d=document.createElement('div');d.className='msg bot';
+  d.innerHTML=`<div class="msg-av bot">🤖</div><div class="msg-bbl">${fmtAI(text)}</div>`;
+  m.appendChild(d);m.scrollTop=m.scrollHeight;
+}
+function addUsrRaw(text){
+  const m=$('tutorMsgs');if(!m)return;
+  const d=document.createElement('div');d.className='msg user';
+  d.innerHTML=`<div class="msg-av usr">${U.name?.[0]?.toUpperCase()||'U'}</div><div class="msg-bbl">${text.replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>')}</div>`;
+  m.appendChild(d);m.scrollTop=m.scrollHeight;
+}
+function addBotMsg(text){addBotRaw(text);chatLocal.push({role:'assistant',content:text});chatG.push({role:'assistant',content:text});saveChat();}
+function addUsrMsg(text){addUsrRaw(text);chatLocal.push({role:'user',content:text});chatG.push({role:'user',content:text});saveChat();}
+function addTyping(){const m=$('tutorMsgs');if(!m)return;const d=document.createElement('div');d.className='msg bot';d.id='typing';d.innerHTML=`<div class="msg-av bot">🤖</div><div class="typing-ind"><span></span><span></span><span></span></div>`;m.appendChild(d);m.scrollTop=m.scrollHeight;}
+function rmTyping(){const t=$('typing');if(t)t.remove();}
+function tutorKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg();}}
+function autoR(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,110)+'px';}
+function sendChip(t){const i=$('tutorInp');if(i){i.value=t;sendMsg();}}
+function clearChat(){const m=$('tutorMsgs');if(m)m.innerHTML='';chatG=[];chatLocal=[];try{localStorage.removeItem('b10chat_'+U.emailId);}catch(e){}addBotRaw(`Chat cleared! Ready to help, ${U.name}! 🚀`);}
+function exportChat(){
+  const t=chatLocal.map(m=>`[${m.role==='user'?'You':'AI Tutor'}]\n${m.content}`).join('\n\n---\n\n');
+  const b=new Blob([t],{type:'text/plain'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='Biluxe10_Chat.txt';a.click();toast('💾','Chat exported!');
+}
+function openAITutor(){goPage('ai-tutor');}
+
+async function sendMsg(){
+  const inp=$('tutorInp');if(!inp)return;
+  const text=inp.value.trim();if(!text)return;
+  inp.value='';inp.style.height='auto';
+  $('tutorSend').disabled=true;
+  addUsrMsg(text);addTyping();
+  try{
+    const b=bundleForPrice(BPRICE)?.name||'';
+    const sys=`You are Biluxe10 AI Tutor — expert Indian educator for digital skills, marketing, design, data science, AI/ML. Student: ${U.name} | Bundle: ${b} | Ref: ${userRef}${currentCourse?` | Course: ${currentCourse.title}`:''}\n\nBe warm, practical, use Indian market context. Format with markdown headers and bullets. You are Biluxe10 AI Tutor — never identify as DeepSeek or any other AI.`;
+    const msgs=[{role:'system',content:sys},...chatG.slice(-18)];
+    const reply=await callDS(msgs,1200);
+    rmTyping();addBotMsg(reply);
+  }catch(e){rmTyping();addBotMsg(`❌ Error: ${e.message}\n\nCheck your connection and try again.`);}
+  $('tutorSend').disabled=false;inp.focus();
+}
+
+/* ═══ TELEGRAM ═══ */
+async function sendTG(msg){
+  try{await fetch(`https://api.telegram.org/bot${TG_BOT}/sendMessage`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chat_id:TG_CHAT,text:msg,parse_mode:'Markdown'})});}catch(e){}
+}
+
+/* ═══ NAVIGATION ═══ */
+function goPage(pg){
+  $('cv').classList.remove('on');
+  document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));
+  const t=$('pg-'+pg);if(t)t.classList.add('on');
+  document.querySelectorAll('.si').forEach(b=>{b.classList.remove('on');if(b.getAttribute('onclick')?.includes("'"+pg+"'"))b.classList.add('on');});
+  const labels={home:'🎓 Learning Hub','my-learning':'▶ My Learning','ai-tutor':'🤖 AI Tutor',certificates:'🏆 Certificates',exam:'📝 Exams','bundle-courses':'Bundle Courses',special:'✨ Special Courses'};
+  T('tbPg',labels[pg]||'🎓 Learning Hub');
+  if(pg==='my-learning')renderML();
+  if(pg==='certificates')renderCertGal();
+  if(pg==='home'){renderBundleGrid();renderProgOv();}
+  if(pg==='special')renderSpecial();
+  if(window.innerWidth<860){$('sb').classList.remove('open');$('ham').classList.remove('open');}
+}
+function toggleSb(){$('sb').classList.toggle('open');$('ham').classList.toggle('open');}
+</script>
+</body>
+</html>
