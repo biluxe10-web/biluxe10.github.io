@@ -1,0 +1,1989 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Biluxe10 — Courses</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,700;0,9..144,900;1,9..144,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+--bg:#07070A;--bg2:#0D0D12;--bg3:#121218;--bg4:#18181F;--bg5:#1E1E28;
+--border:rgba(255,255,255,0.055);--border2:rgba(255,255,255,0.10);--border3:rgba(255,255,255,0.16);
+--gold:#C8A96E;--gold2:#E2C48A;--gold3:#F0D9A8;
+--gA:rgba(200,169,110,0.08);--gB:rgba(200,169,110,0.15);
+--green:#22C55E;--grA:rgba(34,197,94,0.10);
+--red:#EF4444;--reA:rgba(239,68,68,0.10);
+--blue:#60A5FA;--blA:rgba(96,165,250,0.10);
+--amber:#F59E0B;--amA:rgba(245,158,11,0.10);
+--cyan:#22D3EE;--cyA:rgba(34,211,238,0.10);
+--vio:#A78BFA;--viA:rgba(167,139,250,0.10);
+--pink:#F472B6;--pkA:rgba(244,114,182,0.10);
+--ink:#07070A;--text:#EDEDF0;--t2:#9B9BA8;--t3:#4B4B5A;
+--fd:'Fraunces',serif;--fb:'Plus Jakarta Sans',sans-serif;--fm:'JetBrains Mono',monospace;
+--r:14px;--rs:10px;--nav:60px;
+--ease:cubic-bezier(0.16,1,0.3,1);--spring:cubic-bezier(0.34,1.56,0.64,1);
+}
+html,body{min-height:100vh;overflow-x:hidden}
+body{background:var(--bg);color:var(--text);font-family:var(--fb);line-height:1.6}
+button,input,select,textarea{font-family:var(--fb)}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-thumb{background:rgba(200,169,110,0.2);border-radius:2px}
+
+/* GUARD */
+#guard{position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center, gap:16px;transition:opacity .6s}
+#guard.fade{opacity:0;pointer-events:none}
+#guard.gone{display:none}
+.g-logo{font-family:var(--fd);font-size:3rem;font-weight:900;color:var(--gold);letter-spacing:-.02em}
+.g-spin{width:30px;height:30px;border:2px solid rgba(200,169,110,.15);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite}
+.g-msg{font-family:var(--fm);font-size:.55rem;color:var(--t3);letter-spacing:.2em;text-transform:uppercase}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* TOPBAR */
+.topbar{position:sticky;top:0;z-index:200;height:var(--nav);background:rgba(7,7,10,.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 16px, gap:10px}
+.tb-logo{font-family:var(--fd);font-size:1rem;font-weight:900;color:var(--gold);text-decoration:none;white-space:nowrap}
+.tb-center{flex:1;text-align:center;font-family:var(--fd);font-size:.85rem;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 8px}
+.tb-r{display:flex;align-items:center, gap:6px;flex-shrink:0}
+.btn-sm{padding:5px 11px;background:var(--gA);color:var(--gold);border:1px solid rgba(200,169,110,.2);border-radius:7px;font-weight:700;font-size:.65rem;cursor:pointer;transition:all .18s;white-space:nowrap;text-decoration:none;display:inline-flex;align-items:center, gap:4px}
+.btn-sm:hover{background:var(--gB)}
+.btn-g{padding:8px 16px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--ink);border:none;border-radius:var(--rs);font-weight:800;font-size:.72rem;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center, gap:5px}
+.btn-g:hover{transform:translateY(-1px);box-shadow:0 5px 18px rgba(200,169,110,.3)}
+.btn-g:disabled{opacity:.45;cursor:not-allowed;transform:none}
+.btn-o{padding:8px 14px;background:transparent;color:var(--t2);border:1px solid var(--border2);border-radius:var(--rs);font-weight:600;font-size:.72rem;cursor:pointer;transition:all .2s}
+
+/* PAGES */
+.page{display:none;min-height:calc(100vh - var(--nav));animation:pgIn .3s var(--ease)}
+.page.on{display:block}
+@keyframes pgIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* BUNDLE GRID */
+.bundle-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(min-width:600px){.bundle-grid{grid-template-columns:repeat(3,1fr)}}
+.bcard{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:14px;cursor:pointer;transition:all .22s;position:relative;overflow:hidden}
+.bcard:hover{transform:translateY(-2px);border-color:rgba(200,169,110,.25)}
+.bcard.locked{opacity:.55;cursor:default}
+.bcard.locked:hover{transform:none}
+.bc-icon{width:40px;height:40px;border-radius:10px;object-fit:cover;margin-bottom:8px;background:var(--bg3);display:flex;align-items:center;justify-content:center;overflow:hidden}
+.bc-icon img{width:100%;height:100%;object-fit:cover;border-radius:8px}
+.bc-name{font-family:var(--fd);font-size:.82rem;font-weight:900;margin-bottom:2px;line-height:1.3}
+.bc-sub{font-family:var(--fm);font-size:.48rem;color:var(--t3);margin-bottom:6px}
+.bc-prog{height:3px;background:var(--bg4);border-radius:3px;overflow:hidden;margin-bottom:3px}
+.bc-prog-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold2));border-radius:3px;transition:width .6s}
+.bc-prog-lbl{font-family:var(--fm);font-size:.46rem;color:var(--t3)}
+.bc-lock{position:absolute;top:10px;right:10px;background:var(--bg4);border:1px solid var(--border);border-radius:5px;padding:2px 6px;font-family:var(--fm);font-size:.46rem;color:var(--t3)}
+.bc-tag{position:absolute;top:10px;right:10px;background:var(--grA);border:1px solid rgba(34,197,94,.2);border-radius:5px;padding:2px 6px;font-family:var(--fm);font-size:.46rem;color:var(--green)}
+.special-banner{background:linear-gradient(135deg,rgba(244,114,182,.1),rgba(167,139,250,.08));border:1px solid rgba(244,114,182,.2);border-radius:14px;padding:14px 16px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;gap:10px;cursor:pointer;transition:all .2s}
+.special-banner:hover{border-color:rgba(244,114,182,.4)}
+.sb-left{flex:1}
+.sb-title{font-family:var(--fd);font-size:.9rem;font-weight:900;color:var(--pink);margin-bottom:2px}
+.sb-sub{font-size:.7rem;color:var(--t2)}
+.sb-arrow{font-size:1.2rem;color:var(--pink);flex-shrink:0}
+
+/* COURSE LIST PAGE */
+.course-list-header{padding:14px 16px;border-bottom:1px solid var(--border);background:var(--bg2)}
+.cl-back{display:flex;align-items:center, gap:8px;margin-bottom:8px}
+.cl-back-btn{background:none;border:none;color:var(--t2);cursor:pointer;font-size:.8rem;font-weight:600;display:flex;align-items:center, gap:4px;padding:0}
+.cl-back-btn:hover{color:var(--text)}
+.cl-name{font-family:var(--fd);font-size:1rem;font-weight:900}
+.cl-meta{font-family:var(--fm);font-size:.52rem;color:var(--t3);margin-top:2px}
+.course-list{padding:12px}
+.citem{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:8px;cursor:pointer;transition:all .2s;display:flex;align-items:center, gap:12px}
+.citem:hover{border-color:rgba(200,169,110,.25);transform:translateX(2px)}
+.citem-icon{width:44px;height:44px;border-radius:10px;background:var(--bg3);flex-shrink:0;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.citem-icon img{width:100%;height:100%;object-fit:cover;border-radius:8px}
+.citem-icon .icon-text{font-size:1.3rem}
+.citem-info{flex:1;min-width:0}
+.citem-name{font-size:.82rem;font-weight:700;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.citem-meta{font-family:var(--fm);font-size:.5rem;color:var(--t3);display:flex;gap:8px}
+.citem-prog{height:2px;background:var(--bg4);border-radius:2px;overflow:hidden;margin-top:5px}
+.citem-prog-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold2));border-radius:2px}
+.citem-pct{font-family:var(--fm);font-size:.46rem;color:var(--t3);margin-top:2px}
+.citem-done{width:22px;height:22px;border-radius:50%;background:var(--grA);border:1px solid rgba(34,197,94,.3);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:.65rem;color:var(--green)}
+
+/* COURSE VIEWER */
+#courseViewer{display:none;flex-direction:column;min-height:calc(100vh - var(--nav))}
+#courseViewer.on{display:flex}
+.cv-header{padding:10px 14px;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center, gap:8px;flex-wrap:wrap}
+.cv-back-btn{background:var(--bg3);border:1px solid var(--border);color:var(--t2);border-radius:7px;padding:6px 12px;font-size:.7rem;font-weight:600;cursor:pointer;transition:all .2s;flex-shrink:0}
+.cv-back-btn:hover{color:var(--text);border-color:var(--border2)}
+.cv-title-text{font-family:var(--fd);font-size:.88rem;font-weight:700;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.player-wrap{position:relative;width:100%;background:#000;overflow:hidden}
+.player-wrap::after{content:'';position:absolute;inset:0;pointer-events:none;z-index:2;background:linear-gradient(to bottom,#000 0%,transparent 12%,transparent 75%,#000 100%),linear-gradient(to right,#000 0%,transparent 8%,transparent 92%,#000 100%)}
+.player-iframe-box{position:relative;width:100%;padding-bottom:56.25%}
+.player-iframe-box iframe{position:absolute;top:-12%;left:-8%;width:116%;height:124%;border:none;pointer-events:none;z-index:1}
+.player-shield{position:absolute;inset:0;z-index:5;cursor:pointer;-webkit-tap-highlight-color:transparent;user-select:none}
+.player-watermark{position:absolute;bottom:48px;left:12px;z-index:8;pointer-events:none;background:rgba(7,7,10,.65);border:1px solid rgba(200,169,110,.2);border-radius:6px;padding:3px 8px;backdrop-filter:blur(4px)}
+.wm-text{font-family:var(--fm);font-size:.48rem;color:rgba(200,169,110,.7);letter-spacing:.1em;text-transform:uppercase}
+.player-controls{position:absolute;bottom:0;left:0;right:0;z-index:9;padding:6px 10px 10px;background:linear-gradient(to top,rgba(0,0,0,.98) 0%,rgba(0,0,0,.7) 60%,transparent 100%);transition:opacity .3s;opacity:0}
+.player-wrap:hover .player-controls,.player-wrap.show-ctrl .player-controls{opacity:1}
+.ctrl-seek-bar{width:100%;height:4px;background:rgba(255,255,255,.2);border-radius:3px;position:relative;cursor:pointer;margin-bottom:8px;overflow:hidden}
+.ctrl-seek-bar:hover{height:6px}
+.ctrl-watched{position:absolute;left:0;top:0;height:100%;background:rgba(200,169,110,.3);border-radius:3px;pointer-events:none}
+.ctrl-played{position:absolute;left:0;top:0;height:100%;background:linear-gradient(90deg,var(--gold),var(--gold2));border-radius:3px;pointer-events:none}
+.ctrl-row{display:flex;align-items:center, gap:6px}
+.ctrl-btn{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.12);border:none;color:#fff;font-size:.8rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .18s;flex-shrink:0;backdrop-filter:blur(4px)}
+.ctrl-btn:hover{background:rgba(200,169,110,.65)}
+.ctrl-btn.play-btn{width:38px;height:38px;font-size:1rem;background:rgba(200,169,110,.85)}
+.ctrl-btn.play-btn:hover{background:var(--gold2)}
+.ctrl-time{font-family:var(--fm);font-size:.5rem;color:rgba(255,255,255,.8);white-space:nowrap}
+.ctrl-spacer{flex:1}
+.ctrl-vol{width:55px;height:3px;background:rgba(255,255,255,.2);border-radius:3px;cursor:pointer;-webkit-appearance:none;appearance:none;accent-color:var(--gold)}
+.ctrl-vol::-webkit-slider-thumb{-webkit-appearance:none;width:10px;height:10px;border-radius:50%;background:var(--gold);cursor:pointer}
+.fullscreen-player-outer{width:100%;height:100%;position:relative}
+.player-wrap:-webkit-full-screen{border-radius:0}
+.player-wrap:fullscreen{border-radius:0}
+.player-wrap:-webkit-full-screen .player-controls{opacity:1}
+.player-wrap:fullscreen .player-controls{opacity:1}
+.player-wrap:-webkit-full-screen .player-iframe-box iframe{top:-8%;left:-4%;width:108%;height:116%}
+.player-wrap:fullscreen .player-iframe-box iframe{top:-8%;left:-4%;width:108%;height:116%}
+.no-video{display:flex;flex-direction:column;align-items:center;justify-content:center, gap:8px;padding:40px 20px;background:var(--bg3);text-align:center}
+.no-video-img{width:60px;height:60px;border-radius:12px;object-fit:cover;opacity:.5;margin-bottom:4px}
+.no-video-t{font-family:var(--fd);font-size:.9rem;color:var(--t2)}
+.no-video-s{font-size:.7rem;color:var(--t3)}
+
+/* COURSE VIEWER BODY */
+.cv-body{padding:14px;display:flex;flex-direction:column, gap:14px}
+.cv-course-title{font-family:var(--fd);font-size:1rem;font-weight:900}
+.cv-meta{display:flex;gap:10px;flex-wrap:wrap;font-family:var(--fm);font-size:.52rem;color:var(--t3)}
+.cv-tabs{display:flex;gap:0;border-bottom:1px solid var(--border);overflow-x:auto;margin:0 -14px;padding:0 14px}
+.cv-tab{padding:9px 14px;border:none;background:none;font-size:.73rem;font-weight:600;color:var(--t3);cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;white-space:nowrap}
+.cv-tab.on{color:var(--gold);border-bottom-color:var(--gold)}
+.cv-tab-pane{display:none;padding-top:12px}
+.cv-tab-pane.on{display:block}
+
+/* CHAPTERS LIST */
+.chapters-section{background:var(--bg2);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-top:4px}
+.chapters-hd{padding:11px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.chapters-hd-t{font-family:var(--fd);font-size:.85rem;font-weight:700}
+.chapters-hd-c{font-family:var(--fm);font-size:.52rem;color:var(--t3)}
+.ch-item{display:flex;align-items:center, gap:10px;padding:11px 14px;border-bottom:1px solid var(--border);cursor:pointer;transition:all .18s}
+.ch-item:last-child{border-bottom:none}
+.ch-item:hover{background:var(--gA)}
+.ch-item.active{background:var(--gB);border-left:3px solid var(--gold)}
+.ch-num{width:24px;height:24px;border-radius:50%;background:var(--bg4);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:var(--fm);font-size:.52rem;font-weight:700;flex-shrink:0;color:var(--t3)}
+.ch-item.done-ch .ch-num{background:var(--grA);border-color:rgba(34,197,94,.3);color:var(--green)}
+.ch-item.active .ch-num{background:var(--gold);border-color:var(--gold);color:var(--ink)}
+.ch-info{flex:1;min-width:0}
+.ch-name{font-size:.76rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.3}
+.ch-dur{font-family:var(--fm);font-size:.48rem;color:var(--t3);margin-top:1px}
+.ch-bar{height:2px;background:var(--bg4);border-radius:2px;overflow:hidden;margin-top:3px}
+.ch-bar-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold2));border-radius:2px}
+.ch-check{width:18px;height:18px;border-radius:50%;background:var(--grA);border:1px solid rgba(34,197,94,.25);display:flex;align-items:center;justify-content:center;font-size:.55rem;color:var(--green);flex-shrink:0;display:none}
+.ch-item.done-ch .ch-check{display:flex}
+
+/* ACTIONS ROW */
+.cv-actions{display:flex;gap:7px;flex-wrap:wrap}
+
+/* EXAM */
+.exam-card{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:10px}
+.exam-q-num{font-family:var(--fm);font-size:.5rem;color:var(--t3);margin-bottom:4px}
+.exam-q-text{font-size:.82rem;font-weight:600;margin-bottom:10px;line-height:1.55}
+.exam-opts{display:flex;flex-direction:column, gap:7px}
+.exam-opt{display:flex;align-items:center, gap:9px;padding:9px 12px;background:var(--bg4);border:1px solid var(--border);border-radius:7px;cursor:pointer;transition:all .18s;font-size:.76rem}
+.exam-opt:hover{border-color:rgba(200,169,110,.3);background:var(--gA)}
+.exam-opt.sel{border-color:var(--gold);background:var(--gA);color:var(--gold)}
+.exam-opt.correct{border-color:var(--green);background:var(--grA);color:var(--green)}
+.exam-opt.wrong{border-color:var(--red);background:var(--reA);color:var(--red)}
+
+/* PROJECT UPLOAD */
+.proj-box{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:14px}
+.proj-brief{font-size:.76rem;color:var(--t2);line-height:1.7;margin-bottom:12px}
+.proj-inp{width:100%;background:var(--bg4);border:1.5px solid var(--border2);border-radius:8px;padding:10px 12px;color:var(--text);font-size:.76rem;outline:none;resize:vertical;min-height:80px;transition:border-color .2s}
+.proj-inp:focus{border-color:rgba(200,169,110,.4)}
+.proj-file-btn{padding:8px 14px;background:var(--bg4);border:1px solid var(--border2);border-radius:7px;color:var(--t2);font-size:.7rem;font-weight:600;cursor:pointer;transition:all .2s;margin-top:8px}
+.proj-file-btn:hover{border-color:rgba(200,169,110,.3);color:var(--text)}
+.proj-submitted{background:var(--grA);border:1px solid rgba(34,197,94,.2);border-radius:8px;padding:10px 12px;font-size:.74rem;color:var(--green)}
+
+/* SPECIAL COURSES */
+.special-page-hero{padding:20px 16px 0}
+.sph-title{font-family:var(--fd);font-size:1.2rem;font-weight:900;color:var(--pink);margin-bottom:4px}
+.sph-sub{font-size:.76rem;color:var(--t2);margin-bottom:14px;line-height:1.65}
+.sp-course-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:16px;margin:0 16px 10px;transition:all .22s;cursor:pointer;position:relative;overflow:hidden}
+.sp-course-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--pink),var(--vio))}
+.sp-course-card:hover{border-color:rgba(244,114,182,.3);transform:translateY(-1px)}
+.spc-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px, gap:8px}
+.spc-icon{width:48px;height:48px;border-radius:10px;object-fit:cover;background:var(--bg3);flex-shrink:0;overflow:hidden}
+.spc-icon img{width:100%;height:100%;object-fit:cover;border-radius:8px}
+.spc-icon .icon-txt{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:1.4rem}
+.spc-badge{font-family:var(--fm);font-size:.46rem;padding:2px 7px;border-radius:5px;white-space:nowrap}
+.spc-badge.access{background:var(--grA);color:var(--green);border:1px solid rgba(34,197,94,.2)}
+.spc-badge.pending{background:var(--amA);color:var(--amber);border:1px solid rgba(245,158,11,.2)}
+.spc-badge.locked{background:var(--pkA);color:var(--pink);border:1px solid rgba(244,114,182,.2)}
+.spc-name{font-family:var(--fd);font-size:.95rem;font-weight:900;margin-bottom:3px}
+.spc-desc{font-size:.72rem;color:var(--t2);line-height:1.6;margin-bottom:10px}
+.spc-price{font-family:var(--fd);font-size:1.1rem;font-weight:900;color:var(--gold);margin-bottom:10px}
+.spc-chapters{font-family:var(--fm);font-size:.52rem;color:var(--t3);margin-bottom:10px}
+
+/* PAYMENT MODAL */
+.modal-bg{position:fixed;inset:0;z-index:800;background:rgba(0,0,0,.8);backdrop-filter:blur(10px);display:none;align-items:flex-end;justify-content:center;padding:0}
+.modal-bg.on{display:flex}
+.modal{background:var(--bg2);border:1px solid var(--border2);border-radius:20px 20px 0 0;width:100%;max-width:520px;max-height:90vh;overflow-y:auto;position:relative;animation:modalUp .3s var(--spring)}
+@keyframes modalUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.modal-hd{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--bg2);z-index:5;border-radius:20px 20px 0 0}
+.modal-title{font-family:var(--fd);font-size:.95rem;font-weight:700}
+.modal-close{width:26px;height:26px;border-radius:50%;background:var(--bg4);border:none;color:var(--t2);font-size:.85rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .18s}
+.modal-close:hover{background:var(--reA);color:var(--red)}
+.modal-body{padding:18px}
+.pay-amount{font-family:var(--fd);font-size:2rem;font-weight:900;color:var(--gold);text-align:center;margin:12px 0}
+.pay-qr-area{background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:16px;text-align:center;margin-bottom:14px}
+.pay-qr-img{width:180px;height:180px;background:white;border-radius:10px;margin:0 auto 10px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.pay-qr-img img{width:100%;height:100%;object-fit:contain}
+.pay-upi{font-family:var(--fm);font-size:.65rem;color:var(--gold);letter-spacing:.05em;text-align:center;margin-bottom:4px}
+.pay-note{font-size:.7rem;color:var(--t3);text-align:center}
+.pay-inp-label{font-family:var(--fm);font-size:.52rem;color:var(--t3);text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:5px;margin-top:12px}
+.pay-inp{width:100%;background:var(--bg3);border:1.5px solid var(--border2);border-radius:9px;padding:11px 13px;color:var(--text);font-size:.82rem;outline:none;transition:border-color .2s}
+.pay-inp:focus{border-color:rgba(200,169,110,.4)}
+.pay-pending{background:var(--amA);border:1px solid rgba(245,158,11,.2);border-radius:9px;padding:12px;text-align:center;font-size:.74rem;color:var(--amber);line-height:1.65}
+
+/* CERT */
+.cert-wrap{padding:14px}
+.cert-canvas-box{border-radius:10px;overflow:hidden;border:1px solid rgba(200,169,110,.2);margin-bottom:12px}
+#certCanvas{width:100%;display:block}
+
+/* BADGE */
+.bdg{display:inline-flex;align-items:center;padding:2px 7px;border-radius:4px;font-family:var(--fm);font-size:.48rem;font-weight:700}
+.bdg.ok{background:var(--grA);color:var(--green);border:1px solid rgba(34,197,94,.2)}
+.bdg.pn{background:var(--amA);color:var(--amber);border:1px solid rgba(245,158,11,.2)}
+.bdg.gg{background:var(--gA);color:var(--gold);border:1px solid rgba(200,169,110,.2)}
+.bdg.rd{background:var(--reA);color:var(--red);border:1px solid rgba(239,68,68,.2)}
+
+/* TOAST */
+#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(80px);opacity:0;z-index:9999;background:var(--bg3);border:1px solid var(--border2);border-radius:10px;padding:10px 16px;max-width:88vw;display:flex;align-items:center, gap:8px;transition:all .3s var(--spring);font-size:.74rem;color:var(--text);box-shadow:0 10px 32px rgba(0,0,0,.5);white-space:nowrap}
+#toast.on{transform:translateX(-50%) translateY(0);opacity:1}
+
+/* OVERVIEW TEXT */
+.ov-text{font-size:.78rem;color:var(--t2);line-height:1.8}
+.ov-section{margin-bottom:12px}
+.ov-label{font-family:var(--fd);font-size:.82rem;font-weight:700;color:var(--text);margin-bottom:5px}
+.resources-list{display:flex;flex-direction:column, gap:6px}
+.res-item{display:flex;align-items:center, gap:8px;padding:8px 12px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;font-size:.74rem;color:var(--t2)}
+.res-item svg{width:14px;height:14px;flex-shrink:0;color:var(--gold)}
+
+/* CERT GALLERY */
+.cert-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:12px 0}
+@media(min-width:400px){.cert-grid{grid-template-columns:repeat(2,1fr)}}
+.cert-thumb{background:var(--bg3);border:1px solid rgba(200,169,110,.18);border-radius:12px;padding:14px;text-align:center;cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
+.cert-thumb::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+.cert-thumb:hover{transform:translateY(-2px);border-color:rgba(200,169,110,.35)}
+.ct-icon{font-size:1.8rem;margin-bottom:6px}
+.ct-course{font-family:var(--fd);font-size:.78rem;font-weight:900;margin-bottom:2px;line-height:1.3}
+.ct-score{font-family:var(--fd);font-size:.9rem;font-weight:900;color:var(--gold);margin:4px 0}
+.ct-id{font-family:var(--fm);font-size:.46rem;color:var(--t3);word-break:break-all}
+.ct-date{font-family:var(--fm);font-size:.46rem;color:var(--t3)}
+.ct-actions{display:flex;gap:5px;justify-content:center;margin-top:8px}
+
+/* PROGRESS OVERVIEW */
+.prog-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+.pstat{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:10px;text-align:center}
+.pstat-val{font-family:var(--fd);font-size:1.3rem;font-weight:900;color:var(--gold);line-height:1}
+.pstat-lbl{font-family:var(--fm);font-size:.46rem;color:var(--t3);text-transform:uppercase;letter-spacing:.07em;margin-top:2px}
+
+/* EXAM RESULT POP */
+.result-pop{position:fixed;inset:0;z-index:900;background:rgba(0,0,0,.8);display:none;align-items:center;justify-content:center;padding:20px}
+.result-pop.on{display:flex}
+.result-box{background:var(--bg2);border:1px solid var(--border2);border-radius:18px;padding:28px;max-width:340px;width:100%;text-align:center}
+.result-score{font-family:var(--fd);font-size:3rem;font-weight:900;margin-bottom:4px}
+.result-label{font-size:.78rem;color:var(--t2);margin-bottom:16px}
+
+/* BOTTOM NAV */
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;z-index:100;background:rgba(7,7,10,.97);backdrop-filter:blur(20px);border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-around;height:56px;padding:0 8px}
+.bnav-btn{display:flex;flex-direction:column;align-items:center, gap:2px;background:none;border:none;cursor:pointer;padding:6px 10px;border-radius:10px;transition:all .2s;flex:1}
+.bnav-btn.on{background:var(--gA)}
+.bnav-icon{width:20px;height:20px;object-fit:contain;opacity:.5;transition:opacity .2s}
+.bnav-btn.on .bnav-icon{opacity:1;filter:drop-shadow(0 0 3px rgba(200,169,110,.5))}
+.bnav-icon-svg{width:20px;height:20px;color:var(--t3);transition:color .2s}
+.bnav-btn.on .bnav-icon-svg{color:var(--gold)}
+.bnav-lbl{font-family:var(--fm);font-size:.44rem;color:var(--t3);transition:color .2s}
+.bnav-btn.on .bnav-lbl{color:var(--gold)}
+.page-wrap{padding-bottom:70px}
+
+/* DISCLAIMER */
+.disc-overlay{position:fixed;inset:0;z-index:700;background:rgba(0,0,0,.85);backdrop-filter:blur(10px);display:none;align-items:flex-end;justify-content:center}
+.disc-overlay.on{display:flex}
+.disc-box{background:var(--bg2);border:1px solid rgba(200,169,110,.2);border-radius:20px 20px 0 0;padding:24px 20px 32px;width:100%;max-width:480px}
+.disc-title{font-family:var(--fd);font-size:1rem;font-weight:900;color:var(--gold);margin-bottom:6px}
+.disc-body{font-size:.74rem;color:var(--t2);line-height:1.75;margin-bottom:16px}
+.disc-body strong{color:var(--text)}
+.disc-check-row{display:flex;align-items:flex-start, gap:9px;padding:11px 12px;background:var(--bg3);border:1px solid var(--border);border-radius:9px;cursor:pointer;margin-bottom:14px;transition:border-color .2s}
+.disc-check-row:hover{border-color:rgba(200,169,110,.25)}
+.disc-check-row input{margin-top:2px;accent-color:var(--gold);flex-shrink:0}
+.disc-check-row span{font-size:.72rem;color:var(--t2);line-height:1.6}
+.disc-proceed{width:100%;padding:12px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--ink);border:none;border-radius:9px;font-weight:800;font-size:.8rem;cursor:pointer;transition:all .2s;opacity:.45;pointer-events:none}
+.disc-proceed.ok{opacity:1;pointer-events:all}
+
+/* LOADING */
+.loading-center{display:flex;flex-direction:column;align-items:center;justify-content:center, gap:10px;padding:40px 20px;color:var(--t3)}
+.spin-sm{width:24px;height:24px;border:2px solid rgba(200,169,110,.12);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite}
+
+/* FORM HELPERS */
+.fi{width:100%;background:var(--bg3);border:1.5px solid var(--border2);border-radius:9px;padding:10px 12px;color:var(--text);font-size:.8rem;outline:none;transition:border-color .2s}
+.fi:focus{border-color:rgba(200,169,110,.4)}
+.fl{font-family:var(--fm);font-size:.52rem;color:var(--t3);text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:4px;margin-top:10px}
+</style>
+</head>
+<body>
+<div id="toast"></div>
+<input type="file" id="projFileInput" accept="image/*,video/*,.pdf,.doc,.docx,.pptx,.zip" style="display:none" onchange="handleProjFile(this)">
+
+<!-- GUARD -->
+<div id="guard">
+  <div class="g-logo">Biluxe10</div>
+  <div class="g-spin"></div>
+  <div class="g-msg" id="gMsg">Authenticating...</div>
+</div>
+
+<!-- DISCLAIMER -->
+<div class="disc-overlay" id="discOverlay">
+  <div class="disc-box">
+    <div class="disc-title">Before You Watch</div>
+    <div class="disc-body">This video is <strong>for educational purposes only</strong>. Biluxe10 uses YouTube embedded content. These videos belong to their original creators — any promotions or ads within them are <strong>not from Biluxe10</strong>.</div>
+    <label class="disc-check-row">
+      <input type="checkbox" id="discChk" onchange="toggleDiscBtn()">
+      <span>I understand this is an educational embed. I will not hold Biluxe10 responsible for third-party content.</span>
+    </label>
+    <button class="disc-proceed" id="discProceed" onclick="proceedDisc()">Start Learning</button>
+  </div>
+</div>
+
+<!-- PAYMENT MODAL -->
+<div class="modal-bg" id="payModal">
+  <div class="modal">
+    <div class="modal-hd">
+      <div class="modal-title" id="payModalTitle">Course Payment</div>
+      <button class="modal-close" onclick="closePayModal()">&#10005;</button>
+    </div>
+    <div class="modal-body">
+      <div id="payModalContent"></div>
+    </div>
+  </div>
+</div>
+
+<!-- EXAM RESULT POP -->
+<div class="result-pop" id="resultPop">
+  <div class="result-box">
+    <div class="result-score" id="resultScore">0%</div>
+    <div class="result-label" id="resultLabel">Result</div>
+    <div id="resultActions" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap"></div>
+  </div>
+</div>
+
+<!-- CERT MODAL -->
+<div class="modal-bg" id="certModal" style="align-items:center">
+  <div class="modal" style="border-radius:16px;max-height:92vh;max-width:520px">
+    <div class="modal-hd" style="border-radius:16px 16px 0 0">
+      <div class="modal-title">Certificate of Completion</div>
+      <button class="modal-close" onclick="closeCertModal()">&#10005;</button>
+    </div>
+    <div class="cert-wrap">
+      <div class="cert-canvas-box"><canvas id="certCanvas" width="1200" height="850"></canvas></div>
+      <div id="certModalMeta" style="font-family:var(--fm);font-size:.58rem;color:var(--t3);margin-bottom:10px;word-break:break-all"></div>
+      <div style="display:flex;gap:7px;flex-wrap:wrap">
+        <button class="btn-g" onclick="downloadCert()">Download PNG</button>
+        <button class="btn-o" onclick="shareWACert()">WhatsApp</button>
+        <button class="btn-sm" onclick="closeCertModal()">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <a href="dashboard.html" class="tb-logo">Biluxe10</a>
+  <div class="tb-center" id="tbCenter">Learning Hub</div>
+  <div class="tb-r">
+    <a href="aitutor.html" class="btn-sm">AI Tutor</a>
+    <button class="btn-sm" onclick="authLogout()">Out</button>
+  </div>
+</div>
+
+<!-- PAGE: HOME (BUNDLES) -->
+<div class="page on page-wrap" id="pg-home">
+  <div class="page-pad">
+    <div class="section-title">Your Courses</div>
+    <div class="section-sub" id="homeSubLine">Loading your bundles...</div>
+    <div class="prog-stats" id="progStats">
+      <div class="pstat"><div class="pstat-val" id="ps-courses">0</div><div class="pstat-lbl">Courses</div></div>
+      <div class="pstat"><div class="pstat-val" id="ps-done">0</div><div class="pstat-lbl">Chapters</div></div>
+      <div class="pstat"><div class="pstat-val" id="ps-certs">0</div><div class="pstat-lbl">Certs</div></div>
+    </div>
+    <div class="special-banner" onclick="goPage('special')">
+      <div class="sb-left">
+        <div class="sb-title">Special Courses</div>
+        <div class="sb-sub">Makeup, Fashion Design, Mehndi & Embroidery — Separate approval required</div>
+      </div>
+      <div class="sb-arrow">&#8594;</div>
+    </div>
+    <div class="bundle-grid" id="bundleGrid">
+      <div style="grid-column:1/-1;text-align:center;padding:30px;color:var(--t3)"><div class="spin-sm" style="margin:0 auto 8px"></div><p style="font-size:.74rem">Loading bundles...</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE: COURSE LIST -->
+<div class="page page-wrap" id="pg-courses">
+  <div class="course-list-header">
+    <div class="cl-back">
+      <button class="cl-back-btn" onclick="goPage('home')">&#8592; All Bundles</button>
+    </div>
+    <div class="cl-name" id="clName">Bundle</div>
+    <div class="cl-meta" id="clMeta"></div>
+  </div>
+  <div class="course-list" id="courseList"></div>
+</div>
+
+<!-- PAGE: COURSE VIEWER -->
+<div id="courseViewer" class="page-wrap">
+  <div class="cv-header">
+    <button class="cv-back-btn" id="cvBackBtn">&#8592; Back</button>
+    <div class="cv-title-text" id="cvTitleText">Course</div>
+    <div style="display:flex;gap:6px;flex-shrink:0">
+      <button class="btn-sm" onclick="goToExam()">Exam</button>
+    </div>
+  </div>
+
+  <!-- PLAYER -->
+  <div class="player-wrap" id="playerWrap">
+    <div class="player-iframe-box" id="playerIframeBox">
+      <div class="no-video" id="noVideoMsg" style="position:absolute;inset:0">
+        <svg class="no-video-img" viewBox="0 0 60 60" fill="none"><rect width="60" height="60" rx="12" fill="#18181F"/><path d="M23 20l18 10-18 10V20z" fill="#4B4B5A"/></svg>
+        <div class="no-video-t">Select a chapter to begin</div>
+        <div class="no-video-s">Your progress is tracked automatically</div>
+      </div>
+    </div>
+    <div class="player-shield" id="playerShield" onclick="handleShieldClick()"></div>
+    <div class="player-watermark"><div class="wm-text" id="wmText">Biluxe10 Protected</div></div>
+    <div class="player-controls" id="playerControls" style="display:none">
+      <div class="ctrl-seek-bar" id="ctrlSeekBar">
+        <div class="ctrl-watched" id="ctrlWatched"></div>
+        <div class="ctrl-played" id="ctrlPlayed"></div>
+      </div>
+      <div class="ctrl-row">
+        <button class="ctrl-btn" onclick="seekBack()" title="Back 10s">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8z"/><text x="7" y="16" font-size="7" fill="currentColor">10</text></svg>
+        </button>
+        <button class="ctrl-btn play-btn" id="ctrlPlayBtn" onclick="togglePlay()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" id="playIcon"><path d="M8 5v14l11-7z"/></svg>
+        </button>
+        <button class="ctrl-btn" title="Forward blocked">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="rgba(255,255,255,0.3)"><path d="M18 0L8 12l10 12V0z"/></svg>
+        </button>
+        <span class="ctrl-time" id="ctrlTime">0:00 / 0:00</span>
+        <div class="ctrl-spacer"></div>
+        <button class="ctrl-btn" id="ctrlMuteBtn" onclick="toggleMute()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
+        </button>
+        <input class="ctrl-vol" type="range" min="0" max="100" value="100" id="ctrlVol" oninput="setVol(this.value)">
+        <button class="ctrl-btn" onclick="toggleFS()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- COURSE BODY -->
+  <div class="cv-body">
+    <div class="cv-course-title" id="cvCourseTitle">Course Name</div>
+    <div class="cv-meta" id="cvCourseMeta"></div>
+    <div class="cv-actions" id="cvActions"></div>
+
+    <div class="cv-tabs">
+      <button class="cv-tab on" onclick="switchTab('overview',this)">Overview</button>
+      <button class="cv-tab" onclick="switchTab('chapters',this)">Chapters</button>
+      <button class="cv-tab" onclick="switchTab('resources',this)">Resources</button>
+      <button class="cv-tab" onclick="switchTab('project',this)">Project</button>
+      <button class="cv-tab" onclick="switchTab('exam',this)">Exam</button>
+      <button class="cv-tab" onclick="switchTab('cert',this)">Certificate</button>
+    </div>
+
+    <div class="cv-tab-pane on" id="cvt-overview">
+      <div id="overviewContent"></div>
+    </div>
+    <div class="cv-tab-pane" id="cvt-chapters">
+      <div id="chaptersList"></div>
+    </div>
+    <div class="cv-tab-pane" id="cvt-resources">
+      <div id="resourcesContent"></div>
+    </div>
+    <div class="cv-tab-pane" id="cvt-project">
+      <div id="projectContent"></div>
+    </div>
+    <div class="cv-tab-pane" id="cvt-exam">
+      <div id="examContent"></div>
+    </div>
+    <div class="cv-tab-pane" id="cvt-cert">
+      <div id="certContent"></div>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE: SPECIAL COURSES -->
+<div class="page page-wrap" id="pg-special">
+  <div class="special-page-hero">
+    <div class="sph-title">Special Courses</div>
+    <div class="sph-sub">Professional courses with separate payment. Pay, admin approves, then access unlocks automatically.</div>
+  </div>
+  <div id="specialCoursesList"></div>
+</div>
+
+<!-- PAGE: CERTIFICATES -->
+<div class="page page-wrap" id="pg-certs">
+  <div class="page-pad">
+    <div class="section-title">My Certificates</div>
+    <div class="section-sub">Complete all chapters, pass exam (60%+) and submit project to earn certificates.</div>
+    <div id="certGallery"><div class="loading-center"><div class="spin-sm"></div><p style="font-size:.74rem">Loading...</p></div></div>
+  </div>
+</div>
+
+<!-- BOTTOM NAV -->
+<div class="bottom-nav" id="bottomNav">
+  <button class="bnav-btn on" id="bn-home" onclick="goPage('home')">
+    <svg class="bnav-icon-svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+    <span class="bnav-lbl">Bundles</span>
+  </button>
+  <button class="bnav-btn" id="bn-special" onclick="goPage('special')">
+    <svg class="bnav-icon-svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+    <span class="bnav-lbl">Special</span>
+  </button>
+  <button class="bnav-btn" id="bn-certs" onclick="goPage('certs')">
+    <svg class="bnav-icon-svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 4l5 2.18V11c0 3.5-2.33 6.79-5 7.93-2.67-1.14-5-4.43-5-7.93V7.18L12 5z"/></svg>
+    <span class="bnav-lbl">Certs</span>
+  </button>
+  <a href="dashboard.html" class="bnav-btn" style="text-decoration:none">
+    <svg class="bnav-icon-svg" viewBox="0 0 24 24" fill="currentColor"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
+    <span class="bnav-lbl">Dashboard</span>
+  </a>
+</div>
+
+<script>
+/* =========================================================
+   FIREBASE CONFIG
+========================================================= */
+const FB_CFG={
+  apiKey:"AIzaSyDxxkC9iD1V1w-53Kf4oBrHEXlBLvCc7sE",
+  authDomain:"biluxe10-3e894.firebaseapp.com",
+  projectId:"biluxe10-3e894",
+  storageBucket:"biluxe10-3e894.appspot.com",
+  messagingSenderId:"804749588233",
+  appId:"1:804749588233:web:7777648c0c7834733c05d8"
+};
+if(!firebase.apps.length)firebase.initializeApp(FB_CFG);
+const AUTH=firebase.auth(),DB=firebase.firestore();
+const COL='user_collection';
+const FOUNDER='Syed Afshar Khadri';
+const VERIFY_BASE='https://biluxe10.com/verify';
+const fts=()=>firebase.firestore.FieldValue.serverTimestamp();
+
+/* =========================================================
+   BUNDLE / COURSE DATA
+========================================================= */
+const BUNDLES=[
+{id:'b499',price:499,name:'Starter Bundle',label:'Digital Entrepreneurship',color:'rgba(200,169,110,0.07)',border:'rgba(200,169,110,0.22)',
+courses:[
+{id:'s1',title:'Digital Entrepreneurship Basics',dur:'4 hrs',
+chapters:[{id:'s1c1',title:'Full Course — Foundations of Digital Business',yt:'CcwYCG0Gggw',start:0,isFull:true}],
+resources:['Business Model Canvas Template','Niche Research Checklist','Marketing Funnel Guide'],
+project:'Create a 1-page digital business plan for your idea.',
+desc:'Start and grow a digital business from scratch. Covers models, niche finding, product building, marketing and scaling.'},
+{id:'s2',title:'Canva & Content Creation',dur:'5 hrs',
+chapters:[
+{id:'s2c1',title:'Chapter 1 — Canva Basics',yt:'x7-XSJHcaVI',start:0,isFull:false},
+{id:'s2c2',title:'Chapter 2',yt:'PLW-zSkCnZ-gDgc_YNSC7uCaYNLoMwLPp8',isPlaylist:true,plIndex:0},
+{id:'s2c3',title:'Chapter 3',yt:'PLW-zSkCnZ-gDgc_YNSC7uCaYNLoMwLPp8',isPlaylist:true,plIndex:1},
+{id:'s2c4',title:'Chapter 4',yt:'PLW-zSkCnZ-gDgc_YNSC7uCaYNLoMwLPp8',isPlaylist:true,plIndex:2},
+{id:'s2c5',title:'Chapter 5',yt:'PLW-zSkCnZ-gDgc_YNSC7uCaYNLoMwLPp8',isPlaylist:true,plIndex:3},
+{id:'s2c6',title:'Chapter 6',yt:'PLW-zSkCnZ-gDgc_YNSC7uCaYNLoMwLPp8',isPlaylist:true,plIndex:4},
+],
+resources:['Canva Brand Kit Guide','100 Content Ideas','Color Psychology PDF'],
+project:'Design a complete brand identity with 5 pieces of social media content.',
+desc:'Design stunning graphics and create viral content using Canva.'},
+{id:'s3',title:'WhatsApp Business Marketing',dur:'3 hrs',
+chapters:[{id:'s3c1',title:'Full Course — WhatsApp Business Mastery',yt:'PlVxtty0wrI',start:0,isFull:true}],
+resources:['WA Business Setup Checklist','Message Templates PDF','Lead Gen Scripts'],
+project:'Set up a WhatsApp Business profile with catalog and auto-reply templates.',
+desc:'Generate leads and grow revenue with WhatsApp Business.'},
+{id:'s4',title:'ChatGPT for Daily Work',dur:'3 hrs',
+chapters:[{id:'s4c1',title:'Full Course — ChatGPT & AI Productivity',yt:'IcCAEudzEDw',start:0,isFull:true}],
+resources:['500 ChatGPT Prompts','AI Tools Directory','Automation Recipes'],
+project:'Create a complete AI-powered content workflow using ChatGPT.',
+desc:'Leverage ChatGPT and AI tools to supercharge productivity.'},
+]},
+{id:'b999',price:999,name:'Pro Bundle',label:'Digital Marketing',color:'rgba(96,165,250,0.07)',border:'rgba(96,165,250,0.22)',
+courses:[
+{id:'d1',title:'Affiliate Marketing Mastery',dur:'8 hrs',
+chapters:[{id:'d1c1',title:'Full Course — Affiliate Marketing Complete',yt:'TF3BhN_dTdo',start:0,isFull:true}],
+resources:['Affiliate Niche Guide','Top 50 Programs List'],project:'Set up an affiliate review site with 3+ products.',
+desc:'Earn commissions promoting products online.'},
+{id:'d2',title:'SEO & Blogging',dur:'5 hrs',
+chapters:[{id:'d2c1',title:'Full Course — SEO & Blogging Mastery',yt:'pDUMhloKybU',start:0,isFull:true}],
+resources:['Keyword Spreadsheet','SEO Audit Checklist'],project:'Publish 3 SEO-optimized blog posts.',
+desc:'Rank on Google and build traffic-generating blogs.'},
+{id:'d3',title:'Social Media Management',dur:'6 hrs',
+chapters:[{id:'d3c1',title:'Full Course — Social Media Strategy',yt:'9WVGLqiHVuk',start:0,isFull:true}],
+resources:['Social Media Calendar','Hashtag Research Guide'],project:'Create a 30-day social media content plan.',
+desc:'Grow Instagram, Linkedln, YouTube for brands.'},
+{id:'d4',title:'Email Marketing',dur:'4 hrs',
+chapters:[{id:'d4c1',title:'Full Course — Email Marketing Complete',yt:'yn6L7q4V1xg',start:0,isFull:true}],
+resources:['Email Swipe File','Subject Line Formulas'],project:'Set up a 5-email welcome sequence.',
+desc:'Build email lists and write high-converting campaigns.'},
+{id:'d5',title:'Google Ads Complete',dur:'7 hrs',
+chapters:[{id:'d5c1',title:'Full Course — Google Ads Mastery',yt:'autzRHtt-RM',start:0,isFull:true}],
+resources:['Google Ads Checklist','Ad Copy Templates'],project:'Create a mock Google Ads campaign for a local business.',
+desc:'Run profitable Google Search, Display, and YouTube ads.'},
+{id:'d6',title:'Facebook Ads Mastery',dur:'7 hrs',
+chapters:[{id:'d6c1',title:'Full Course — Meta Ads Complete',yt:'WNiU5ZxazI4',start:0,isFull:true}],
+resources:['Ad Creative Framework','ROAS Calculator'],project:'Plan a Facebook Ads strategy for an e-commerce product.',
+desc:'Master Meta Ads (Facebook & Instagram).'},
+{id:'d7',title:'Freelancing Mastery',dur:'9 hrs',
+chapters:[{id:'d7c1',title:'Full Course — Freelancing on Fiverr & Upwork',yt:'gMmTpoiITM4',start:0,isFull:true}],
+resources:['Proposal Templates','Rate Calculator'],project:'Create a complete freelance profile + 3 proposals.',
+desc:'Build a profitable freelance career.'},
+]},
+{id:'b2499',price:2499,name:'Professional Bundle',label:'Design & No-Code',color:'rgba(167,139,250,0.07)',border:'rgba(167,139,250,0.22)',
+courses:[
+{id:'c1',title:'UI/UX Design Complete',dur:'12 hrs',
+chapters:[
+{id:'c1c1',title:'Chapter 1 — Design Thinking',yt:'PL7ZIgV4R67IOMRiW_Q7vZqLulb0xyKDHD',isPlaylist:true,plIndex:0},
+{id:'c1c2',title:'Chapter 2 — Figma Interface',yt:'PL7ZIgV4R67IOMRiW_Q7vZqLulb0xyKDHD',isPlaylist:true,plIndex:1},
+{id:'c1c3',title:'Chapter 3 — Typography & Color',yt:'PL7ZIgV4R67IOMRiW_Q7vZqLulb0xyKDHD',isPlaylist:true,plIndex:2},
+{id:'c1c4',title:'Chapter 4 — Layout & Grid',yt:'PL7ZIgV4R67IOMRiW_Q7vZqLulb0xyKDHD',isPlaylist:true,plIndex:3},
+{id:'c1c5',title:'Chapter 5 — Components & Systems',yt:'PL7ZIgV4R67IOMRiW_Q7vZqLulb0xyKDHD',isPlaylist:true,plIndex:4},
+{id:'c1c6',title:'Chapter 6 — User Research',yt:'PL7ZIgV4R67IOMRiW_Q7vZqLulb0xyKDHD',isPlaylist:true,plIndex:5},
+{id:'c1c7',title:'Chapter 7 — Wireframing',yt:'PL7ZIgV4R67IOMRiW_Q7vZqLulb0xyKDHD',isPlaylist:true,plIndex:6},
+{id:'c1c8',title:'Chapter 8 — Prototyping',yt:'PL7ZIgV4R67IOMRiW_Q7vZqLulb0xyKDHD',isPlaylist:true,plIndex:7},
+{id:'c1c9',title:'Chapter 9 — Mobile App Design',yt:'PL7ZIgV4R67IOMRiW_Q7vZqLulb0xyKDHD',isPlaylist:true,plIndex:8},
+{id:'c1c10',title:'Chapter 10 — Portfolio',yt:'PL7ZIgV4R67IOMRiW_Q7vZqLulb0xyKDHD',isPlaylist:true,plIndex:9},
+],
+resources:['Figma UI Kit','Design System Template'],project:'Design a complete mobile app in Figma with 10+ screens.',
+desc:'Master user experience and interface design with Figma.'},
+{id:'c2',title:'No-Code Web Development',dur:'6 hrs',
+chapters:[{id:'c2c1',title:'Full Course — No-Code Development',yt:'9nIwTjG2fdI',start:0,isFull:true}],
+resources:['Webflow CMS Guide'],project:'Build a 5-page website for a local business.',
+desc:'Build professional websites without code.'},
+{id:'c3',title:'Video Editing with CapCut',dur:'5 hrs',
+chapters:[{id:'c3c1',title:'Full Course — CapCut Video Editing',yt:'nXeslaOL_BE',start:0,isFull:true}],
+resources:['CapCut Shortcuts','Short-form Script Templates'],project:'Edit 3 short-form videos under 60 seconds.',
+desc:'Create viral short-form videos using CapCut.'},
+{id:'c4',title:'Podcast & Audio Production',dur:'4 hrs',
+chapters:[{id:'c4c1',title:'Full Course — Podcast Production',yt:'cGWFvYknE7o',start:0,isFull:true}],
+resources:['Podcast Launch Checklist'],project:'Record and publish your first podcast episode.',
+desc:'Record, edit, and launch your podcast.'},
+{id:'c5',title:'Ecommerce Complete',dur:'8 hrs',
+chapters:[{id:'c5c1',title:'Full Course — Ecommerce & Shopify',yt:'5d9jtO0uOpk',start:0,isFull:true}],
+resources:['Product Research Framework','Shopify Theme Guide'],project:'Launch a Shopify store with 5+ products.',
+desc:'Launch and grow an e-commerce store using Shopify.'},
+{id:'c6',title:'Dropshipping & Print on Demand',dur:'6 hrs',
+chapters:[{id:'c6c1',title:'Full Course — Dropshipping Mastery',yt:'thYCp3y1Yuw',start:0,isFull:true}],
+resources:['Product Research Toolkit','Supplier List'],project:'Launch a dropshipping store and run your first ad.',
+desc:'Build a dropshipping or print-on-demand business.'},
+]},
+{id:'b3699',price:3699,name:'Elite Bundle',label:'Data & Analytics',color:'rgba(34,211,238,0.07)',border:'rgba(34,211,238,0.22)',
+courses:[
+{id:'da1',title:'Excel for Data Analysis',dur:'8 hrs',
+chapters:[{id:'da1c1',title:'Full Course — Excel for Data Analysis',yt:'Kjz_DDO4Fzs',start:0,isFull:true}],
+resources:['Excel Shortcuts PDF','100 Useful Formulas'],project:'Build a sales analytics dashboard in Excel.',
+desc:'Master Excel for data analysis and dashboards.'},
+{id:'da2',title:'SQL for Beginners',dur:'6 hrs',
+chapters:[{id:'da2c1',title:'Full Course — SQL Complete',yt:'7azCOKryADA',start:0,isFull:true}],
+resources:['SQL Cheat Sheet','Practice Datasets'],project:'Write 20 SQL queries on a provided dataset.',
+desc:'Learn SQL from scratch for data analytics.'},
+{id:'da3',title:'Power BI & Tableau',dur:'9 hrs',
+chapters:[{id:'da3c1',title:'Full Course — Power BI & Tableau',yt:'Gmk3DWOxVKQ',start:0,isFull:true}],
+resources:['Power BI Sample Data','DAX Quick Reference'],project:'Build a complete business dashboard in Power BI.',
+desc:'Build interactive dashboards for business intelligence.'},
+{id:'da4',title:'Python Basics',dur:'7 hrs',
+chapters:[{id:'da4c1',title:'Full Course — Python for Beginners',yt:'LgW6Vla0kXA',start:0,isFull:true}],
+resources:['Python Cheat Sheet','Pandas Quick Reference'],project:'Write a Python script that reads a CSV and outputs a report.',
+desc:'Learn Python for data work with Pandas.'},
+{id:'da5',title:'Business Analytics',dur:'5 hrs',
+chapters:[{id:'da5c1',title:'Full Course — Business Analytics',yt:'cCTuOBOqSaM',start:0,isFull:true}],
+resources:['KPI Framework Guide','Business Report Template'],project:'Create a business analytics report with 5 KPIs.',
+desc:'Apply data analysis to real business decisions.'},
+{id:'da6',title:'Financial Accounting Basics',dur:'5 hrs',
+chapters:[{id:'da6c1',title:'Full Course — Financial Accounting',yt:'vO09q2V8TGQ',start:0,isFull:true}],
+resources:['Accounting Cheat Sheet','P&L Template'],project:'Create a complete financial model for a small business.',
+desc:'Learn accounting fundamentals: P&L, balance sheet, cash flow.'},
+]},
+{id:'b6999',price:6999,name:'Master Bundle',label:'Cloud & DevOps & Security',color:'rgba(245,158,11,0.07)',border:'rgba(245,158,11,0.22)',
+courses:[
+{id:'do1',title:'AWS Cloud Practitioner',dur:'12 hrs',
+chapters:[{id:'do1c1',title:'Full Course — AWS Cloud Complete',yt:'a8FFknuJwB0',start:0,isFull:true}],
+resources:['AWS Services Cheat Sheet'],project:'Design a 3-tier AWS architecture.',
+desc:'Master Amazon Web Services.'},
+{id:'do2',title:'Docker & Kubernetes',dur:'14 hrs',
+chapters:[
+{id:'do2c1',title:'Chapter 1 — Containers & Docker Concepts',yt:'PLhNrFKat_aeLmPHBkS42O1pdN8Pt-tfF9',isPlaylist:true,plIndex:0},
+{id:'do2c2',title:'Chapter 2 — Docker CLI & Images',yt:'PLhNrFKat_aeLmPHBkS42O1pdN8Pt-tfF9',isPlaylist:true,plIndex:1},
+{id:'do2c3',title:'Chapter 3 — Dockerfile & Compose',yt:'PLhNrFKat_aeLmPHBkS42O1pdN8Pt-tfF9',isPlaylist:true,plIndex:2},
+{id:'do2c4',title:'Chapter 4 — Kubernetes Architecture',yt:'PLhNrFKat_aeLmPHBkS42O1pdN8Pt-tfF9',isPlaylist:true,plIndex:3},
+{id:'do2c5',title:'Chapter 5 — Pods, Services & Deployments',yt:'PLhNrFKat_aeLmPHBkS42O1pdN8Pt-tfF9',isPlaylist:true,plIndex:4},
+{id:'do2c6',title:'Chapter 6 — Helm & Production',yt:'PLhNrFKat_aeLmPHBkS42O1pdN8Pt-tfF9',isPlaylist:true,plIndex:5},
+],
+resources:['Docker Cheat Sheet','K8s Quick Reference'],project:'Dockerise a Node.js app and deploy to Kubernetes.',
+desc:'Containerise apps with Docker and orchestrate with Kubernetes.'},
+{id:'do3',title:'CI/CD Pipelines',dur:'8 hrs',
+chapters:[{id:'do3c1',title:'Full Course — CI/CD with GitHub Actions',yt:'Ke_Wr5zPE0A',start:0,isFull:true}],
+resources:['GitHub Actions Templates'],project:'Build a complete CI/CD pipeline using GitHub Actions.',
+desc:'Automate software delivery with GitHub Actions.'},
+{id:'do4',title:'Linux for DevOps',dur:'7 hrs',
+chapters:[{id:'do4c1',title:'Full Course — Linux Command Line',yt:'e01GGTKmtpc',start:0,isFull:true}],
+resources:['Linux Command Cheat Sheet'],project:'Write a bash script that automates server setup.',
+desc:'Master Linux command line and shell scripting.'},
+{id:'do5',title:'Cybersecurity Fundamentals',dur:'10 hrs',
+chapters:[{id:'do5c1',title:'Full Course — Cybersecurity Complete',yt:'z2hVCeiwvGk',start:0,isFull:true}],
+resources:['Security Checklist','OWASP Top 10 Guide'],project:'Perform a security audit on a sample web app.',
+desc:'Learn threats, defense, network security.'},
+{id:'do6',title:'Ethical Hacking',dur:'10 hrs',
+chapters:[{id:'do6c1',title:'Full Course — Ethical Hacking',yt:'2eLJNBroFrg',start:0,isFull:true}],
+resources:['Ethical Hacking Methodology'],project:'Complete a CTF challenge and write a pen test report.',
+desc:'Learn penetration testing and ethical hacking.'},
+{id:'do7',title:'Cloud Security',dur:'8 hrs',
+chapters:[{id:'do7c1',title:'Full Course — Cloud Security',yt:'a58CqpP6vEw',start:0,isFull:true}],
+resources:['Cloud Security Framework'],project:'Design a secure cloud architecture with IAM policies.',
+desc:'Secure cloud infrastructure on AWS and Azure.'},
+{id:'do8',title:'DevOps Project',dur:'6 hrs',
+chapters:[{id:'do8c1',title:'Full Course — DevOps End-to-End Project',yt:'H5FAxTBuNM8',start:0,isFull:true}],
+resources:['Project GitHub Template'],project:'Deploy a full-stack app using Docker, CI/CD, and AWS.',
+desc:'End-to-end DevOps project deploying a full-stack app.'},
+]},
+{id:'b11999',price:11999,name:'Elite Pro Bundle',label:'Data Science & ML',color:'rgba(167,139,250,0.09)',border:'rgba(167,139,250,0.28)',
+courses:[
+{id:'ml1',title:'Python for Data Science',dur:'10 hrs',
+chapters:[{id:'ml1c1',title:'Full Course — Python for Data Science',yt:'CMEWVn1uZpQ',start:0,isFull:true}],
+resources:['NumPy Cheat Sheet','Pandas Reference'],project:'Perform full EDA on a Kaggle dataset.',
+desc:'Advanced Python: NumPy, Pandas, Matplotlib, Seaborn.'},
+{id:'ml2',title:'Machine Learning Fundamentals',dur:'12 hrs',
+chapters:[{id:'ml2c1',title:'Full Course — Machine Learning Complete',yt:'hR-tMLTMw0s',start:0,isFull:true}],
+resources:['ML Algorithm Cheat Sheet'],project:'Build an end-to-end ML pipeline. Submit GitHub repo.',
+desc:'Core ML algorithms with scikit-learn.'},
+{id:'ml3',title:'Deep Learning & Neural Networks',dur:'14 hrs',
+chapters:[{id:'ml3c1',title:'Full Course — Deep Learning & Neural Nets',yt:'G1P2IaBcXx8',start:0,isFull:true}],
+resources:['TensorFlow Quick Reference'],project:'Train an image classification model. Deploy as API.',
+desc:'Build neural networks with TensorFlow and Keras.'},
+{id:'ml4',title:'Natural Language Processing',dur:'12 hrs',
+chapters:[{id:'ml4c1',title:'Full Course — NLP Complete',yt:'BCLjPLeVCBY',start:0,isFull:true}],
+resources:['NLP Pipeline Guide','HuggingFace Quickstart'],project:'Build a sentiment analysis app.',
+desc:'NLP with transformers and BERT.'},
+{id:'ml5',title:'Computer Vision',dur:'12 hrs',
+chapters:[
+{id:'ml5c1',title:'Chapter 1 — Computer Vision Fundamentals',yt:'PLPTV0NXA_ZSgmWYoSpY_2EJzPJjkke4Az',isPlaylist:true,plIndex:0},
+{id:'ml5c2',title:'Chapter 2 — OpenCV Basics',yt:'PLPTV0NXA_ZSgmWYoSpY_2EJzPJjkke4Az',isPlaylist:true,plIndex:1},
+{id:'ml5c3',title:'Chapter 3 — Object Detection YOLO',yt:'PLPTV0NXA_ZSgmWYoSpY_2EJzPJjkke4Az',isPlaylist:true,plIndex:2},
+{id:'ml5c4',title:'Chapter 4 — Face Detection & Real-time',yt:'PLPTV0NXA_ZSgmWYoSpY_2EJzPJjkke4Az',isPlaylist:true,plIndex:3},
+{id:'ml5c5',title:'Chapter 5 — CV Deployment Project',yt:'PLPTV0NXA_ZSgmWYoSpY_2EJzPJjkke4Az',isPlaylist:true,plIndex:4},
+],
+resources:['OpenCV Cheat Sheet','YOLO Config Guide'],project:'Build a real-time object detection application.',
+desc:'Build computer vision apps with YOLO and OpenCV.'},
+{id:'ml6',title:'Big Data Engineering',dur:'8 hrs',
+chapters:[{id:'ml6c1',title:'Full Course — Big Data with Spark & Kafka',yt:'H5SHmiKTFsM',start:0,isFull:true}],
+resources:['Spark Quick Reference'],project:'Build a real-time data pipeline using Kafka and Spark.',
+desc:'Process large datasets with Hadoop, Spark, and Kafka.'},
+{id:'ml7',title:'Data Engineering',dur:'8 hrs',
+chapters:[{id:'ml7c1',title:'Full Course — Data Engineering',yt:'hf2go3E2m8g',start:0,isFull:true}],
+resources:['Airflow Guide','dbt Reference'],project:'Build an end-to-end data pipeline with Airflow and dbt.',
+desc:'Build data pipelines, warehouses, and ETL workflows.'},
+{id:'ml8',title:'MLOps Fundamentals',dur:'8 hrs',
+chapters:[{id:'ml8c1',title:'Full Course — MLOps Complete',yt:'dPmH3G9NQtY',start:0,isFull:true}],
+resources:['MLflow Guide'],project:'Deploy an ML model with monitoring using MLflow and FastAPI.',
+desc:'Deploy and monitor ML models in production.'},
+{id:'ml9',title:'End-to-End ML Project',dur:'5 hrs',
+chapters:[{id:'ml9c1',title:'Full Course — E2E ML Project',yt:'o6vbe5G7xNo',start:0,isFull:true}],
+resources:['Project Template'],project:'Complete and deploy a real-world ML application.',
+desc:'Build and deploy a complete ML solution.'},
+{id:'ml10',title:'Data Science Interview Prep',dur:'6 hrs',
+chapters:[{id:'ml10c1',title:'Full Course — DS Interview Preparation',yt:'A3ZSv6IqXY8',start:0,isFull:true}],
+resources:['200 DS Interview Qs'],project:'Complete 5 mock interviews and document answers.',
+desc:'Crack data science interviews at top companies.'},
+]},
+{id:'b15999',price:15999,name:'Legend Bundle',label:'GenAI & Agentic AI',color:'rgba(200,169,110,0.10)',border:'rgba(200,169,110,0.30)',
+courses:[
+{id:'g1',title:'Generative AI & LLMs',dur:'12 hrs',
+chapters:[{id:'g1c1',title:'Full Course — GenAI & Large Language Models',yt:'d4yCWBGFCEs',start:0,isFull:true}],
+resources:['LLM Comparison Guide'],project:'Build an LLM-powered application.',
+desc:'Understand and work with Large Language Models.'},
+{id:'g2',title:'Agentic AI Development',dur:'14 hrs',
+chapters:[{id:'g2c1',title:'Full Course — Agentic AI Development',yt:'-rUKr8JDits',start:0,isFull:true}],
+resources:['Agent Design Patterns'],project:'Build a multi-agent system that researches a topic.',
+desc:'Build autonomous AI agents that plan and use tools.'},
+{id:'g3',title:'LangChain & LlamaIndex',dur:'10 hrs',
+chapters:[{id:'g3c1',title:'Full Course — LangChain & LlamaIndex',yt:'-8IUWRtznX8',start:0,isFull:true}],
+resources:['LangChain Templates'],project:'Build a document Q&A application.',
+desc:'Build production LLM applications.'},
+{id:'g4',title:'Vector Databases',dur:'6 hrs',
+chapters:[{id:'g4c1',title:'Full Course — Vector Databases',yt:'8KrTO9bS91s',start:0,isFull:true}],
+resources:['Vector DB Comparison'],project:'Build a semantic search engine.',
+desc:'Pinecone, Weaviate, Chroma for semantic search.'},
+{id:'g5',title:'RAG Implementation',dur:'9 hrs',
+chapters:[{id:'g5c1',title:'Full Course — RAG Implementation',yt:'o126p1QN_RI',start:0,isFull:true}],
+resources:['RAG Architecture Diagrams'],project:'Build a RAG system over a custom knowledge base.',
+desc:'Build Retrieval Augmented Generation pipelines.'},
+{id:'g6',title:'LLM Fine-Tuning',dur:'12 hrs',
+chapters:[{id:'g6c1',title:'Full Course — LLM Fine-Tuning',yt:'iOdFUJiB0Zc',start:0,isFull:true}],
+resources:['LoRA Config Templates'],project:'Fine-tune a Llama or Mistral model.',
+desc:'Fine-tune large language models with LoRA and QLoRA.'},
+{id:'g7',title:'Multi-Agent Systems',dur:'10 hrs',
+chapters:[{id:'g7c1',title:'Full Course — Multi-Agent Systems',yt:'rHtRWyxVQps',start:0,isFull:true}],
+resources:['Multi-Agent Design Patterns'],project:'Build a multi-agent research assistant.',
+desc:'Design and deploy complex multi-agent architectures.'},
+{id:'g8',title:'AI Safety & Governance',dur:'6 hrs',
+chapters:[{id:'g8c1',title:'Full Course — AI Safety & Governance',yt:'b6HwyKFShek',start:0,isFull:true}],
+resources:['EU AI Act Summary'],project:'Conduct an AI safety review for a real-world use case.',
+desc:'AI safety, alignment, ethics, and governance.'},
+{id:'g9',title:'AI Agents Capstone Project',dur:'8 hrs',
+chapters:[{id:'g9c1',title:'Full Course — AI Agents Capstone',yt:'HVi0F3YT13I',start:0,isFull:true}],
+resources:['Capstone Template'],project:'Deploy a production agentic AI system with a live demo.',
+desc:'Build a production-grade agentic AI system.'},
+{id:'g10',title:'Prompt Engineering Mastery',dur:'6 hrs',
+chapters:[{id:'g10c1',title:'Full Course — Prompt Engineering',yt:'YhRfgYH_AoU',start:0,isFull:true}],
+resources:['500 Prompt Templates'],project:'Create a prompt library of 30 production-quality prompts.',
+desc:'Master prompting: chain-of-thought, few-shot, and production patterns.'},
+{id:'g11',title:'AI API Integration',dur:'5 hrs',
+chapters:[{id:'g11c1',title:'Full Course — AI API Integration',yt:'xcP9NE6C5EI',start:0,isFull:true}],
+resources:['API Reference Cards'],project:'Build a multi-provider AI API hub with fallbacks.',
+desc:'Integrate OpenAI, Anthropic, Google, and open source APIs.'},
+]},
+{id:'b23999',price:23999,name:'Ultimate Bundle',label:'AI Leadership & Startups',color:'rgba(34,197,94,0.07)',border:'rgba(34,197,94,0.22)',
+courses:[
+{id:'cr1',title:'AI Product Management',dur:'9 hrs',
+chapters:[{id:'cr1c1',title:'Full Course — AI Product Management',yt:'IfW1FMDkw4k',start:0,isFull:true}],
+resources:['AI PM Framework'],project:'Write a complete PRD for an AI feature.',
+desc:'Manage AI products from concept to launch.'},
+{id:'cr2',title:'AI Strategy & Roadmap',dur:'8 hrs',
+chapters:[{id:'cr2c1',title:'Full Course — AI Strategy',yt:'zwUSZD3t_BU',start:0,isFull:true}],
+resources:['AI Maturity Model'],project:'Create a 3-year AI transformation roadmap.',
+desc:'Develop AI transformation strategies.'},
+{id:'cr22',title:'Building AI Startups',dur:'7 hrs',
+chapters:[{id:'cr22c1',title:'Full Course — Building AI Startups',yt:'zO1098PFOw8',start:0,isFull:true}],
+resources:['Startup Pitch Deck Template'],project:'Create a complete AI startup pitch deck.',
+desc:'From AI idea to funded startup.'},
+]},
+];
+
+/* SPECIAL COURSES */
+const SPECIAL_COURSES=[
+{id:'sp_mehndi',firebaseKey:'bridal_mehndi_designer',name:'Bridal Mehendi Designer',price:1999,
+desc:'Master bridal mehendi across 42 parts — from basic cones and patterns through Arabic, traditional Indian, fusion designs to full bridal hands and business setup.',
+chapters:[
+{id:'sp_m1',title:'Part 1 — Tools, Cones & Basics',yt:'7ZqkiTDOrBQ',start:0},
+{id:'sp_m2',title:'Part 2 — Basic Patterns',yt:'zfAiB0R1rlM',start:0},
+{id:'sp_m3',title:'Part 3 — Floral Designs',yt:'2dMBULmJY2Y',start:0},
+{id:'sp_m4',title:'Part 4 — Arabic Style',yt:'4QPzvawirzM',start:0},
+{id:'sp_m5',title:'Part 5 — Filling Techniques',yt:'KLhVTmWC11w',start:0},
+{id:'sp_m6',title:'Part 6 — Peacock Designs',yt:'YcRrtl23-Rg',start:0},
+{id:'sp_m7',title:'Part 7 — Leaf Patterns',yt:'125BS2PVYD0',start:0},
+{id:'sp_m8',title:'Part 8 — Back Hand Designs',yt:'Y_SR17eTNt8',start:0},
+{id:'sp_m9',title:'Part 9 — Traditional Indian',yt:'G3LDg3qORFM',start:0},
+{id:'sp_m10',title:'Part 10 — Bridal Full Hand Pt.1',yt:'5aMpbLWqMk0',start:0},
+{id:'sp_m11',title:'Part 11 — Bridal Full Hand Pt.2',yt:'6Te6cklQtWk',start:0},
+{id:'sp_m12',title:'Part 12 — Dulha Mehendi',yt:'jQQQssCFdEY',start:0},
+{id:'sp_m13',title:'Part 13 — Feet & Leg Designs',yt:'q9T4Qmuk9mc',start:0},
+{id:'sp_m14',title:'Part 14 — Rajasthani Style',yt:'BWTLRmRYC-c',start:0},
+{id:'sp_m15',title:'Part 15 — Fusion Modern',yt:'u49SmoSaTk8',start:0},
+{id:'sp_m16',title:'Part 16 — Net Pattern',yt:'3LwoQlw1Wzw',start:0},
+{id:'sp_m17',title:'Part 17 — Mandala Designs',yt:'hwDxsBDOJPQ',start:0},
+{id:'sp_m18',title:'Part 18 — Indo-Arabic Fusion',yt:'uWpvvLskYFk',start:0},
+{id:'sp_m19',title:'Part 19 — Fine Line Mehendi',yt:'32S-25ax_aE',start:0},
+{id:'sp_m20',title:'Part 20 — Geometric Patterns',yt:'mhIi1z_7aWU',start:0},
+{id:'sp_m21',title:'Part 21 — Bridal Armband',yt:'fpvNSfzthwU',start:0},
+{id:'sp_m22',title:'Part 22 — Finger Designs',yt:'cNVU-4LyYyQ',start:0},
+{id:'sp_m23',title:'Part 23 — Wrist Band Designs',yt:'wgoSbB1jy6c',start:0},
+{id:'sp_m24',title:'Part 24 — Advanced Floral',yt:'e-c7RJBQGSU',start:0},
+{id:'sp_m25',title:'Part 25 — Rose & Flower Motifs',yt:'TbvCruBXrEc',start:0},
+{id:'sp_m26',title:'Part 26 — Full Palm Design',yt:'fcW05mJoBhc',start:0},
+{id:'sp_m27',title:'Part 27 — Half Hand Design',yt:'SeA08YQQFcE',start:0},
+{id:'sp_m28',title:'Part 28 — Back & Front Combo',yt:'L6t09bkqbcA',start:0},
+{id:'sp_m29',title:'Part 29 — Mughal Inspired',yt:'X5kmVd25bJ8',start:0},
+{id:'sp_m30',title:'Part 30 — Heritage Patterns',yt:'5GJHpZB1gF4',start:0},
+{id:'sp_m31',title:'Part 31 — Intricate Detail Work',yt:'zZ2t_B4NOS4',start:0},
+{id:'sp_m32',title:'Part 32 — Bridal Showcase Pt.1',yt:'PgiayPy13m8',start:0},
+{id:'sp_m33',title:'Part 33 — Bridal Showcase Pt.2',yt:'yBspCHOgs3E',start:0},
+{id:'sp_m34',title:'Part 34 — Bridal Showcase Pt.3',yt:'VU7vtAUSwQg',start:0},
+{id:'sp_m35',title:'Part 35 — Advanced Arabic',yt:'-f7v69f9sBc',start:0},
+{id:'sp_m36',title:'Part 36 — Contemporary Fusion',yt:'hmSeQ_Ocjlo',start:0},
+{id:'sp_m37',title:'Part 37 — Lotus & Paisley',yt:'4Xf403jpMsM',start:0},
+{id:'sp_m38',title:'Part 38 — Symmetrical Designs',yt:'a7GvmLWT9X0',start:0},
+{id:'sp_m39',title:'Part 39 — Ankle & Foot Art',yt:'mcbWEadqdN0',start:0},
+{id:'sp_m40',title:'Part 40 — Competition Designs',yt:'agxRyZj8C6A',start:0},
+{id:'sp_m41',title:'Part 41 — Professional Portfolio',yt:'fJkaPMabYK0',start:0},
+{id:'sp_m42',title:'Part 42 — Business & Pricing Guide',yt:'m2mI2bcPfxk',start:0},
+],
+resources:['Mehendi Design Book','Cone Filling Guide','Pattern Reference Library','Pricing Calculator'],
+project:'Create a portfolio of 10 different mehendi designs including one full bridal hand combo.'},
+
+{id:'sp_fashion',firebaseKey:'fashion_designer_course',name:'Fashion Designer Course',price:2100,
+desc:'Fashion design fundamentals — sketching, fabric selection, garment construction, sustainability, digital design, and launching your fashion brand.',
+chapters:[
+{id:'sp_f1',title:'Chapter 1 — Fashion Design Basics',yt:'PLQqMYWJXgJhjgb54-c2RWAVx4Ln6BfPcQ',isPlaylist:true,plIndex:0},
+{id:'sp_f2',title:'Chapter 2 — Fashion Illustration',yt:'PLQqMYWJXgJhjgb54-c2RWAVx4Ln6BfPcQ',isPlaylist:true,plIndex:1},
+{id:'sp_f3',title:'Chapter 3 — Fabric & Textiles',yt:'PLQqMYWJXgJhjgb54-c2RWAVx4Ln6BfPcQ',isPlaylist:true,plIndex:2},
+{id:'sp_f4',title:'Chapter 4 — Pattern Making',yt:'PLQqMYWJXgJhjgb54-c2RWAVx4Ln6BfPcQ',isPlaylist:true,plIndex:3},
+{id:'sp_f5',title:'Chapter 5 — Garment Construction',yt:'PLQqMYWJXgJhjgb54-c2RWAVx4Ln6BfPcQ',isPlaylist:true,plIndex:4},
+{id:'sp_f6',title:'Chapter 6 — Colour Theory in Fashion',yt:'PLQqMYWJXgJhjgb54-c2RWAVx4Ln6BfPcQ',isPlaylist:true,plIndex:5},
+{id:'sp_f7',title:'Chapter 7 — Trend Research',yt:'PLQqMYWJXgJhjgb54-c2RWAVx4Ln6BfPcQ',isPlaylist:true,plIndex:6},
+{id:'sp_f8',title:'Chapter 8 — Sustainable Fashion',yt:'PLQqMYWJXgJhjgb54-c2RWAVx4Ln6BfPcQ',isPlaylist:true,plIndex:7},
+{id:'sp_f9',title:'Chapter 9 — Digital Fashion Design',yt:'PLQqMYWJXgJhjgb54-c2RWAVx4Ln6BfPcQ',isPlaylist:true,plIndex:8},
+{id:'sp_f10',title:'Chapter 10 — Brand Identity & Launch',yt:'PLQqMYWJXgJhjgb54-c2RWAVx4Ln6BfPcQ',isPlaylist:true,plIndex:9},
+],
+resources:['Fashion Illustration Templates','Fabric Guide PDF','Brand Kit Template'],
+project:'Design a 5-piece mini fashion collection as a PDF portfolio.'},
+
+{id:'sp_makeup',firebaseKey:'professional_makeup_course',name:'Professional Makeup Artist',price:2300,
+desc:'Complete professional makeup artistry from basics to bridal. Covers skin types, tools, contouring, eye art, bridal looks and MUA business setup.',
+chapters:[
+{id:'sp_mk1',title:'Chapter 1 — Makeup Basics & Intro',yt:'PLnormvp3UHAqpl1-m47DBTBMSXv1PCRL3',isPlaylist:true,plIndex:0},
+{id:'sp_mk2',title:'Chapter 2 — Skin Prep & Tools',yt:'PLnormvp3UHAqpl1-m47DBTBMSXv1PCRL3',isPlaylist:true,plIndex:1},
+{id:'sp_mk3',title:'Chapter 3 — Foundation Techniques',yt:'PLnormvp3UHAqpl1-m47DBTBMSXv1PCRL3',isPlaylist:true,plIndex:2},
+{id:'sp_mk4',title:'Chapter 4 — Eye Makeup',yt:'PLnormvp3UHAqpl1-m47DBTBMSXv1PCRL3',isPlaylist:true,plIndex:3},
+{id:'sp_mk5',title:'Chapter 5 — Contouring & Highlight',yt:'PLnormvp3UHAqpl1-m47DBTBMSXv1PCRL3',isPlaylist:true,plIndex:4},
+{id:'sp_mk6',title:'Chapter 6 — Lip Art',yt:'PLnormvp3UHAqpl1-m47DBTBMSXv1PCRL3',isPlaylist:true,plIndex:5},
+{id:'sp_mk7',title:'Chapter 7 — Colour Theory',yt:'PLnormvp3UHAqpl1-m47DBTBMSXv1PCRL3',isPlaylist:true,plIndex:6},
+{id:'sp_mk8',title:'Chapter 8 — Bridal Makeup',yt:'PLnormvp3UHAqpl1-m47DBTBMSXv1PCRL3',isPlaylist:true,plIndex:7},
+{id:'sp_mk9',title:'Chapter 9 — Party & Evening Looks',yt:'PLnormvp3UHAqpl1-m47DBTBMSXv1PCRL3',isPlaylist:true,plIndex:8},
+{id:'sp_mk10',title:'Chapter 10 — MUA Business & Pricing',yt:'PLnormvp3UHAqpl1-m47DBTBMSXv1PCRL3',isPlaylist:true,plIndex:9},
+],
+resources:['Makeup Tool Kit List','Skin Type Guide','Colour Wheel for MUAs'],
+project:'Create a full makeup portfolio with 5 different looks photographed.'},
+
+{id:'sp_embroidery',firebaseKey:'embroidery_course',name:'Sindhi & Gujarati Embroidery',price:3100,
+desc:'Complete embroidery course covering Sindhi and Gujarati styles — basic stitches, patterns, advanced borders, and professional finishing techniques.',
+chapters:[
+{id:'sp_e1',title:'Chapter 1 — Intro & Basic Demo',yt:'mhI6btlyUyI',start:0},
+{id:'sp_e2',title:'Chapter 2 — Basic Stitches Day 1',yt:'Nyz3r_g2VpE',start:0},
+],
+resources:['Embroidery Pattern Book','Stitch Reference Guide','Material List'],
+project:'Create an embroidery project using at least 5 different stitches.'},
+];
+
+/* EXAM QUESTIONS */
+const EXAM_QS=[
+{q:'What is the most important factor for long-term success in any skill?',opts:['Natural talent only','Consistent practice and learning','Having expensive tools','Copying others'],ans:1},
+{q:'What does ROI stand for?',opts:['Rate of Interest','Return on Investment','Risk of Implementation','Revenue of Industry'],ans:1},
+{q:'What is the best way to validate a new business idea?',opts:['Launch immediately without testing','Research and test with a small audience','Wait for a perfect plan','Copy a successful competitor'],ans:1},
+{q:'Which mindset drives career growth?',opts:['Fixed mindset','Growth mindset','Competitive mindset','Passive mindset'],ans:1},
+{q:'What does "conversion" mean in digital marketing?',opts:['Currency exchange','A visitor completing a desired action','Editing a video','Translating content'],ans:1},
+{q:'What is the purpose of a portfolio?',opts:['To store personal files','To showcase work to potential clients','To track expenses','To list certifications only'],ans:1},
+{q:'Which is the best approach for content strategy?',opts:['Post randomly','Plan consistently with audience research','Copy competitors','Post only when you feel like it'],ans:1},
+{q:'What does "iterate" mean in a product context?',opts:['Repeat forever','Improve progressively based on feedback','Delete and restart','Outsource all work'],ans:1},
+{q:'What is key to mastering any digital skill?',opts:['Watching videos only','Practice on real projects','Reading only','Attending seminars only'],ans:1},
+{q:'What does "scaling" mean in business?',opts:['Making things smaller','Growing revenue without proportionally growing costs','Hiring more people only','Reducing product quality'],ans:1},
+];
+
+/* GLOBAL STATE */
+const $=id=>document.getElementById(id);
+const san=e=>e.toLowerCase().trim().replace(/\./g,'_').replace(/@/g,'__at__');
+let U={},UD={},BPRICE=0,userReferral='';
+let WATCH_DATA={},EXAM_DATA={},CERT_DATA={},SPECIAL_ACCESS={},SPECIAL_PAYMENTS={};
+let currentCourse=null,currentChapterIdx=0,currentBundleId=null,isSpecialCourse=false;
+let prevPageId='home';
+let ytIframe=null,isPlaying=false,isMuted=false,currentTime=0,currentDuration=0;
+let watchedSeconds={};
+let playerPoll=null,scrubActive=false;
+let discCallback=null,discShown=false;
+let currentCert=null;
+let _toastT;
+
+function toast(msg,dur=3000){
+  const el=$('toast');el.textContent=msg;el.classList.add('on');clearTimeout(_toastT);
+  _toastT=setTimeout(()=>el.classList.remove('on'),dur);
+}
+
+/* AUTH */
+const authTO=setTimeout(()=>{$('gMsg').textContent='Connection timeout. Check internet.';},9000);
+AUTH.onAuthStateChanged(async fbUser=>{
+  clearTimeout(authTO);
+  if(!fbUser){location.href='auth.html';return;}
+  try{
+    $('gMsg').textContent='Loading your courses...';
+    const emailId=san(fbUser.email);
+    U={email:fbUser.email,emailId,name:fbUser.displayName||fbUser.email.split('@')[0]};
+    let docData=null;
+    for(const c of[COL,'User-collection','users']){
+      try{
+        const snap=await DB.collection(c).doc(emailId).get();
+        if(snap.exists){docData=snap.data();col=c;break;}
+      }catch(e){}
+    }
+    if(!docData){location.href='auth.html';return;}
+    if(docData.paymentStatus!=='approved'){location.href='dashboard.html';return;}
+    UD=docData;
+    BPRICE=parseInt(docData.bundlePrice||docData.bundleAmount||0)||0;
+    if(docData.fullName)U.name=docData.fullName;
+    userReferral=docData.referralCode||U.emailId.slice(0,8).toUpperCase();
+    SPECIAL_COURSES.forEach(sc=>{
+      if(UD[sc.firebaseKey]===true)SPECIAL_ACCESS[sc.id]=true;
+      if(UD[sc.firebaseKey+'_pending']===true)SPECIAL_PAYMENTS[sc.id]='pending';
+    });
+    await loadProgress();
+    hideGuard();
+    renderHome();
+    renderSpecialPage();
+  }catch(err){$('gMsg').textContent='Error: '+err.message;}
+});
+function hideGuard(){
+  const g=$('guard');g.classList.add('fade');
+  setTimeout(()=>g.classList.add('gone'),600);
+}
+async function authLogout(){await AUTH.signOut();location.href='auth.html';}
+
+/* LOAD PROGRESS */
+async function loadProgress(){
+  try{
+    const pSnap=await DB.collection(COL).doc(U.emailId).collection('progress').get();
+    pSnap.forEach(d=>{WATCH_DATA[d.id]=d.data();});
+    const eSnap=await DB.collection(COL).doc(U.emailId).collection('exams').get();
+    eSnap.forEach(d=>{EXAM_DATA[d.id]=d.data();});
+    const cSnap=await DB.collection(COL).doc(U.emailId).collection('certificates').get();
+    cSnap.forEach(d=>{CERT_DATA[d.id]=d.data();});
+  }catch(e){console.warn('Progress load:',e);}
+}
+async function saveChapterDone(courseId,chapterId){
+  const d=WATCH_DATA[courseId]||{done:[],lastChapter:chapterId};
+  if(!d.done.includes(chapterId))d.done.push(chapterId);
+  d.lastChapter=chapterId;d.updatedAt=fts();
+  WATCH_DATA[courseId]=d;
+  try{await DB.collection(COL).doc(U.emailId).collection('progress').doc(courseId).set(d,{merge:true});}catch(e){}
+}
+function isChapterDone(courseId,chapterId){return(WATCH_DATA[courseId]?.done||[]).includes(chapterId);}
+function coursePct(courseId,total){
+  const done=(WATCH_DATA[courseId]?.done||[]).length;
+  return total?Math.min(100,Math.round(done/total*100)):0;
+}
+
+/* NAVIGATION */
+function goPage(pg){
+  stopPlayer();
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
+  $('courseViewer').style.display='none';$('courseViewer').classList.remove('on');
+  document.querySelectorAll('.bnav-btn').forEach(b=>b.classList.remove('on'));
+  $('bottomNav').style.display='flex';
+  const target=$('pg-'+pg);
+  if(target){target.classList.add('on');}
+  const bnav=$('bn-'+pg);if(bnav)bnav.classList.add('on');
+  const labels={home:'Learning Hub',special:'Special Courses',certs:'My Certificates'};
+  $('tbCenter').textContent=labels[pg]||'Learning Hub';
+  if(pg==='certs')renderCertGallery();
+  if(pg==='special')renderSpecialPage();
+  prevPageId=pg;
+  window.scrollTo(0,0);
+}
+
+function openCourseViewer(bundleId,courseId,isSpecial){
+  stopPlayer();
+  let course;
+  if(isSpecial){
+    course=SPECIAL_COURSES.find(c=>c.id===courseId);
+  }else{
+    const bundle=BUNDLES.find(b=>b.id===bundleId);
+    course=bundle?.courses.find(c=>c.id===courseId);
+  }
+  if(!course)return;
+  currentCourse=course;currentBundleId=bundleId;isSpecialCourse=isSpecial;
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
+  $('bottomNav').style.display='none';
+  $('courseViewer').style.display='flex';
+  $('courseViewer').classList.add('on');
+  $('cvBackBtn').onclick=()=>{
+    stopPlayer();
+    $('courseViewer').style.display='none';
+    $('courseViewer').classList.remove('on');
+    $('bottomNav').style.display='flex';
+    if(isSpecial)goPage('special');
+    else{$('pg-'+prevPageId).classList.add('on');}
+  };
+  $('cvTitleText').textContent=course.title;
+  $('tbCenter').textContent=course.title;
+  $('cvCourseTitle').textContent=course.title;
+  $('cvCourseMeta').innerHTML=`
+    <span>${course.dur||''}</span>
+    <span>${course.chapters.length} chapter${course.chapters.length!==1?'s':''}</span>
+    ${isSpecial?'<span class="bdg gg">Special Course</span>':''}
+  `;
+  $('cvActions').innerHTML=`
+    <button class="btn-sm" onclick="switchTab('exam',document.querySelectorAll('.cv-tab')[4])">Take Exam</button>
+    <button class="btn-sm" onclick="switchTab('project',document.querySelectorAll('.cv-tab')[3])">Submit Project</button>
+    <button class="btn-sm" onclick="switchTab('cert',document.querySelectorAll('.cv-tab')[5])">Certificate</button>
+  `;
+  renderOverview(course);
+  renderChaptersList(course);
+  renderResources(course);
+  renderProject(course.id);
+  renderExam(course.id);
+  renderCertTab(course.id);
+  switchTab('overview',document.querySelector('.cv-tab'));
+  const lastCh=WATCH_DATA[course.id]?.lastChapter;
+  const startIdx=lastCh?course.chapters.findIndex(c=>c.id===lastCh):0;
+  const idx=Math.max(0,startIdx);
+  showDisclaimer(()=>playChapter(idx));
+  window.scrollTo(0,0);
+}
+
+/* DISCLAIMER */
+function showDisclaimer(cb){
+  if(discShown){if(cb)cb();return;}
+  discCallback=cb;
+  $('discChk').checked=false;
+  $('discProceed').classList.remove('ok');
+  $('discOverlay').classList.add('on');
+}
+function toggleDiscBtn(){$('discProceed').classList.toggle('ok',$('discChk').checked);}
+function proceedDisc(){
+  discShown=true;
+  $('discOverlay').classList.remove('on');
+  if(discCallback){const cb=discCallback;discCallback=null;cb();}
+}
+
+/* PLAYER */
+function buildYTUrl(ch){
+  const params='&rel=0&modestbranding=0&showinfo=0&iv_load_policy=3&enablejsapi=1&autoplay=1&controls=0&disablekb=1&fs=0&playsinline=1&origin='+encodeURIComponent(location.origin);
+  if(ch.isPlaylist){
+    return`https://www.youtube.com/embed/videoseries?list=${ch.yt}&index=${(ch.plIndex||0)+1}${params}`;
+  }
+  return`https://www.youtube.com/embed/${ch.yt}?start=${ch.start||0}${params}`;
+}
+
+function playChapter(idx){
+  if(!currentCourse||idx<0||idx>=currentCourse.chapters.length)return;
+  currentChapterIdx=idx;
+  const ch=currentCourse.chapters[idx];
+  stopPlayer();
+  $('noVideoMsg').style.display='none';
+  $('playerControls').style.display='flex';
+  currentTime=0;currentDuration=0;isPlaying=true;
+  if(!watchedSeconds[ch.id])watchedSeconds[ch.id]={watched:new Set(),total:0};
+  const iframe=document.createElement('iframe');
+  iframe.src=buildYTUrl(ch);
+  iframe.allow='autoplay;encrypted-media;fullscreen;picture-in-picture';
+  iframe.setAttribute('allowfullscreen','');
+  const box=$('playerIframeBox');
+  const old=box.querySelector('iframe');if(old)old.remove();
+  box.appendChild(iframe);
+  ytIframe=iframe;
+  $('wmText').textContent='Biluxe10 — '+U.name;
+  document.querySelectorAll('.ch-item').forEach((el,i)=>{
+    el.classList.toggle('active',i===idx);
+  });
+  window.onmessage=handleYTMsg;
+  clearInterval(playerPoll);
+  playerPoll=setInterval(()=>{
+    if(ytIframe)try{ytIframe.contentWindow.postMessage('{"event":"listening"}','*');}catch(e){}
+  },800);
+  $('ctrlPlayed').style.width='0%';
+  $('ctrlWatched').style.width='0%';
+  $('ctrlTime').textContent='0:00 / 0:00';
+  $('playIcon').innerHTML='<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>';
+  $('playerWrap').classList.add('show-ctrl');
+  setTimeout(()=>$('playerWrap').classList.remove('show-ctrl'),3000);
+}
+
+function handleYTMsg(e){
+  if(!e.data||!ytIframe)return;
+  try{
+    const d=typeof e.data==='string'?JSON.parse(e.data):e.data;
+    if(d.event==='infoDelivery'&&d.info){
+      const ct=Math.max(0,d.info.currentTime||0);
+      const dur=d.info.duration||0;
+      const state=d.info.playerState;
+      if(dur>0){
+        currentTime=ct;currentDuration=dur;
+        const ch=currentCourse?.chapters[currentChapterIdx];
+        if(ch){
+          watchedSeconds[ch.id]=watchedSeconds[ch.id]||{watched:new Set(),total:0};
+          watchedSeconds[ch.id].total=Math.ceil(dur);
+          watchedSeconds[ch.id].watched.add(Math.floor(ct));
+          const pct=(ct/dur)*100;
+          if(!scrubActive)$('ctrlPlayed').style.width=pct+'%';
+          const wPct=Math.min(100,(watchedSeconds[ch.id].watched.size/watchedSeconds[ch.id].total)*100);
+          $('ctrlWatched').style.width=wPct+'%';
+          $('ctrlTime').textContent=fmtTime(ct)+' / '+fmtTime(dur);
+          const bar=$('chbar-'+ch.id);if(bar)bar.style.width=wPct+'%';
+          if(wPct>=85&&!isChapterDone(currentCourse.id,ch.id)){
+            saveChapterDone(currentCourse.id,ch.id);
+            const el=$('chi-'+ch.id);
+            if(el){el.classList.add('done-ch');const num=el.querySelector('.ch-num');if(num)num.textContent='✓';}
+            const chk=$('chck-'+ch.id);if(chk)chk.style.display='flex';
+            toast('Chapter completed!');
+            updateProgStats();
+            if(currentChapterIdx<currentCourse.chapters.length-1){
+              setTimeout(()=>{playChapter(currentChapterIdx+1);},1500);
+            }else{
+              toast('All chapters done! Take exam to earn certificate.',4000);
+            }
+          }
+        }
+      }
+      if(state===1){isPlaying=true;$('playIcon').innerHTML='<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>';}
+      else if(state===2||state===0){isPlaying=false;$('playIcon').innerHTML='<path d="M8 5v14l11-7z"/>';}
+      if(state===0&&dur>0&&currentChapterIdx<(currentCourse?.chapters.length||0)-1){
+        setTimeout(()=>showDisclaimer(()=>playChapter(currentChapterIdx+1)),1200);
+      }
+    }
+  }catch(err){}
+}
+
+function stopPlayer(){
+  clearInterval(playerPoll);
+  if(ytIframe)try{ytIframe.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}','*');}catch(e){}
+  const old=$('playerIframeBox')?.querySelector('iframe');if(old)old.remove();
+  ytIframe=null;isPlaying=false;currentTime=0;currentDuration=0;
+  if($('playerControls'))$('playerControls').style.display='none';
+  if($('noVideoMsg'))$('noVideoMsg').style.display='flex';
+}
+
+function handleShieldClick(){
+  if(!ytIframe)return;
+  togglePlay();
+  $('playerWrap').classList.add('show-ctrl');
+  setTimeout(()=>$('playerWrap').classList.remove('show-ctrl'),2500);
+}
+
+function togglePlay(){
+  if(!ytIframe)return;
+  try{
+    if(isPlaying){
+      ytIframe.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}','*');
+      isPlaying=false;$('playIcon').innerHTML='<path d="M8 5v14l11-7z"/>';
+    }else{
+      ytIframe.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}','*');
+      isPlaying=true;$('playIcon').innerHTML='<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>';
+    }
+  }catch(e){}
+}
+
+function seekBack(){
+  if(!ytIframe||!currentDuration)return;
+  const newT=Math.max(0,currentTime-10);
+  try{ytIframe.contentWindow.postMessage(`{"event":"command","func":"seekTo","args":[${newT},true]}`,'*');}catch(e){}
+}
+
+function toggleMute(){
+  isMuted=!isMuted;
+  try{ytIframe?.contentWindow.postMessage(`{"event":"command","func":"${isMuted?'mute':'unMute'}","args":""}','*');$('ctrlMuteBtn').textContent=isMuted?'🔇':'🔊';}catch(e){}
+}
+
+function setVol(v){
+  currentVolume=parseInt(v);
+  try{ytIframe?.contentWindow.postMessage(`{"event":"command","func":"setVolume","args":[${currentVolume}]}`,'*');}catch(e){}
+}
+
+function toggleFS(){
+  const outer=$('playerWrap');
+  if(!document.fullscreenElement){
+    outer.requestFullscreen?.().catch(()=>{});outer.classList.add('show-ctrl');
+  }else{document.exitFullscreen?.();outer.classList.remove('show-ctrl');}
+}
+
+/* TABS */
+function switchTab(tab,btn){
+  document.querySelectorAll('.cv-tab').forEach(b=>b.classList.remove('on'));
+  document.querySelectorAll('.cv-tab-pane').forEach(p=>p.classList.remove('on'));
+  if(btn)btn.classList.add('on');
+  const pane=$('cvt-'+tab);if(pane)pane.classList.add('on');
+}
+
+/* CHAPTERS LIST */
+function renderChaptersList(course){
+  const list=$('chaptersList');if(!list)return;
+  list.innerHTML=course.chapters.map((ch,i)=>{
+    const done=isChapterDone(currentCourse.id,ch.id);
+    const wPct=0; // placeholder
+    return`<div class="ch-item${done?' done-ch':''} active" id="chi-${ch.id}" onclick="playChapter(${i})">
+      <div class="ch-num">${i+1}</div>
+      <div class="ch-info">
+        <div class="ch-name">${ch.title}</div>
+        <div class="ch-dur">${ch.dur||'—'}</div>
+        <div class="ch-bar"><div class="ch-bar-fill" style="width:${wPct}%"></div></div>
+      </div>
+      ${done?'<div class="ch-check" id="chck-'+ch.id+'">✓</div>':''}
+    </div>`;
+  }).join('');
+}
+
+/* OVERVIEW */
+function renderOverview(course){
+  const el=$('overviewContent');if(!el)return;
+  el.innerHTML=`
+    <div class="ov-section"><div class="ov-label">About</div><div class="ov-text">${course.desc}</div></div>
+    <div class="ov-section"><div class="ov-label">Resources</div><div class="resources-list">${course.resources.map(r=>`<div class="res-item"><span>📎</span><span>${r}</span></div>`).join('')}</div></div>
+  `;
+}
+
+/* PROJECT */
+function renderProject(courseId){
+  const sub=EXAM_DATA[courseId]?.project;
+  if(sub)return`<div style="background:var(--grA);border:1px solid rgba(34,197,94,.2);border-radius:8px;padding:12px;margin-bottom:10px"><div style="font-weight:700;color:var(--green);margin-bottom:3px">✅ Submitted</div><div style="font-size:.74rem;color:var(--t2)">${sub}</div></div>`;
+  return`<div><div style="font-weight:700;font-size:.83rem;margin-bottom:7px">📋 Project Brief</div><div style="background:var(--bg3);padding:12px;border-radius:8px;border:1px solid var(--border);font-size:.78rem;color:var(--t2);line-height:1.75;margin-bottom:12px">${currentCourse.project}</div><label style="font-family:var(--fm);font-size:.53rem;color:var(--t3);text-transform:uppercase;letter-spacing:.1em;display:block;margin-bottom:4px">Your Submission Link or Description</label><textarea id="projSub" style="width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:11px;font-size:.78rem;color:var(--text);outline:none;resize:vertical;min-height:90px" placeholder="Paste GitHub URL, Google Drive link, or describe your submission…"></textarea><div style="margin-top:9px;display:flex;gap:7px"><button class="btn-g" onclick="submitProject('${courseId}')">📤 Submit</button><button class="btn-sm" onclick="openAITutor()">🤖 Get Help</button></div></div>`;
+}
+
+async function submitProject(courseId){
+  const val=$('projSub')?.value?.trim();
+  if(!val){toast('⚠','Add your submission link/description first.');return;}
+  const data=EXAM_DATA[courseId]||{};
+  data.project=val;data.projectAt=fts();
+  EXAM_DATA[courseId]=data;
+  try{await DB.collection(COL).doc(U.emailId).collection('exams').doc(courseId).set(data,{merge:true});}catch(e){}
+  toast('✅','Project submitted!');
+  sendTG(`📤 *Project Submitted*\nStudent: ${U.name} (${U.email})\nCourse: ${currentCourse?.title}\nLink: ${val}`);
+  if($('cvProjectContent'))$('cvProjectContent').innerHTML=renderProject(courseId);
+  checkCertEligibility(courseId);
+}
+
+/* EXAM */
+function startExam(courseId){
+  const course=currentCourse||[...BUNDLES.flatMap(b=>b.courses),...SPECIAL_COURSES].find(c=>c.id===courseId);
+  if(!course)return;
+  const pct=coursePct(courseId,course.chapters.length);
+  if(pct<80){toast('⚠',`Complete at least 80% of chapters first. You're at ${pct}%.`,3500);return;}
+  examState={courseId,qs:EXAM_QS,answers:{},done:false};
+  goPage('exam');renderExam(course);
+}
+
+function renderExam(course){
+  const el=$('examContent');if(!el)return;
+  const qs=examState.qs;
+  if(EXAM_DATA[examState.courseId]?.passed){
+    el.innerHTML=`<div style="text-align:center;padding:30px"><div style="font-size:2.5rem;margin-bottom:10px">🎉</div><div style="font-family:var(--fd);font-size:1.1rem;font-weight:700;margin-bottom:5px">Already Passed!</div><div style="color:var(--green);font-family:var(--fm);font-size:.78rem;margin-bottom:14px">Score: ${EXAM_DATA[examState.courseId].score}%</div><button class="btn-g" onclick="viewCert('${examState.courseId}')">🏆 View Certificate</button></div>`;
+    return;
+  }
+  el.innerHTML=`<div style="font-family:var(--fd);font-size:1rem;font-weight:700;margin-bottom:3px">${course.title} — Final Exam</div>
+    <div style="font-size:.76rem;color:var(--t2);margin-bottom:12px">${qs.length} questions · Pass mark: 60%</div>
+    <div style="height:3px;background:var(--bg4);border-radius:3px;margin-bottom:14px;overflow:hidden"><div id="exProg" style="height:100%;background:linear-gradient(90deg,var(--gold),var(--gold2));width:0%;border-radius:3px;transition:width .35s"></div></div>
+    <div id="examQs">${qs.map((q,i)=>`<div class="exam-q" id="eq${i}"><div class="exam-q-num">Q${i+1} of ${qs.length}</div><div class="exam-q-text">${q.q}</div><div class="exam-opts">${q.opts.map((o,j)=>`<div class="exam-opt" id="eo${i}-${j}" onclick="selectOpt(${i},${j})">${String.fromCharCode(65+j)}. ${o}</div>`).join('')}</div></div>`).join('')}</div>
+    <div style="margin-top:14px;display:flex;gap:7px"><button class="btn-g" onclick="submitExam()">Submit Exam →</button><button class="btn-o" onclick="goPage('home')">Cancel</button></div>`;
+}
+
+function selectOpt(qi,oi){
+  if(examState.done)return;
+  examState.answers[qi]=oi;
+  document.querySelectorAll(`#eq${qi} .exam-opt`).forEach((el,j)=>el.classList.toggle('selected',j===oi));
+  const pct=Math.round(Object.keys(examState.answers).length/examState.qs.length*100);
+  const bar=$('exProg');if(bar)bar.style.width=pct+'%';
+}
+
+async function submitExam(){
+  if(Object.keys(examState.answers).length<examState.qs.length){toast('⚠','Answer all questions first.');return;}
+  examState.done=true;
+  let correct=0;
+  examState.qs.forEach((q,i)=>{
+    const ok=examState.answers[i]===q.ans;if(ok)correct++;
+    document.querySelectorAll(`#eq${i} .exam-opt`).forEach((el,j)=>{
+      el.classList.remove('selected');
+      if(j===q.ans)el.classList.add('correct');
+      else if(j===examState.answers[i])el.classList.add('wrong');
+    });
+  });
+  const score=Math.round(correct/examState.qs.length*100),passed=score>=60;
+  const courseId=examState.courseId;
+  const ed={score,passed,correct,total:examState.qs.length,takenAt:fts()};
+  if(passed)ed.passedAt=fts();
+  EXAM_DATA[courseId]={...(EXAM_DATA[courseId]||{}),...ed};
+  try{await DB.collection(COL).doc(U.emailId).collection('exams').doc(courseId).set(ed,{merge:true});}catch(e){}
+  const pop=document.createElement('div');
+  pop.style.cssText=`position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:9000;background:var(--bg2);border:1px solid ${passed?'rgba(34,197,94,.3)':'rgba(239,68,68,.3)'};border-radius:18px;padding:30px 36px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.7);max-width:360px;width:90%`;
+  pop.innerHTML=`<div style="font-size:3rem;margin-bottom:8px">${passed?'🎉':'😔'}</div>
+    <div style="font-family:var(--fd);font-size:1.3rem;font-weight:900;color:${passed?'var(--green)':'var(--red)'};margin-bottom:5px">${passed?'Passed!':'Not Passed'}</div>
+    <div style="font-family:var(--fm);font-size:.78rem;color:var(--t2);margin-bottom:5px">${score}% · ${correct}/${examState.qs.length} correct</div>
+    <div style="font-size:.76rem;color:var(--t2);margin-bottom:18px">${passed?'Now submit your project to earn your certificate!':'Need 60% to pass. Review chapters and retry.'}</div>
+    <div style="display:flex;gap:7px;justify-content:center;flex-wrap:wrap">
+      ${passed?`<button class="btn-g" onclick="this.closest('[style*=fixed]').remove();checkCertEligibility('${courseId}')">🏆 Get Certificate</button>`:''}
+      <button class="btn-o" onclick="this.closest('[style*=fixed]').remove()">Close</button>
+    </div>`;
+  document.body.appendChild(pop);
+  sendTG(`📝 *Exam ${passed?'Passed':'Failed'}*\nStudent: ${U.name} (${U.email})\nCourse: ${currentCourse?.title||courseId}\nScore: ${score}%`);
+  if(passed)checkCertEligibility(courseId);
+}
+
+/* CERTIFICATE */
+async function checkCertEligibility(courseId){
+  const course=[...BUNDLES.flatMap(b=>b.courses),...SPECIAL_COURSES].find(c=>c.id===courseId);if(!course)return;
+  const pct=coursePct(courseId,course.chapters.length);
+  const passed=EXAM_DATA[courseId]?.passed;
+  const proj=EXAM_DATA[courseId]?.project;
+  if(pct>=100&&passed&&proj){await issueCert(courseId,course);}
+  else{
+    const missing=[];
+    if(pct<100)missing.push(`Watch all chapters (${pct}% done)`);
+    if(!passed)missing.push('Pass the exam (60%+)');
+    if(!proj)missing.push('Submit your project');
+    toast('📋','To earn cert: '+missing.join(' · '),5000);
+  }
+}
+
+async function issueCert(courseId,course){
+  if(CERT_DATA[courseId]){viewCert(courseId);return;}
+  const certId='B10-'+courseId.toUpperCase()+'-'+Date.now().toString(36).toUpperCase();
+  const cd={courseId,courseName:course.title,studentName:U.name,email:U.email,certId,referral:userReferral,issuedAt:fts(),score:EXAM_DATA[courseId]?.score||100};
+  CERT_DATA[courseId]=cd;
+  try{await DB.collection(COL).doc(U.emailId).collection('certificates').doc(courseId).set(cd);}catch(e){}
+  sendTG(`🏆 *Certificate Issued!*\nStudent: ${U.name} (${U.email})\nCourse: ${course.title}\nID: ${certId}`);
+  renderCertGallery();viewCert(courseId);
+  toast('🎉','Certificate issued! Congratulations! 🏆',5000);
+}
+
+function viewCert(courseId){
+  const cert=CERT_DATA[courseId];if(!cert){toast('⚠','Certificate not earned yet. Complete all chapters, pass exam, and submit project.');return;}
+  $('certModal').classList.add('on');drawCert(cert);
+}
+
+function drawCert(cert){
+  const canvas=$('certCanvas');if(!canvas)return;
+  const ctx=canvas.getContext('2d'),W=1200,H=850;
+  canvas.width=W;canvas.height=H;
+  ctx.fillStyle='#07070A';ctx.fillRect(0,0,W,H);
+  const grd=ctx.createRadialGradient(W/2,H/2,0,W/2,H/2,600);
+  grd.addColorStop(0,'rgba(200,169,110,0.06)');grd.addColorStop(1,'transparent');
+  ctx.fillStyle=grd;ctx.fillRect(0,0,W,H);
+  ctx.strokeStyle='#C8A96E';ctx.lineWidth=3;ctx.strokeRect(22,22,W-44,H-44);
+  ctx.strokeStyle='rgba(200,169,110,.25)';ctx.lineWidth=1;ctx.strokeRect(32,32,W-64,H-64);
+  [[50,50],[W-50,50],[50,H-50],[W-50,H-50]].forEach(([x,y])=>{
+    ctx.save();ctx.translate(x,y);ctx.strokeStyle='rgba(200,169,110,.5)';ctx.lineWidth=1.5;
+    ctx.beginPath();ctx.moveTo(-18,0);ctx.lineTo(18,0);ctx.moveTo(0,-18);ctx.lineTo(0,18);ctx.stroke();
+    ctx.beginPath();ctx.arc(0,0,8,0,Math.PI*2);ctx.strokeStyle='rgba(200,169,110,.3)';ctx.stroke();
+    ctx.restore();
+  });
+  ctx.fillStyle='#C8A96E';ctx.font='bold 56px Georgia,serif';ctx.textAlign='center';ctx.fillText('Biluxe10',W/2,105);
+  ctx.fillStyle='rgba(200,169,110,.5)';ctx.font='13px monospace';ctx.fillText('CERTIFIED LEARNING PLATFORM · BILUXE10.COM',W/2,130);
+  ctx.strokeStyle='rgba(200,169,110,.3)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(100,148);ctx.lineTo(W-100,148);ctx.stroke();
+  ctx.fillStyle='rgba(200,169,110,.5)';ctx.font='12px monospace';ctx.fillText('CERTIFICATE OF COMPLETION',W/2,185);
+  ctx.fillStyle='#9B9BA8';ctx.font='20px Georgia,serif';ctx.fillText('This is to certify that',W/2,232);
+  ctx.save();ctx.fillStyle='#C8A96E';ctx.font='italic bold 62px Georgia,serif';
+  ctx.shadowColor='rgba(200,169,110,0.3)';ctx.shadowBlur=18;ctx.fillText(cert.studentName||'Student',W/2,308);ctx.restore();
+  const nameW=ctx.measureText(cert.studentName||'Student').width*0.85;
+  ctx.strokeStyle='rgba(200,169,110,.4)';ctx.lineWidth=1.2;ctx.beginPath();ctx.moveTo(W/2-nameW/2,318);ctx.lineTo(W/2+nameW/2,318);ctx.stroke();
+  ctx.fillStyle='#9B9BA8';ctx.font='18px Georgia,serif';ctx.fillText('has successfully completed',W/2,355);
+  const cname=cert.courseName||'Course';const cfs=cname.length>50?26:cname.length>38?30:36;
+  ctx.fillStyle='#EDEDF0';ctx.font=`bold ${cfs}px Georgia,serif`;ctx.fillText(cname,W/2,410);
+  const bx=W/2-80,by=432,bw=160,bh=30;
+  ctx.fillStyle='rgba(200,169,110,0.12)';roundRect(ctx,bx,by,bw,bh,6);ctx.fill();
+  ctx.strokeStyle='rgba(200,169,110,.4)';ctx.lineWidth=1;roundRect(ctx,bx,by,bw,bh,6);ctx.stroke();
+  ctx.fillStyle='rgba(200,169,110,.8)';ctx.font='13px monospace';ctx.fillText(`Score: ${cert.score||100}% · With Distinction`,W/2,452);
+  ctx.strokeStyle='rgba(200,169,110,.2)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(100,478);ctx.lineTo(W-100,478);ctx.stroke();
+  ctx.fillStyle='rgba(200,169,110,.45)';ctx.font='italic 13px Georgia,serif';ctx.textAlign='left';ctx.fillText('Authorised by Biluxe10',100,700);
+  ctx.strokeStyle='rgba(200,169,110,.25)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(100,680);ctx.lineTo(380,680);ctx.stroke();
+  drawSignature(ctx,100,635,280,60);
+  ctx.textAlign='right';
+  const dateStr=cert.issuedAt?new Date(cert.issuedAt.toDate?.()??cert.issuedAt).toLocaleDateString('en-IN',{year:'numeric',month:'long',day:'numeric'}):new Date().toLocaleDateString('en-IN',{year:'numeric',month:'long',day:'numeric'});
+  ctx.fillStyle='rgba(200,169,110,.45)';ctx.font='italic 13px Georgia,serif';ctx.fillText('Date of Issue',W-100,700);
+  ctx.strokeStyle='rgba(200,169,110,.25)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(W-380,680);ctx.lineTo(W-100,680);ctx.stroke();
+  ctx.fillStyle='rgba(200,169,110,.65)';ctx.font='14px Georgia,serif';ctx.fillText(dateStr,W-100,660);
+  ctx.textAlign='center';ctx.fillStyle='rgba(200,169,110,.4)';ctx.font='11px monospace';
+  ctx.fillText(`Certificate ID: ${cert.certId} · Ref: ${cert.referral||userReferral} · biluxe10.com/verify`,W/2,738);
+  if(typeof QRCode!=='undefined'){
+    try{QRCode.toCanvas($('qrCanvas'),`https://biluxe10.com/verify?id=${cert.certId}`,{width:110,color:{dark:'#C8A96E',light:'#07070A'}},()=>{});}catch(e){}
+  }
+}
+
+function drawSignature(ctx,x,y,w,h){
+  ctx.save();ctx.strokeStyle='rgba(200,169,110,0.75)';ctx.lineWidth=2.2;ctx.lineCap='round';ctx.lineJoin='round';
+  const sx=w/280,sy=h/80;ctx.translate(x,y);ctx.scale(sx,sy);
+  ctx.beginPath();ctx.ellipse(60,30,26,38,Math.PI*0.05,0,Math.PI*2);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(50,4);ctx.lineTo(62,64);ctx.stroke();
+  ctx.beginPath();ctx.ellipse(80,46,36,24,Math.PI*0.1,0,Math.PI*2);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(55,8);ctx.lineTo(110,56);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(90,50);ctx.bezierCurveTo(130,45,160,55,200,48);ctx.stroke();
+  ctx.beginPath();ctx.arc(210,48,3,0,Math.PI*2);ctx.fillStyle='rgba(200,169,110,0.75)';ctx.fill();
+  ctx.restore();
+}
+
+function roundRect(ctx,x,y,w,h,r){
+  ctx.beginPath();ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.arcTo(x+w,y,x+w,y+r,r);ctx.lineTo(x+w,y+h-r);ctx.arcTo(x+w,y+h,x+w-r,y+h,r);ctx.lineTo(x+r,y+h);ctx.arcTo(x,y+h,x,y+h-r,r);ctx.lineTo(x,y+r);ctx.arcTo(x,y,x+r,y,r);ctx.closePath();
+}
+
+function downloadCert(){
+  const canvas=$('certCanvas');if(!canvas)return;
+  const link=document.createElement('a');
+  link.download=`Biluxe10_${(currentCourse?.title||'Certificate').replace(/\s/g,'_')}.png`;
+  link.href=canvas.toDataURL('image/png',1);link.click();toast('⬇','Downloaded!');
+}
+function shareCertWA(){
+  const cert=currentCourse?CERT_DATA[currentCourse.id]:null;
+  window.open('https://wa.me/?text='+encodeURIComponent(`🏆 I just earned my *${cert?.courseName||''}* certificate from *Biluxe10*!\nID: ${cert?.certId||''}\n🎓 biluxe10.com`),'_blank');
+}
+
+function renderCertGallery(){
+  const el=$('certGallery');if(!el)return;
+  const certs=Object.values(CERT_DATA);
+  if(!certs.length){el.innerHTML='<div style="text-align:center;padding:40px;color:var(--t3);grid-column:1/-1"><div style="font-size:2rem;margin-bottom:8px">🏆</div><p style="font-size:.75rem">Complete courses to earn certificates</p></div>';return;}
+  el.innerHTML=certs.map(c=>`<div class="cert-thumb" onclick="viewCert('${c.courseId}')"><div style="font-size:2rem;margin-bottom:7px">🏆</div><div style="font-size:.8rem;font-weight:700;margin-bottom:2px">${c.courseName}</div><div style="font-family:var(--fm);font-size:.5rem;color:var(--t3)">${c.certId}</div><div style="font-family:var(--fm);font-size:.52rem;color:var(--green);margin-top:3px">${c.score||100}%</div></div>`).join('');
+}
+
+/* SPECIAL COURSES */
+function renderSpecialPage(){
+  const grid=$('specialCoursesList');if(!grid)return;
+  grid.innerHTML=SPECIAL_COURSES.map(sc=>{
+    const unlocked=isSpecialUnlocked(sc.id);
+    const pct=coursePct(sc.id,sc.chapters.length);
+    const dm=(WATCH_DATA[sc.id]?.done||[]).length;
+    return`<div style="background:var(--bg2);border:1px solid ${unlocked?'rgba(244,114,182,0.25)':'var(--border)'};border-radius:14px;padding:18px;cursor:${unlocked?'pointer':'default'};transition:all .22s;position:relative;overflow:hidden" ${unlocked?`onmouseenter="this.style.transform='translateY(-2px)'" onmouseleave="this.style.transform=''" onclick="openCourseViewer('special','${sc.id}',true)"`:''}> 
+      <div style="position:absolute;top:14px;right:14px;font-family:var(--fm);font-size:.46rem;padding:3px 8px;border-radius:5px;background:${unlocked?'rgba(34,197,94,.1)':'rgba(244,114,182,.1)'};color:${unlocked?'var(--green)':'var(--pink)'};border:1px solid ${unlocked?'rgba(34,197,94,.2)':'rgba(244,114,182,.25)'}">${unlocked?'✅ Access':'🔐 Approval Required'}</div>
+      <div style="font-size:2.2rem;margin-bottom:10px">${sc.icon}</div>
+      <div style="font-family:var(--fd);font-size:1rem;font-weight:900;margin-bottom:4px">${sc.title}</div>
+      <div style="font-size:.74rem;color:var(--t2);margin-bottom:9px;line-height:1.65;padding-right:80px">${sc.desc}</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;font-family:var(--fm);font-size:.52rem;color:var(--t3);margin-bottom:9px"><span>📋 ${sc.chapters.length} chapters</span><span>✅ ${dm} done</span></div>
+      ${unlocked?`<div style="height:3px;background:var(--bg4);border-radius:3px;overflow:hidden;margin-bottom:4px"><div style="height:100%;background:linear-gradient(90deg,var(--pink),rgba(244,114,182,.6));width:${pct}%;border-radius:3px;transition:width .7s"></div></div><div style="font-family:var(--fm);font-size:.5rem;color:var(--t3)">${pct}% complete</div>`:`<button class="btn-pink" style="margin-top:4px" onclick="event.stopPropagation();requestSpecialAccess('${sc.title}')">Request Access</button>`}
+    </div>`;
+  }).join('');
+}
+
+function requestSpecialAccess(courseName){
+  window.open(`https://wa.me/919019254743?text=Hi, I would like to request access to the *${courseName}* on Biluxe10. My email: ${U.email}`,'_blank');
+  toast('📱','Opening WhatsApp to request access…',3000);
+}
+
+/* PROJECT */
+function renderProjectTab(courseId,course){
+  const sub=EXAM_DATA[courseId]?.project;
+  if(sub)return`<div style="background:var(--grA);border:1px solid rgba(34,197,94,.2);border-radius:8px;padding:12px;margin-bottom:10px"><div style="font-weight:700;color:var(--green);margin-bottom:3px">✅ Submitted</div><div style="font-size:.74rem;color:var(--t2)">${sub}</div></div><button class="btn-sm" onclick="resubmitProject('${courseId}')">Resubmit</button>`;
+  return`<div><div style="font-weight:700;font-size:.83rem;margin-bottom:7px">📋 Project Brief</div>
+    <div style="background:var(--bg3);padding:12px;border-radius:8px;border:1px solid var(--border);font-size:.78rem;color:var(--t2);line-height:1.75;margin-bottom:12px">${course.project}</div>
+    <label style="font-family:var(--fm);font-size:.53rem;color:var(--t3);text-transform:uppercase;letter-spacing:.1em;display:block;margin-bottom:4px">Your Submission Link or Description</label>
+    <textarea id="projSub" style="width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:11px;font-size:.78rem;color:var(--text);outline:none;resize:vertical;min-height:90px" placeholder="Paste GitHub URL, Google Drive link, or describe your submission…"></textarea>
+    <div style="margin-top:9px;display:flex;gap:7px">
+      <button class="btn-g" onclick="submitProject('${courseId}')">📤 Submit</button>
+      <button class="btn-sm" onclick="openAITutor()">🤖 Get Help</button>
+    </div></div>`;
+}
+
+async function submitProject(courseId){
+  const val=$('projSub')?.value?.trim();
+  if(!val){toast('⚠','Add your submission link/description first.');return;}
+  const data=EXAM_DATA[courseId]||{};
+  data.project=val;data.projectAt=fts();
+  EXAM_DATA[courseId]=data;
+  try{await DB.collection(COL).doc(U.emailId).collection('exams').doc(courseId).set(data,{merge:true});}catch(e){}
+  toast('✅','Project submitted!');
+  sendTG(`📤 *Project Submitted*\nStudent: ${U.name} (${U.email})\nCourse: ${currentCourse?.title}\nLink: ${val}`);
+  if($('cvProjectContent'))$('cvProjectContent').innerHTML=renderProjectTab(courseId,currentCourse);
+  checkCertEligibility(courseId);
+}
+
+function resubmitProject(courseId){
+  const data=EXAM_DATA[courseId]||{};delete data.project;EXAM_DATA[courseId]=data;
+  if($('cvProjectContent'))$('cvProjectContent').innerHTML=renderProjectTab(courseId,currentCourse);
+}
+
+/* EXAM */
+let examState={courseId:null,qs:[],answers:{},done:false};
+function startExam(courseId){
+  const course=currentCourse||[...BUNDLES.flatMap(b=>b.courses),...SPECIAL_COURSES].find(c=>c.id===courseId);
+  if(!course)return;
+  const pct=coursePct(courseId,course.chapters.length);
+  if(pct<80){toast('⚠',`Complete at least 80% of chapters first. You're at ${pct}%.`,3500);return;}
+  examState={courseId,qs:EXAM_QS,answers:{},done:false};
+  goPage('exam');renderExam(course);
+}
+
+function renderExam(course){
+  const el=$('examContent');if(!el)return;
+  const qs=examState.qs;
+  if(EXAM_DATA[examState.courseId]?.passed){
+    el.innerHTML=`<div style="text-align:center;padding:30px"><div style="font-size:2.5rem;margin-bottom:10px">🎉</div><div style="font-family:var(--fd);font-size:1.1rem;font-weight:700;margin-bottom:5px">Already Passed!</div><div style="color:var(--green);font-family:var(--fm);font-size:.78rem;margin-bottom:14px">Score: ${EXAM_DATA[examState.courseId].score}%</div><button class="btn-g" onclick="viewCert('${examState.courseId}')">🏆 View Certificate</button></div>`;
+    return;
+  }
+  el.innerHTML=`<div style="font-family:var(--fd);font-size:1rem;font-weight:700;margin-bottom:3px">${course.title} — Final Exam</div>
+    <div style="font-size:.76rem;color:var(--t2);margin-bottom:12px">${qs.length} questions · Pass mark: 60%</div>
+    <div style="height:3px;background:var(--bg4);border-radius:3px;margin-bottom:14px;overflow:hidden"><div id="exProg" style="height:100%;background:linear-gradient(90deg,var(--gold),var(--gold2));width:0%;border-radius:3px;transition:width .35s"></div></div>
+    <div id="examQs">${qs.map((q,i)=>`<div class="exam-q" id="eq${i}"><div class="exam-q-num">Q${i+1} of ${qs.length}</div><div class="exam-q-text">${q.q}</div><div class="exam-opts">${q.opts.map((o,j)=>`<div class="exam-opt" id="eo${i}-${j}" onclick="selectOpt(${i},${j})">${String.fromCharCode(65+j)}. ${o}</div>`).join('')}</div></div>`).join('')}</div>
+    <div style="margin-top:14px;display:flex;gap:7px"><button class="btn-g" onclick="submitExam()">Submit Exam →</button><button class="btn-o" onclick="goPage('home')">Cancel</button></div>`;
+}
+
+function selectOpt(qi,oi){
+  if(examState.done)return;
+  examState.answers[qi]=oi;
+  document.querySelectorAll(`#eq${qi} .exam-opt`).forEach((el,j)=>el.classList.toggle('selected',j===oi));
+  const pct=Math.round(Object.keys(examState.answers).length/examState.qs.length*100);
+  const bar=$('exProg');if(bar)bar.style.width=pct+'%';
+}
+
+async function submitExam(){
+  if(Object.keys(examState.answers).length<examState.qs.length){toast('⚠','Answer all questions first.');return;}
+  examState.done=true;
+  let correct=0;
+  examState.qs.forEach((q,i)=>{
+    const ok=examState.answers[i]===q.ans;if(ok)correct++;
+    document.querySelectorAll(`#eq${i} .exam-opt`).forEach((el,j)=>{
+      el.classList.remove('selected');
+      if(j===q.ans)el.classList.add('correct');
+      else if(j===examState.answers[i])el.classList.add('wrong');
+    });
+  });
+  const score=Math.round(correct/examState.qs.length*100),passed=score>=60;
+  const courseId=examState.courseId;
+  const ed={score,passed,correct,total:examState.qs.length,takenAt:fts()};
+  if(passed)ed.passedAt=fts();
+  EXAM_DATA[courseId]={...(EXAM_DATA[courseId]||{}),...ed};
+  try{await DB.collection(COL).doc(U.emailId).collection('exams').doc(courseId).set(ed,{merge:true});}catch(e){}
+  const pop=document.createElement('div');
+  pop.style.cssText=`position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:9000;background:var(--bg2);border:1px solid ${passed?'rgba(34,197,94,.3)':'rgba(239,68,68,.3)'};border-radius:18px;padding:30px 36px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.7);max-width:360px;width:90%`;
+  pop.innerHTML=`<div style="font-size:3rem;margin-bottom:8px">${passed?'🎉':'😔'}</div>
+    <div style="font-family:var(--fd);font-size:1.3rem;font-weight:900;color:${passed?'var(--green)':'var(--red)'};margin-bottom:5px">${passed?'Passed!':'Not Passed'}</div>
+    <div style="font-family:var(--fm);font-size:.78rem;color:var(--t2);margin-bottom:5px">${score}% · ${correct}/${examState.qs.length} correct</div>
+    <div style="font-size:.76rem;color:var(--t2);margin-bottom:18px">${passed?'Now submit your project to earn your certificate!':'Need 60% to pass. Review chapters and retry.'}</div>
+    <div style="display:flex;gap:7px;justify-content:center;flex-wrap:wrap">
+      ${passed?`<button class="btn-g" onclick="this.closest('[style*=fixed]').remove();checkCertEligibility('${courseId}')">🏆 Get Certificate</button>`:''}
+      <button class="btn-o" onclick="this.closest('[style*=fixed]').remove()">Close</button>
+    </div>`;
+  document.body.appendChild(pop);
+  sendTG(`📝 *Exam ${passed?'Passed':'Failed'}*\nStudent: ${U.name} (${U.email})\nCourse: ${currentCourse?.title||courseId}\nScore: ${score}%`);
+  if(passed)checkCertEligibility(courseId);
+}
+
+/* CERTIFICATE */
+async function checkCertEligibility(courseId){
+  const course=[...BUNDLES.flatMap(b=>b.courses),...SPECIAL_COURSES].find(c=>c.id===courseId);if(!course)return;
+  const pct=coursePct(courseId,course.chapters.length);
+  const passed=EXAM_DATA[courseId]?.passed;
+  const proj=EXAM_DATA[courseId]?.project;
+  if(pct>=100&&passed&&proj){await issueCert(courseId,course);}
+  else{
+    const missing=[];
+    if(pct<100)missing.push(`Watch all chapters (${pct}% done)`);
+    if(!passed)missing.push('Pass the exam (60%+)');
+    if(!proj)missing.push('Submit your project');
+    toast('📋','To earn cert: '+missing.join(' · '),5000);
+  }
+}
+
+async function issueCert(courseId,course){
+  if(CERT_DATA[courseId]){viewCert(courseId);return;}
+  const certId='B10-'+courseId.toUpperCase()+'-'+Date.now().toString(36).toUpperCase();
+  const cd={courseId,courseName:course.title,studentName:U.name,email:U.email,certId,referral:userReferral,issuedAt:fts(),score:EXAM_DATA[courseId]?.score||100};
+  CERT_DATA[courseId]=cd;
+  try{await DB.collection(COL).doc(U.emailId).collection('certificates').doc(courseId).set(cd);}catch(e){}
+  sendTG(`🏆 *Certificate Issued!*\nStudent: ${U.name} (${U.email})\nCourse: ${course.title}\nID: ${certId}`);
+  renderCertGallery();viewCert(courseId);
+  toast('🎉','Certificate issued! Congratulations! 🏆',5000);
+}
+
+function viewCert(courseId){
+  const cert=CERT_DATA[courseId];if(!cert){toast('⚠','Certificate not earned yet. Complete all chapters, pass exam, and submit project.');return;}
+  $('certModal').classList.add('on');drawCert(cert);
+}
+
+function drawCert(cert){
+  const canvas=$('certCanvas');if(!canvas)return;
+  const ctx=canvas.getContext('2d'),W=1200,H=850;
+  canvas.width=W;canvas.height=H;
+  ctx.fillStyle='#07070A';ctx.fillRect(0,0,W,H);
+  const grd=ctx.createRadialGradient(W/2,H/2,0,W/2,H/2,600);
+  grd.addColorStop(0,'rgba(200,169,110,0.06)');grd.addColorStop(1,'transparent');
+  ctx.fillStyle=grd;ctx.fillRect(0,0,W,H);
+  ctx.strokeStyle='#C8A96E';ctx.lineWidth=3;ctx.strokeRect(22,22,W-44,H-44);
+  ctx.strokeStyle='rgba(200,169,110,.25)';ctx.lineWidth=1;ctx.strokeRect(32,32,W-64,H-64);
+  [[50,50],[W-50,50],[50,H-50],[W-50,H-50]].forEach(([x,y])=>{
+    ctx.save();ctx.translate(x,y);ctx.strokeStyle='rgba(200,169,110,.5)';ctx.lineWidth=1.5;
+    ctx.beginPath();ctx.moveTo(-18,0);ctx.lineTo(18,0);ctx.moveTo(0,-18);ctx.lineTo(0,18);ctx.stroke();
+    ctx.beginPath();ctx.arc(0,0,8,0,Math.PI*2);ctx.strokeStyle='rgba(200,169,110,.3)';ctx.stroke();
+    ctx.restore();
+  });
+  ctx.fillStyle='#C8A96E';ctx.font='bold 56px Georgia,serif';ctx.textAlign='center';ctx.fillText('Biluxe10',W/2,105);
+  ctx.fillStyle='rgba(200,169,110,.5)';ctx.font='13px monospace';ctx.fillText('CERTIFIED LEARNING PLATFORM · BILUXE10.COM',W/2,130);
+  ctx.strokeStyle='rgba(200,169,110,.3)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(100,148);ctx.lineTo(W-100,148);ctx.stroke();
+  ctx.fillStyle='rgba(200,169,110,.5)';ctx.font='12px monospace';ctx.fillText('CERTIFICATE OF COMPLETION',W/2,185);
+  ctx.fillStyle='#9B9BA8';ctx.font='20px Georgia,serif';ctx.fillText('This is to certify that',W/2,232);
+  ctx.save();ctx.fillStyle='#C8A96E';ctx.font='italic bold 62px Georgia,serif';
+  ctx.shadowColor='rgba(200,169,110,0.3)';ctx.shadowBlur=18;ctx.fillText(cert.studentName||'Student',W/2,308);ctx.restore();
+  const nameW=ctx.measureText(cert.studentName||'Student').width*0.85;
+  ctx.strokeStyle='rgba(200,169,110,.4)';ctx.lineWidth=1.2;ctx.beginPath();ctx.moveTo(W/2-nameW/2,318);ctx.lineTo(W/2+nameW/2,318);ctx.stroke();
+  ctx.fillStyle='#9B9BA8';ctx.font='18px Georgia,serif';ctx.fillText('has successfully completed',W/2,355);
+  const cname=cert.courseName||'Course';const cfs=cname.length>50?26:cname.length>38?30:36;
+  ctx.fillStyle='#EDEDF0';ctx.font=`bold ${cfs}px Georgia,serif`;ctx.fillText(cname,W/2,410);
+  const bx=W/2-80,by=432,bw=160,bh=30;
+  ctx.fillStyle='rgba(200,169,110,0.12)';roundRect(ctx,bx,by,bw,bh,6);ctx.fill();
+  ctx.strokeStyle='rgba(200,169,110,.4)';ctx.lineWidth=1;roundRect(ctx,bx,by,bw,bh,6);ctx.stroke();
+  ctx.fillStyle='rgba(200,169,110,.8)';ctx.font='13px monospace';ctx.fillText(`Score: ${cert.score||100}% · With Distinction`,W/2,452);
+  ctx.strokeStyle='rgba(200,169,110,.2)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(100,478);ctx.lineTo(W-100,478);ctx.stroke();
+  ctx.fillStyle='rgba(200,169,110,.45)';ctx.font='italic 13px Georgia,serif';ctx.textAlign='left';ctx.fillText('Authorised by Biluxe10',100,700);
+  ctx.strokeStyle='rgba(200,169,110,.25)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(100,680);ctx.lineTo(380,680);ctx.stroke();
+  drawSignature(ctx,100,635,280,60);
+  ctx.textAlign='right';
+  const dateStr=cert.issuedAt?new Date(cert.issuedAt.toDate?.()??cert.issuedAt).toLocaleDateString('en-IN',{year:'numeric',month:'long',day:'numeric'}):new Date().toLocaleDateString('en-IN',{year:'numeric',month:'long',day:'numeric'});
+  ctx.fillStyle='rgba(200,169,110,.45)';ctx.font='italic 13px Georgia,serif';ctx.fillText('Date of Issue',W-100,700);
+  ctx.strokeStyle='rgba(200,169,110,.25)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(W-380,680);ctx.lineTo(W-100,680);ctx.stroke();
+  ctx.fillStyle='rgba(200,169,110,.65)';ctx.font='14px Georgia,serif';ctx.fillText(dateStr,W-100,660);
+  ctx.textAlign='center';ctx.fillStyle='rgba(200,169,110,.4)';ctx.font='11px monospace';
+  ctx.fillText(`Certificate ID: ${cert.certId} · Ref: ${cert.referral||userReferral} · biluxe10.com/verify`,W/2,738);
+  if(typeof QRCode!=='undefined'){
+    try{QRCode.toCanvas($('qrCanvas'),`https://biluxe10.com/verify?id=${cert.certId}`,{width:110,color:{dark:'#C8A96E',light:'#07070A'}},()=>{});}catch(e){}
+  }
+}
+
+function drawSignature(ctx,x,y,w,h){
+  ctx.save();ctx.strokeStyle='rgba(200,169,110,0.75)';ctx.lineWidth=2.2;ctx.lineCap='round';ctx.lineJoin='round';
+  const sx=w/280,sy=h/80;ctx.translate(x,y);ctx.scale(sx,sy);
+  ctx.beginPath();ctx.ellipse(60,30,26,38,Math.PI*0.05,0,Math.PI*2);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(50,4);ctx.lineTo(62,64);ctx.stroke();
+  ctx.beginPath();ctx.ellipse(80,46,36,24,Math.PI*0.1,0,Math.PI*2);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(55,8);ctx.lineTo(110,56);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(90,50);ctx.bezierCurveTo(130,45,160,55,200,48);ctx.stroke();
+  ctx.beginPath();ctx.arc(210,48,3,0,Math.PI*2);ctx.fillStyle='rgba(200,169,110,0.75)';ctx.fill();
+  ctx.restore();
+}
+
+function roundRect(ctx,x,y,w,h,r){
+  ctx.beginPath();ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.arcTo(x+w,y,x+w,y+r,r);ctx.lineTo(x+w,y+h-r);ctx.arcTo(x+w,y+h,x+w-r,y+h,r);ctx.lineTo(x+r,y+h);ctx.arcTo(x,y+h,x,y+h-r,r);ctx.lineTo(x,y+r);ctx.arcTo(x,y,x+r,y,r);ctx.closePath();
+}
+
+function downloadCert(){
+  const canvas=$('certCanvas');if(!canvas)return;
+  const link=document.createElement('a');
+  link.download=`Biluxe10_${(currentCourse?.title||'Certificate').replace(/\s/g,'_')}.png`;
+  link.href=canvas.toDataURL('image/png',1);link.click();toast('⬇','Downloaded!');
+}
+function shareCertWA(){
+  const cert=currentCourse?CERT_DATA[currentCourse.id]:null;
+  window.open('https://wa.me/?text='+encodeURIComponent(`🏆 I just earned my *${cert?.courseName||''}* certificate from *Biluxe10*!\nID: ${cert?.certId||''}\n🎓 biluxe10.com`),'_blank');
+}
+
+function renderCertGallery(){
+  const el=$('certGallery');if(!el)return;
+  const certs=Object.values(CERT_DATA);
+  if(!certs.length){el.innerHTML='<div style="text-align:center;padding:40px;color:var(--t3);grid-column:1/-1"><div style="font-size:2rem;margin-bottom:8px">🏆</div><p style="font-size:.75rem">Complete courses to earn certificates</p></div>';return;}
+  el.innerHTML=certs.map(c=>`<div class="cert-thumb" onclick="viewCert('${c.courseId}')"><div style="font-size:2rem;margin-bottom:7px">🏆</div><div style="font-size:.8rem;font-weight:700;margin-bottom:2px">${c.courseName}</div><div style="font-family:var(--fm);font-size:.5rem;color:var(--t3)">${c.certId}</div><div style="font-family:var(--fm);font-size:.52rem;color:var(--green);margin-top:3px">${c.score||100}%</div></div>`).join('');
+}
+
+/* MY LEARNING */
+function renderMyLearning(){
+  const el=$('myLearningGrid');if(!el)return;
+  const started=[];
+  BUNDLES.forEach(b=>{b.courses.forEach(c=>{
+    if(!isCourseUnlocked(c.id))return;
+    const d=WATCH_DATA[c.id];
+    if(d&&(d.done||[]).length>0)started.push({...c,bundle:b,dm:(d.done||[]).length});
+  });});
+  SPECIAL_COURSES.forEach(c=>{
+    if(!isSpecialUnlocked(c.id))return;
+    const d=WATCH_DATA[c.id];
+    if(d&&(d.done||[]).length>0)started.push({...c,bundle:{id:'special',ic:'✨'},dm:(d.done||[]).length,special:true});
+  });
+  if(!started.length){el.innerHTML='<div style="text-align:center;padding:40px;color:var(--t3)"><div style="font-size:2rem;margin-bottom:8px">▶</div><p style="font-size:.75rem">Start watching any course to see it here</p></div>';return;}
+  el.innerHTML=started.map(c=>{
+    const pct=coursePct(c.id,c.chapters.length);
+    return`<div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:15px;cursor:pointer;transition:all .2s" onmouseenter="this.style.transform='translateY(-2px)';this.style.borderColor='rgba(200,169,110,.22)'" onmouseleave="this.style.transform='';this.style.borderColor=''" onclick="${c.special?`showDisclaimer(()=>openCourseViewer('special','${c.id}',true))`:`showDisclaimer(()=>openCourseViewer('${c.bundle.id}','${c.id}'))`}">
+      <div style="display:flex;align-items:center, gap:7px;margin-bottom:7px"><span style="font-size:1.3rem">${c.icon}</span><div style="font-family:var(--fd);font-size:.88rem;font-weight:700;flex:1">${c.title}</div>${pct===100?'<span style="font-family:var(--fm);font-size:.48rem;padding:2px 6px;border-radius:4px;background:var(--grA);color:var(--green);border:1px solid rgba(34,197,94,.2)">✓</span>':''}</div>
+      <div style="height:3px;background:var(--bg4);border-radius:3px;overflow:hidden;margin-bottom:4px"><div style="height:100%;background:linear-gradient(90deg,var(--gold),var(--gold2));width:${pct}%;border-radius:3px"></div></div>
+      <div style="font-family:var(--fm);font-size:.5rem;color:var(--t3)">${c.dm}/${c.chapters.length} chapters · ${pct}%</div>
+    </div>`;
+  }).join('');
+}
+
+/* PROGRESS OVERVIEW */
+function renderProgOverview(){
+  const el=$('progOverview');if(!el)return;
+  let tc=0,cc=0,tm=0,dm=0;
+  BUNDLES.forEach(b=>{b.courses.forEach(c=>{
+    if(!isCourseUnlocked(c.id))return;
+    tc++;tm+=c.chapters.length;
+    const d=(WATCH_DATA[c.id]?.done||[]).length;dm+=d;
+    if(d>=c.chapters.length)cc++;
+  });});
+  const certs=Object.keys(CERT_DATA).length;
+  const exams=Object.values(EXAM_DATA).filter(e=>e.passed).length;
+  el.innerHTML=[
+    {v:tc,l:'Total Courses'},{v:cc,l:'Completed'},{v:dm+'/'+tm,l:'Chapters Done'},
+    {v:exams,l:'Exams Passed'},{v:certs,l:'Certificates'}
+  ].map(s=>`<div class="prog-stat"><div class="prog-stat-vl">${s.v}</div><div class="prog-stat-lb">${s.l}</div></div>`).join('');
+}
+
+/* SPECIAL COURSES PAGE */
+function renderSpecialPage(){
+  const grid=$('specialGrid');if(!grid)return;
+  grid.innerHTML=SPECIAL_COURSES.map(sc=>{
+    const unlocked=isSpecialUnlocked(sc.id);
+    const pct=coursePct(sc.id,sc.chapters.length);
+    const dm=(WATCH_DATA[sc.id]?.done||[]).length;
+    return`<div style="background:var(--bg2);border:1px solid ${unlocked?'rgba(244,114,182,0.25)':'var(--border)'};border-radius:14px;padding:18px;cursor:${unlocked?'pointer':'default'};transition:all .22s;position:relative;overflow:hidden" ${unlocked?`onmouseenter="this.style.transform='translateY(-2px)'" onmouseleave="this.style.transform=''" onclick="openCourseViewer('special','${sc.id}',true)"`:''}> 
+      <div style="position:absolute;top:14px;right:14px;font-family:var(--fm);font-size:.46rem;padding:3px 8px;border-radius:5px;background:${unlocked?'rgba(34,197,94,.1)':'rgba(244,114,182,.1)'};color:${unlocked?'var(--green)':'var(--pink)'};border:1px solid ${unlocked?'rgba(34,197,94,.2)':'rgba(244,114,182,.25)'}">${unlocked?'✅ Access':'🔐 Approval Required'}</div>
+      <div style="font-size:2.2rem;margin-bottom:10px">${sc.icon}</div>
+      <div style="font-family:var(--fd);font-size:1rem;font-weight:900;margin-bottom:4px">${sc.title}</div>
+      <div style="font-size:.74rem;color:var(--t2);margin-bottom:9px;line-height:1.65;padding-right:80px">${sc.desc}</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;font-family:var(--fm);font-size:.52rem;color:var(--t3);margin-bottom:9px"><span>📋 ${sc.chapters.length} chapters</span><span>✅ ${dm} done</span></div>
+      ${unlocked?`<div style="height:3px;background:var(--bg4);border-radius:3px;overflow:hidden;margin-bottom:4px"><div style="height:100%;background:linear-gradient(90deg,var(--pink),rgba(244,114,182,.6));width:${pct}%;border-radius:3px;transition:width .7s"></div></div><div style="font-family:var(--fm);font-size:.5rem;color:var(--t3)">${pct}% complete</div>`:`<button class="btn-pink" style="margin-top:4px" onclick="event.stopPropagation();requestSpecialAccess('${sc.title}')">Request Access</button>`}
+    </div>`;
+  }).join('');
+  const hasAny=SPECIAL_COURSES.some(sc=>isSpecialUnlocked(sc.id));
+  const notice=$('specialLockNotice');
+  if(hasAny&&notice)notice.style.display='none';
+}
+
+function requestSpecialAccess(courseName){
+  window.open(`https://wa.me/919019254743?text=Hi, I would like to request access to the *${courseName}* on Biluxe10. My email: ${U.email}`,'_blank');
+  toast('📱','Opening WhatsApp to request access…',3000);
+}
+
+/* AI TUTOR (added in courses.html as per plan) */
+let chatHistoryLocal=[];
+function loadChatHistory(){
+  try{
+    const saved=localStorage.getItem('b10chat_'+U.emailId);
+    if(saved){
+      chatHistoryLocal=JSON.parse(saved);
+      chatHistoryLocal.forEach(m=>{
+        if(m.role==='user')addUserMsgRaw(m.content,m.fileHtml);
+        else addBotMsgRaw(m.content);
+      });
+    }
+  }catch(e){}
+}
+
+function saveChatHistory(){
+  try{localStorage.setItem('b10chat_'+U.emailId,JSON.stringify(chatHistoryLocal.slice(-60)));}catch(e){}
+}
+
+function initTutor(){
+  if(!chatHistoryLocal.length){
+    addBotMsg(`👋 Welcome to **Biluxe10 AI Tutor**, ${U.name}!\n\nPowered by **Grok API**. I can help with:\n• Course concepts & doubt clearing\n• Exam prep & practice questions\n• Project guidance\n• Career advice for the Indian market\n• File analysis (upload images/PDFs)\n\nYour chat history is saved automatically. What would you like to learn today?`);
+  }
+  const chips=$('tutorChips');
+  if(chips)chips.innerHTML=['Explain a concept','Practice questions','Help with my project','Career in India','Code review','Exam tips'].map(c=>`<div class="chip" onclick="sendChip('${c}')">${c}</div>`).join('');
+}
+
+function addBotMsg(text){addBotMsgRaw(text);chatHistoryLocal.push({role:'assistant',content:text});saveChatHistory();}
+function addBotMsgRaw(text){
+  const msgs=$('tutorMsgs');if(!msgs)return;
+  const div=document.createElement('div');div.className='msg bot';
+  div.innerHTML=`<div class="msg-av bot">🤖</div><div class="msg-bubble">${fmtAI(text)}</div>`;
+  msgs.appendChild(div);msgs.scrollTop=msgs.scrollHeight;
+  chatHistory.push({role:'assistant',parts:[{text}]});
+}
+
+function addUserMsg(text,fileHtml=''){
+  addUserMsgRaw(text,fileHtml);
+  chatHistoryLocal.push({role:'user',content:text,fileHtml});
+  saveChatHistory();
+}
+function addUserMsgRaw(text,fileHtml=''){
+  const msgs=$('tutorMsgs');if(!msgs)return;
+  const div=document.createElement('div');div.className='msg user';
+  div.innerHTML=`<div class="msg-av usr">${U.name?.[0]||'U'}</div><div class="msg-bubble">${fileHtml||''}${text.replace(/\n/g,'<br>')}</div>`;
+  msgs.appendChild(div);msgs.scrollTop=msgs.scrollHeight;
+}
+
+function addTyping(){
+  const msgs=$('tutorMsgs');if(!msgs)return;
+  const div=document.createElement('div');div.className='msg bot';div.id='typing';
+  div.innerHTML=`<div class="msg-av bot">🤖</div><div class="typing-ind"><span></span><span></span><span></span></div>`;
+  msgs.appendChild(div);msgs.scrollTop=msgs.scrollHeight;
+}
+function removeTyping(){const t=$('typing');if(t)t.remove();}
+function handleTutorKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventHTTP();sendMsg();}}
+function autoResize(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,110)+'px';}
+function sendChip(text){const inp=$('tutorInp');if(inp){inp.value=text;sendMsg();}}
+function clearChat(){
+  const msgs=$('tutorMsgs');if(msgs)msgs.innerHTML='';
+  chatHistory=[];chatHistoryLocal=[];
+  try{localStorage.removeItem('b10chat_'+U.emailId);}catch(e){}
+  addBotMsg(`Chat cleared! Ready to help, ${U.name}!`);
+}
+function exportChat(){
+  const text=chatHistoryLocal.map(m=>`[${m.role==='user'?'You':'AI Tutor'}]\n${m.content}`).join('\n\n---\n\n');
+  const blob=new Blob([text],{type:'text/plain'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='Biluxe10_Chat_History.txt';a.click();
+  toast('💾','Chat exported!');
+}
+function openAITutor(){goPage('ai-tutor');}
+
+/* FILE ATTACH */
+function handleAttach(input){
+  const file=input.files?.[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=()=>{
+    const base64=reader.result.split(',')[1];
+    const mimeType=file.type||'application/octet-stream';
+    pendingAttach={type:file.type.startsWith('image/')?'image':'file',base64,mimeType,name:file.name};
+    const wrap=$('attachPreviewWrap');
+    if(wrap){
+      wrap.style.display='block';
+      if(file.type.startsWith('image/')){
+        wrap.innerHTML=`<div class="attach-preview"><img src="data:${mimeType};base64,${base64}" alt="${file.name}"><div style="flex:1"><div style="font-size:.72rem;font-weight:600">${file.name}</div><div style="font-family:var(--fm);font-size:.5rem;color:var(--t3)">${(file.size/1024).toFixed(1)} KB · Image</div></div><button class="attach-remove" onclick="clearAttach()">✕</button></div>`;
+      }else{
+        wrap.innerHTML=`<div class="attach-preview"><span style="font-size:1.5rem">📄</span><div style="flex:1"><div style="font-size:.72rem;font-weight:600">${file.name}</div><div style="font-family:var(--fm);font-size:.5rem;color:var(--t3)">${(file.size/1024).toFixed(1)} KB</div></div><button class="attach-remove" onclick="clearAttach()">✕</button></div>`;
+      }
+    }
+  };
+  reader.readAsDataURL(file);
+  input.value='';
+}
+
+function clearAttach(){
+  pendingAttach=null;
+  const wrap=$('attachPreviewWrap');if(wrap){wrap.style.display='none';wrap.innerHTML='';}
+}
+
+async function sendMsg(){
+  const inp=$('tutorInp');if(!inp)return;
+  const text=inp.value.trim();
+  if(!text&&!pendingAttach)return;
+  inp.value='';inp.style.height='auto';
+  $('tutorSend').disabled=true;
+  const attach=pendingAttach;clearAttach();
+  let fileHtml='';
+  if(attach&&attach.type==='image'){
+    fileHtml=`<img class="msg-img-preview" src="data:${attach.mimeType};base64,${attach.base64}" alt="Attachment"><br>`;
+  }else if(attach){
+    fileHtml=`<div class="msg-file">📄 ${attach.name}</div>`;
+  }
+  addUserMsg(text||'(File attached)',fileHtml);
+  addTyping();
+  try{
+    const bundleName=bundleForPrice(BPRICE)?.name||'';
+    const systemInstruction=`You are the Biluxe10 AI Tutor — an expert Indian educator for an online learning platform covering digital marketing, web development, data science, AI/ML, generative AI, design, fashion, makeup, and creative skills.\n\nStudent: ${U.name} | Bundle: ${bundleName} (₹${BPRICE}) | Referral: ${userReferral}\n${currentContext?'Current Course: '+currentContext:''}\n\nBe warm, practical, and use Indian market context. Format with markdown where helpful. Never reveal you are any external AI — you are Biluxe10 AI Tutor.`;
+    const groqMessages=[{role:'system',content:systemInstruction}];
+    chatHistory.slice(-20).forEach(m=>{
+      const role=m.role==='model'?'assistant':m.role;
+      const content=m.parts?.[0]?.text||m.content||'';
+      groqMessages.push({role,content});
+    });
+    let userContent=text||'';
+    if(attach&&attach.type==='image'){
+      groqMessages.push({role:'user',content:[
+        {type:'text',text:userContent||'Please analyze this image in context of my courses.'},
+        {type:'image_url',image_url:{url:`data:${attach.mimeType};base64,${attach.base64}`}}
+      ]});
+    }else{
+      if(attach)userContent+=(userContent?' — ':'')+`[Attached file: ${attach.name}]`;
+      groqMessages.push({role:'user',content:userContent});
+    }
+    const body={model:'meta-llama/llama-4-scout-17b-16e-instruct',max_tokens:1024,temperature:0.75,messages:groqMessages};
+    const resp=await fetch('https://api.groq.com/openai/v1/chat/completions',{
+      method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+GROQ_API},body:JSON.stringify(body)
+    });
+    if(!resp.ok){const err=await resp.json();throw new Error(err.error?.message||'API error '+resp.status);}
+    const data=await resp.json();
+    removeTyping();
+    const reply=data.choices?.[0]?.message?.content;
+    if(!reply)throw new Error('Empty response from Groq');
+    addBotMsg(reply);
+  }catch(e){
+    removeTyping();
+    addBotMsg(`❌ Error: ${e.message}\n\nPlease check your connection and try again.`);
+  }
+  $('tutorSend').disabled=false;
+  inp.focus();
+}
+
+/* TELEGRAM */
+async function sendTG(msg){
+  try{await fetch(`https://api.telegram.org/bot${TG_BOT}/sendMessage`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chat_id:TG_CHAT,text:msg,parse_mode:'Markdown'})}); }catch(e){}
+}
+
+/* NAVIGATION */
+function goPage(pg){
+  $('courseViewer').classList.remove('on');
+  document.querySelectorAll('.pg').forEach(p=>{p.classList.remove('on');p.style.display='';});
+  const target=$('pg-'+pg);if(target)target.classList.add('on');
+  document.querySelectorAll('.si').forEach(b=>{b.classList.remove('on');if(b.getAttribute('onclick')?.includes("'"+pg+"'"))b.classList.add('on');});
+  const labels={'home':'🎓 Learning Hub','my-learning':'▶ My Learning','ai-tutor':'🤖 AI Tutor','certificates':'🏆 Certificates','exam':'📝 Exams','bundle-courses':'Bundle Courses','special':'✨ Special Courses'};
+  T('tbPg',labels[pg]||'🎓 Learning Hub');
+  if(pg==='my-learning')renderMyLearning();
+  if(pg==='certificates')renderCertGallery();
+  if(pg==='home'){renderBundleGrid();renderProgOverview();}
+  if(pg==='special')renderSpecialPage();
+  if(window.innerWidth<860){$('sb').classList.remove('open');$('ham').classList.toggle('open',false);}
+}
+function toggleSb(){$('sb').classList.toggle('open');$('ham').classList.toggle('open');}
+</script>
+</body>
+</html>
