@@ -1,0 +1,1755 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Biluxe10 — Courses</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#07070A;--bg2:#0D0D12;--bg3:#121218;--bg4:#18181F;--bg5:#1E1E28;
+  --gold:#C8A96E;--gold2:#E2C48A;--gold3:#F0D9A8;
+  --green:#22C55E;--red:#EF4444;--blue:#60A5FA;
+  --amber:#F59E0B;--pink:#F472B6;--vio:#A78BFA;
+  --text:#EDEDF0;--t2:#9B9BA8;--t3:#4B4B5A;
+  --border:rgba(255,255,255,0.055);
+  --fd:'Fraunces',serif;--fb:'Plus Jakarta Sans',sans-serif;--fm:'JetBrains Mono',monospace;
+  --nav:60px;--r:14px;--rs:10px;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{background:var(--bg);color:var(--text);font-family:var(--fb);min-height:100%;overflow-x:hidden;}
+::-webkit-scrollbar{width:4px;height:4px;}
+::-webkit-scrollbar-track{background:var(--bg2);}
+::-webkit-scrollbar-thumb{background:var(--gold);border-radius:2px;}
+a{color:inherit;text-decoration:none;}
+button{font-family:var(--fb);cursor:pointer;border:none;outline:none;}
+input,textarea{font-family:var(--fb);outline:none;border:none;}
+
+/* AUTH GUARD */
+#authGuard{position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;}
+#authGuard .logo{font-family:var(--fd);font-size:32px;color:var(--gold);letter-spacing:2px;}
+#authGuard .spin{width:36px;height:36px;border:3px solid var(--bg4);border-top-color:var(--gold);border-radius:50%;animation:spin 0.8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+#authGuard.hidden{display:none;}
+
+/* DISCLAIMER MODAL */
+#disclaimerModal{position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:9000;display:flex;align-items:center;justify-content:center;padding:20px;}
+#disclaimerModal.hidden{display:none;}
+.disc-box{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:32px 24px;max-width:420px;width:100%;}
+.disc-box h2{font-family:var(--fd);font-size:22px;color:var(--gold);margin-bottom:12px;}
+.disc-box p{color:var(--t2);font-size:14px;line-height:1.7;margin-bottom:20px;}
+.disc-check{display:flex;align-items:center;gap:10px;margin-bottom:20px;}
+.disc-check input[type=checkbox]{width:18px;height:18px;accent-color:var(--gold);cursor:pointer;}
+.disc-check label{font-size:14px;color:var(--text);cursor:pointer;}
+.disc-btn{width:100%;padding:14px;background:var(--gold);color:#000;font-weight:700;font-size:15px;border-radius:var(--rs);opacity:0.4;pointer-events:none;transition:opacity 0.2s;}
+.disc-btn.active{opacity:1;pointer-events:all;}
+
+/* BOTTOM NAV */
+#bottomNav{position:fixed;bottom:0;left:0;right:0;height:var(--nav);background:var(--bg2);border-top:1px solid var(--border);display:flex;z-index:800;}
+#bottomNav.hidden{display:none;}
+.nav-tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:var(--t3);font-size:10px;font-weight:500;transition:color 0.2s;padding:8px 0;}
+.nav-tab svg{width:22px;height:22px;}
+.nav-tab.active{color:var(--gold);}
+.nav-tab span{font-size:10px;}
+
+/* PAGES */
+.page{display:none;min-height:100vh;padding-bottom:calc(var(--nav) + 20px);}
+.page.active{display:block;}
+
+/* TOAST */
+#toast{position:fixed;bottom:calc(var(--nav) + 12px);left:50%;transform:translateX(-50%);background:var(--bg4);border:1px solid var(--border);color:var(--text);padding:10px 20px;border-radius:50px;font-size:13px;z-index:8000;opacity:0;transition:opacity 0.3s;white-space:nowrap;max-width:90vw;text-align:center;pointer-events:none;}
+#toast.show{opacity:1;}
+
+/* HEADER */
+.page-header{padding:20px 16px 12px;display:flex;align-items:center;justify-content:space-between;}
+.page-header h1{font-family:var(--fd);font-size:24px;color:var(--gold);}
+
+/* STATS ROW */
+.stats-row{display:flex;gap:10px;padding:0 16px 16px;overflow-x:auto;}
+.stat-card{flex:0 0 auto;background:var(--bg3);border:1px solid var(--border);border-radius:var(--rs);padding:12px 16px;min-width:100px;text-align:center;}
+.stat-num{font-family:var(--fm);font-size:22px;color:var(--gold);font-weight:500;}
+.stat-label{font-size:11px;color:var(--t2);margin-top:2px;}
+
+/* BUNDLE GRID */
+.bundle-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:0 16px 16px;}
+@media(min-width:768px){.bundle-grid{grid-template-columns:1fr 1fr 1fr;}}
+.bundle-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:16px;cursor:pointer;transition:border-color 0.2s,transform 0.15s;position:relative;overflow:hidden;}
+.bundle-card:active{transform:scale(0.97);}
+.bundle-card.locked{opacity:0.55;cursor:not-allowed;}
+.bundle-card .b-label{display:inline-block;font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;margin-bottom:8px;background:rgba(200,169,110,0.15);color:var(--gold);font-family:var(--fm);}
+.bundle-card.locked .b-label{background:rgba(75,75,90,0.3);color:var(--t3);}
+.bundle-card h3{font-size:13px;font-weight:600;margin-bottom:4px;line-height:1.4;}
+.bundle-card .b-count{font-size:11px;color:var(--t2);margin-bottom:10px;}
+.bundle-card .b-price{font-size:12px;font-family:var(--fm);color:var(--t3);margin-top:6px;}
+.prog-bar{height:4px;background:var(--bg5);border-radius:2px;overflow:hidden;}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold2));border-radius:2px;transition:width 0.5s;}
+.bundle-card .lock-icon{position:absolute;top:12px;right:12px;color:var(--t3);}
+
+/* SPECIAL BANNER */
+.special-banner{margin:0 16px 16px;background:linear-gradient(135deg,#1a1020,#0d0d1a);border:1px solid rgba(167,139,250,0.25);border-radius:var(--r);padding:16px;cursor:pointer;display:flex;align-items:center;gap:12px;}
+.special-banner svg{width:32px;height:32px;color:var(--vio);flex-shrink:0;}
+.special-banner h3{font-size:14px;font-weight:600;color:var(--vio);}
+.special-banner p{font-size:12px;color:var(--t2);margin-top:2px;}
+
+/* COURSE LIST PAGE */
+.cl-back{display:flex;align-items:center;gap:8px;padding:16px;color:var(--t2);font-size:14px;cursor:pointer;min-height:44px;}
+.cl-back svg{width:20px;height:20px;}
+.cl-bundle-header{padding:0 16px 16px;}
+.cl-bundle-header h2{font-family:var(--fd);font-size:20px;color:var(--gold);}
+.cl-bundle-header p{font-size:13px;color:var(--t2);margin-top:4px;}
+.course-item{display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid var(--border);cursor:pointer;transition:background 0.15s;}
+.course-item:active{background:var(--bg3);}
+.ci-icon{width:44px;height:44px;border-radius:var(--rs);background:var(--bg4);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--gold);}
+.ci-info{flex:1;min-width:0;}
+.ci-title{font-size:14px;font-weight:600;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ci-meta{font-size:11px;color:var(--t2);}
+.ci-right{display:flex;flex-direction:column;align-items:flex-end;gap:6px;}
+.cert-badge{font-size:10px;background:rgba(34,197,94,0.15);color:var(--green);padding:2px 8px;border-radius:20px;font-weight:600;}
+.ci-prog{width:60px;height:3px;background:var(--bg5);border-radius:2px;overflow:hidden;}
+.ci-prog-fill{height:100%;background:var(--gold);border-radius:2px;}
+
+/* COURSE VIEWER */
+#courseViewer{position:fixed;inset:0;background:var(--bg);z-index:700;display:none;flex-direction:column;overflow-y:auto;}
+#courseViewer.open{display:flex;}
+.cv-top-bar{display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--bg2);border-bottom:1px solid var(--border);flex-shrink:0;}
+.cv-back{display:flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:50%;background:var(--bg4);color:var(--text);cursor:pointer;}
+.cv-course-title{font-size:14px;font-weight:600;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+
+/* PLAYER WRAPPER */
+.player-wrap{position:relative;width:100%;background:#000;}
+.player-aspect{position:relative;padding-bottom:56.25%;width:100%;height:0;overflow:hidden;}
+.player-aspect iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:0;}
+.player-controls{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,0.85));padding:10px 12px 12px;opacity:0;transition:opacity 0.3s;z-index:10;}
+.player-controls.visible{opacity:1;}
+.seek-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.seek-bar{flex:1;height:4px;background:rgba(255,255,255,0.2);border-radius:2px;cursor:pointer;position:relative;}
+.seek-filled{height:100%;background:var(--gold);border-radius:2px;pointer-events:none;}
+.seek-thumb{width:12px;height:12px;background:var(--gold);border-radius:50%;position:absolute;top:-4px;transform:translateX(-50%);pointer-events:none;}
+.time-label{font-family:var(--fm);font-size:11px;color:rgba(255,255,255,0.8);white-space:nowrap;}
+.ctrl-row{display:flex;align-items:center;gap:10px;}
+.ctrl-btn{width:36px;height:36px;display:flex;align-items:center;justify-content:center;background:transparent;color:#fff;border-radius:50%;flex-shrink:0;}
+.ctrl-btn svg{width:20px;height:20px;}
+.ctrl-btn.primary{width:40px;height:40px;background:var(--gold);color:#000;border-radius:50%;}
+.ctrl-btn.primary svg{width:22px;height:22px;}
+.vol-wrap{display:flex;align-items:center;gap:6px;flex:1;}
+.vol-slider{flex:1;height:4px;-webkit-appearance:none;appearance:none;background:rgba(255,255,255,0.2);border-radius:2px;cursor:pointer;}
+.vol-slider::-webkit-slider-thumb{-webkit-appearance:none;width:12px;height:12px;background:var(--gold);border-radius:50%;}
+.watermark{position:absolute;z-index:5;font-family:var(--fm);font-size:13px;color:rgba(200,169,110,0.45);pointer-events:none;white-space:nowrap;transition:top 0.5s,left 0.5s;}
+
+/* PREV/NEXT LESSON */
+.lesson-nav{display:flex;gap:10px;padding:12px 16px;flex-shrink:0;}
+.lesson-nav-btn{flex:1;padding:10px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--rs);color:var(--text);font-size:13px;font-weight:500;display:flex;align-items:center;gap:6px;min-height:44px;}
+.lesson-nav-btn svg{width:16px;height:16px;flex-shrink:0;}
+.lesson-nav-btn.next{justify-content:flex-end;}
+.lesson-nav-btn span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100px;}
+
+/* TABS */
+.cv-tabs{display:flex;overflow-x:auto;border-bottom:1px solid var(--border);flex-shrink:0;padding:0 16px;}
+.cv-tab{padding:12px 14px;font-size:13px;font-weight:500;color:var(--t2);white-space:nowrap;cursor:pointer;border-bottom:2px solid transparent;flex-shrink:0;min-height:44px;display:flex;align-items:center;}
+.cv-tab.active{color:var(--gold);border-bottom-color:var(--gold);}
+.cv-tab-content{display:none;padding:16px;}
+.cv-tab-content.active{display:block;}
+
+/* CHAPTERS LIST */
+.chap-item{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);cursor:pointer;min-height:52px;}
+.chap-num{font-family:var(--fm);font-size:12px;color:var(--t3);width:24px;flex-shrink:0;text-align:center;}
+.chap-info{flex:1;min-width:0;}
+.chap-title{font-size:13px;font-weight:500;line-height:1.4;}
+.chap-dur{font-size:11px;color:var(--t2);margin-top:2px;}
+.chap-check{width:22px;height:22px;border-radius:50%;border:2px solid var(--t3);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.chap-check.done{background:var(--green);border-color:var(--green);}
+.chap-check svg{width:12px;height:12px;color:#000;}
+.chap-item.active-chap .chap-title{color:var(--gold);}
+.chap-item.active-chap .chap-num{color:var(--gold);}
+
+/* EXAM */
+.exam-q{background:var(--bg3);border:1px solid var(--border);border-radius:var(--rs);padding:16px;margin-bottom:12px;}
+.exam-q p{font-size:14px;font-weight:500;margin-bottom:12px;line-height:1.5;}
+.exam-opt{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--border);border-radius:var(--rs);margin-bottom:8px;cursor:pointer;font-size:13px;min-height:44px;transition:border-color 0.2s,background 0.2s;}
+.exam-opt.selected{border-color:var(--gold);background:rgba(200,169,110,0.08);}
+.exam-opt.correct{border-color:var(--green);background:rgba(34,197,94,0.1);}
+.exam-opt.wrong{border-color:var(--red);background:rgba(239,68,68,0.1);}
+.exam-submit{width:100%;padding:14px;background:var(--gold);color:#000;font-weight:700;font-size:15px;border-radius:var(--rs);margin-top:8px;}
+.exam-locked{text-align:center;padding:32px;color:var(--t2);}
+.exam-locked svg{width:48px;height:48px;margin:0 auto 12px;display:block;color:var(--t3);}
+
+/* RESULT POPUP */
+.result-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:8500;display:flex;align-items:center;justify-content:center;padding:20px;}
+.result-overlay.hidden{display:none;}
+.result-box{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:32px 24px;max-width:380px;width:100%;text-align:center;}
+.result-score{font-family:var(--fd);font-size:48px;margin-bottom:8px;}
+.result-score.pass{color:var(--green);}
+.result-score.fail{color:var(--red);}
+.result-label{font-size:16px;font-weight:600;margin-bottom:16px;}
+.result-msg{font-size:14px;color:var(--t2);margin-bottom:24px;line-height:1.6;}
+.result-btns{display:flex;flex-direction:column;gap:10px;}
+.result-btns button{padding:13px;border-radius:var(--rs);font-size:14px;font-weight:600;}
+.btn-primary{background:var(--gold);color:#000;}
+.btn-secondary{background:var(--bg4);color:var(--text);border:1px solid var(--border);}
+
+/* PROJECT */
+.proj-wrap{display:flex;flex-direction:column;gap:12px;}
+.proj-textarea{width:100%;background:var(--bg4);border:1px solid var(--border);border-radius:var(--rs);padding:12px;color:var(--text);font-size:14px;resize:vertical;min-height:100px;line-height:1.6;}
+.proj-textarea:focus{border-color:var(--gold);}
+.file-upload-area{border:2px dashed var(--border);border-radius:var(--rs);padding:20px;text-align:center;cursor:pointer;transition:border-color 0.2s;}
+.file-upload-area:active{border-color:var(--gold);}
+.file-upload-area input{display:none;}
+.file-upload-area p{font-size:13px;color:var(--t2);}
+.file-upload-area .ext{font-size:11px;color:var(--t3);margin-top:4px;font-family:var(--fm);}
+.proj-submit{padding:13px 24px;background:var(--gold);color:#000;font-weight:700;font-size:14px;border-radius:var(--rs);width:100%;}
+.proj-done{background:var(--bg3);border:1px solid rgba(34,197,94,0.3);border-radius:var(--rs);padding:16px;display:flex;align-items:center;gap:12px;}
+.proj-done svg{width:24px;height:24px;color:var(--green);flex-shrink:0;}
+
+/* CERT TAB */
+.cert-check-list{display:flex;flex-direction:column;gap:10px;margin-bottom:20px;}
+.cert-check-item{display:flex;align-items:center;gap:12px;padding:12px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--rs);}
+.cert-check-item svg{width:20px;height:20px;flex-shrink:0;}
+.cert-check-item.done svg{color:var(--green);}
+.cert-check-item.pending svg{color:var(--t3);}
+.cert-check-item p{font-size:13px;}
+.cert-check-item span{font-size:11px;color:var(--t2);}
+.cert-view-btn{width:100%;padding:14px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#000;font-weight:700;font-size:15px;border-radius:var(--rs);}
+.cert-locked-msg{text-align:center;padding:20px;color:var(--t2);font-size:14px;}
+
+/* AI TUTOR */
+.ai-chat-wrap{display:flex;flex-direction:column;height:400px;}
+.ai-messages{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:10px;margin-bottom:12px;}
+.ai-msg{max-width:85%;padding:10px 14px;border-radius:14px;font-size:13px;line-height:1.6;}
+.ai-msg.user{background:var(--gold);color:#000;align-self:flex-end;border-bottom-right-radius:4px;}
+.ai-msg.bot{background:var(--bg4);color:var(--text);align-self:flex-start;border-bottom-left-radius:4px;}
+.ai-msg.typing{color:var(--t2);}
+.ai-input-row{display:flex;gap:8px;align-items:flex-end;}
+.ai-input{flex:1;background:var(--bg4);border:1px solid var(--border);border-radius:var(--rs);padding:10px 12px;color:var(--text);font-size:14px;resize:none;max-height:100px;min-height:44px;line-height:1.5;}
+.ai-input:focus{border-color:var(--gold);}
+.ai-send{width:44px;height:44px;background:var(--gold);color:#000;border-radius:var(--rs);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.ai-send svg{width:20px;height:20px;}
+.ai-file-btn{width:44px;height:44px;background:var(--bg4);border:1px solid var(--border);color:var(--t2);border-radius:var(--rs);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.ai-file-btn svg{width:18px;height:18px;}
+.ai-top-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+.ai-top-row h3{font-size:14px;font-weight:600;}
+.ai-clear{font-size:12px;color:var(--t2);background:var(--bg4);border:1px solid var(--border);padding:6px 12px;border-radius:20px;}
+.ai-file-preview{font-size:12px;color:var(--t2);margin-bottom:8px;display:flex;align-items:center;gap:6px;}
+.ai-file-preview button{color:var(--red);font-size:12px;background:none;}
+
+/* OVERVIEW TAB */
+.overview-section h3{font-size:15px;font-weight:600;margin-bottom:8px;color:var(--gold);}
+.overview-section p{font-size:13px;color:var(--t2);line-height:1.7;margin-bottom:16px;}
+.info-pills{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;}
+.info-pill{background:var(--bg3);border:1px solid var(--border);border-radius:20px;padding:5px 12px;font-size:12px;color:var(--t2);display:flex;align-items:center;gap:5px;}
+.info-pill svg{width:13px;height:13px;}
+
+/* SPECIAL PAGE */
+.sp-hero{padding:24px 16px 16px;text-align:center;}
+.sp-hero h1{font-family:var(--fd);font-size:26px;color:var(--text);margin-bottom:6px;}
+.sp-hero p{font-size:14px;color:var(--t2);}
+.sp-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin:0 16px 16px;}
+.sp-card h3{font-size:16px;font-weight:700;margin-bottom:4px;}
+.sp-card .sp-price{font-family:var(--fm);font-size:20px;color:var(--gold);margin-bottom:8px;}
+.sp-card p{font-size:13px;color:var(--t2);margin-bottom:14px;line-height:1.6;}
+.sp-badge{display:inline-block;font-size:11px;padding:3px 10px;border-radius:20px;font-weight:600;margin-bottom:10px;}
+.sp-badge.unlocked{background:rgba(34,197,94,0.15);color:var(--green);}
+.sp-badge.pending{background:rgba(245,158,11,0.15);color:var(--amber);}
+.sp-badge.locked{background:rgba(75,75,90,0.3);color:var(--t3);}
+.sp-btn{width:100%;padding:13px;border-radius:var(--rs);font-size:14px;font-weight:700;border:none;cursor:pointer;}
+.sp-btn.start{background:var(--gold);color:#000;}
+.sp-btn.pending-btn{background:var(--bg4);border:1px solid var(--amber);color:var(--amber);}
+.sp-btn.pay-btn{background:linear-gradient(135deg,#2a1f4a,#1a1030);border:1px solid var(--vio);color:var(--vio);}
+
+/* PAYMENT MODAL */
+.pay-modal{position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:9000;display:flex;align-items:flex-end;justify-content:center;}
+.pay-modal.hidden{display:none;}
+.pay-sheet{background:var(--bg3);border-radius:24px 24px 0 0;padding:28px 20px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto;}
+.pay-sheet h2{font-family:var(--fd);font-size:20px;color:var(--gold);margin-bottom:4px;}
+.pay-sheet .pay-price{font-family:var(--fm);font-size:28px;color:var(--text);margin-bottom:16px;}
+.pay-qr{width:140px;height:140px;background:var(--bg4);border-radius:var(--rs);margin:0 auto 12px;display:block;border:2px solid var(--border);}
+.pay-upi{text-align:center;font-family:var(--fm);font-size:14px;color:var(--gold);margin-bottom:16px;letter-spacing:1px;}
+.pay-field{width:100%;background:var(--bg4);border:1px solid var(--border);border-radius:var(--rs);padding:12px 14px;color:var(--text);font-size:14px;margin-bottom:10px;}
+.pay-field:focus{border-color:var(--gold);}
+.pay-submit{width:100%;padding:14px;background:var(--gold);color:#000;font-weight:700;font-size:15px;border-radius:var(--rs);margin-top:4px;}
+.pay-cancel{width:100%;padding:12px;background:transparent;color:var(--t2);font-size:14px;margin-top:8px;}
+
+/* CERTS PAGE */
+.certs-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:0 16px 16px;}
+.cert-card{background:var(--bg3);border:1px solid rgba(200,169,110,0.2);border-radius:var(--r);padding:16px;cursor:pointer;transition:border-color 0.2s;}
+.cert-card:active{border-color:var(--gold);}
+.cert-card .cert-ico{width:40px;height:40px;background:rgba(200,169,110,0.1);border-radius:var(--rs);display:flex;align-items:center;justify-content:center;margin-bottom:10px;color:var(--gold);}
+.cert-card h4{font-size:13px;font-weight:600;margin-bottom:4px;line-height:1.4;}
+.cert-card p{font-size:11px;color:var(--t2);}
+.certs-empty{text-align:center;padding:48px 20px;color:var(--t2);}
+.certs-empty svg{width:48px;height:48px;margin:0 auto 12px;display:block;color:var(--t3);}
+
+/* SECTION LABEL */
+.section-label{padding:8px 16px;font-size:11px;font-weight:700;color:var(--t3);letter-spacing:1.5px;text-transform:uppercase;font-family:var(--fm);}
+
+/* RESOURCE LINKS */
+.res-link{display:flex;align-items:center;gap:10px;padding:12px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--rs);margin-bottom:8px;cursor:pointer;text-decoration:none;}
+.res-link svg{width:18px;height:18px;color:var(--blue);flex-shrink:0;}
+.res-link span{font-size:13px;}
+</style>
+</head>
+<body>
+
+<!-- AUTH GUARD -->
+<div id="authGuard">
+  <div class="logo">Biluxe10</div>
+  <div class="spin"></div>
+</div>
+
+<!-- DISCLAIMER MODAL -->
+<div id="disclaimerModal" class="hidden">
+  <div class="disc-box">
+    <h2>Content Policy</h2>
+    <p>This course content is exclusively licensed to you. Sharing, redistributing, recording, or re-uploading any part of this content is strictly prohibited and may result in legal action and permanent account termination.</p>
+    <div class="disc-check">
+      <input type="checkbox" id="discCheckbox">
+      <label for="discCheckbox">I agree not to share, distribute, or reproduce this content.</label>
+    </div>
+    <button class="disc-btn" id="discBtn">I Understand — Continue</button>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<!-- PAYMENT MODAL -->
+<div class="pay-modal hidden" id="payModal">
+  <div class="pay-sheet">
+    <h2 id="payTitle">Enroll Now</h2>
+    <div class="pay-price" id="payPriceDisplay">₹0</div>
+    <img class="pay-qr" src="qr_code.png" alt="UPI QR" onerror="this.style.display='none'">
+    <div class="pay-upi">biluxe10@upi</div>
+    <p style="font-size:12px;color:var(--t2);text-align:center;margin-bottom:14px;">Scan the QR or use the UPI ID above to pay. Then enter your UTR number below.</p>
+    <input class="pay-field" id="payName" type="text" placeholder="Your Full Name">
+    <input class="pay-field" id="payUTR" type="text" placeholder="UTR / Transaction ID">
+    <button class="pay-submit" id="paySubmitBtn">Submit for Approval</button>
+    <button class="pay-cancel" id="payCancel">Cancel</button>
+  </div>
+</div>
+
+<!-- RESULT POPUP -->
+<div class="result-overlay hidden" id="resultOverlay">
+  <div class="result-box">
+    <div class="result-score" id="resultScore">0%</div>
+    <div class="result-label" id="resultLabel">Result</div>
+    <div class="result-msg" id="resultMsg"></div>
+    <div class="result-btns" id="resultBtns"></div>
+  </div>
+</div>
+
+<!-- COURSE VIEWER -->
+<div id="courseViewer">
+  <div class="cv-top-bar">
+    <div class="cv-back" id="cvBack">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+    </div>
+    <div class="cv-course-title" id="cvCourseTitle">Course</div>
+    <div style="width:36px;"></div>
+  </div>
+
+  <!-- PLAYER -->
+  <div class="player-wrap" id="playerWrap">
+    <div class="player-aspect">
+      <iframe id="ytIframe" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+      <div class="watermark" id="watermark"></div>
+      <div class="player-controls" id="playerControls">
+        <div class="seek-row">
+          <span class="time-label" id="timeDisplay">0:00</span>
+          <div class="seek-bar" id="seekBar">
+            <div class="seek-filled" id="seekFilled" style="width:0%"></div>
+            <div class="seek-thumb" id="seekThumb" style="left:0%"></div>
+          </div>
+          <span class="time-label" id="durDisplay">0:00</span>
+        </div>
+        <div class="ctrl-row">
+          <button class="ctrl-btn primary" id="playPauseBtn" title="Play/Pause">
+            <svg id="playIcon" viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>
+          </button>
+          <button class="ctrl-btn" id="rewindBtn" title="-10s">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.93"/><text x="9" y="15" font-size="6" fill="currentColor" stroke="none" font-family="sans-serif">10</text></svg>
+          </button>
+          <div class="vol-wrap">
+            <button class="ctrl-btn" id="muteBtn" title="Mute">
+              <svg id="volIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+            </button>
+            <input type="range" class="vol-slider" id="volSlider" min="0" max="100" value="100">
+          </div>
+          <button class="ctrl-btn" id="fsBtn" title="Fullscreen">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PREV/NEXT -->
+  <div class="lesson-nav">
+    <button class="lesson-nav-btn" id="prevLessonBtn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+      <span id="prevLessonLabel">Previous</span>
+    </button>
+    <button class="lesson-nav-btn next" id="nextLessonBtn">
+      <span id="nextLessonLabel">Next</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>
+  </div>
+
+  <!-- COURSE TABS -->
+  <div class="cv-tabs" id="cvTabs">
+    <div class="cv-tab active" data-tab="overview">Overview</div>
+    <div class="cv-tab" data-tab="chapters">Chapters</div>
+    <div class="cv-tab" data-tab="resources">Resources</div>
+    <div class="cv-tab" data-tab="project">Project</div>
+    <div class="cv-tab" data-tab="exam">Exam</div>
+    <div class="cv-tab" data-tab="certificate">Certificate</div>
+    <div class="cv-tab" data-tab="aitutor">AI Tutor</div>
+  </div>
+
+  <div class="cv-tab-content active" id="tab-overview"></div>
+  <div class="cv-tab-content" id="tab-chapters"></div>
+  <div class="cv-tab-content" id="tab-resources"></div>
+  <div class="cv-tab-content" id="tab-project"></div>
+  <div class="cv-tab-content" id="tab-exam"></div>
+  <div class="cv-tab-content" id="tab-certificate"></div>
+  <div class="cv-tab-content" id="tab-aitutor"></div>
+</div>
+
+<!-- MAIN PAGES -->
+<div class="page active" id="pageBundles">
+  <div class="page-header">
+    <h1>My Courses</h1>
+    <div style="font-size:12px;color:var(--t2);font-family:var(--fm);" id="headerUser"></div>
+  </div>
+  <div class="stats-row">
+    <div class="stat-card"><div class="stat-num" id="statTotal">0</div><div class="stat-label">Courses</div></div>
+    <div class="stat-card"><div class="stat-num" id="statDone">0</div><div class="stat-label">Completed</div></div>
+    <div class="stat-card"><div class="stat-num" id="statCerts">0</div><div class="stat-label">Certs</div></div>
+    <div class="stat-card"><div class="stat-num" id="statProgress">0%</div><div class="stat-label">Progress</div></div>
+  </div>
+  <div class="special-banner" id="goSpecialBtn">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>
+    <div>
+      <h3>Special Courses</h3>
+      <p>Makeup, Fashion, Mehendi — premium skill programs</p>
+    </div>
+  </div>
+  <div class="section-label">Available Bundles</div>
+  <div class="bundle-grid" id="bundleGrid"></div>
+</div>
+
+<div class="page" id="pageCourseList">
+  <div class="cl-back" id="clBack">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+    Back to Bundles
+  </div>
+  <div class="cl-bundle-header">
+    <h2 id="clBundleName"></h2>
+    <p id="clBundleDesc"></p>
+  </div>
+  <div id="courseListItems"></div>
+</div>
+
+<div class="page" id="pageSpecial">
+  <div class="sp-hero">
+    <h1>Special Courses</h1>
+    <p>Individually enrollable premium programs</p>
+  </div>
+  <div id="specialCards"></div>
+</div>
+
+<div class="page" id="pageCerts">
+  <div class="page-header"><h1>Certificates</h1></div>
+  <div class="certs-grid" id="certsGrid"></div>
+</div>
+
+<!-- BOTTOM NAV -->
+<nav id="bottomNav">
+  <div class="nav-tab active" data-page="pageBundles" id="navBundles">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+    <span>Bundles</span>
+  </div>
+  <div class="nav-tab" data-page="pageSpecial" id="navSpecial">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+    <span>Special</span>
+  </div>
+  <div class="nav-tab" data-page="pageCerts" id="navCerts">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>
+    <span>Certs</span>
+  </div>
+  <div class="nav-tab" id="navDash">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    <span>Dashboard</span>
+  </div>
+</nav>
+
+<!-- FIREBASE -->
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+
+<script>
+// ─── FIREBASE INIT ───────────────────────────────────────────────────────────
+firebase.initializeApp({
+  apiKey:"AIzaSyDxxkC9iD1V1w-53Kf4oBrHEXlBLvCc7sE",
+  authDomain:"biluxe10-3e894.firebaseapp.com",
+  projectId:"biluxe10-3e894",
+  storageBucket:"biluxe10-3e894.appspot.com",
+  messagingSenderId:"804749588233",
+  appId:"1:804749588233:web:7777648c0c7834733c05d8"
+});
+const auth = firebase.auth();
+const db = firebase.firestore();
+const COL = 'user_collection';
+
+// ─── GEMINI CONFIG ───────────────────────────────────────────────────────────
+const GEMINI_KEY = 'AQ.Ab8RN6IR3tac_cGV4OJH6xRU8r1xUsloJUjhmpU0PhI4QDVPAQ';
+const GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
+
+// ─── STATE ───────────────────────────────────────────────────────────────────
+let currentUser = null, userDoc = null, userEmail = '', userEmailId = '';
+let bundlePrice = 0, userProgress = {}, userExams = {}, userCerts = {};
+let specialAccess = {};
+let discShown = false;
+let currentBundleIdx = null, currentCourseIdx = null, currentChapIdx = 0;
+let currentCourseData = null, currentBundleData = null;
+let ytPlayer = null, ytReady = false;
+let playerPolling = null, controlsTimer = null;
+let isPlaying = false, isMuted = false, currentVol = 100;
+let playerDuration = 0, playerCurrentTime = 0;
+let watermarkTimer = null;
+let aiFileData = null, aiMimeType = null, aiFileName = null;
+let currentSpecialCourseKey = null;
+
+// ─── COURSE DATA ─────────────────────────────────────────────────────────────
+const BUNDLES = [
+{
+  id:'b1', name:'Starter', label:'Bundle 1', price:499,
+  desc:'Digital Entrepreneurship & Content Creation foundations',
+  color:'#C8A96E',
+  courses:[
+    {id:'digital_entrepreneurship', title:'Digital Entrepreneurship Basics', chapters:[
+      {title:'Full Course',videoId:'CcwYCG0Gggw'}
+    ]},
+    {id:'canva_content', title:'Canva & Content Creation', chapters:[
+      {title:'Part A',videoId:'x7-XSJHcaVI'},
+      {title:'Part B – Ep 1',videoId:'PLW-ep1',playlistId:'PLW-zSkCnZ-gDgc_YNSC7uCaYNLoMwLPp8'},
+      {title:'Part B – Ep 2',videoId:'PLW-ep2',playlistId:'PLW-zSkCnZ-gDgc_YNSC7uCaYNLoMwLPp8'},
+      {title:'Part B – Ep 3',videoId:'PLW-ep3',playlistId:'PLW-zSkCnZ-gDgc_YNSC7uCaYNLoMwLPp8'},
+      {title:'Part B – Ep 4',videoId:'PLW-ep4',playlistId:'PLW-zSkCnZ-gDgc_YNSC7uCaYNLoMwLPp8'},
+      {title:'Part B – Ep 5',videoId:'PLW-ep5',playlistId:'PLW-zSkCnZ-gDgc_YNSC7uCaYNLoMwLPp8'}
+    ]},
+    {id:'whatsapp_marketing', title:'WhatsApp Business Marketing', chapters:[
+      {title:'Full Course',videoId:'PlVxtty0wrI'}
+    ]},
+    {id:'chatgpt_daily', title:'ChatGPT for Daily Work', chapters:[
+      {title:'Full Course',videoId:'IcCAEudzEDw'}
+    ]}
+  ]
+},
+{
+  id:'b2', name:'Pro', label:'Bundle 2', price:999,
+  desc:'Digital Marketing mastery — SEO, Ads, Social, Email',
+  color:'#60A5FA',
+  courses:[
+    {id:'affiliate_marketing', title:'Affiliate Marketing', chapters:[{title:'Full Course',videoId:'TF3BhN_dTdo'}]},
+    {id:'seo_blogging', title:'SEO & Blogging', chapters:[{title:'Full Course',videoId:'pDUMhloKybU'}]},
+    {id:'social_media_mgmt', title:'Social Media Management', chapters:[{title:'Full Course',videoId:'9WVGLqiHVuk'}]},
+    {id:'email_marketing', title:'Email Marketing', chapters:[{title:'Full Course',videoId:'yn6L7q4V1xg'}]},
+    {id:'google_ads', title:'Google Ads', chapters:[{title:'Full Course',videoId:'autzRHtt-RM'}]},
+    {id:'facebook_ads', title:'Facebook Ads', chapters:[{title:'Full Course',videoId:'WNiU5ZxazI4'}]},
+    {id:'freelancing_mastery', title:'Freelancing Mastery', chapters:[{title:'Full Course',videoId:'gMmTpoiITM4'}]}
+  ]
+},
+{
+  id:'b3', name:'Professional', label:'Bundle 3', price:2499,
+  desc:'Design, No-Code, Video Editing & Ecommerce',
+  color:'#A78BFA',
+  courses:[
+    {id:'uiux_design', title:'UI/UX Design Complete', chapters:[
+      {title:'Episode 1',videoId:'PL7Z-ep1',playlistId:'PL7ZIgV4R67IOMRiW_Q7vZqLulb0xyKDHD'},
+      {title:'Episode 2',videoId:'PL7Z-ep2',playlistId:'PL7ZIgV4R67IOMRiW_Q7vZqLulb0xyKDHD'},
+      {title:'Episode 3',videoId:'PL7Z-ep3',playlistId:'PL7ZIgV4R67IOMRiW_Q7vZqLulb0xyKDHD'},
+      {title:'Episode 4',videoId:'PL7Z-ep4',playlistId:'PL7ZIgV4R67IOMRiW_Q7vZqLulb0xyKDHD'},
+      {title:'Episode 5',videoId:'PL7Z-ep5',playlistId:'PL7ZIgV4R67IOMRiW_Q7vZqLulb0xyKDHD'},
+      {title:'Episode 6',videoId:'PL7Z-ep6',playlistId:'PL7ZIgV4R67IOMRiW_Q7vZqLulb0xyKDHD'},
+      {title:'Episode 7',videoId:'PL7Z-ep7',playlistId:'PL7ZIgV4R67IOMRiW_Q7vZqLulb0xyKDHD'},
+      {title:'Episode 8',videoId:'PL7Z-ep8',playlistId:'PL7ZIgV4R67IOMRiW_Q7vZqLulb0xyKDHD'},
+      {title:'Episode 9',videoId:'PL7Z-ep9',playlistId:'PL7ZIgV4R67IOMRiW_Q7vZqLulb0xyKDHD'},
+      {title:'Episode 10',videoId:'PL7Z-ep10',playlistId:'PL7ZIgV4R67IOMRiW_Q7vZqLulb0xyKDHD'}
+    ]},
+    {id:'nocode_web', title:'No-Code Web Development', chapters:[{title:'Full Course',videoId:'9nIwTjG2fdI'}]},
+    {id:'capcut_editing', title:'Video Editing CapCut', chapters:[{title:'Full Course',videoId:'nXeslaOL_BE'}]},
+    {id:'podcast_audio', title:'Podcast & Audio', chapters:[{title:'Full Course',videoId:'cGWFvYknE7o'}]},
+    {id:'ecommerce_complete', title:'Ecommerce Complete', chapters:[{title:'Full Course',videoId:'5d9jtO0uOpk'}]},
+    {id:'dropshipping_pod', title:'Dropshipping & POD', chapters:[{title:'Full Course',videoId:'thYCp3y1Yuw'}]}
+  ]
+},
+{
+  id:'b4', name:'Elite', label:'Bundle 4', price:3699,
+  desc:'Data, Analytics, Excel, SQL, Python & Power BI',
+  color:'#22C55E',
+  courses:[
+    {id:'excel_data', title:'Excel for Data Analysis', chapters:[{title:'Full Course',videoId:'Kjz_DDO4Fzs'}]},
+    {id:'sql_beginners', title:'SQL for Beginners', chapters:[{title:'Full Course',videoId:'7azCOKryADA'}]},
+    {id:'powerbi_tableau', title:'Power BI & Tableau', chapters:[{title:'Full Course',videoId:'Gmk3DWOxVKQ'}]},
+    {id:'python_basics', title:'Python Basics', chapters:[{title:'Full Course',videoId:'LgW6Vla0kXA'}]},
+    {id:'business_analytics', title:'Business Analytics', chapters:[{title:'Full Course',videoId:'cCTuOBOqSaM'}]},
+    {id:'financial_accounting', title:'Financial Accounting', chapters:[{title:'Full Course',videoId:'vO09q2V8TGQ'}]}
+  ]
+},
+{
+  id:'b5', name:'Master', label:'Bundle 5', price:6999,
+  desc:'Cloud, DevOps, Linux & Cybersecurity',
+  color:'#F59E0B',
+  courses:[
+    {id:'aws_cloud', title:'AWS Cloud Practitioner', chapters:[{title:'Full Course',videoId:'a8FFknuJwB0'}]},
+    {id:'docker_k8s', title:'Docker & Kubernetes', chapters:[
+      {title:'Episode 1',videoId:'PLhN-ep1',playlistId:'PLhNrFKat_aeLmPHBkS42O1pdN8Pt-tfF9'},
+      {title:'Episode 2',videoId:'PLhN-ep2',playlistId:'PLhNrFKat_aeLmPHBkS42O1pdN8Pt-tfF9'},
+      {title:'Episode 3',videoId:'PLhN-ep3',playlistId:'PLhNrFKat_aeLmPHBkS42O1pdN8Pt-tfF9'},
+      {title:'Episode 4',videoId:'PLhN-ep4',playlistId:'PLhNrFKat_aeLmPHBkS42O1pdN8Pt-tfF9'},
+      {title:'Episode 5',videoId:'PLhN-ep5',playlistId:'PLhNrFKat_aeLmPHBkS42O1pdN8Pt-tfF9'},
+      {title:'Episode 6',videoId:'PLhN-ep6',playlistId:'PLhNrFKat_aeLmPHBkS42O1pdN8Pt-tfF9'}
+    ]},
+    {id:'cicd_pipelines', title:'CI/CD Pipelines', chapters:[{title:'Full Course',videoId:'Ke_Wr5zPE0A'}]},
+    {id:'linux_devops', title:'Linux for DevOps', chapters:[{title:'Full Course',videoId:'e01GGTKmtpc'}]},
+    {id:'cybersec_fundamentals', title:'Cybersecurity Fundamentals', chapters:[{title:'Full Course',videoId:'z2hVCeiwvGk'}]},
+    {id:'ethical_hacking', title:'Ethical Hacking', chapters:[{title:'Full Course',videoId:'2eLJNBroFrg'}]},
+    {id:'cloud_security', title:'Cloud Security', chapters:[{title:'Full Course',videoId:'a58CqpP6vEw'}]},
+    {id:'devops_project', title:'DevOps Project', chapters:[{title:'Full Course',videoId:'H5FAxTBuNM8'}]}
+  ]
+},
+{
+  id:'b6', name:'Elite Pro', label:'Bundle 6', price:11999,
+  desc:'Data Science, ML, Deep Learning & NLP',
+  color:'#F472B6',
+  courses:[
+    {id:'python_ds', title:'Python for Data Science', chapters:[{title:'Full Course',videoId:'CMEWVn1uZpQ'}]},
+    {id:'ml_fundamentals', title:'Machine Learning Fundamentals', chapters:[{title:'Full Course',videoId:'hR-tMLTMw0s'}]},
+    {id:'deep_learning', title:'Deep Learning & Neural Networks', chapters:[{title:'Full Course',videoId:'G1P2IaBcXx8'}]},
+    {id:'nlp_course', title:'NLP', chapters:[{title:'Full Course',videoId:'BCLjPLeVCBY'}]},
+    {id:'computer_vision', title:'Computer Vision', chapters:[
+      {title:'Episode 1',videoId:'PLPT-cv-ep1',playlistId:'PLPTV0NXA_ZSgmWYoSpY_2EJzPJjkke4Az'},
+      {title:'Episode 2',videoId:'PLPT-cv-ep2',playlistId:'PLPTV0NXA_ZSgmWYoSpY_2EJzPJjkke4Az'},
+      {title:'Episode 3',videoId:'PLPT-cv-ep3',playlistId:'PLPTV0NXA_ZSgmWYoSpY_2EJzPJjkke4Az'},
+      {title:'Episode 4',videoId:'PLPT-cv-ep4',playlistId:'PLPTV0NXA_ZSgmWYoSpY_2EJzPJjkke4Az'},
+      {title:'Episode 5',videoId:'PLPT-cv-ep5',playlistId:'PLPTV0NXA_ZSgmWYoSpY_2EJzPJjkke4Az'}
+    ]},
+    {id:'big_data', title:'Big Data Engineering', chapters:[{title:'Full Course',videoId:'H5SHmiKTFsM'}]},
+    {id:'data_engineering', title:'Data Engineering', chapters:[{title:'Full Course',videoId:'hf2go3E2m8g'}]},
+    {id:'mlops', title:'MLOps Fundamentals', chapters:[{title:'Full Course',videoId:'dPmH3G9NQtY'}]},
+    {id:'ml_project', title:'End-to-End ML Project', chapters:[{title:'Full Course',videoId:'o6vbe5G7xNo'}]},
+    {id:'ds_interview', title:'Data Science Interview Prep', chapters:[{title:'Full Course',videoId:'A3ZSv6IqXY8'}]}
+  ]
+},
+{
+  id:'b7', name:'Legend', label:'Bundle 7', price:15999,
+  desc:'Generative AI, LLMs, LangChain & Agentic AI',
+  color:'#818CF8',
+  courses:[
+    {id:'genai_llms', title:'Generative AI & LLMs', chapters:[{title:'Full Course',videoId:'d4yCWBGFCEs'}]},
+    {id:'agentic_ai', title:'Agentic AI Development', chapters:[{title:'Full Course',videoId:'-rUKr8JDits'}]},
+    {id:'langchain_llama', title:'LangChain & LlamaIndex', chapters:[{title:'Full Course',videoId:'-8IUWRtznX8'}]},
+    {id:'vector_db', title:'Vector Databases', chapters:[{title:'Full Course',videoId:'8KrTO9bS91s'}]},
+    {id:'ai_agents_biz', title:'AI Agents for Business', chapters:[{title:'Full Course',videoId:'EsTrWCV0Ph4'}]},
+    {id:'llm_finetune', title:'LLM Fine-Tuning', chapters:[{title:'Full Course',videoId:'iOdFUJiB0Zc'}]},
+    {id:'rag_impl', title:'RAG Implementation', chapters:[{title:'Full Course',videoId:'o126p1QN_RI'}]},
+    {id:'multi_agent', title:'Multi-Agent Systems', chapters:[{title:'Full Course',videoId:'rHtRWyxVQps'}]},
+    {id:'ai_safety', title:'AI Safety & Governance', chapters:[{title:'Full Course',videoId:'b6HwyKFShek'}]},
+    {id:'ai_capstone', title:'AI Agents Capstone', chapters:[{title:'Full Course',videoId:'HVi0F3YT13I'}]},
+    {id:'prompt_eng', title:'Prompt Engineering Mastery', chapters:[{title:'Full Course',videoId:'YhRfgYH_AoU'}]},
+    {id:'ai_api_int', title:'AI API Integration', chapters:[{title:'Full Course',videoId:'xcP9NE6C5EI'}]}
+  ]
+},
+{
+  id:'b8', name:'Ultimate', label:'Bundle 8', price:23999,
+  desc:'AI Leadership, Startups, Strategy & Industry Applications',
+  color:'#34D399',
+  courses:[
+    {id:'ai_product_mgmt', title:'AI Product Management', chapters:[{title:'Full Course',videoId:'IfW1FMDkw4k'}]},
+    {id:'ai_strategy', title:'AI Strategy & Roadmap', chapters:[{title:'Full Course',videoId:'zwUSZD3t_BU'}]},
+    {id:'ai_team_lead', title:'AI Team Leadership', chapters:[{title:'Full Course',videoId:'1NMM9Q_TjxE'}]},
+    {id:'ai_proj_mgmt', title:'AI Project Management', chapters:[{title:'Full Course',videoId:'lADZ6Pxy9m8'}]},
+    {id:'ai_ethics_gov', title:'AI Ethics & Governance', chapters:[{title:'Full Course',videoId:'VugSwwHaOgQ'}]},
+    {id:'ai_career', title:'AI Career Mastery', chapters:[{title:'Full Course',videoId:'aIuPQjPQEb4'}]},
+    {id:'resume_linkedin', title:'Resume & LinkedIn for AI', chapters:[{title:'Full Course',videoId:'qCZlSCmphMM'}]},
+    {id:'salary_neg', title:'Salary Negotiation', chapters:[{title:'Full Course',videoId:'vLbrwSzXUro'}]},
+    {id:'freelance_ai', title:'Freelancing & Consulting for AI', chapters:[{title:'Full Course',videoId:'Ozp3k4qzmHo'}]},
+    {id:'ai_finance', title:'AI for Finance & Banking', chapters:[{title:'Full Course',videoId:'Nh7OhW7ZcIU'}]},
+    {id:'ai_health', title:'AI for Healthcare', chapters:[{title:'Full Course',videoId:'eZFtf69sido'}]},
+    {id:'ai_ecom', title:'AI for E-commerce & Retail', chapters:[{title:'Full Course',videoId:'plo5kk_MzL4'}]},
+    {id:'ai_manuf', title:'AI for Manufacturing', chapters:[{title:'Full Course',videoId:'bNiThiN8cLg'}]},
+    {id:'edge_ai', title:'Edge AI & TinyML', chapters:[
+      {title:'Episode 1',videoId:'PL7V-ea-ep1',playlistId:'PL7VEa1KauMQppUExiIOfxxk_2ta94EEpd'},
+      {title:'Episode 2',videoId:'PL7V-ea-ep2',playlistId:'PL7VEa1KauMQppUExiIOfxxk_2ta94EEpd'},
+      {title:'Episode 3',videoId:'PL7V-ea-ep3',playlistId:'PL7VEa1KauMQppUExiIOfxxk_2ta94EEpd'},
+      {title:'Episode 4',videoId:'PL7V-ea-ep4',playlistId:'PL7VEa1KauMQppUExiIOfxxk_2ta94EEpd'}
+    ]},
+    {id:'ai_model_opt', title:'AI Model Optimization', chapters:[{title:'Full Course',videoId:'zqoJCOgMd_4'}]},
+    {id:'federated_learning', title:'Federated Learning', chapters:[
+      {title:'Episode 1',videoId:'PLNG-ep1',playlistId:'PLNG4feLHqCWkdlSrEL2xbCtGa6QBxlUZb'},
+      {title:'Episode 2',videoId:'PLNG-ep2',playlistId:'PLNG4feLHqCWkdlSrEL2xbCtGa6QBxlUZb'},
+      {title:'Episode 3',videoId:'PLNG-ep3',playlistId:'PLNG4feLHqCWkdlSrEL2xbCtGa6QBxlUZb'}
+    ]},
+    {id:'graph_nn', title:'Graph Neural Networks', chapters:[
+      {title:'Episode 1',videoId:'PLPT-gnn-ep1',playlistId:'PLPTV0NXA_ZSg4Pimkso0nHxwYMB6IGX7l'},
+      {title:'Episode 2',videoId:'PLPT-gnn-ep2',playlistId:'PLPTV0NXA_ZSg4Pimkso0nHxwYMB6IGX7l'},
+      {title:'Episode 3',videoId:'PLPT-gnn-ep3',playlistId:'PLPTV0NXA_ZSg4Pimkso0nHxwYMB6IGX7l'}
+    ]},
+    {id:'rl_course', title:'Reinforcement Learning', chapters:[{title:'Full Course',videoId:'VnpRp7ZglfA'}]},
+    {id:'time_series', title:'Time Series Forecasting', chapters:[{title:'Full Course',videoId:'qx5055j0U6c'}]},
+    {id:'recsys', title:'Recommendation Systems', chapters:[{title:'Full Course',videoId:'F2tn-BviO_U'}]},
+    {id:'ai_paper_impl', title:'AI Research Paper Implementation', chapters:[{title:'Full Course',videoId:'onU5Hbb3qao'}]},
+    {id:'ai_startups', title:'Building AI Startups', chapters:[{title:'Full Course',videoId:'zO1098PFOw8'}]}
+  ]
+}
+];
+
+const SPECIAL_COURSES = [
+  {
+    id:'sc1', title:'Professional Makeup Artist', price:2300, firebaseKey:'professional_makeup_course',
+    desc:'10-episode professional makeup artistry course — bridal, editorial and commercial techniques.',
+    color:'#F472B6',
+    chapters:[
+      {title:'Episode 1',videoId:'PLnorm-ep1',playlistId:'PLnormvp3UHAqpl1-m47DBTBMSXv1PCRL3'},
+      {title:'Episode 2',videoId:'PLnorm-ep2',playlistId:'PLnormvp3UHAqpl1-m47DBTBMSXv1PCRL3'},
+      {title:'Episode 3',videoId:'PLnorm-ep3',playlistId:'PLnormvp3UHAqpl1-m47DBTBMSXv1PCRL3'},
+      {title:'Episode 4',videoId:'PLnorm-ep4',playlistId:'PLnormvp3UHAqpl1-m47DBTBMSXv1PCRL3'},
+      {title:'Episode 5',videoId:'PLnorm-ep5',playlistId:'PLnormvp3UHAqpl1-m47DBTBMSXv1PCRL3'},
+      {title:'Episode 6',videoId:'PLnorm-ep6',playlistId:'PLnormvp3UHAqpl1-m47DBTBMSXv1PCRL3'},
+      {title:'Episode 7',videoId:'PLnorm-ep7',playlistId:'PLnormvp3UHAqpl1-m47DBTBMSXv1PCRL3'},
+      {title:'Episode 8',videoId:'PLnorm-ep8',playlistId:'PLnormvp3UHAqpl1-m47DBTBMSXv1PCRL3'},
+      {title:'Episode 9',videoId:'PLnorm-ep9',playlistId:'PLnormvp3UHAqpl1-m47DBTBMSXv1PCRL3'},
+      {title:'Episode 10',videoId:'PLnorm-ep10',playlistId:'PLnormvp3UHAqpl1-m47DBTBMSXv1PCRL3'}
+    ]
+  },
+  {
+    id:'sc2', title:'Fashion Designer Course', price:2100, firebaseKey:'fashion_designer_course',
+    desc:'10-episode fashion design program — from sketching and draping to brand building.',
+    color:'#A78BFA',
+    chapters:[
+      {title:'Episode 1',videoId:'PLQq-ep1',playlistId:'PLQqMYWJXgJhjgb54-c2RWAVx4Ln6BfPcQ'},
+      {title:'Episode 2',videoId:'PLQq-ep2',playlistId:'PLQqMYWJXgJhjgb54-c2RWAVx4Ln6BfPcQ'},
+      {title:'Episode 3',videoId:'PLQq-ep3',playlistId:'PLQqMYWJXgJhjgb54-c2RWAVx4Ln6BfPcQ'},
+      {title:'Episode 4',videoId:'PLQq-ep4',playlistId:'PLQqMYWJXgJhjgb54-c2RWAVx4Ln6BfPcQ'},
+      {title:'Episode 5',videoId:'PLQq-ep5',playlistId:'PLQqMYWJXgJhjgb54-c2RWAVx4Ln6BfPcQ'},
+      {title:'Episode 6',videoId:'PLQq-ep6',playlistId:'PLQqMYWJXgJhjgb54-c2RWAVx4Ln6BfPcQ'},
+      {title:'Episode 7',videoId:'PLQq-ep7',playlistId:'PLQqMYWJXgJhjgb54-c2RWAVx4Ln6BfPcQ'},
+      {title:'Episode 8',videoId:'PLQq-ep8',playlistId:'PLQqMYWJXgJhjgb54-c2RWAVx4Ln6BfPcQ'},
+      {title:'Episode 9',videoId:'PLQq-ep9',playlistId:'PLQqMYWJXgJhjgb54-c2RWAVx4Ln6BfPcQ'},
+      {title:'Episode 10',videoId:'PLQq-ep10',playlistId:'PLQqMYWJXgJhjgb54-c2RWAVx4Ln6BfPcQ'}
+    ]
+  },
+  {
+    id:'sc3', title:'Bridal Mehendi Designer', price:1999, firebaseKey:'bridal_mehndi_designer',
+    desc:'42 individual video chapters covering all mehendi styles — bridal, Arabic, Indo-Western.',
+    color:'#C8A96E',
+    chapters:[
+      {title:'Chapter 1',videoId:'7ZqkiTDOrBQ'},{title:'Chapter 2',videoId:'zfAiB0R1rlM'},
+      {title:'Chapter 3',videoId:'2dMBULmJY2Y'},{title:'Chapter 4',videoId:'4QPzvawirzM'},
+      {title:'Chapter 5',videoId:'KLhVTmWC11w'},{title:'Chapter 6',videoId:'YcRrtl23-Rg'},
+      {title:'Chapter 7',videoId:'125BS2PVYD0'},{title:'Chapter 8',videoId:'Y_SR17eTNt8'},
+      {title:'Chapter 9',videoId:'G3LDg3qORFM'},{title:'Chapter 10',videoId:'5aMpbLWqMk0'},
+      {title:'Chapter 11',videoId:'6Te6cklQtWk'},{title:'Chapter 12',videoId:'jQQQssCFdEY'},
+      {title:'Chapter 13',videoId:'q9T4Qmuk9mc'},{title:'Chapter 14',videoId:'BWTLRmRYC-c'},
+      {title:'Chapter 15',videoId:'u49SmoSaTk8'},{title:'Chapter 16',videoId:'3LwoQlw1Wzw'},
+      {title:'Chapter 17',videoId:'hwDxsBDOJPQ'},{title:'Chapter 18',videoId:'uWpvvLskYFk'},
+      {title:'Chapter 19',videoId:'32S-25ax_aE'},{title:'Chapter 20',videoId:'mhIi1z_7aWU'},
+      {title:'Chapter 21',videoId:'fpvNSfzthwU'},{title:'Chapter 22',videoId:'cNVU-4LyYyQ'},
+      {title:'Chapter 23',videoId:'wgoSbB1jy6c'},{title:'Chapter 24',videoId:'e-c7RJBQGSU'},
+      {title:'Chapter 25',videoId:'TbvCruBXrEc'},{title:'Chapter 26',videoId:'fcW05mJoBhc'},
+      {title:'Chapter 27',videoId:'SeA08YQQFcE'},{title:'Chapter 28',videoId:'L6t09bkqbcA'},
+      {title:'Chapter 29',videoId:'X5kmVd25bJ8'},{title:'Chapter 30',videoId:'5GJHpZB1gF4'},
+      {title:'Chapter 31',videoId:'zZ2t_B4NOS4'},{title:'Chapter 32',videoId:'PgiayPy13m8'},
+      {title:'Chapter 33',videoId:'yBspCHOgs3E'},{title:'Chapter 34',videoId:'VU7vtAUSwQg'},
+      {title:'Chapter 35',videoId:'-f7v69f9sBc'},{title:'Chapter 36',videoId:'hmSeQ_Ocjlo'},
+      {title:'Chapter 37',videoId:'4Xf403jpMsM'},{title:'Chapter 38',videoId:'a7GvmLWT9X0'},
+      {title:'Chapter 39',videoId:'mcbWEadqdN0'},{title:'Chapter 40',videoId:'agxRyZj8C6A'},
+      {title:'Chapter 41',videoId:'fJkaPMabYK0'},{title:'Chapter 42',videoId:'m2mI2bcPfxk'}
+    ]
+  }
+];
+
+const EXAM_QUESTIONS = [
+  {q:'What does HTML stand for?',opts:['HyperText Markup Language','High Tech Modern Language','HyperTransfer Markup Link','HyperText Modern Language'],ans:0},
+  {q:'Which of these is a NoSQL database?',opts:['MySQL','PostgreSQL','MongoDB','SQLite'],ans:2},
+  {q:'What is the primary purpose of CSS?',opts:['Handle server logic','Style web pages','Manage databases','Create APIs'],ans:1},
+  {q:'What does API stand for?',opts:['Application Program Integration','Applied Programming Interface','Application Programming Interface','Advanced Program Interface'],ans:2},
+  {q:'Which language is primarily used for AI/ML?',opts:['PHP','Java','Python','Ruby'],ans:2},
+  {q:'What is cloud computing?',opts:['Storing data on local hardware','Delivering computing services over the internet','Offline data processing','Physical server management'],ans:1},
+  {q:'What is UI/UX design?',opts:['User Interface / User Experience','Universal Interface / User Example','Unified Integration / UX','User Input / User Execution'],ans:0},
+  {q:'What does SEO stand for?',opts:['Social Engine Optimization','Search Engine Optimization','Secure Encrypted Output','Site Entry Override'],ans:1},
+  {q:'What is a version control system used for?',opts:['Styling code','Managing code changes over time','Deploying applications','Designing databases'],ans:1},
+  {q:'What does CTA stand for in marketing?',opts:['Call to Action','Click Through Automation','Content Tracking Analytics','Customer Targeting Algorithm'],ans:0}
+];
+
+// ─── HELPER FUNCTIONS ─────────────────────────────────────────────────────────
+function fmtTime(s){
+  if(isNaN(s)||s<0)return'0:00';
+  const m=Math.floor(s/60), sec=Math.floor(s%60);
+  return m+':'+(sec<10?'0':'')+sec;
+}
+function toast(msg,dur=3000){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),dur);
+}
+function emailToId(email){return email.replace(/[@.]/g,'_');}
+function getBundleUnlocked(price){
+  const thresholds=[499,999,2499,3699,6999,11999,15999,23999];
+  return thresholds.filter(t=>price>=t).length;
+}
+
+// ─── AUTH & INIT ─────────────────────────────────────────────────────────────
+auth.onAuthStateChanged(async user=>{
+  if(!user){location.href='auth.html';return;}
+  currentUser=user;userEmail=user.email;userEmailId=emailToId(user.email);
+  try{
+    const snap=await db.collection(COL).doc(userEmailId).get();
+    if(!snap.exists||snap.data().paymentStatus!=='approved'){location.href='dashboard.html';return;}
+    userDoc=snap.data();
+    bundlePrice=userDoc.bundlePrice||0;
+    await loadAllProgress();
+    loadSpecialAccess();
+    renderAll();
+    document.getElementById('authGuard').classList.add('hidden');
+  }catch(e){console.error(e);location.href='dashboard.html';}
+});
+
+async function loadAllProgress(){
+  const progSnap=await db.collection(COL).doc(userEmailId).collection('progress').get();
+  progSnap.forEach(d=>{userProgress[d.id]=d.data();});
+  const examSnap=await db.collection(COL).doc(userEmailId).collection('exams').get();
+  examSnap.forEach(d=>{userExams[d.id]=d.data();});
+  const certSnap=await db.collection(COL).doc(userEmailId).collection('certificates').get();
+  certSnap.forEach(d=>{userCerts[d.id]=d.data();});
+}
+
+function loadSpecialAccess(){
+  SPECIAL_COURSES.forEach(sc=>{
+    specialAccess[sc.firebaseKey]={
+      unlocked:userDoc[sc.firebaseKey]===true,
+      pending:userDoc[sc.firebaseKey+'_pending']===true
+    };
+  });
+}
+
+// ─── RENDER ALL ─────────────────────────────────────────────────────────────
+function renderAll(){
+  const name=(userDoc.fullName||userEmail.split('@')[0]);
+  document.getElementById('headerUser').textContent=name;
+  renderStats();
+  renderBundleGrid();
+  renderSpecialPage();
+  renderCertsPage();
+}
+
+function renderStats(){
+  const unlocked=getBundleUnlocked(bundlePrice);
+  let totalC=0,doneC=0;
+  for(let i=0;i<unlocked;i++){
+    BUNDLES[i].courses.forEach(c=>{
+      totalC++;
+      const prog=userProgress[c.id];
+      const done=prog?prog.done||[]:[];
+      if(done.length>=c.chapters.length&&c.chapters.length>0)doneC++;
+    });
+  }
+  document.getElementById('statTotal').textContent=totalC;
+  document.getElementById('statDone').textContent=doneC;
+  document.getElementById('statCerts').textContent=Object.keys(userCerts).length;
+  document.getElementById('statProgress').textContent=totalC>0?Math.round(doneC/totalC*100)+'%':'0%';
+}
+
+function renderBundleGrid(){
+  const grid=document.getElementById('bundleGrid');
+  const unlocked=getBundleUnlocked(bundlePrice);
+  grid.innerHTML='';
+  BUNDLES.forEach((b,i)=>{
+    const isLocked=i>=unlocked;
+    const totalC=b.courses.length;
+    let doneC=0;
+    b.courses.forEach(c=>{
+      const prog=userProgress[c.id];const done=prog?prog.done||[]:[];
+      if(done.length>=c.chapters.length&&c.chapters.length>0)doneC++;
+    });
+    const pct=totalC>0?Math.round(doneC/totalC*100):0;
+    const card=document.createElement('div');
+    card.className='bundle-card'+(isLocked?' locked':'');
+    card.innerHTML=`
+      <div class="b-label">${b.label}</div>
+      ${isLocked?`<svg class="lock-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>`:''}
+      <h3>${b.name}</h3>
+      <div class="b-count">${totalC} courses</div>
+      <div class="prog-bar"><div class="prog-fill" style="width:${pct}%"></div></div>
+      ${isLocked?`<div class="b-price">Unlock at ₹${b.price.toLocaleString()}</div>`:`<div class="b-price" style="color:var(--gold2)">${pct}% complete</div>`}
+    `;
+    if(!isLocked){card.addEventListener('click',()=>openBundleCourseList(i));}
+    grid.appendChild(card);
+  });
+}
+
+function renderSpecialPage(){
+  const container=document.getElementById('specialCards');
+  container.innerHTML='';
+  SPECIAL_COURSES.forEach((sc,i)=>{
+    const access=specialAccess[sc.firebaseKey];
+    let badgeHtml='',btnHtml='';
+    if(access.unlocked){
+      badgeHtml=`<span class="sp-badge unlocked">✓ Unlocked</span>`;
+      btnHtml=`<button class="sp-btn start" onclick="openSpecialCourse(${i})">Start Learning</button>`;
+    }else if(access.pending){
+      badgeHtml=`<span class="sp-badge pending">⏳ Pending Approval</span>`;
+      btnHtml=`<button class="sp-btn pending-btn" disabled>Awaiting Admin Approval</button>`;
+    }else{
+      badgeHtml=`<span class="sp-badge locked">Locked</span>`;
+      btnHtml=`<button class="sp-btn pay-btn" onclick="openPayModal('${sc.firebaseKey}','${sc.title}',${sc.price})">Enroll — ₹${sc.price.toLocaleString()}</button>`;
+    }
+    const div=document.createElement('div');
+    div.className='sp-card';
+    div.innerHTML=`
+      ${badgeHtml}
+      <h3 style="color:${sc.color}">${sc.title}</h3>
+      <div class="sp-price">₹${sc.price.toLocaleString()}</div>
+      <p>${sc.desc}</p>
+      <div class="b-count" style="margin-bottom:10px">${sc.chapters.length} chapters</div>
+      ${btnHtml}
+    `;
+    container.appendChild(div);
+  });
+}
+
+function renderCertsPage(){
+  const grid=document.getElementById('certsGrid');
+  grid.innerHTML='';
+  const certIds=Object.keys(userCerts);
+  if(certIds.length===0){
+    grid.innerHTML='<div class="certs-empty" style="grid-column:1/-1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg><p>No certificates yet</p><p style="font-size:12px;margin-top:4px;color:var(--t3)">Complete a course, pass the exam and submit your project to earn one.</p></div>';
+    return;
+  }
+  certIds.forEach(cid=>{
+    const c=userCerts[cid];
+    const card=document.createElement('div');
+    card.className='cert-card';
+    card.innerHTML=`<div class="cert-ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg></div><h4>${c.courseName||cid}</h4><p>${new Date(c.issuedAt?.toDate?.()??c.issuedAt).toLocaleDateString()}</p>`;
+    card.addEventListener('click',()=>{
+      window.open('certificates.html?certId='+c.certId,'_blank');
+    });
+    grid.appendChild(card);
+  });
+}
+
+// ─── BUNDLE / COURSE LIST ─────────────────────────────────────────────────────
+function openBundleCourseList(bundleIdx){
+  currentBundleIdx=bundleIdx;
+  const b=BUNDLES[bundleIdx];
+  document.getElementById('clBundleName').textContent=b.name+' Bundle';
+  document.getElementById('clBundleDesc').textContent=b.desc;
+  const list=document.getElementById('courseListItems');
+  list.innerHTML='';
+  b.courses.forEach((c,i)=>{
+    const prog=userProgress[c.id];const done=prog?prog.done||[]:[];
+    const pct=c.chapters.length>0?Math.round(done.length/c.chapters.length*100):0;
+    const hasCert=!!userCerts[c.id];
+    const item=document.createElement('div');
+    item.className='course-item';
+    item.innerHTML=`
+      <div class="ci-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg></div>
+      <div class="ci-info">
+        <div class="ci-title">${c.title}</div>
+        <div class="ci-meta">${c.chapters.length} chapter${c.chapters.length!==1?'s':''} · ${pct}% done</div>
+      </div>
+      <div class="ci-right">
+        ${hasCert?'<span class="cert-badge">Certified</span>':''}
+        <div class="ci-prog"><div class="ci-prog-fill" style="width:${pct}%"></div></div>
+      </div>
+    `;
+    item.addEventListener('click',()=>openCourseViewer(bundleIdx,i,false));
+    list.appendChild(item);
+  });
+  showPage('pageCourseList');
+}
+
+function openSpecialCourse(scIdx){
+  const sc=SPECIAL_COURSES[scIdx];
+  currentBundleIdx=-1;currentCourseIdx=scIdx;
+  openCourseViewerDirect(sc,true);
+}
+
+// ─── COURSE VIEWER ────────────────────────────────────────────────────────────
+function openCourseViewer(bundleIdx,courseIdx,isSpecial){
+  currentBundleIdx=bundleIdx;currentCourseIdx=courseIdx;
+  const course=isSpecial?SPECIAL_COURSES[courseIdx]:BUNDLES[bundleIdx].courses[courseIdx];
+  openCourseViewerDirect(course,isSpecial);
+}
+
+function openCourseViewerDirect(course,isSpecial){
+  currentCourseData=course;currentBundleData=isSpecial?null:BUNDLES[currentBundleIdx];
+  currentChapIdx=0;
+  const lastChap=userProgress[course.id]?.lastChapter;
+  if(lastChap!=null&&lastChap<course.chapters.length)currentChapIdx=lastChap;
+  document.getElementById('cvCourseTitle').textContent=course.title;
+  document.getElementById('bottomNav').classList.add('hidden');
+  document.getElementById('courseViewer').classList.add('open');
+  document.body.style.overflow='hidden';
+  loadChapter(currentChapIdx);
+  renderChaptersList();
+  renderOverviewTab();
+  renderResourcesTab();
+  renderProjectTab();
+  renderExamTab();
+  renderCertTab();
+  renderAITutor();
+  startWatermark();
+  if(!discShown)showDisclaimer();
+  document.getElementById('cvBack').onclick=closeCourseViewer;
+  setupTabSwitcher();
+  activateCVTab('overview');
+}
+
+function closeCourseViewer(){
+  stopPlayerPolling();stopWatermark();
+  document.getElementById('courseViewer').classList.remove('open');
+  document.getElementById('bottomNav').classList.remove('hidden');
+  document.body.style.overflow='';
+  if(ytPlayer){try{ytPlayer.stopVideo();}catch(e){}}
+}
+
+// ─── YOUTUBE PLAYER ───────────────────────────────────────────────────────────
+function loadChapter(chapIdx){
+  currentChapIdx=chapIdx;
+  const chap=currentCourseData.chapters[chapIdx];
+  updateLessonNavButtons();
+  highlightActiveChap();
+  buildIframe(chap);
+  document.getElementById('seekFilled').style.width='0%';
+  document.getElementById('seekThumb').style.left='0%';
+  document.getElementById('timeDisplay').textContent='0:00';
+  document.getElementById('durDisplay').textContent='0:00';
+  playerDuration=0;playerCurrentTime=0;
+  saveLastChapter(chapIdx);
+}
+
+function buildIframe(chap){
+  stopPlayerPolling();
+  ytReady=false;isPlaying=true;
+  const origin=encodeURIComponent(window.location.origin||'https://biluxe10.com');
+  const params='controls=0&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3&disablekb=1&fs=0&cc_load_policy=0&playsinline=1&autoplay=1&enablejsapi=1&origin='+origin;
+  let src;
+  if(chap.playlistId&&!chap.videoId.startsWith('PLW-ep')&&!chap.videoId.startsWith('PL7Z-ep')&&!chap.videoId.startsWith('PLhN-ep')&&!chap.videoId.startsWith('PLPT-')&&!chap.videoId.startsWith('PL7V-')&&!chap.videoId.startsWith('PLNG-')&&!chap.videoId.startsWith('PLnorm-')&&!chap.videoId.startsWith('PLQq-')){
+    src='https://www.youtube.com/embed/'+chap.videoId+'?list='+chap.playlistId+'&'+params;
+  }else if(chap.playlistId){
+    src='https://www.youtube.com/embed/?listType=playlist&list='+chap.playlistId+'&'+params;
+  }else{
+    src='https://www.youtube.com/embed/'+chap.videoId+'?'+params;
+  }
+  const iframe=document.getElementById('ytIframe');
+  iframe.src=src;
+  ytPlayer=iframe;
+  iframe.onload=()=>{ytReady=true;startPlayerPolling();};
+  showControls();
+}
+
+function sendYTCmd(cmd,args){
+  try{
+    const iframe=document.getElementById('ytIframe');
+    iframe.contentWindow.postMessage(JSON.stringify({event:'command',func:cmd,args:args||[]}),'*');
+  }catch(e){}
+}
+
+function startPlayerPolling(){
+  stopPlayerPolling();
+  playerPolling=setInterval(()=>{
+    sendYTCmd('getCurrentTime');
+    sendYTCmd('getDuration');
+    sendYTCmd('getPlayerState');
+  },1000);
+}
+
+function stopPlayerPolling(){
+  if(playerPolling){clearInterval(playerPolling);playerPolling=null;}
+}
+
+window.addEventListener('message',e=>{
+  if(!e.data)return;
+  let d;
+  try{d=typeof e.data==='string'?JSON.parse(e.data):e.data;}catch(x){return;}
+  if(d.event==='infoDelivery'&&d.info){
+    if(d.info.currentTime!=null){
+      playerCurrentTime=d.info.currentTime;
+      updateSeekUI();
+      checkProgress();
+    }
+    if(d.info.duration!=null&&d.info.duration>0){
+      playerDuration=d.info.duration;
+      document.getElementById('durDisplay').textContent=fmtTime(playerDuration);
+    }
+    if(d.info.playerState!=null){
+      isPlaying=d.info.playerState===1;
+      updatePlayPauseIcon();
+    }
+  }
+});
+
+function updateSeekUI(){
+  document.getElementById('timeDisplay').textContent=fmtTime(playerCurrentTime);
+  if(playerDuration>0){
+    const pct=playerCurrentTime/playerDuration*100;
+    document.getElementById('seekFilled').style.width=pct+'%';
+    document.getElementById('seekThumb').style.left=pct+'%';
+  }
+}
+
+function checkProgress(){
+  if(playerDuration>0&&playerCurrentTime/playerDuration>=0.85){
+    markChapterDone(currentChapIdx);
+  }
+}
+
+function markChapterDone(chapIdx){
+  const cid=currentCourseData.id;
+  const prog=userProgress[cid]||{done:[]};
+  if(!prog.done)prog.done=[];
+  const chapId=currentCourseData.chapters[chapIdx].videoId;
+  if(!prog.done.includes(chapId)){
+    prog.done.push(chapId);
+    userProgress[cid]=prog;
+    highlightActiveChap();
+    saveProgressToFirestore(cid,prog);
+    checkAllCourseProgress();
+  }
+}
+
+async function saveProgressToFirestore(cid,prog){
+  try{
+    await db.collection(COL).doc(userEmailId).collection('progress').doc(cid).set({
+      done:prog.done,lastChapter:currentChapIdx,updatedAt:firebase.firestore.FieldValue.serverTimestamp()
+    },{merge:true});
+  }catch(e){}
+}
+
+async function saveLastChapter(chapIdx){
+  const cid=currentCourseData.id;
+  try{
+    await db.collection(COL).doc(userEmailId).collection('progress').doc(cid).set({
+      lastChapter:chapIdx,updatedAt:firebase.firestore.FieldValue.serverTimestamp()
+    },{merge:true});
+  }catch(e){}
+}
+
+function checkAllCourseProgress(){
+  const cid=currentCourseData.id;
+  const prog=userProgress[cid]||{done:[]};
+  const done=prog.done||[];
+  const total=currentCourseData.chapters.length;
+  const chapIds=currentCourseData.chapters.map(c=>c.videoId);
+  const allDone=chapIds.every(id=>done.includes(id));
+  if(allDone){renderExamTab();renderCertTab();}
+  renderStats();
+}
+
+// ─── PLAYER CONTROLS ─────────────────────────────────────────────────────────
+const playerWrap=document.getElementById('playerWrap');
+playerWrap.addEventListener('click',()=>{togglePlay();showControls();});
+playerWrap.addEventListener('touchstart',()=>showControls(),{passive:true});
+playerWrap.addEventListener('contextmenu',e=>e.preventDefault());
+
+function showControls(){
+  const ctrl=document.getElementById('playerControls');
+  ctrl.classList.add('visible');
+  clearTimeout(controlsTimer);
+  controlsTimer=setTimeout(()=>ctrl.classList.remove('visible'),3000);
+}
+
+function togglePlay(){
+  if(isPlaying){sendYTCmd('pauseVideo');}else{sendYTCmd('playVideo');}
+  isPlaying=!isPlaying;updatePlayPauseIcon();
+}
+
+function updatePlayPauseIcon(){
+  const icon=document.getElementById('playIcon');
+  if(isPlaying){icon.innerHTML='<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>';}
+  else{icon.innerHTML='<polygon points="5,3 19,12 5,21"/>';}
+}
+
+document.getElementById('playPauseBtn').addEventListener('click',e=>{e.stopPropagation();togglePlay();showControls();});
+
+document.getElementById('rewindBtn').addEventListener('click',e=>{
+  e.stopPropagation();
+  const newT=Math.max(0,playerCurrentTime-10);
+  sendYTCmd('seekTo',[newT,true]);
+  playerCurrentTime=newT;updateSeekUI();showControls();
+});
+
+document.getElementById('seekBar').addEventListener('click',e=>{
+  e.stopPropagation();
+  const rect=e.currentTarget.getBoundingClientRect();
+  const ratio=(e.clientX-rect.left)/rect.width;
+  const newT=ratio*playerDuration;
+  if(newT>playerCurrentTime){toast('⏩ Forward seeking is disabled');return;}
+  sendYTCmd('seekTo',[newT,true]);
+  playerCurrentTime=newT;updateSeekUI();showControls();
+});
+
+document.getElementById('muteBtn').addEventListener('click',e=>{
+  e.stopPropagation();
+  if(isMuted){sendYTCmd('unMute');sendYTCmd('setVolume',[currentVol]);isMuted=false;}
+  else{sendYTCmd('mute');isMuted=true;}
+  const icon=document.getElementById('volIcon');
+  if(isMuted){icon.innerHTML='<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/>';}
+  else{icon.innerHTML='<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>';}
+  showControls();
+});
+
+document.getElementById('volSlider').addEventListener('input',e=>{
+  currentVol=parseInt(e.target.value);
+  sendYTCmd('setVolume',[currentVol]);
+  if(currentVol===0){sendYTCmd('mute');isMuted=true;}
+  else{sendYTCmd('unMute');isMuted=false;}
+  showControls();
+});
+
+document.getElementById('fsBtn').addEventListener('click',e=>{
+  e.stopPropagation();
+  const el=document.getElementById('playerWrap');
+  if(document.fullscreenElement){document.exitFullscreen();}
+  else{el.requestFullscreen&&el.requestFullscreen();}
+  showControls();
+});
+
+// ─── PREV/NEXT LESSON ────────────────────────────────────────────────────────
+function updateLessonNavButtons(){
+  const total=currentCourseData.chapters.length;
+  const prev=document.getElementById('prevLessonBtn');
+  const next=document.getElementById('nextLessonBtn');
+  const prevLabel=document.getElementById('prevLessonLabel');
+  const nextLabel=document.getElementById('nextLessonLabel');
+  if(currentChapIdx>0){
+    prev.style.opacity='1';prev.style.pointerEvents='all';
+    prevLabel.textContent=currentCourseData.chapters[currentChapIdx-1].title;
+  }else{
+    prev.style.opacity='0.3';prev.style.pointerEvents='none';
+    prevLabel.textContent='Previous';
+  }
+  if(currentChapIdx<total-1){
+    next.style.opacity='1';next.style.pointerEvents='all';
+    nextLabel.textContent=currentCourseData.chapters[currentChapIdx+1].title;
+  }else{
+    next.style.opacity='0.3';next.style.pointerEvents='none';
+    nextLabel.textContent='Next';
+  }
+}
+
+document.getElementById('prevLessonBtn').addEventListener('click',()=>{
+  if(currentChapIdx>0)loadChapter(currentChapIdx-1);
+});
+document.getElementById('nextLessonBtn').addEventListener('click',()=>{
+  if(currentChapIdx<currentCourseData.chapters.length-1)loadChapter(currentChapIdx+1);
+});
+
+// ─── WATERMARK ───────────────────────────────────────────────────────────────
+function startWatermark(){
+  stopWatermark();
+  const wm=document.getElementById('watermark');
+  const name=userDoc?.fullName||userEmail.split('@')[0];
+  wm.textContent=name;
+  moveWatermark();
+  watermarkTimer=setInterval(moveWatermark,18000);
+}
+function moveWatermark(){
+  const wm=document.getElementById('watermark');
+  const maxX=Math.max(10,playerWrap.offsetWidth-200);
+  const maxY=Math.max(10,playerWrap.offsetHeight-40);
+  wm.style.left=Math.random()*maxX+'px';
+  wm.style.top=Math.random()*maxY+'px';
+}
+function stopWatermark(){
+  if(watermarkTimer){clearInterval(watermarkTimer);watermarkTimer=null;}
+  document.getElementById('watermark').textContent='';
+}
+
+// ─── TABS ─────────────────────────────────────────────────────────────────────
+function setupTabSwitcher(){
+  document.querySelectorAll('.cv-tab').forEach(tab=>{
+    tab.onclick=()=>{activateCVTab(tab.dataset.tab);};
+  });
+}
+function activateCVTab(name){
+  document.querySelectorAll('.cv-tab').forEach(t=>t.classList.toggle('active',t.dataset.tab===name));
+  document.querySelectorAll('.cv-tab-content').forEach(c=>c.classList.toggle('active',c.id==='tab-'+name));
+}
+
+// ─── OVERVIEW TAB ────────────────────────────────────────────────────────────
+function renderOverviewTab(){
+  const c=currentCourseData;
+  const prog=userProgress[c.id]||{done:[]};
+  const done=(prog.done||[]).length;
+  const total=c.chapters.length;
+  const pct=total>0?Math.round(done/total*100):0;
+  document.getElementById('tab-overview').innerHTML=`
+    <div class="overview-section">
+      <h3>${c.title}</h3>
+      <div class="info-pills">
+        <div class="info-pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>${total} chapters</div>
+        <div class="info-pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Self-paced</div>
+        <div class="info-pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>Certificate</div>
+      </div>
+      <div style="margin-bottom:16px">
+        <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--t2);margin-bottom:6px"><span>Your Progress</span><span>${pct}%</span></div>
+        <div class="prog-bar" style="height:8px"><div class="prog-fill" style="width:${pct}%"></div></div>
+        <div style="font-size:12px;color:var(--t2);margin-top:4px">${done} of ${total} chapters completed</div>
+      </div>
+      <p>Start from Chapter 1 or resume where you left off. Each chapter is tracked — you need 85% watch time to mark it as complete. Complete all chapters, pass the exam (60%+) and submit your project to earn your certificate.</p>
+    </div>
+  `;
+}
+
+// ─── CHAPTERS TAB ────────────────────────────────────────────────────────────
+function renderChaptersList(){
+  const c=currentCourseData;
+  const prog=userProgress[c.id]||{done:[]};
+  const done=prog.done||[];
+  const container=document.getElementById('tab-chapters');
+  container.innerHTML='';
+  c.chapters.forEach((chap,i)=>{
+    const isDone=done.includes(chap.videoId);
+    const isActive=i===currentChapIdx;
+    const item=document.createElement('div');
+    item.className='chap-item'+(isActive?' active-chap':'');
+    item.innerHTML=`
+      <div class="chap-num">${i+1}</div>
+      <div class="chap-info">
+        <div class="chap-title">${chap.title}</div>
+        <div class="chap-dur">${isDone?'✓ Completed':'Tap to play'}</div>
+      </div>
+      <div class="chap-check${isDone?' done':''}">
+        ${isDone?'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>':''}
+      </div>
+    `;
+    item.addEventListener('click',()=>{loadChapter(i);activateCVTab('overview');});
+    container.appendChild(item);
+  });
+}
+
+function highlightActiveChap(){
+  renderChaptersList();
+}
+
+// ─── RESOURCES TAB ───────────────────────────────────────────────────────────
+function renderResourcesTab(){
+  document.getElementById('tab-resources').innerHTML=`
+    <p style="font-size:13px;color:var(--t2);margin-bottom:16px;">Additional resources for this course.</p>
+    <a class="res-link" href="https://wa.me/919019254743" target="_blank">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      <span>WhatsApp Support — Syed Afshar Khadri</span>
+    </a>
+    <a class="res-link" href="https://biluxe10.com/verify" target="_blank">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4m6 2a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/></svg>
+      <span>Certificate Verification Portal</span>
+    </a>
+  `;
+}
+
+// ─── PROJECT TAB ─────────────────────────────────────────────────────────────
+function renderProjectTab(){
+  const cid=currentCourseData.id;
+  const exam=userExams[cid]||{};
+  const submitted=!!exam.project;
+  const container=document.getElementById('tab-project');
+  if(submitted){
+    container.innerHTML=`
+      <div class="proj-done">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4m6 2a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/></svg>
+        <div>
+          <div style="font-size:14px;font-weight:600;color:var(--green)">Project Submitted</div>
+          <div style="font-size:12px;color:var(--t2);margin-top:2px">${exam.project.substring?.(0,80)||'Submitted'}...</div>
+        </div>
+      </div>
+      <button class="proj-submit" style="margin-top:12px;background:var(--bg4);color:var(--text);border:1px solid var(--border);" onclick="renderProjectTab(true)">Resubmit Project</button>
+    `;
+  }else{
+    _renderProjectForm(container);
+  }
+}
+
+function _renderProjectForm(container){
+  container.innerHTML=`
+    <div class="proj-wrap">
+      <p style="font-size:13px;color:var(--t2);margin-bottom:10px;">Submit a link to your project or describe what you built. You can also upload a file.</p>
+      <textarea class="proj-textarea" id="projText" placeholder="Project link or description..."></textarea>
+      <label class="file-upload-area" id="projFileLabel">
+        <input type="file" id="projFile" accept=".pdf,.doc,.docx,.png,.jpg,.jpeg,.zip">
+        <p id="projFileName">📎 Attach file (optional)</p>
+        <div class="ext">PDF, DOC, PNG, JPG, ZIP</div>
+      </label>
+      <button class="proj-submit" id="projSubmitBtn">Submit Project</button>
+    </div>
+  `;
+  document.getElementById('projFile').addEventListener('change',function(){
+    const name=this.files[0]?.name||'No file selected';
+    document.getElementById('projFileName').textContent='📎 '+name;
+  });
+  document.getElementById('projSubmitBtn').addEventListener('click',async()=>{
+    const text=document.getElementById('projText').value.trim();
+    if(!text){toast('Please enter a project description or link');return;}
+    document.getElementById('projSubmitBtn').disabled=true;
+    document.getElementById('projSubmitBtn').textContent='Submitting...';
+    try{
+      const cid=currentCourseData.id;
+      await db.collection(COL).doc(userEmailId).collection('exams').doc(cid).set({
+        project:text,projectAt:firebase.firestore.FieldValue.serverTimestamp()
+      },{merge:true});
+      if(!userExams[cid])userExams[cid]={};
+      userExams[cid].project=text;
+      toast('✅ Project submitted!');
+      renderProjectTab();renderCertTab();
+    }catch(e){toast('Error submitting. Try again.');document.getElementById('projSubmitBtn').disabled=false;document.getElementById('projSubmitBtn').textContent='Submit Project';}
+  });
+}
+
+// ─── EXAM TAB ────────────────────────────────────────────────────────────────
+function renderExamTab(){
+  const cid=currentCourseData.id;
+  const prog=userProgress[cid]||{done:[]};
+  const done=prog.done||[];
+  const total=currentCourseData.chapters.length;
+  const chapIds=currentCourseData.chapters.map(c=>c.videoId);
+  const watchedPct=total>0?done.filter(id=>chapIds.includes(id)).length/total:0;
+  const container=document.getElementById('tab-exam');
+  if(watchedPct<0.8){
+    container.innerHTML=`<div class="exam-locked"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg><p style="font-size:15px;font-weight:600;margin-bottom:6px">Exam Locked</p><p style="font-size:13px">Watch at least 80% of chapters to unlock the exam. You've watched ${Math.round(watchedPct*100)}%.</p></div>`;
+    return;
+  }
+  const exam=userExams[cid];
+  if(exam?.score!=null){
+    const passed=exam.score>=60;
+    container.innerHTML=`
+      <div style="text-align:center;padding:20px 0">
+        <div style="font-family:var(--fd);font-size:48px;color:${passed?'var(--green)':'var(--red)'}">${exam.score}%</div>
+        <div style="font-size:16px;font-weight:600;margin-bottom:8px">${passed?'🎉 Passed':'❌ Failed'}</div>
+        <div style="font-size:13px;color:var(--t2);margin-bottom:20px">Needed 60% to pass. ${passed?'You can now get your certificate.':'Retake to improve your score.'}</div>
+        <button class="btn-secondary" style="padding:12px 24px;border-radius:var(--rs);margin-right:8px;" onclick="retakeExam()">Retake Exam</button>
+        ${passed?`<button class="btn-primary" style="padding:12px 24px;border-radius:var(--rs);" onclick="activateCVTab('certificate')">Get Certificate</button>`:''}
+      </div>
+    `;
+    return;
+  }
+  _renderExamQuestions(container,cid);
+}
+
+function retakeExam(){
+  const cid=currentCourseData.id;
+  if(userExams[cid])delete userExams[cid].score;
+  renderExamTab();
+}
+
+let examAnswers={};
+function _renderExamQuestions(container,cid){
+  examAnswers={};
+  let html='<div style="margin-bottom:14px"><p style="font-size:13px;color:var(--t2)">10 questions · Pass at 60% · Select one answer per question</p></div>';
+  EXAM_QUESTIONS.forEach((q,qi)=>{
+    html+=`<div class="exam-q"><p>${qi+1}. ${q.q}</p>`;
+    q.opts.forEach((opt,oi)=>{
+      html+=`<div class="exam-opt" id="eq-${qi}-${oi}" onclick="selectExamOpt(${qi},${oi})">${opt}</div>`;
+    });
+    html+='</div>';
+  });
+  html+='<button class="exam-submit" onclick="submitExam()">Submit Exam</button>';
+  container.innerHTML=html;
+}
+
+function selectExamOpt(qi,oi){
+  examAnswers[qi]=oi;
+  for(let x=0;x<EXAM_QUESTIONS[qi].opts.length;x++){
+    const el=document.getElementById('eq-'+qi+'-'+x);
+    if(el)el.classList.toggle('selected',x===oi);
+  }
+}
+
+async function submitExam(){
+  const answered=Object.keys(examAnswers).length;
+  if(answered<EXAM_QUESTIONS.length){toast('Please answer all '+EXAM_QUESTIONS.length+' questions');return;}
+  let correct=0;
+  EXAM_QUESTIONS.forEach((q,qi)=>{if(examAnswers[qi]===q.ans)correct++;});
+  const score=Math.round(correct/EXAM_QUESTIONS.length*100);
+  const passed=score>=60;
+  const cid=currentCourseData.id;
+  try{
+    await db.collection(COL).doc(userEmailId).collection('exams').doc(cid).set({score,passed,takenAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});
+    if(!userExams[cid])userExams[cid]={};
+    userExams[cid].score=score;userExams[cid].passed=passed;
+  }catch(e){}
+  showResultPopup(score,passed,cid);
+  renderExamTab();renderCertTab();
+}
+
+function showResultPopup(score,passed,cid){
+  const overlay=document.getElementById('resultOverlay');
+  document.getElementById('resultScore').textContent=score+'%';
+  document.getElementById('resultScore').className='result-score '+(passed?'pass':'fail');
+  document.getElementById('resultLabel').textContent=passed?'🎉 Congratulations!':'❌ Not quite yet';
+  document.getElementById('resultMsg').textContent=passed?`You scored ${score}% and passed! Complete your project submission to earn your certificate.`:`You scored ${score}%. You need at least 60% to pass. Review the material and try again.`;
+  const btns=document.getElementById('resultBtns');
+  btns.innerHTML=passed
+    ?`<button class="btn-primary" onclick="closeResult();activateCVTab('certificate')">Get Certificate</button><button class="btn-secondary" onclick="closeResult()">Continue Learning</button>`
+    :`<button class="btn-primary" onclick="closeResult();retakeExam();activateCVTab('exam')">Retake Exam</button><button class="btn-secondary" onclick="closeResult()">Review Material</button>`;
+  overlay.classList.remove('hidden');
+}
+
+function closeResult(){document.getElementById('resultOverlay').classList.add('hidden');}
+
+// ─── CERTIFICATE TAB ─────────────────────────────────────────────────────────
+function renderCertTab(){
+  const cid=currentCourseData.id;
+  const prog=userProgress[cid]||{done:[]};
+  const done=prog.done||[];
+  const total=currentCourseData.chapters.length;
+  const chapIds=currentCourseData.chapters.map(c=>c.videoId);
+  const allChapsDone=total>0&&chapIds.every(id=>done.includes(id));
+  const exam=userExams[cid];
+  const examPassed=exam?.passed===true;
+  const projDone=!!exam?.project;
+  const container=document.getElementById('tab-certificate');
+  const checkItem=(done,label,sub)=>`
+    <div class="cert-check-item ${done?'done':'pending'}">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">${done?'<path d="M9 12l2 2 4-4m6 2a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/>':'<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>'}</svg>
+      <div><p style="font-size:13px;font-weight:500">${label}</p><span>${sub}</span></div>
+    </div>
+  `;
+  const allDone=allChapsDone&&examPassed&&projDone;
+  const existingCert=userCerts[cid];
+  let html=`<div class="cert-check-list">
+    ${checkItem(allChapsDone,'All Chapters Watched','100% chapter completion required')}
+    ${checkItem(examPassed,'Exam Passed','Score 60% or higher')}
+    ${checkItem(projDone,'Project Submitted','Submit your project work')}
+  </div>`;
+  if(existingCert){
+    html+=`
+      <button class="cert-view-btn" onclick="window.open('certificates.html?certId=${existingCert.certId}','_blank')">🎓 View Certificate</button>
+      <button class="cert-view-btn" style="margin-top:10px;background:var(--bg4);color:var(--text);border:1px solid var(--border);" onclick="window.open('certificates.html?certId=${existingCert.certId}&download=1','_blank')">⬇ Download PNG</button>
+    `;
+  }else if(allDone){
+    html+=`<button class="cert-view-btn" onclick="issueCertificate()">🎓 Generate Certificate</button>`;
+  }else{
+    html+=`<div class="cert-locked-msg">Complete all three requirements above to earn your certificate.</div>`;
+  }
+  container.innerHTML=html;
+}
+
+async function issueCertificate(){
+  const cid=currentCourseData.id;
+  const exam=userExams[cid]||{};
+  const ts=Date.now();
+  const certId='B10-'+cid.substring(0,8).toUpperCase()+'-'+ts.toString(36).toUpperCase();
+  const certData={
+    courseId:cid,courseName:currentCourseData.title,
+    studentName:userDoc.fullName||userEmail.split('@')[0],
+    email:userEmail,certId,score:exam.score||0,
+    issuedAt:firebase.firestore.FieldValue.serverTimestamp()
+  };
+  try{
+    await db.collection(COL).doc(userEmailId).collection('certificates').doc(cid).set(certData,{merge:true});
+    userCerts[cid]={...certData,issuedAt:new Date()};
+    toast('🎓 Certificate issued!');
+    renderCertTab();renderCertsPage();renderStats();
+  }catch(e){toast('Error generating certificate. Try again.');}
+}
+
+// ─── AI TUTOR ────────────────────────────────────────────────────────────────
+function renderAITutor(){
+  const cid=currentCourseData.id;
+  const storageKey='aiChat_'+cid;
+  let history=[];
+  try{history=JSON.parse(localStorage.getItem(storageKey)||'[]');}catch(e){}
+  const container=document.getElementById('tab-aitutor');
+  container.innerHTML=`
+    <div class="ai-top-row">
+      <h3>AI Tutor — ${currentCourseData.title}</h3>
+      <button class="ai-clear" onclick="clearAIChat()">Clear Chat</button>
+    </div>
+    <div id="aiFilePreview" class="ai-file-preview" style="display:none"></div>
+    <div class="ai-chat-wrap">
+      <div class="ai-messages" id="aiMessages"></div>
+      <div class="ai-input-row">
+        <button class="ai-file-btn" onclick="document.getElementById('aiFileInput').click()" title="Attach file">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
+        </button>
+        <input type="file" id="aiFileInput" style="display:none" accept="image/*,.pdf">
+        <textarea class="ai-input" id="aiInput" placeholder="Ask anything about this course..." rows="1"></textarea>
+        <button class="ai-send" onclick="sendAIMessage()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        </button>
+      </div>
+    </div>
+  `;
+  document.getElementById('aiFileInput').addEventListener('change',handleAIFile);
+  document.getElementById('aiInput').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendAIMessage();}});
+  const msgs=document.getElementById('aiMessages');
+  if(history.length===0){
+    const div=document.createElement('div');
+    div.className='ai-msg bot';
+    div.textContent='👋 Hi! I\'m your AI tutor for "'+currentCourseData.title+'". Ask me anything about the course content, concepts, or assignments.';
+    msgs.appendChild(div);
+  }else{
+    history.forEach(m=>{
+      const div=document.createElement('div');
+      div.className='ai-msg '+(m.role==='user'?'user':'bot');
+      div.textContent=m.parts[0].text;
+      msgs.appendChild(div);
+    });
+    msgs.scrollTop=msgs.scrollHeight;
+  }
+}
+
+function handleAIFile(e){
+  const file=e.target.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=()=>{
+    aiFileData=reader.result.split(',')[1];
+    aiMimeType=file.type;aiFileName=file.name;
+    const prev=document.getElementById('aiFilePreview');
+    prev.style.display='flex';
+    prev.innerHTML=`<span>📎 ${file.name}</span><button onclick="clearAIFile()">✕</button>`;
+  };
+  reader.readAsDataURL(file);
+}
+
+function clearAIFile(){
+  aiFileData=null;aiMimeType=null;aiFileName=null;
+  document.getElementById('aiFileInput').value='';
+  const prev=document.getElementById('aiFilePreview');
+  if(prev){prev.style.display='none';prev.innerHTML='';}
+}
+
+async function sendAIMessage(){
+  const input=document.getElementById('aiInput');
+  const text=input.value.trim();
+  if(!text&&!aiFileData)return;
+  const cid=currentCourseData.id;
+  const storageKey='aiChat_'+cid;
+  let history=[];
+  try{history=JSON.parse(localStorage.getItem(storageKey)||'[]');}catch(e){}
+  const msgs=document.getElementById('aiMessages');
+  const userDiv=document.createElement('div');
+  userDiv.className='ai-msg user';
+  userDiv.textContent=text+(aiFileName?' [+'+aiFileName+']':'');
+  msgs.appendChild(userDiv);
+  input.value='';
+  const userMsg={role:'user',parts:[{text:text||'Analyze the attached file.'}]};
+  if(aiFileData){userMsg.parts.push({inlineData:{mimeType:aiMimeType,data:aiFileData}});}
+  history.push(userMsg);
+  clearAIFile();
+  const typing=document.createElement('div');
+  typing.className='ai-msg bot typing';typing.id='aiTyping';typing.textContent='Thinking...';
+  msgs.appendChild(typing);msgs.scrollTop=msgs.scrollHeight;
+  try{
+    const res=await fetch(GEMINI_URL+'?key='+GEMINI_KEY,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        systemInstruction:{parts:[{text:`You are an expert AI tutor for the Biluxe10 online learning platform. The student is currently studying: "${currentCourseData.title}". Give clear, helpful, encouraging answers. Keep responses concise and educational. Use examples when helpful.`}]},
+        contents:history
+      })
+    });
+    const data=await res.json();
+    const reply=data.candidates?.[0]?.content?.parts?.[0]?.text||'I couldn\'t generate a response. Please try again.';
+    history.push({role:'model',parts:[{text:reply}]});
+    localStorage.setItem(storageKey,JSON.stringify(history.slice(-30)));
+    const botDiv=document.createElement('div');
+    botDiv.className='ai-msg bot';
+    botDiv.textContent=reply;
+    document.getElementById('aiTyping')?.remove();
+    msgs.appendChild(botDiv);msgs.scrollTop=msgs.scrollHeight;
+  }catch(err){
+    document.getElementById('aiTyping')?.remove();
+    const errDiv=document.createElement('div');
+    errDiv.className='ai-msg bot';errDiv.textContent='⚠ Connection error. Please check your internet and try again.';
+    msgs.appendChild(errDiv);msgs.scrollTop=msgs.scrollHeight;
+  }
+}
+
+function clearAIChat(){
+  const cid=currentCourseData?.id;
+  if(cid)localStorage.removeItem('aiChat_'+cid);
+  renderAITutor();
+  toast('Chat cleared');
+}
+
+// ─── SPECIAL PAYMENTS ────────────────────────────────────────────────────────
+function openPayModal(firebaseKey,title,price){
+  currentSpecialCourseKey=firebaseKey;
+  document.getElementById('payTitle').textContent='Enroll in '+title;
+  document.getElementById('payPriceDisplay').textContent='₹'+price.toLocaleString();
+  document.getElementById('payModal').classList.remove('hidden');
+}
+
+document.getElementById('payCancel').addEventListener('click',()=>{
+  document.getElementById('payModal').classList.add('hidden');
+});
+
+document.getElementById('paySubmitBtn').addEventListener('click',async()=>{
+  const utr=document.getElementById('payUTR').value.trim();
+  const name=document.getElementById('payName').value.trim();
+  if(!utr||!name){toast('Please enter your name and UTR number');return;}
+  document.getElementById('paySubmitBtn').disabled=true;
+  document.getElementById('paySubmitBtn').textContent='Submitting...';
+  try{
+    const key=currentSpecialCourseKey;
+    await db.collection(COL).doc(userEmailId).set({
+      [key+'_pending']:true,[key+'_utr']:utr
+    },{merge:true});
+    await db.collection('special_payments').add({
+      emailId:userEmailId,email:userEmail,
+      courseKey:key,utr,name,
+      submittedAt:firebase.firestore.FieldValue.serverTimestamp()
+    });
+    specialAccess[key]={unlocked:false,pending:true};
+    toast('✅ Payment submitted! Awaiting approval.');
+    document.getElementById('payModal').classList.add('hidden');
+    document.getElementById('payUTR').value='';
+    document.getElementById('payName').value='';
+    document.getElementById('paySubmitBtn').disabled=false;
+    document.getElementById('paySubmitBtn').textContent='Submit for Approval';
+    renderSpecialPage();
+  }catch(e){
+    toast('Error submitting. Try again.');
+    document.getElementById('paySubmitBtn').disabled=false;
+    document.getElementById('paySubmitBtn').textContent='Submit for Approval';
+  }
+});
+
+// ─── DISCLAIMER ───────────────────────────────────────────────────────────────
+function showDisclaimer(){
+  if(discShown)return;
+  document.getElementById('disclaimerModal').classList.remove('hidden');
+}
+
+document.getElementById('discCheckbox').addEventListener('change',function(){
+  document.getElementById('discBtn').classList.toggle('active',this.checked);
+});
+
+document.getElementById('discBtn').addEventListener('click',()=>{
+  if(!document.getElementById('discCheckbox').checked)return;
+  discShown=true;
+  document.getElementById('disclaimerModal').classList.add('hidden');
+});
+
+// ─── NAVIGATION ──────────────────────────────────────────────────────────────
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id===id));
+  document.querySelectorAll('.nav-tab').forEach(t=>{
+    t.classList.toggle('active',t.dataset.page===id);
+  });
+}
+
+document.querySelectorAll('.nav-tab[data-page]').forEach(tab=>{
+  tab.addEventListener('click',()=>showPage(tab.dataset.page));
+});
+
+document.getElementById('navDash').addEventListener('click',()=>location.href='dashboard.html');
+document.getElementById('goSpecialBtn').addEventListener('click',()=>showPage('pageSpecial'));
+document.getElementById('clBack').addEventListener('click',()=>showPage('pageBundles'));
+</script>
+</body>
+</html>
