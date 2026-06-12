@@ -13,9 +13,6 @@
 const firebaseConfig={apiKey:"AIzaSyDxxkC9iD1V1w-53Kf4oBrHEXlBLvCc7sE",authDomain:"biluxe10-3e894.firebaseapp.com",projectId:"biluxe10-3e894",storageBucket:"biluxe10-3e894.appspot.com",messagingSenderId:"804749588233",appId:"1:804749588233:web:7777648c0c7834733c05d8"};
 if(!firebase.apps.length)firebase.initializeApp(firebaseConfig);
 const AUTH=firebase.auth(),DB=firebase.firestore();
-const san=e=>e.toLowerCase().trim().replace(/\./g,'_').replace(/@/g,'__at__');
-const COLS=['User-collection','user_collection','users','User_collection','user-collection'];
-let COL='User-collection';
 </script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
