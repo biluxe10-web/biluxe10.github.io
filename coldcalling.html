@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Biluxe10 — Cold Call Script</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Noto+Sans:ital,wght@0,400;0,500;1,400&display=swap');
+
+  :root {
+    --ink: #0f1117;
+    --paper: #f7f6f2;
+    --accent: #e8420a;
+    --accent-soft: #fde9e1;
+    --gold: #f5a623;
+    --gold-soft: #fef5e4;
+    --green: #1a7a4a;
+    --green-soft: #e4f5ec;
+    --blue: #1a4fa0;
+    --blue-soft: #e4edfb;
+    --muted: #6b6f7a;
+    --border: #e0ddd4;
+    --card: #ffffff;
+    --step-h: 56px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Noto Sans', sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    font-size: 15px;
+    line-height: 1.65;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: var(--ink);
+    color: #fff;
+    padding: 36px 24px 28px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 70% 60% at 50% 110%, #e8420a33, transparent);
+    pointer-events: none;
+  }
+  .brand-pill {
+    display: inline-block;
+    background: var(--accent);
+    color: #fff;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 4px 14px;
+    border-radius: 20px;
+    margin-bottom: 14px;
+  }
+  header h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(22px, 5vw, 34px);
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 8px;
+  }
+  header h1 span { color: var(--accent); }
+  header p {
+    color: #a8aab8;
+    font-size: 14px;
+    max-width: 420px;
+    margin: 0 auto;
+  }
+
+  /* ── LAYOUT ── */
+  main {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 24px 16px 60px;
+  }
+
+  /* ── SECTION LABEL ── */
+  .section-label {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 36px 0 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* ── STEP CARD ── */
+  .step-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    margin-bottom: 14px;
+    overflow: hidden;
+    transition: box-shadow .2s;
+  }
+  .step-card:hover { box-shadow: 0 4px 18px #0f11170d; }
+
+  .step-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 20px;
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  .step-num {
+    width: 38px; height: 38px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .num-orange { background: var(--accent-soft); color: var(--accent); }
+  .num-gold   { background: var(--gold-soft);   color: #b5760e; }
+  .num-red    { background: #fde8e8;             color: #c01818; }
+  .num-green  { background: var(--green-soft);   color: var(--green); }
+
+  .step-title-wrap { flex: 1; }
+  .step-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+  }
+  .step-subtitle {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 1px;
+  }
+  .chevron {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: var(--paper);
+    display: flex; align-items: center; justify-content: center;
+    transition: transform .25s;
+    font-size: 11px;
+    color: var(--muted);
+    flex-shrink: 0;
+  }
+  .step-card.open .chevron { transform: rotate(180deg); }
+
+  .step-body {
+    display: none;
+    padding: 0 20px 20px;
+    border-top: 1px solid var(--border);
+    margin-top: 0;
+  }
+  .step-card.open .step-body { display: block; }
+  .step-body > *:first-child { margin-top: 16px; }
+
+  /* ── DIALOGUE BLOCKS ── */
+  .dialogue { margin: 10px 0; }
+
+  .bubble {
+    border-radius: 12px;
+    padding: 12px 16px;
+    margin: 6px 0;
+    font-size: 14px;
+    line-height: 1.6;
+    position: relative;
+  }
+  .bubble-agent {
+    background: var(--ink);
+    color: #fff;
+    border-bottom-left-radius: 4px;
+    margin-right: 20px;
+  }
+  .bubble-agent .speaker {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--accent);
+    display: block;
+    margin-bottom: 5px;
+  }
+  .bubble-customer {
+    background: var(--paper);
+    border: 1px solid var(--border);
+    border-bottom-right-radius: 4px;
+    margin-left: 20px;
+  }
+  .bubble-customer .speaker {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--muted);
+    display: block;
+    margin-bottom: 5px;
+  }
+
+  /* ── BRANCH BLOCKS ── */
+  .branch-block {
+    background: var(--blue-soft);
+    border-left: 3px solid var(--blue);
+    border-radius: 0 10px 10px 0;
+    padding: 12px 14px;
+    margin: 10px 0;
+    font-size: 13.5px;
+  }
+  .branch-block .branch-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 600;
+    font-size: 12px;
+    color: var(--blue);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+  }
+
+  /* ── OBJECTION CARDS ── */
+  .obj-card {
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+    margin: 12px 0;
+    background: #fff;
+  }
+  .obj-trigger {
+    background: #fff3f0;
+    border-bottom: 1px solid var(--border);
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13.5px;
+  }
+  .obj-badge {
+    background: var(--accent);
+    color: #fff;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    padding: 2px 8px;
+    border-radius: 20px;
+    white-space: nowrap;
+    text-transform: uppercase;
+  }
+  .obj-body { padding: 14px; }
+  .obj-customer {
+    font-size: 14px;
+    font-style: italic;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+  .obj-reply {
+    background: var(--green-soft);
+    border-left: 3px solid var(--green);
+    border-radius: 0 8px 8px 0;
+    padding: 10px 12px;
+    font-size: 13.5px;
+    color: var(--ink);
+  }
+  .obj-reply .reply-label {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--green);
+    margin-bottom: 5px;
+  }
+  .obj-followup {
+    margin-top: 8px;
+    font-size: 13px;
+    color: var(--muted);
+    font-style: italic;
+  }
+
+  /* ── BENEFIT LIST ── */
+  .benefit-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin: 12px 0;
+  }
+  @media (max-width: 480px) {
+    .benefit-list { grid-template-columns: 1fr; }
+  }
+  .benefit-item {
+    background: var(--green-soft);
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 13.5px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .benefit-item .bi { font-size: 16px; }
+
+  /* ── PRICE TAGS ── */
+  .price-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 8px;
+    margin: 12px 0;
+  }
+  .price-tag {
+    background: var(--gold-soft);
+    border: 1px solid #f5c76a;
+    border-radius: 10px;
+    padding: 10px 12px;
+    text-align: center;
+  }
+  .price-tag .pt-name {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 4px;
+  }
+  .price-tag .pt-price {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: #b5760e;
+  }
+
+  /* ── TIP BOX ── */
+  .tip-box {
+    background: var(--accent-soft);
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-size: 13px;
+    margin: 10px 0;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  .tip-icon { font-size: 18px; flex-shrink: 0; }
+
+  /* ── CLOSING BANNER ── */
+  .closing-banner {
+    background: linear-gradient(135deg, #0f1117 0%, #1a2540 100%);
+    border-radius: 16px;
+    padding: 28px 24px;
+    color: #fff;
+    text-align: center;
+    margin: 24px 0 0;
+  }
+  .closing-banner h2 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 20px;
+    margin-bottom: 8px;
+  }
+  .closing-banner p {
+    font-size: 14px;
+    color: #a8aab8;
+    margin-bottom: 18px;
+  }
+  .close-bubble {
+    background: #1e2533;
+    border: 1px solid #2e3446;
+    border-radius: 12px;
+    padding: 14px 18px;
+    font-size: 14px;
+    line-height: 1.7;
+    text-align: left;
+    color: #dde1ec;
+    margin-bottom: 10px;
+  }
+  .close-bubble .speaker {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--accent);
+    display: block;
+    margin-bottom: 6px;
+  }
+  .pay-bubble {
+    background: #162d1e;
+    border: 1px solid #1f4a2c;
+    border-radius: 12px;
+    padding: 14px 18px;
+    font-size: 14px;
+    line-height: 1.7;
+    text-align: left;
+    color: #b8f0c8;
+  }
+  .pay-bubble .speaker {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #4ade80;
+    display: block;
+    margin-bottom: 6px;
+  }
+
+  /* ── RULE TAG ── */
+  .rule-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: var(--ink);
+    color: #fff;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 20px;
+    margin: 4px 2px;
+  }
+  .rule-tag.no { background: #c01818; }
+  .rule-tag.yes { background: var(--green); }
+
+  /* ── Q BLOCK ── */
+  .q-block {
+    background: var(--paper);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin: 8px 0;
+    font-size: 14px;
+  }
+  .q-block .q-label {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--muted);
+    margin-bottom: 5px;
+  }
+
+  /* ── SMALL UTILITIES ── */
+  .mt8  { margin-top: 8px; }
+  .mt14 { margin-top: 14px; }
+  .small { font-size: 13px; color: var(--muted); }
+  hr.divider { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
+
+  /* ── FLOW PILL ── */
+  .flow-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin: 12px 0;
+  }
+  .flow-pill {
+    background: var(--paper);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 5px 12px;
+    font-size: 13px;
+    font-weight: 500;
+  }
+  .flow-arrow { color: var(--muted); font-size: 18px; }
+
+  /* ── STICKY PROGRESS (desktop) ── */
+  @media (min-width: 680px) {
+    main { padding-top: 32px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand-pill">Biluxe10 — Sales Team</div>
+  <h1>Cold Call <span>Master Script</span></h1>
+  <p>Step-by-step guide for downlines — from pehli ring se closing tak 🎯</p>
+</header>
+
+<main>
+
+  <!-- ══════════════════════════════════════════════
+       BEFORE YOU CALL
+  ══════════════════════════════════════════════ -->
+  <div class="section-label">📋 Call karne se pehle</div>
+
+  <div class="step-card open" id="pre">
+    <div class="step-header" onclick="toggle('pre')">
+      <div class="step-num num-orange">📞</div>
+      <div class="step-title-wrap">
+        <div class="step-title">Pre-Call Checklist</div>
+        <div class="step-subtitle">Yeh sab ready rakho call karne se pehle</div>
+      </div>
+      <div class="chevron">▼</div>
+    </div>
+    <div class="step-body">
+      <div class="benefit-list">
+        <div class="benefit-item"><span class="bi">📱</span> Number kahan se mila — note karo (Facebook Ad, WhatsApp Group, Referral)</div>
+        <div class="benefit-item"><span class="bi">📝</span> Customer ka naam pata karo agar ho</div>
+        <div class="benefit-item"><span class="bi">🎧</span> Quiet jagah pe jao, background noise zero</div>
+        <div class="benefit-item"><span class="bi">💧</span> Paani rakh lo, confident smile ke saath baitho</div>
+        <div class="benefit-item"><span class="bi">📊</span> Course prices yaad karo ya saamne rakho</div>
+        <div class="benefit-item"><span class="bi">⏰</span> Best time: 10am–12pm ya 5pm–7pm</div>
+      </div>
+      <div class="tip-box">
+        <span class="tip-icon">💡</span>
+        <span><strong>Number source bolo agar puche:</strong> "Sir, aapka number humne [Facebook/WhatsApp group/referral] ke through mila tha — aapne skills learn karne mein interest dikhaya tha."</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       CALL STEPS
+  ══════════════════════════════════════════════ -->
+  <div class="section-label">🗣️ Call Flow — Step by Step</div>
+
+  <!-- STEP 1 -->
+  <div class="step-card" id="s1">
+    <div class="step-header" onclick="toggle('s1')">
+      <div class="step-num num-orange">01</div>
+      <div class="step-title-wrap">
+        <div class="step-title">Opening — Pehle 15 Seconds</div>
+        <div class="step-subtitle">Pehla impression = sab kuch. Confident aur warm raho.</div>
+      </div>
+      <div class="chevron">▼</div>
+    </div>
+    <div class="step-body">
+      <div class="bubble bubble-agent">
+        <span class="speaker">🧑‍💼 Agent (Tum)</span>
+        "Hello sir/ma'am, kya main [Name] se baat kar raha/rahi hoon?"
+      </div>
+      <div class="bubble bubble-customer">
+        <span class="speaker">👤 Customer</span>
+        "Haan, main hi hoon."
+      </div>
+      <div class="bubble bubble-agent">
+        <span class="speaker">🧑‍💼 Agent</span>
+        "Sir, mera naam [Your Name] hai, main Biluxe10 se bol raha/rahi hoon. Hum students aur working professionals ko high-income skills sikhate hain — jaise Digital Marketing, Graphic Design, Fashion Design, Makeup Artist, Mehndi Design aur aur bhi bahut kuch. Sir, kya aap abhi ek minute baat kar sakte hain?"
+      </div>
+
+      <hr class="divider">
+      <div class="small mt8">📌 <strong>Agar busy ho toh:</strong></div>
+      <div class="branch-block">
+        <div class="branch-title">🕐 Agar bolte hain "Busy hoon"</div>
+        <em>"Koi baat nahi sir! Kab free rahenge? Main tab call karunga/karungi — sirf 2 minute chahiye."</em>
+        <div class="obj-followup">Callback time note karo aur exactly usi waqt call karo.</div>
+      </div>
+      <div class="branch-block" style="background:var(--green-soft); border-color:var(--green);">
+        <div class="branch-title" style="color:var(--green);">✅ Agar bolte hain "Haan"</div>
+        Seedha Step 2 pe jao. Energy maintain karo!
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 2 -->
+  <div class="step-card" id="s2">
+    <div class="step-header" onclick="toggle('s2')">
+      <div class="step-num num-orange">02</div>
+      <div class="step-title-wrap">
+        <div class="step-title">Purpose — Kyun Call Kiya</div>
+        <div class="step-subtitle">Confusion hata do, value seedha dikhao.</div>
+      </div>
+      <div class="chevron">▼</div>
+    </div>
+    <div class="step-body">
+      <div class="bubble bubble-agent">
+        <span class="speaker">🧑‍💼 Agent</span>
+        "Sir, aajkal bahut saare students aur professionals chahte hain ki unke paas ek practical skill ho — jisse ya toh career grow kare ya ghar baithe extra income aaye. Isi liye main aapse connect karna chahta/chahti tha — Biluxe10 exactly yahi karta hai, aur bilkul affordable price mein."
+      </div>
+      <div class="tip-box">
+        <span class="tip-icon">🎯</span>
+        <span>Yeh step short rakhna hai — sirf purpose batao. Pitch abhi mat karo. Pehle customer ko samjho.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 3 -->
+  <div class="step-card" id="s3">
+    <div class="step-header" onclick="toggle('s3')">
+      <div class="step-num num-orange">03</div>
+      <div class="step-title-wrap">
+        <div class="step-title">Qualification — Customer Ko Samjho</div>
+        <div class="step-subtitle">Sahi question se sahi pitch milti hai.</div>
+      </div>
+      <div class="chevron">▼</div>
+    </div>
+    <div class="step-body">
+
+      <div class="q-block">
+        <div class="q-label">❓ Pehla Question — Situation Samjho</div>
+        "Sir, kya aap abhi padh rahe hain ya kahi kaam kar rahe hain?"
+      </div>
+
+      <div class="branch-block">
+        <div class="branch-title">🎓 Agar Student hai</div>
+        "Aap kaunsa course kar rahe hain? Aur aage kya plan hai — job ya khud ka kuch start karna?"
+      </div>
+      <div class="branch-block" style="background:#f0f4ff; border-color:#6d87d6;">
+        <div class="branch-title" style="color:#1a4fa0;">💼 Agar Working hai</div>
+        "Sir, kya aap koi new skill seekhna chahenge — career growth ke liye ya side income ke liye?"
+      </div>
+
+      <div class="tip-box" style="background:#f0f4ff;">
+        <span class="tip-icon">👂</span>
+        <span>Dhyan se suno. Jitna zyada customer bolta hai, utna easy hoga closing. Bolo mat, suno zyada.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 4 -->
+  <div class="step-card" id="s4">
+    <div class="step-header" onclick="toggle('s4')">
+      <div class="step-num num-orange">04</div>
+      <div class="step-title-wrap">
+        <div class="step-title">Pain Point — Unki Problem Dhundo</div>
+        <div class="step-subtitle">Log problem solve karne ke liye khareedne mein invest karte hain.</div>
+      </div>
+      <div class="chevron">▼</div>
+    </div>
+    <div class="step-body">
+      <div class="q-block">
+        <div class="q-label">❓ Key Question</div>
+        "Sir, abhi aapke liye sabse badi challenge kya hai — career mein ya income mein?"
+      </div>
+
+      <hr class="divider">
+
+      <div class="obj-card">
+        <div class="obj-trigger">
+          <span class="obj-badge">Answer 1</span>
+          "Koi skill nahi hai mere paas"
+        </div>
+        <div class="obj-body">
+          <div class="obj-reply">
+            <div class="reply-label">✅ Tumhara Reply</div>
+            "Sir, bilkul sahi baat ki aapne — aur exactly isi wajah se kaafi students Biluxe10 join karte hain. Yahan zero se start karke professional level tak seekh sakte hain."
+          </div>
+        </div>
+      </div>
+
+      <div class="obj-card">
+        <div class="obj-trigger">
+          <span class="obj-badge">Answer 2</span>
+          "Achhi job chahiye"
+        </div>
+        <div class="obj-body">
+          <div class="obj-reply">
+            <div class="reply-label">✅ Tumhara Reply</div>
+            "Sir, aaj companies degree se zyada practical skills dekhti hain. Agar aapke paas ek industry-relevant skill hai, toh aapka resume automatically strong ho jaata hai."
+          </div>
+        </div>
+      </div>
+
+      <div class="obj-card">
+        <div class="obj-trigger">
+          <span class="obj-badge">Answer 3</span>
+          "Side income chahiye"
+        </div>
+        <div class="obj-body">
+          <div class="obj-reply">
+            <div class="reply-label">✅ Tumhara Reply</div>
+            "Perfect sir! Hamare bahut saare learners exactly isi reason se join karte hain — skill seekhke freelance karte hain, ghar se kaam karte hain, ya apna kuch shuru karte hain."
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 5 -->
+  <div class="step-card" id="s5">
+    <div class="step-header" onclick="toggle('s5')">
+      <div class="step-num num-gold">05</div>
+      <div class="step-title-wrap">
+        <div class="step-title">Biluxe10 Present Karo</div>
+        <div class="step-subtitle">Ab platform explain karo — briefly aur clearly.</div>
+      </div>
+      <div class="chevron">▼</div>
+    </div>
+    <div class="step-body">
+      <div class="bubble bubble-agent">
+        <span class="speaker">🧑‍💼 Agent</span>
+        "Sir, Biluxe10 ek aise platform hai jahan aap industry-relevant skills seekh sakte ho — bilkul affordable price mein. Aur kya milta hai?"
+      </div>
+      <div class="benefit-list mt8">
+        <div class="benefit-item"><span class="bi">🔁</span> Lifetime Access — ek baar lo, lifetime seekho</div>
+        <div class="benefit-item"><span class="bi">📹</span> Recorded Classes — apni speed se seekho</div>
+        <div class="benefit-item"><span class="bi">⏰</span> Apne time pe — koi pressure nahi</div>
+        <div class="benefit-item"><span class="bi">🎓</span> Certificate milega completion pe</div>
+        <div class="benefit-item"><span class="bi">🤝</span> Support Team — help ke liye 24/7 available</div>
+        <div class="benefit-item"><span class="bi">🛠️</span> Multiple Skills — ek se zyada courses available</div>
+      </div>
+      <div class="bubble bubble-agent mt8">
+        <span class="speaker">🧑‍💼 Agent</span>
+        "Aur abhi special discounted price chal rahi hai — regular se kaafi kam mein."
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 6 -->
+  <div class="step-card" id="s6">
+    <div class="step-header" onclick="toggle('s6')">
+      <div class="step-num num-gold">06</div>
+      <div class="step-title-wrap">
+        <div class="step-title">Urgency Create Karo</div>
+        <div class="step-subtitle">Limited offer = act now mindset.</div>
+      </div>
+      <div class="chevron">▼</div>
+    </div>
+    <div class="step-body">
+      <div class="bubble bubble-agent">
+        <span class="speaker">🧑‍💼 Agent</span>
+        "Sir, normally yeh courses market mein kaafi zyada price par milte hain. Lekin abhi Biluxe10 pe special offer chal raha hai:"
+      </div>
+      <div class="price-grid mt8">
+        <div class="price-tag">
+          <div class="pt-name">👗 Fashion Design</div>
+          <div class="pt-price">₹2,100</div>
+        </div>
+        <div class="price-tag">
+          <div class="pt-name">💄 Makeup Artist</div>
+          <div class="pt-price">₹2,300</div>
+        </div>
+        <div class="price-tag">
+          <div class="pt-name">🌿 Mehndi Design</div>
+          <div class="pt-price">₹1,999</div>
+        </div>
+        <div class="price-tag" style="background:#fff3f0; border-color:var(--accent);">
+          <div class="pt-name" style="color:var(--accent);">🔥 Combo Pack</div>
+          <div class="pt-price" style="color:var(--accent);">Best Deal</div>
+        </div>
+      </div>
+      <div class="tip-box">
+        <span class="tip-icon">⚡</span>
+        <span>Price bataane ke baad RUKO mat — seedha Trial Close pe jao. Silence = customer ke dimaag mein decision banata hai.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 7 -->
+  <div class="step-card" id="s7">
+    <div class="step-header" onclick="toggle('s7')">
+      <div class="step-num num-green">07</div>
+      <div class="step-title-wrap">
+        <div class="step-title">Trial Close — Interest Check Karo</div>
+        <div class="step-subtitle">Direct "buy karoge?" mat pucho — smart way use karo.</div>
+      </div>
+      <div class="chevron">▼</div>
+    </div>
+    <div class="step-body">
+      <div class="flow-row">
+        <span class="rule-tag no">❌ GALAT</span>
+        <span class="flow-pill">"Kya aap khareedna chahoge?"</span>
+      </div>
+      <div class="flow-row">
+        <span class="rule-tag yes">✅ SAHI</span>
+        <span class="flow-pill">"Sir, kaunsa skill aapke liye sabse zyada useful lagta hai abhi?"</span>
+      </div>
+      <div class="flow-row">
+        <span class="rule-tag yes">✅ SAHI</span>
+        <span class="flow-pill">"Sir, Fashion Design ya Makeup Artist — kaunsa aapke goals se match karta hai?"</span>
+      </div>
+      <div class="tip-box">
+        <span class="tip-icon">🧠</span>
+        <span>Yeh questions assume karte hain ki customer interested hai. Isse customer khud-ba-khud decision ki taraf move karta hai.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       OBJECTION HANDLING
+  ══════════════════════════════════════════════ -->
+  <div class="section-label">⚔️ Objection Handling</div>
+
+  <div class="step-card" id="obj">
+    <div class="step-header" onclick="toggle('obj')">
+      <div class="step-num num-red">🛡️</div>
+      <div class="step-title-wrap">
+        <div class="step-title">5 Common Objections — Tode Har Ek Ko</div>
+        <div class="step-subtitle">Yeh answers yaad kar lo — practice karo mirror ke saamne</div>
+      </div>
+      <div class="chevron">▼</div>
+    </div>
+    <div class="step-body">
+
+      <!-- OBJ 1 -->
+      <div class="obj-card">
+        <div class="obj-trigger">
+          <span class="obj-badge">Objection 1</span>
+          "Not Interested" / "Interested nahi hoon"
+        </div>
+        <div class="obj-body">
+          <div class="obj-customer">"Mujhe interest nahi hai."</div>
+          <div class="obj-reply">
+            <div class="reply-label">✅ Tumhara Reply</div>
+            "Main samjhata/samajhti hoon sir. Ek quick cheez puchoon — kya aap feel karte hain ki abhi skill ki zaroorat nahi, ya bas timing sahi nahi lag rahi?"
+          </div>
+          <div class="obj-followup">👂 Customer ko baat karne do. Jo woh bolein — usi ko address karo. Mat argue karo.</div>
+        </div>
+      </div>
+
+      <!-- OBJ 2 -->
+      <div class="obj-card">
+        <div class="obj-trigger">
+          <span class="obj-badge">Objection 2</span>
+          "Paisa nahi hai"
+        </div>
+        <div class="obj-body">
+          <div class="obj-customer">"Abhi afford nahi kar sakta."</div>
+          <div class="obj-reply">
+            <div class="reply-label">✅ Tumhara Reply</div>
+            "Bilkul samajh sakta/sakti hoon sir. Isliye hi humne pricing itni affordable rakhi hai — traditional institutes mein yahi course ₹15,000–₹20,000 tak hota hai. Agar yeh skill aapko earning shuru karwa deta hai, toh kya yeh investment worth it nahi hogi?"
+          </div>
+          <div class="obj-followup">💡 Phir ruko — customer ko sochhne do.</div>
+        </div>
+      </div>
+
+      <!-- OBJ 3 -->
+      <div class="obj-card">
+        <div class="obj-trigger">
+          <span class="obj-badge">Objection 3</span>
+          "Ghar pe puchna padega / Parents se poochhna hai"
+        </div>
+        <div class="obj-body">
+          <div class="obj-customer">"Mujhe apne parents se puchna hai pehle."</div>
+          <div class="obj-reply">
+            <div class="reply-label">✅ Tumhara Reply</div>
+            "Bilkul sir, yeh toh bahut achhi baat hai. Ek kaam karo — aap unhe kya batana chahoge? Main aapko woh exact points de deta/deti hoon jo unhe convince karne mein help karein, jaise platform ki credibility, price, aur kya milega."
+          </div>
+          <div class="obj-followup">📋 Benefits explain karo jaise parents sun rahe hain — simple language mein.</div>
+        </div>
+      </div>
+
+      <!-- OBJ 4 -->
+      <div class="obj-card">
+        <div class="obj-trigger">
+          <span class="obj-badge">Objection 4</span>
+          "Sochna hai / Time chahiye"
+        </div>
+        <div class="obj-body">
+          <div class="obj-customer">"Main baad mein sochta hoon."</div>
+          <div class="obj-reply">
+            <div class="reply-label">✅ Tumhara Reply</div>
+            "Sure sir, bilkul. Kya aap mujhe bata sakte hain ki kaunsi cheez sochna chahte hain — course content, price, ya yeh aapko actually kaam aayega ya nahi? Main usi pe exactly help kar sakta/sakti hoon abhi."
+          </div>
+          <div class="obj-followup">🎯 "Baad mein" ko specific concern mein convert karo — tab handle karo.</div>
+        </div>
+      </div>
+
+      <!-- OBJ 5 -->
+      <div class="obj-card">
+        <div class="obj-trigger">
+          <span class="obj-badge">Objection 5</span>
+          "Pehle se koi aur course kar raha hoon"
+        </div>
+        <div class="obj-body">
+          <div class="obj-customer">"Main already ek course kar raha hoon kisi aur jagah."</div>
+          <div class="obj-reply">
+            <div class="reply-label">✅ Tumhara Reply</div>
+            "Wah sir, bahut achhi baat hai — continuous learning bahut important hai! Kaunsa course kar rahe ho? Kyunki Biluxe10 ke courses actually complementary hain — aap dono saath mein kar sakte hain, ya ek complete karke doosra shuru kar sakte hain. Double skill = double opportunity."
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       CLOSING
+  ══════════════════════════════════════════════ -->
+  <div class="section-label">🏆 Closing — Deal Seal Karo</div>
+
+  <div class="closing-banner">
+    <h2>Closing Script 🎯</h2>
+    <p>Objections handle hone ke baad — yahan se deal lock hoti hai</p>
+
+    <div class="close-bubble">
+      <span class="speaker">🧑‍💼 Agent (Closing Line)</span>
+      "Sir, jo aapne abhi mujhe bataya — usse main honestly feel karta/karti hoon ki yeh course aapke goals ke saath bilkul match karta hai.<br><br>
+      Aur abhi jo offer chal rahi hai woh limited time ke liye hai.<br><br>
+      Kya main aapko aaj enrollment complete karne mein help karoon?"
+    </div>
+
+    <div class="pay-bubble" style="margin-top: 10px;">
+      <span class="speaker">💳 Payment Close — Agar Haan Bole</span>
+      "Perfect sir! Main abhi aapko payment details share karta/karti hoon.<br><br>
+      Payment ho jaane ke baad mujhe screenshot bhej dena — main turant aapka access activate kar dunga/dungi.<br><br>
+      Koi bhi problem ho toh main hoon hi aapke liye. 😊"
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       GOLDEN RULES
+  ══════════════════════════════════════════════ -->
+  <div class="section-label">⭐ Golden Rules — Hamesha Yaad Rakhna</div>
+
+  <div class="step-card" id="rules">
+    <div class="step-header" onclick="toggle('rules')">
+      <div class="step-num num-gold">⭐</div>
+      <div class="step-title-wrap">
+        <div class="step-title">Top Agent Rules</div>
+        <div class="step-subtitle">Yeh follow karne waale agents sabse zyada close karte hain</div>
+      </div>
+      <div class="chevron">▼</div>
+    </div>
+    <div class="step-body">
+      <div class="benefit-list">
+        <div class="benefit-item"><span class="bi">😊</span> Hamesha smile ke saath bolo — phone pe bhi mehsoos hota hai</div>
+        <div class="benefit-item"><span class="bi">👂</span> Zyada suno, kam bolo — 60% suno, 40% bolo</div>
+        <div class="benefit-item"><span class="bi">🙅</span> Argue mat karo — customer ko hamesha validate karo</div>
+        <div class="benefit-item"><span class="bi">⚡</span> Closing ke baad chup raho — jo pehle bole, haara</div>
+        <div class="benefit-item"><span class="bi">📞</span> Follow-up zaroor karo — "Sochne" waale 80% baar dusri call pe close hote hain</div>
+        <div class="benefit-item"><span class="bi">🔁</span> Har call se seekho — jo kaam kiya woh repeat karo</div>
+      </div>
+      <div class="tip-box" style="margin-top: 14px;">
+        <span class="tip-icon">🚀</span>
+        <span><strong>Sabse important rule:</strong> Rejection = redirection hai. Har "no" se "yes" ke paas ja rahe ho. Practice karo, consistent raho, results aayenge.</span>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<script>
+  function toggle(id) {
+    const card = document.getElementById(id);
+    card.classList.toggle('open');
+  }
+  // Open first card by default
+  document.getElementById('pre').classList.add('open');
+</script>
+</body>
+</html>
