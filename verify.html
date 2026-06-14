@@ -1,0 +1,1186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Biluxe10 — Verify Certificate</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,700;0,9..144,900;1,9..144,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&family=Great+Vibes&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+--bg:#07070A;--bg2:#0D0D12;--bg3:#121218;--bg4:#18181F;--bg5:#1E1E28;
+--border:rgba(255,255,255,0.055);--border2:rgba(255,255,255,0.1);--border3:rgba(255,255,255,0.16);
+--gold:#C8A96E;--gold2:#E2C48A;--gold3:#F0D9A8;
+--gA:rgba(200,169,110,0.08);--gB:rgba(200,169,110,0.15);
+--green:#22C55E;--grA:rgba(34,197,94,0.1);
+--red:#EF4444;--reA:rgba(239,68,68,0.1);
+--blue:#60A5FA;--blA:rgba(96,165,250,0.1);
+--vio:#A78BFA;--viA:rgba(167,139,250,0.1);
+--amber:#F59E0B;--amA:rgba(245,158,11,0.1);
+--cyan:#22D3EE;--cyA:rgba(34,211,238,0.1);
+--ink:#07070A;--text:#EDEDF0;--t2:#9B9BA8;--t3:#4B4B5A;
+--fd:'Fraunces',serif;--fb:'Plus Jakarta Sans',sans-serif;--fm:'JetBrains Mono',monospace;
+--r:14px;--rs:10px;
+--ease:cubic-bezier(0.16,1,0.3,1);--spring:cubic-bezier(0.34,1.56,0.64,1);
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--fb);line-height:1.6;overflow-x:hidden;min-height:100vh}
+::-webkit-scrollbar{width:3px}
+::-webkit-scrollbar-thumb{background:rgba(200,169,110,0.2);border-radius:2px}
+button,input,select,textarea{font-family:var(--fb)}
+body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+background:radial-gradient(ellipse 600px 400px at 20% 0%,rgba(200,169,110,0.05),transparent),
+radial-gradient(ellipse 400px 400px at 85% 80%,rgba(167,139,250,0.04),transparent)}
+.topbar{height:60px;background:rgba(7,7,10,0.96);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 16px;position:sticky;top:0;z-index:200;gap:10px}
+.tb-logo{font-family:var(--fd);font-size:1.05rem;font-weight:900;color:var(--gold)}
+.tb-logo sup{font-size:.45em;color:var(--t3);font-weight:400;vertical-align:super}
+.tb-tag{font-family:var(--fm);font-size:.48rem;color:var(--t3);letter-spacing:.14em;text-transform:uppercase;padding:4px 10px;border:1px solid var(--border);border-radius:20px}
+.tb-verify-badge{display:flex;align-items:center;gap:5px;padding:5px 11px;background:var(--grA);border:1px solid rgba(34,197,94,.25);border-radius:20px;font-family:var(--fm);font-size:.48rem;color:var(--green);letter-spacing:.06em}
+.tb-verify-badge::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--green);animation:pulse 2s ease infinite;flex-shrink:0}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+#main{max-width:580px;margin:0 auto;padding:16px 14px 80px;display:flex;flex-direction:column;gap:16px;position:relative;z-index:1}
+.search-hero{border-radius:20px;padding:24px 18px;background:linear-gradient(135deg,rgba(200,169,110,0.1),rgba(167,139,250,0.05));border:1px solid rgba(200,169,110,0.22);position:relative;overflow:hidden}
+.search-hero::before{content:'';position:absolute;top:-50px;right:-50px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(200,169,110,0.1),transparent);pointer-events:none}
+.sh-tag{font-family:var(--fm);font-size:.5rem;color:var(--gold);letter-spacing:.16em;text-transform:uppercase;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.sh-dot{width:5px;height:5px;border-radius:50%;background:var(--gold);animation:pulse 2s ease infinite}
+.sh-title{font-family:var(--fd);font-size:1.5rem;font-weight:900;line-height:1.2;margin-bottom:5px}
+.sh-title em{font-style:italic;color:var(--gold)}
+.sh-sub{font-size:.74rem;color:var(--t2);line-height:1.7;margin-bottom:18px}
+.search-box{display:flex;gap:0;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--rs);overflow:hidden;transition:border-color .2s}
+.search-box:focus-within{border-color:rgba(200,169,110,.4)}
+.search-inp{flex:1;background:none;border:none;padding:13px 15px;font-size:.82rem;color:var(--text);outline:none;font-family:var(--fm);letter-spacing:.04em}
+.search-inp::placeholder{color:var(--t3);font-family:var(--fb);letter-spacing:0;font-size:.78rem}
+.search-btn{padding:13px 18px;background:linear-gradient(135deg,var(--gold),var(--gold2));border:none;color:var(--ink);font-weight:800;font-size:.72rem;cursor:pointer;transition:all .2s;white-space:nowrap;display:flex;align-items:center;gap:6px;-webkit-tap-highlight-color:transparent}
+.search-btn:active{opacity:.85;transform:scale(.97)}
+.search-btn svg{width:14px;height:14px;stroke:var(--ink);fill:none;stroke-width:2.5;stroke-linecap:round}
+.how-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.how-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:14px;display:flex;flex-direction:column;gap:8px}
+.how-n{font-family:var(--fd);font-size:1.4rem;font-weight:900;color:var(--gold);line-height:1}
+.how-t{font-size:.74rem;font-weight:700;margin-bottom:2px}
+.how-s{font-family:var(--fm);font-size:.5rem;color:var(--t3);line-height:1.6}
+.loading-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:48px 20px;text-align:center}
+.spinner{width:36px;height:36px;border:2.5px solid rgba(200,169,110,.12);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-t{font-family:var(--fd);font-size:1rem;font-weight:700}
+.loading-s{font-size:.72rem;color:var(--t2)}
+.verified-banner{background:linear-gradient(135deg,rgba(34,197,94,.1),rgba(34,197,94,.04));border:1px solid rgba(34,197,94,.25);border-radius:16px;padding:16px 18px;display:flex;align-items:center;gap:14px}
+.vb-ic{width:46px;height:46px;border-radius:50%;background:var(--grA);border:2px solid rgba(34,197,94,.3);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.vb-ic svg{width:22px;height:22px;stroke:var(--green);fill:none;stroke-width:2.5;stroke-linecap:round}
+.vb-t{font-family:var(--fd);font-size:1rem;font-weight:700;color:var(--green);margin-bottom:2px}
+.vb-s{font-family:var(--fm);font-size:.52rem;color:var(--t2);line-height:1.6}
+.prof-card{background:var(--bg2);border:1px solid rgba(200,169,110,.2);border-radius:18px;overflow:hidden}
+.prof-card-top{background:linear-gradient(135deg,rgba(200,169,110,.12),rgba(167,139,250,.05));padding:20px 18px;display:flex;align-items:center;gap:16px;border-bottom:1px solid var(--border)}
+.prof-av{width:62px;height:62px;border-radius:50%;background:linear-gradient(135deg,var(--gold),rgba(200,169,110,.4));display:flex;align-items:center;justify-content:center;font-family:var(--fd);font-size:1.6rem;font-weight:900;color:var(--ink);border:3px solid rgba(200,169,110,.4);flex-shrink:0}
+.prof-nm{font-family:var(--fd);font-size:1.2rem;font-weight:900;line-height:1.2;margin-bottom:3px}
+.prof-em{font-family:var(--fm);font-size:.56rem;color:var(--t3);margin-bottom:6px}
+.prof-tags{display:flex;gap:6px;flex-wrap:wrap}
+.prof-rows{padding:14px 18px;display:flex;flex-direction:column;gap:0}
+.prof-row{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border);font-size:.74rem}
+.prof-row:last-child{border-bottom:none}
+.prof-row-l{color:var(--t3);display:flex;align-items:center;gap:6px}
+.prof-row-l svg{width:12px;height:12px;stroke:var(--t3);fill:none;stroke-width:2;stroke-linecap:round}
+.prof-row-r{font-weight:600;color:var(--text);text-align:right;font-size:.72rem;max-width:55%;word-break:break-all}
+.cert-visual{background:#FFFDF6;border-radius:14px;overflow:hidden;border:2px solid rgba(200,169,110,.3);box-shadow:0 8px 40px rgba(0,0,0,.4);position:relative}
+.cv-stripe{height:5px;background:linear-gradient(90deg,#C8A96E,#E2C48A,#C8A96E)}
+.cv-body{padding:22px 20px 18px;color:#1a1a1a}
+.cv-logo-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid rgba(200,169,110,.2)}
+.cv-logo{font-family:'Fraunces',serif;font-size:1.3rem;font-weight:900;color:#1a1a1a}
+.cv-logo sup{font-size:.4em;color:#888;font-weight:400;vertical-align:super}
+.cv-org{font-family:'JetBrains Mono',monospace;font-size:.4rem;color:#8B6914;text-transform:uppercase;letter-spacing:.1em;border:1px solid rgba(200,169,110,.3);padding:3px 8px;border-radius:4px}
+.cv-of{font-family:'JetBrains Mono',monospace;font-size:.46rem;color:#888;text-transform:uppercase;letter-spacing:.2em;text-align:center;margin-bottom:3px}
+.cv-completion{font-family:'Fraunces',serif;font-size:1.3rem;font-weight:900;color:#1a1a1a;text-align:center;margin-bottom:10px}
+.cv-completion span{color:#C8A96E}
+.cv-divider{display:flex;align-items:center;gap:8px;margin:8px 0}
+.cv-dline{flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(200,169,110,.4),transparent)}
+.cv-star{color:#C8A96E;font-size:.7rem}
+.cv-certifies{font-family:'JetBrains Mono',monospace;font-size:.4rem;color:#888;text-transform:uppercase;letter-spacing:.16em;text-align:center;margin-bottom:4px}
+.cv-name{font-family:'Great Vibes',cursive;font-size:2rem;color:#1a1a1a;text-align:center;line-height:1.2;margin-bottom:8px}
+.cv-course-box{background:linear-gradient(135deg,rgba(200,169,110,.1),rgba(200,169,110,.04));border:1px solid rgba(200,169,110,.3);border-radius:8px;padding:10px 14px;text-align:center;margin-bottom:10px}
+.cv-course-lbl{font-family:'JetBrains Mono',monospace;font-size:.38rem;color:#8B6914;letter-spacing:.12em;text-transform:uppercase;margin-bottom:3px}
+.cv-course-nm{font-family:'Fraunces',serif;font-size:.92rem;font-weight:700;color:#1a1a1a}
+.cv-achs{display:flex;flex-wrap:wrap;gap:5px;justify-content:center;margin-bottom:10px}
+.cv-ach{font-family:'JetBrains Mono',monospace;font-size:.4rem;padding:3px 8px;border-radius:14px;font-weight:700}
+.cv-ach.exam{background:rgba(34,197,94,.1);color:#16a34a;border:1px solid rgba(34,197,94,.25)}
+.cv-ach.project{background:rgba(96,165,250,.1);color:#2563eb;border:1px solid rgba(96,165,250,.25)}
+.cv-ach.seminar{background:rgba(34,211,238,.1);color:#0891b2;border:1px solid rgba(34,211,238,.25)}
+.cv-sig-row{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:10px;gap:8px}
+.cv-sig-block{flex:1;text-align:center}
+.cv-sig-line{height:1px;background:rgba(0,0,0,.15);margin-bottom:4px}
+.cv-sig-nm{font-family:'JetBrains Mono',monospace;font-size:.4rem;color:#333;letter-spacing:.04em;font-weight:700}
+.cv-sig-title{font-family:'JetBrains Mono',monospace;font-size:.35rem;color:#888;margin-top:1px}
+.cv-seal{width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#C8A96E,#E2C48A);display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0;position:relative}
+.cv-seal::before{content:'';position:absolute;inset:3px;border-radius:50%;border:1.5px dashed rgba(255,255,255,.5)}
+.cv-seal-t{font-family:'JetBrains Mono',monospace;font-size:.28rem;color:#7a4e0a;font-weight:700;letter-spacing:.02em;text-align:center;line-height:1.4;position:relative;z-index:1}
+.cv-footer{background:rgba(200,169,110,.06);border-top:1px solid rgba(200,169,110,.15);padding:8px 14px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.cv-id-lbl{font-family:'JetBrains Mono',monospace;font-size:.35rem;color:#888;text-transform:uppercase;letter-spacing:.08em}
+.cv-id-val{font-family:'JetBrains Mono',monospace;font-size:.44rem;color:#333;font-weight:700;letter-spacing:.04em}
+.cv-issued{font-family:'JetBrains Mono',monospace;font-size:.38rem;color:#555;text-align:right}
+.cv-bottom-stripe{height:4px;background:linear-gradient(90deg,#C8A96E,#E2C48A,#7C3AED,#E2C48A,#C8A96E)}
+.tabs-wrap{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
+.tabs-nav{display:flex;border-bottom:1px solid var(--border);overflow-x:auto;scrollbar-width:none;background:var(--bg3)}
+.tabs-nav::-webkit-scrollbar{display:none}
+.tab-btn{flex-shrink:0;padding:12px 14px;font-family:var(--fm);font-size:.52rem;font-weight:700;color:var(--t3);letter-spacing:.06em;text-transform:uppercase;cursor:pointer;border:none;background:none;border-bottom:2px solid transparent;transition:all .2s;-webkit-tap-highlight-color:transparent;display:flex;align-items:center;gap:5px}
+.tab-btn svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round}
+.tab-btn.on{color:var(--gold);border-bottom-color:var(--gold)}
+.tab-panel{display:none;padding:16px}
+.tab-panel.on{display:block}
+.bdg{display:inline-flex;align-items:center;padding:3px 7px;border-radius:5px;font-family:var(--fm);font-size:.5rem;font-weight:700;letter-spacing:.04em}
+.bdg.ok{background:var(--grA);color:var(--green);border:1px solid rgba(34,197,94,.2)}
+.bdg.pn{background:var(--amA);color:var(--amber);border:1px solid rgba(245,158,11,.2)}
+.bdg.gd{background:var(--gA);color:var(--gold);border:1px solid rgba(200,169,110,.2)}
+.bdg.bl{background:var(--blA);color:var(--blue);border:1px solid rgba(96,165,250,.2)}
+.bdg.vi{background:var(--viA);color:var(--vio);border:1px solid rgba(167,139,250,.2)}
+.bdg.cy{background:var(--cyA);color:var(--cyan);border:1px solid rgba(34,211,238,.2)}
+.bdg.rd{background:var(--reA);color:var(--red);border:1px solid rgba(239,68,68,.2)}
+.btn-g{padding:10px 18px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--ink);border:none;border-radius:var(--rs);font-weight:800;font-size:.74rem;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:6px;-webkit-tap-highlight-color:transparent}
+.btn-g:active{transform:scale(.96);opacity:.9}
+.btn-o{padding:10px 18px;background:transparent;color:var(--t2);border:1px solid var(--border2);border-radius:var(--rs);font-weight:600;font-size:.74rem;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:6px;-webkit-tap-highlight-color:transparent}
+.btn-o svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round}
+.share-row{display:flex;gap:8px;flex-wrap:wrap}
+.empty-tab{text-align:center;padding:32px 16px;color:var(--t3)}
+.empty-tab svg{width:32px;height:32px;stroke:var(--t3);fill:none;stroke-width:1.5;stroke-linecap:round;margin-bottom:10px;display:block;margin-left:auto;margin-right:auto}
+.empty-tab p{font-size:.74rem;line-height:1.7}
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);z-index:9999;background:var(--bg3);border:1px solid var(--border2);border-radius:20px;padding:11px 18px;opacity:0;transition:all .32s var(--spring);font-size:.74rem;color:var(--text);box-shadow:0 12px 40px rgba(0,0,0,.5);white-space:nowrap;max-width:92vw}
+#toast.on{transform:translateX(-50%) translateY(0);opacity:1}
+.sec-h{font-family:var(--fd);font-size:1rem;font-weight:900;margin-bottom:10px}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.fade-up{animation:fadeUp .4s var(--ease) both}
+.no-result{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:32px 20px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:12px}
+.no-result-ic{width:60px;height:60px;border-radius:50%;background:var(--reA);border:1px solid rgba(239,68,68,.2);display:flex;align-items:center;justify-content:center}
+.no-result-ic svg{width:26px;height:26px;stroke:var(--red);fill:none;stroke-width:1.8;stroke-linecap:round}
+.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.stat-box{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:13px;text-align:center}
+.stat-n{font-family:var(--fd);font-size:1.3rem;font-weight:900;color:var(--gold);line-height:1}
+.stat-l{font-family:var(--fm);font-size:.44rem;color:var(--t3);text-transform:uppercase;letter-spacing:.08em;margin-top:4px}
+.timeline{display:flex;flex-direction:column;gap:0;position:relative}
+.timeline::before{content:'';position:absolute;left:17px;top:0;bottom:0;width:1px;background:linear-gradient(180deg,var(--gold),rgba(200,169,110,.1));z-index:0}
+.tl-item{display:flex;gap:14px;position:relative;z-index:1;padding-bottom:16px}
+.tl-item:last-child{padding-bottom:0}
+.tl-dot{width:34px;height:34px;border-radius:50%;border:2px solid var(--gold);background:var(--bg3);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.tl-dot svg{width:14px;height:14px;stroke:var(--gold);fill:none;stroke-width:2;stroke-linecap:round}
+.tl-content{flex:1;min-width:0;padding-top:6px}
+.tl-t{font-size:.78rem;font-weight:700;margin-bottom:2px}
+.tl-s{font-family:var(--fm);font-size:.52rem;color:var(--t3);line-height:1.6}
+.tl-date{font-family:var(--fm);font-size:.46rem;color:var(--t3);margin-top:3px}
+.exam-card{background:var(--bg3);border:1px solid rgba(167,139,250,.18);border-radius:var(--r);overflow:hidden}
+.exam-card-head{padding:14px 16px;border-bottom:1px solid var(--border);background:var(--viA);display:flex;align-items:center;justify-content:space-between}
+.exam-card-t{font-family:var(--fd);font-size:.95rem;font-weight:700}
+.exam-score-big{font-family:var(--fd);font-size:2.6rem;font-weight:900;line-height:1;text-align:center;margin-bottom:4px}
+.exam-score-big.pass{color:var(--green)}
+.exam-score-big.fail{color:var(--red)}
+.exam-bar-bg{height:8px;background:var(--bg4);border-radius:8px;overflow:hidden}
+.exam-bar-fill{height:100%;border-radius:8px;transition:width 1s var(--ease)}
+.exam-bar-fill.pass{background:linear-gradient(90deg,var(--green),rgba(34,197,94,.5))}
+.exam-bar-fill.fail{background:linear-gradient(90deg,var(--red),rgba(239,68,68,.5))}
+.q-review-item{background:var(--bg4);border-radius:var(--rs);padding:12px;border:1px solid var(--border);margin-bottom:8px}
+.q-review-item:last-child{margin-bottom:0}
+.q-review-item.correct{border-color:rgba(34,197,94,.25);background:rgba(34,197,94,.04)}
+.q-review-item.wrong{border-color:rgba(239,68,68,.2);background:rgba(239,68,68,.04)}
+.q-num-lbl{font-family:var(--fm);font-size:.46rem;color:var(--t3);margin-bottom:5px}
+.q-text-lbl{font-size:.74rem;font-weight:600;margin-bottom:8px;line-height:1.5}
+.q-opt-row{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:var(--rs);font-size:.7rem;border:1px solid transparent;margin-bottom:4px}
+.q-opt-row:last-child{margin-bottom:0}
+.q-opt-row.correct-ans{background:var(--grA);border-color:rgba(34,197,94,.3);color:var(--green);font-weight:700}
+.q-opt-row.wrong-chosen{background:var(--reA);border-color:rgba(239,68,68,.25);color:var(--red);font-weight:700}
+.q-opt-row.neutral{background:var(--bg3);border-color:var(--border);color:var(--t2)}
+.q-opt-dot{width:14px;height:14px;border-radius:50%;border:2px solid currentColor;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.q-opt-dot-in{width:5px;height:5px;border-radius:50%;background:currentColor}
+.project-card{background:var(--bg3);border:1px solid rgba(96,165,250,.18);border-radius:var(--r);overflow:hidden}
+.project-card-head{padding:14px 16px;border-bottom:1px solid var(--border);background:var(--blA)}
+.project-card-t{font-family:var(--fd);font-size:.95rem;font-weight:700;margin-bottom:3px}
+.project-card-s{font-family:var(--fm);font-size:.52rem;color:var(--t3)}
+.project-body{padding:14px 16px;display:flex;flex-direction:column;gap:10px}
+.project-field-l{font-family:var(--fm);font-size:.48rem;color:var(--t3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:3px}
+.project-field-v{font-size:.76rem;color:var(--text);line-height:1.65}
+.project-link-btn{display:inline-flex;align-items:center;gap:6px;padding:9px 14px;background:var(--blA);border:1px solid rgba(96,165,250,.3);border-radius:var(--rs);font-size:.72rem;font-weight:700;color:var(--blue);cursor:pointer;text-decoration:none;transition:all .2s;-webkit-tap-highlight-color:transparent;word-break:break-all}
+.project-link-btn svg{width:13px;height:13px;stroke:var(--blue);fill:none;stroke-width:2;stroke-linecap:round;flex-shrink:0}
+.seminar-card{background:var(--bg3);border:1px solid rgba(34,211,238,.18);border-radius:var(--r);overflow:hidden;margin-bottom:12px}
+.seminar-card:last-child{margin-bottom:0}
+.seminar-card-head{padding:14px 16px;border-bottom:1px solid var(--border);background:var(--cyA)}
+.seminar-card-t{font-family:var(--fd);font-size:.95rem;font-weight:700;margin-bottom:3px}
+.seminar-card-s{font-family:var(--fm);font-size:.52rem;color:var(--t3)}
+.seminar-body{padding:14px 16px;display:flex;flex-direction:column;gap:10px}
+.seminar-link-btn{display:inline-flex;align-items:center;gap:6px;padding:9px 14px;background:var(--cyA);border:1px solid rgba(34,211,238,.3);border-radius:var(--rs);font-size:.72rem;font-weight:700;color:var(--cyan);cursor:pointer;text-decoration:none;transition:all .2s;word-break:break-all}
+.seminar-link-btn svg{width:13px;height:13px;stroke:var(--cyan);fill:none;stroke-width:2;stroke-linecap:round;flex-shrink:0}
+.vid-embed-wrap{position:relative;width:100%;padding-bottom:56.25%;overflow:hidden;background:#000;border-radius:8px}
+.vid-embed-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:none;border-radius:8px}
+</style>
+</head>
+<body>
+<div id="toast"></div>
+<div class="topbar">
+  <div class="tb-logo">Biluxe<sup>10</sup></div>
+  <div class="tb-tag">Certificate Verification</div>
+  <div class="tb-verify-badge">Secure</div>
+</div>
+<div id="main">
+  <div class="search-hero fade-up">
+    <div class="sh-tag"><div class="sh-dot"></div>OFFICIAL VERIFICATION PORTAL</div>
+    <div class="sh-title">Verify <em>Authenticity</em></div>
+    <div class="sh-sub">Enter a Biluxe10 Certificate ID to verify its authenticity and view the holder's complete record — exam results, project, and seminars.</div>
+    <div class="search-box">
+      <input class="search-inp" id="certIdInp" placeholder="e.g. BLX-A1B2C3 or BLX-SP-XY123" maxlength="30" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false" onkeydown="if(event.key==='Enter')doVerify()">
+      <button class="search-btn" onclick="doVerify()">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        Verify
+      </button>
+    </div>
+  </div>
+  <div id="howSection">
+    <div class="sec-h">How Verification Works</div>
+    <div class="how-grid">
+      <div class="how-card"><div class="how-n">01</div><div class="how-t">Enter Certificate ID</div><div class="how-s">Type or paste the BLX-XXXXXX code from the certificate</div></div>
+      <div class="how-card"><div class="how-n">02</div><div class="how-t">Instant Lookup</div><div class="how-s">System searches all Firestore collections live</div></div>
+      <div class="how-card"><div class="how-n">03</div><div class="how-t">View Evidence</div><div class="how-s">See exam results, projects, and seminars submitted</div></div>
+      <div class="how-card"><div class="how-n">04</div><div class="how-t">Confirm Validity</div><div class="how-s">Verified badge confirms the certificate is genuine</div></div>
+    </div>
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;display:flex;gap:10px;align-items:flex-start;margin-top:4px">
+      <svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:var(--gold);fill:none;stroke-width:1.8;stroke-linecap:round;flex-shrink:0;margin-top:2px"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      <div style="font-size:.72rem;color:var(--t2);line-height:1.75">All certificates are issued only after admin approval. This portal pulls <strong style="color:var(--gold)">live data</strong> from Firestore — only real submitted data is shown.</div>
+    </div>
+  </div>
+  <div id="resultArea" style="display:none"></div>
+</div>
+<script>
+const firebaseConfig={
+  apiKey:"AIzaSyDxxkC9iD1V1w-53Kf4oBrHEXlBLvCc7sE",
+  authDomain:"biluxe10-3e894.firebaseapp.com",
+  projectId:"biluxe10-3e894",
+  storageBucket:"biluxe10-3e894.appspot.com",
+  messagingSenderId:"804749588233",
+  appId:"1:804749588233:web:7777648c0c7834733c05d8"
+};
+if(!firebase.apps.length)firebase.initializeApp(firebaseConfig);
+const DB=firebase.firestore();
+
+const COLS=['user_collection','User-collection','user-collection','users','User_collection'];
+
+const BUNDLES=[
+  {id:'starter',name:'Starter',price:499,courses:[
+    {name:'Digital Entrepreneurship Basics'},{name:'Canva & Content Creation'},{name:'WhatsApp Business Marketing'},{name:'ChatGPT for Daily Work'}
+  ]},
+  {id:'pro',name:'Pro',price:999,courses:[
+    {name:'Affiliate Marketing Mastery'},{name:'SEO & Blogging'},{name:'Social Media Management'},{name:'Email Marketing'},{name:'Google Ads & Facebook Ads'},{name:'Freelancing Mastery'}
+  ]},
+  {id:'professional',name:'Professional',price:2499,courses:[
+    {name:'UI/UX Design Complete'},{name:'No Code Web Development'},{name:'Video Editing with CapCut'},{name:'Podcast & Audio Production'},{name:'Ecommerce Complete Course'},{name:'Dropshipping & Print on Demand'}
+  ]},
+  {id:'elite',name:'Elite',price:3699,courses:[
+    {name:'Excel for Data Analysis'},{name:'SQL for Beginners'},{name:'Power BI & Tableau'},{name:'Python Basics'},{name:'Business Analytics'},{name:'Financial Accounting Basics'}
+  ]},
+  {id:'premium',name:'Premium',price:4999,courses:[
+    {name:'AWS Cloud Practitioner'},{name:'Docker & Kubernetes'},{name:'CI/CD Pipelines'},{name:'Linux for DevOps'},{name:'Cybersecurity Fundamentals'},{name:'Ethical Hacking'},{name:'Cloud Security'},{name:'DevOps Project'}
+  ]},
+  {id:'master',name:'Master',price:6999,courses:[
+    {name:'Python for Data Science'},{name:'Machine Learning Fundamentals'},{name:'Deep Learning & Neural Networks'},{name:'Natural Language Processing'},{name:'Computer Vision'},{name:'Big Data Engineering'},{name:'Data Engineering'},{name:'MLOps Fundamentals'},{name:'End-to-End ML Project'},{name:'Data Science Interview Prep'}
+  ]},
+  {id:'elitepro',name:'Elite Pro',price:11999,courses:[
+    {name:'Generative AI & LLMs'},{name:'Agentic AI Development'},{name:'LangChain & LlamaIndex'},{name:'Vector Databases'},{name:'AI Agents for Business'},{name:'LLM Fine-Tuning'},{name:'RAG Implementation'},{name:'Multi-Agent Systems'},{name:'AI Safety & Governance'},{name:'AI Agents Capstone Project'},{name:'Prompt Engineering Mastery'},{name:'AI API Integration'}
+  ]},
+  {id:'legend',name:'Legend',price:15999,courses:[
+    {name:'AI Product Management'},{name:'AI Strategy & Roadmap'},{name:'AI Team Leadership'},{name:'AI Project Management'},{name:'AI Ethics & Governance'},{name:'AI Career Mastery'},{name:'Resume & LinkedIn for AI'},{name:'Salary Negotiation'},{name:'Freelancing & Consulting for AI'},{name:'AI for Finance & Banking'},{name:'AI for Healthcare'},{name:'AI for E-commerce & Retail'}
+  ]},
+  {id:'ultimate',name:'Ultimate',price:23999,courses:[
+    {name:'AI for Manufacturing'},{name:'Edge AI & TinyML'},{name:'AI Model Optimization'},{name:'Federated Learning'},{name:'Graph Neural Networks'},{name:'Reinforcement Learning'},{name:'Time Series Forecasting'},{name:'Recommendation Systems'},{name:'AI Research Paper Implementation'},{name:'Building AI Startups'}
+  ]}
+];
+
+const SPECIAL_COURSES=[
+  {id:'makeup',name:'Professional Make-up Artist'},
+  {id:'mehendi',name:'Bridal Mehendi Designer'},
+  {id:'fashion',name:'Fashion Designer'}
+];
+
+const EXAM_QS=[
+  {q:'What is the primary purpose of this course?',opts:['Career advancement','Entertainment only','Gaming','None'],ans:0},
+  {q:'Which approach best supports skill mastery?',opts:['Reading alone','Consistent practice + application','Memorisation only','Skipping hard topics'],ans:1},
+  {q:'What does project submission demonstrate?',opts:['Just attendance','Practical competency','Only payment','Random effort'],ans:1},
+  {q:'How should you handle difficult concepts?',opts:['Skip them','Break into smaller parts and practice','Ignore completely','Copy others'],ans:1},
+  {q:'Minimum passing score for the exam?',opts:['50%','60%','70%','80%'],ans:2},
+  {q:'What is required for certificate eligibility?',opts:['Course only','Exam only','100% watch + exam 70%+ + project','Payment only'],ans:2},
+  {q:'This exam carries how many total marks?',opts:['50','75','100','200'],ans:2},
+  {q:'Biluxe10 is best described as?',opts:['Gaming platform','Advanced Ed-Tech Platform','Social media','Food delivery'],ans:1},
+  {q:'Best learning strategy?',opts:['Videos only','Practice + AI Tutor + Project','Read only','Copy notes'],ans:1},
+  {q:'After project submission, what happens?',opts:['Nothing','Admin reviews and certificate issued','Auto-certificate','Refund'],ans:1}
+];
+
+window.addEventListener('DOMContentLoaded',()=>{
+  const p=new URLSearchParams(location.search);
+  const id=p.get('id')||p.get('cert')||p.get('certId')||'';
+  if(id){document.getElementById('certIdInp').value=id.toUpperCase().trim();setTimeout(doVerify,400);}
+});
+
+function hashCode(str){let h=0;for(let i=0;i<str.length;i++){h=Math.imul(31,h)+str.charCodeAt(i)|0;}return h;}
+function makeCertId(courseId,email){return'BLX-'+Math.abs(hashCode(courseId+(email||''))).toString(36).toUpperCase().padEnd(6,'0').substring(0,6);}
+function makeSpCertId(scId,email){return'BLX-SP-'+Math.abs(hashCode(scId+(email||''))).toString(36).toUpperCase().padEnd(6,'0').substring(0,6);}
+function san(e){return e.toLowerCase().trim().replace(/\./g,'_').replace(/@/g,'__at__');}
+
+async function doVerify(){
+  const raw=document.getElementById('certIdInp').value.trim().toUpperCase();
+  if(!raw||raw.length<5){toast('Enter a valid Certificate ID');return;}
+  document.getElementById('howSection').style.display='none';
+  const area=document.getElementById('resultArea');
+  area.style.display='block';
+  area.innerHTML=buildLoading();
+  window.scrollTo({top:0,behavior:'smooth'});
+  try{
+    const result=await searchCertificate(raw);
+    if(!result){area.innerHTML=buildNotFound(raw);return;}
+    area.innerHTML=buildResult(result);
+    activateTab('overview');
+    setTimeout(animateExamBar,500);
+  }catch(err){
+    console.error('Verify error:',err);
+    area.innerHTML=`<div class="no-result fade-up"><div class="no-result-ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg></div><div style="font-family:var(--fd);font-size:1rem;font-weight:700;color:var(--red)">Connection Error</div><div style="font-size:.74rem;color:var(--t2);line-height:1.7;text-align:center;max-width:280px">${err.message||'Could not connect. Check internet and try again.'}</div><button class="btn-o" onclick="doVerify()"><svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>Retry</button></div>`;
+  }
+}
+
+async function searchCertificate(certId){
+  // Strategy 1: Admin-issued certificates stored in /certificates subcollection
+  for(const col of COLS){
+    try{
+      const usersSnap=await DB.collection(col).limit(500).get();
+      if(usersSnap.empty)continue;
+      for(const userDoc of usersSnap.docs){
+        const userData=userDoc.data();
+        const emailId=userDoc.id;
+        const email=userData.email||'';
+        try{
+          const certSnap=await DB.collection(col).doc(emailId).collection('certificates').get();
+          for(const certDoc of certSnap.docs){
+            const certData=certDoc.data();
+            const computedId=makeCertId(certDoc.id,email);
+            if(certData.certId===certId||computedId===certId){
+              const supporting=await loadSupportingData(col,emailId,certDoc.id,email,userData);
+              return{
+                type:'admin_issued',certId:certData.certId||certId,
+                student:{name:certData.studentName||userData.fullName||email.split('@')[0],email:certData.email||email,phone:userData.phoneNumber||userData.phone||'',bundle:certData.bundleName||userData.bundleName||'Biluxe10',joinedAt:userData.createdAt},
+                course:{name:certData.courseName||certDoc.id,bundleName:certData.bundleName||'Biluxe10',courseId:certDoc.id},
+                examData:supporting.examData,
+                project:supporting.project,
+                allProjects:supporting.allProjects,
+                seminars:supporting.seminars,
+                issuedAt:certData.issuedAt||new Date().toISOString(),
+                manuallyIssued:true
+              };
+            }
+          }
+        }catch(e){}
+      }
+    }catch(e){continue;}
+  }
+  // Strategy 2: Bundle hash-computed cert
+  if(!certId.startsWith('BLX-SP-')){
+    const r=await searchBundleCert(certId);
+    if(r)return r;
+  }else{
+    const r=await searchSpecialCert(certId);
+    if(r)return r;
+  }
+  return null;
+}
+
+async function searchBundleCert(certId){
+  for(const col of COLS){
+    try{
+      const usersSnap=await DB.collection(col).limit(500).get();
+      if(usersSnap.empty)continue;
+      for(const userDoc of usersSnap.docs){
+        const userData=userDoc.data();
+        if(userData.paymentStatus!=='approved')continue;
+        const emailId=userDoc.id;
+        const email=userData.email||emailId.replace('__at__','@').replace(/_/g,'.');
+        const bprice=parseInt(userData.bundlePrice||userData.bundleAmount||0)||499;
+        for(const bundle of BUNDLES){
+          if(bundle.price>bprice)continue;
+          for(let ci=0;ci<bundle.courses.length;ci++){
+            const cid=bundle.id+'_'+ci;
+            const generatedId=makeCertId(cid,email);
+            if(generatedId!==certId)continue;
+            try{
+              const progDoc=await DB.collection(col).doc(emailId).collection('course_progress').doc(cid).get();
+              const prog=progDoc.exists?progDoc.data():{};
+              if((prog.projectStatus==='approved'||prog.examScore>=60)&&prog.progress>=90){
+                const supporting=await loadSupportingData(col,emailId,cid,email,userData);
+                return{
+                  type:'bundle',certId,
+                  student:{name:userData.fullName||email.split('@')[0],email:userData.email||email,phone:userData.phoneNumber||userData.phone||'',bundle:bundle.name,joinedAt:userData.createdAt},
+                  course:{name:bundle.courses[ci].name,bundleName:bundle.name+' Bundle',courseId:cid},
+                  examData:supporting.examData,
+                  project:supporting.project,
+                  allProjects:supporting.allProjects,
+                  seminars:supporting.seminars,
+                  issuedAt:prog.updatedAt||prog.examDate||new Date().toISOString()
+                };
+              }
+            }catch(e){}
+          }
+        }
+      }
+    }catch(e){continue;}
+  }
+  return null;
+}
+
+async function searchSpecialCert(certId){
+  for(const col of COLS){
+    try{
+      const usersSnap=await DB.collection(col).limit(500).get();
+      if(usersSnap.empty)continue;
+      for(const userDoc of usersSnap.docs){
+        const userData=userDoc.data();
+        if(userData.paymentStatus!=='approved')continue;
+        const emailId=userDoc.id;
+        const email=userData.email||emailId.replace('__at__','@').replace(/_/g,'.');
+        for(const sc of SPECIAL_COURSES){
+          const generatedId=makeSpCertId(sc.id,email);
+          if(generatedId!==certId)continue;
+          try{
+            const stDoc=await DB.collection(col).doc(emailId).collection('special_courses').doc(sc.id).get();
+            if(!stDoc.exists)continue;
+            const st=stDoc.data();
+            if(st.status!=='approved')continue;
+            const supporting=await loadSupportingData(col,emailId,'special_'+sc.id,email,userData);
+            return{
+              type:'special',certId,
+              student:{name:userData.fullName||email.split('@')[0],email:userData.email||email,phone:userData.phoneNumber||userData.phone||'',bundle:'Special Certification',joinedAt:userData.createdAt},
+              course:{name:sc.name,bundleName:'Special Professional Course',courseId:'special_'+sc.id},
+              examData:supporting.examData,
+              project:supporting.project,
+              allProjects:supporting.allProjects,
+              seminars:supporting.seminars,
+              special:st,
+              issuedAt:st.approvedAt||st.submittedAt||new Date().toISOString()
+            };
+          }catch(e){}
+        }
+      }
+    }catch(e){continue;}
+  }
+  return null;
+}
+
+async function loadSupportingData(col,emailId,courseId,email,userData){
+  const result={examData:null,project:null,allProjects:[],seminars:[]};
+  const base=DB.collection(col).doc(emailId);
+
+  // Load exam data from course_progress (real stored answers + score)
+  try{
+    const progDoc=await base.collection('course_progress').doc(courseId).get();
+    if(progDoc.exists){
+      const pd=progDoc.data();
+      if(pd.examScore!=null||pd.examAnswers!=null){
+        result.examData={
+          score:pd.examScore!=null?pd.examScore:null,
+          answers:pd.examAnswers||null, // actual stored per-question answers if available
+          examDate:pd.examDate||null,
+          progress:pd.progress||null
+        };
+      }
+    }
+  }catch(e){}
+
+  // Load projects
+  try{
+    const projSnap=await base.collection('projects').get();
+    projSnap.forEach(d=>{
+      const pd=d.data();
+      result.allProjects.push({...pd,_id:d.id});
+      if((pd.courseId===courseId||!result.project)&&!result.project){result.project=pd;}
+    });
+    if(!result.project){
+      try{
+        const pq=await base.collection('projects').where('courseId','==',courseId).limit(1).get();
+        if(!pq.empty)result.project=pq.docs[0].data();
+      }catch(e){}
+    }
+  }catch(e){}
+
+  // Load seminars
+  try{
+    const semSnap=await base.collection('seminars').get();
+    semSnap.forEach(d=>result.seminars.push({...d.data(),_id:d.id}));
+  }catch(e){}
+
+  return result;
+}
+
+function fmtDate(v){
+  if(!v)return'—';
+  try{let d=v&&v.toDate?v.toDate():new Date(v);return isNaN(d)?'—':d.toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'});}catch(e){return'—';}
+}
+function fmtDateShort(v){
+  if(!v)return'—';
+  try{let d=v&&v.toDate?v.toDate():new Date(v);return isNaN(d)?'—':d.toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'});}catch(e){return'—';}
+}
+function initials(name){return(name||'U').split(' ').map(p=>p[0]||'').join('').toUpperCase().substring(0,2)||'U';}
+
+function buildLoading(){
+  return`<div class="loading-wrap fade-up"><div class="spinner"></div><div class="loading-t">Verifying Certificate…</div><div class="loading-s">Searching all Firestore collections. This may take a moment.</div></div>`;
+}
+
+function buildNotFound(id){
+  return`<div class="no-result fade-up"><div class="no-result-ic"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="11" y1="16" x2="11.01" y2="16"/></svg></div><div style="font-family:var(--fd);font-size:1rem;font-weight:700;color:var(--red)">Certificate Not Found</div><div style="font-family:var(--fm);font-size:.6rem;color:var(--t3);padding:6px 12px;background:var(--bg3);border-radius:6px;letter-spacing:.04em">${id}</div><div style="font-size:.74rem;color:var(--t2);line-height:1.7;text-align:center;max-width:300px">This ID was not found in our database. Possible reasons:<br>• Certificate pending admin approval<br>• Incorrect ID — check carefully<br>• Course not yet fully completed</div><div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center"><button class="btn-g" onclick="resetVerify()">Try Another ID</button><a href="https://wa.me/919019254743" target="_blank" class="btn-o"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>Contact Support</a></div></div>`;
+}
+
+function buildResult(r){
+  const s=r.student;
+  const c=r.course;
+  const examData=r.examData;
+  const allProjects=r.allProjects||[];
+  const seminars=r.seminars||[];
+  const issuedStr=fmtDate(r.issuedAt);
+  const issuedShort=fmtDateShort(r.issuedAt);
+  const joinedStr=fmtDate(s.joinedAt);
+  const init=initials(s.name);
+  const examScore=examData?examData.score:null;
+  const examPass=examScore!=null&&examScore>=70;
+  const projectCount=allProjects.length;
+  const seminarCount=seminars.length;
+
+  // Decide which tabs to show (only if real data exists)
+  const showExam=examData!=null&&examScore!=null;
+  const showProjects=projectCount>0;
+  const showSeminars=seminarCount>0;
+
+  let tabsHtml=`
+    <button class="tab-btn on" data-tab="overview" onclick="activateTab('overview',this)">
+      <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>Overview
+    </button>
+    <button class="tab-btn" data-tab="certificate" onclick="activateTab('certificate',this)">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>Certificate
+    </button>`;
+  if(showExam){
+    tabsHtml+=`<button class="tab-btn" data-tab="exam" onclick="activateTab('exam',this)">
+      <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Exam
+    </button>`;
+  }
+  if(showProjects){
+    tabsHtml+=`<button class="tab-btn" data-tab="projects" onclick="activateTab('projects',this)">
+      <svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg>Project (${projectCount})
+    </button>`;
+  }
+  if(showSeminars){
+    tabsHtml+=`<button class="tab-btn" data-tab="seminars" onclick="activateTab('seminars',this)">
+      <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Seminars (${seminarCount})
+    </button>`;
+  }
+
+  // Stats row — only real data
+  let statsHtml=`<div class="stats-grid fade-up">
+    <div class="stat-box">
+      <div class="stat-n" style="color:${examScore!=null?(examPass?'var(--green)':'var(--red)'):'var(--t3)'}">${examScore!=null?examScore:'—'}</div>
+      <div class="stat-l">Exam Score</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-n" style="color:${projectCount>0?'var(--blue)':'var(--t3)'}">${projectCount>0?projectCount:'—'}</div>
+      <div class="stat-l">Projects</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-n" style="color:${seminarCount>0?'var(--cyan)':'var(--t3)'}">${seminarCount>0?seminarCount:'—'}</div>
+      <div class="stat-l">Seminars</div>
+    </div>
+  </div>`;
+
+  // Timeline — only real events
+  let timelineItems='';
+  timelineItems+=`<div class="tl-item">
+    <div class="tl-dot" style="border-color:var(--gold)"><svg viewBox="0 0 24 24" style="stroke:var(--gold)"><polyline points="20 6 9 17 4 12"/></svg></div>
+    <div class="tl-content">
+      <div class="tl-t">Enrolled — ${c.bundleName}</div>
+      <div class="tl-s">Payment approved and account activated</div>
+      <div class="tl-date">${joinedStr}</div>
+    </div>
+  </div>`;
+  if(showExam){
+    timelineItems+=`<div class="tl-item">
+      <div class="tl-dot" style="border-color:var(--vio)"><svg viewBox="0 0 24 24" style="stroke:var(--vio)"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+      <div class="tl-content">
+        <div class="tl-t">${examPass?'Passed':'Attempted'} Final Exam</div>
+        <div class="tl-s">Scored ${examScore}/100 — ${examPass?'Pass (70+ required)':'Below pass mark'}</div>
+        <div class="tl-date">${fmtDateShort(examData.examDate)}</div>
+      </div>
+    </div>`;
+  }
+  if(showProjects){
+    allProjects.forEach(p=>{
+      timelineItems+=`<div class="tl-item">
+        <div class="tl-dot" style="border-color:var(--blue)"><svg viewBox="0 0 24 24" style="stroke:var(--blue)"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg></div>
+        <div class="tl-content">
+          <div class="tl-t">Project: ${p.projectTitle||p.title||'Submitted'}</div>
+          <div class="tl-s">Status: <span style="color:${(p.status||p.projectStatus)==='approved'?'var(--green)':'var(--amber)'}">${p.status||p.projectStatus||'submitted'}</span></div>
+          <div class="tl-date">${fmtDateShort(p.submittedAt)}</div>
+        </div>
+      </div>`;
+    });
+  }
+  if(showSeminars){
+    seminars.forEach(sm=>{
+      timelineItems+=`<div class="tl-item">
+        <div class="tl-dot" style="border-color:var(--cyan)"><svg viewBox="0 0 24 24" style="stroke:var(--cyan)"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+        <div class="tl-content">
+          <div class="tl-t">Seminar: ${sm.seminarName||sm.name||'Workshop'}</div>
+          <div class="tl-s">Certificate/proof submitted</div>
+          <div class="tl-date">${fmtDateShort(sm.submittedAt||sm.date||sm.attendedAt)}</div>
+        </div>
+      </div>`;
+    });
+  }
+  timelineItems+=`<div class="tl-item">
+    <div class="tl-dot" style="border-color:var(--gold)"><svg viewBox="0 0 24 24" style="stroke:var(--gold)"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg></div>
+    <div class="tl-content">
+      <div class="tl-t">Certificate Issued by Biluxe10</div>
+      <div class="tl-s">Official verified certificate generated</div>
+      <div class="tl-date">${issuedStr}</div>
+    </div>
+  </div>`;
+
+  // Admin note if no supporting data
+  let adminNote='';
+  if(r.manuallyIssued&&!showExam&&!showProjects&&!showSeminars){
+    adminNote=`<div style="background:var(--gA);border:1px solid rgba(200,169,110,.2);border-radius:var(--rs);padding:13px 15px;display:flex;gap:10px;align-items:flex-start;margin-top:4px">
+      <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:var(--gold);fill:none;stroke-width:1.8;stroke-linecap:round;flex-shrink:0;margin-top:2px"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      <div style="font-size:.72rem;color:var(--t2);line-height:1.7">This certificate was <strong style="color:var(--gold)">directly issued by a Biluxe10 admin</strong>. Exam and project data are not stored for admin-issued certificates.</div>
+    </div>`;
+  }
+
+  return`
+  <div class="verified-banner fade-up">
+    <div class="vb-ic"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+    <div>
+      <div class="vb-t">✓ Certificate Verified</div>
+      <div class="vb-s">Authentic Biluxe10 certificate · Verified live · ${new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'})} today</div>
+    </div>
+  </div>
+
+  <div class="prof-card fade-up">
+    <div class="prof-card-top">
+      <div class="prof-av">${init}</div>
+      <div style="flex:1;min-width:0">
+        <div class="prof-nm">${s.name}</div>
+        <div class="prof-em">${s.email}</div>
+        <div class="prof-tags">
+          <span class="bdg ok">Verified</span>
+          <span class="bdg gd">${c.bundleName}</span>
+          ${r.type==='special'?'<span class="bdg vi">Special Cert</span>':''}
+          ${r.type==='admin_issued'?'<span class="bdg cy">Admin Issued</span>':''}
+        </div>
+      </div>
+    </div>
+    <div class="prof-rows">
+      <div class="prof-row">
+        <div class="prof-row-l"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>Course</div>
+        <div class="prof-row-r">${c.name}</div>
+      </div>
+      <div class="prof-row">
+        <div class="prof-row-l"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Issued On</div>
+        <div class="prof-row-r">${issuedStr}</div>
+      </div>
+      <div class="prof-row">
+        <div class="prof-row-l"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Certificate ID</div>
+        <div class="prof-row-r" style="font-family:var(--fm);font-size:.6rem;color:var(--gold)">${r.certId}</div>
+      </div>
+      ${showExam?`<div class="prof-row">
+        <div class="prof-row-l"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Exam Score</div>
+        <div class="prof-row-r" style="color:${examPass?'var(--green)':'var(--red)'}">${examScore}/100 — ${examPass?'Passed':'Not passed'}</div>
+      </div>`:''}
+      ${showProjects?`<div class="prof-row">
+        <div class="prof-row-l"><svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg>Projects</div>
+        <div class="prof-row-r" style="color:var(--blue)">${projectCount} Submitted</div>
+      </div>`:''}
+      ${showSeminars?`<div class="prof-row">
+        <div class="prof-row-l"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Seminars</div>
+        <div class="prof-row-r" style="color:var(--cyan)">${seminarCount} Attended</div>
+      </div>`:''}
+      ${s.phone?`<div class="prof-row">
+        <div class="prof-row-l"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.67A2 2 0 012 0h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 14.92z"/></svg>WhatsApp</div>
+        <div class="prof-row-r">${s.phone}</div>
+      </div>`:''}
+    </div>
+  </div>
+
+  ${statsHtml}
+
+  <div class="tabs-wrap fade-up">
+    <div class="tabs-nav">${tabsHtml}</div>
+
+    <div class="tab-panel on" id="tab-overview">
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div>
+          <div style="font-family:var(--fm);font-size:.5rem;color:var(--t3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px">Learning Journey</div>
+          <div class="timeline">${timelineItems}</div>
+        </div>
+        ${adminNote}
+        <div style="background:var(--bg3);border:1px solid rgba(34,197,94,.2);border-radius:var(--r);padding:14px;display:flex;gap:10px;align-items:flex-start">
+          <svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:var(--green);fill:none;stroke-width:1.8;stroke-linecap:round;flex-shrink:0;margin-top:2px"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <div>
+            <div style="font-size:.76rem;font-weight:700;color:var(--green);margin-bottom:3px">Authenticity Confirmed</div>
+            <div style="font-size:.7rem;color:var(--t2);line-height:1.7">Issued by Biluxe10 (India's Advanced Ed-Tech Platform, Hyderabad). Certificate ID: <strong style="color:var(--gold);font-family:var(--fm)">${r.certId}</strong>. Verified live from Firestore.</div>
+          </div>
+        </div>
+        <div>
+          <div style="font-family:var(--fm);font-size:.5rem;color:var(--t3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px">Share Verification</div>
+          <div class="share-row">
+            <button class="btn-g" onclick="shareVerifyLink('${r.certId}','${s.name.replace(/'/g,"\\'")}','${c.name.replace(/'/g,"\\'")}')">
+              <svg viewBox="0 0 24 24" style="width:13px;height:13px;stroke:#000;fill:none;stroke-width:2.2;stroke-linecap:round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+              Share
+            </button>
+            <button class="btn-o" onclick="copyVerifyLink('${r.certId}')">
+              <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+              Copy Link
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="tab-certificate">
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div class="cert-visual">
+          <div class="cv-stripe"></div>
+          <div class="cv-body">
+            <div class="cv-logo-row">
+              <div>
+                <div class="cv-logo">Biluxe<sup>10</sup></div>
+                <div style="font-family:'JetBrains Mono',monospace;font-size:.38rem;color:#888;letter-spacing:.12em;text-transform:uppercase;margin-top:2px">India's Advanced Ed-Tech Platform</div>
+              </div>
+              <div class="cv-org">Est. 2024</div>
+            </div>
+            <div class="cv-of">Certificate</div>
+            <div class="cv-completion">of <span>Completion</span></div>
+            <div class="cv-divider"><div class="cv-dline"></div><div class="cv-star">✦</div><div class="cv-star">✦</div><div class="cv-star">✦</div><div class="cv-dline"></div></div>
+            <div class="cv-certifies">This Certifies That</div>
+            <div class="cv-name">${s.name}</div>
+            <div style="font-size:.64rem;color:#555;text-align:center;margin-bottom:10px;line-height:1.65">has successfully completed all requirements and demonstrated<br>proficiency in the following course offered by Biluxe10</div>
+            <div class="cv-course-box">
+              <div class="cv-course-lbl">Course of Study</div>
+              <div class="cv-course-nm">${c.name}</div>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:.4rem;color:#888;margin-top:3px">${c.bundleName}</div>
+            </div>
+            <div class="cv-achs">
+              ${showExam?`<span class="cv-ach exam">✓ Exam: ${examScore}/100</span>`:''}
+              ${showProjects?`<span class="cv-ach project">✓ Project Submitted</span>`:''}
+              ${showSeminars?`<span class="cv-ach seminar">✓ ${seminarCount} Seminar${seminarCount>1?'s':''}</span>`:''}
+            </div>
+            <div class="cv-sig-row">
+              <div class="cv-sig-block">
+                <div style="height:40px;display:flex;align-items:flex-end;justify-content:center;margin-bottom:4px">
+                  <svg viewBox="0 0 120 55" width="110" height="45" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M20 12 C20 12 16 8 14 10 C10 14 10 24 12 32 C14 40 18 46 22 48 C26 50 30 48 32 44 C34 40 34 34 32 30 C30 26 26 24 24 24 C22 24 20 26 20 28 C20 30 22 32 24 32 C28 32 32 30 36 28 C40 26 44 22 46 20 C48 18 48 16 46 16 C42 16 38 20 36 24 C34 28 32 34 32 40 C32 46 34 52 38 54" fill="none" stroke="#1a1a1a" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M38 20 L52 48" fill="none" stroke="#1a1a1a" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M44 18 L58 50" fill="none" stroke="#1a1a1a" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M58 42 Q68 40 78 42 Q84 43 88 42" fill="none" stroke="#1a1a1a" stroke-width="1.8" stroke-linecap="round"/>
+                    <circle cx="91" cy="42" r="1.5" fill="#1a1a1a"/>
+                  </svg>
+                </div>
+                <div class="cv-sig-line"></div>
+                <div class="cv-sig-nm">Syed Afshar Khadri</div>
+                <div class="cv-sig-title">Founder & Director, Biluxe10</div>
+              </div>
+              <div class="cv-seal">
+                <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:#7a4e0a;fill:none;stroke-width:1.8;stroke-linecap:round;position:relative;z-index:1"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>
+                <div class="cv-seal-t">VERIFIED<br>BILUXE10<br>CERTIFIED</div>
+              </div>
+              <div class="cv-sig-block">
+                <div style="height:40px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;margin-bottom:4px;gap:2px">
+                  <div style="font-family:'JetBrains Mono',monospace;font-size:.38rem;color:#888;text-transform:uppercase;letter-spacing:.06em">Issued On</div>
+                  <div style="font-family:'Fraunces',serif;font-size:.75rem;font-weight:700;color:#1a1a1a">${issuedShort}</div>
+                </div>
+                <div class="cv-sig-line"></div>
+                <div class="cv-sig-nm">Academic Director</div>
+                <div class="cv-sig-title">Biluxe10 Academy</div>
+              </div>
+            </div>
+          </div>
+          <div class="cv-footer">
+            <div>
+              <div class="cv-id-lbl">Certificate ID</div>
+              <div class="cv-id-val">${r.certId}</div>
+              <div class="cv-id-lbl" style="margin-top:3px">Verify at biluxe10.com/verify</div>
+            </div>
+            <div class="cv-issued">
+              <div style="font-family:'JetBrains Mono',monospace;font-size:.36rem;color:#888">Issued</div>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:.42rem;color:#555;font-weight:700">${issuedShort}</div>
+            </div>
+          </div>
+          <div class="cv-bottom-stripe"></div>
+        </div>
+        <div class="share-row">
+          <button class="btn-g" onclick="shareVerifyLink('${r.certId}','${s.name.replace(/'/g,"\\'")}','${c.name.replace(/'/g,"\\'")}')">
+            <svg viewBox="0 0 24 24" style="width:13px;height:13px;stroke:#000;fill:none;stroke-width:2.2;stroke-linecap:round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+            Share Certificate
+          </button>
+          <button class="btn-o" onclick="copyVerifyLink('${r.certId}')">
+            <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+            Copy Link
+          </button>
+        </div>
+      </div>
+    </div>
+
+    ${showExam?`<div class="tab-panel" id="tab-exam">${buildExamTab(r)}</div>`:''}
+    ${showProjects?`<div class="tab-panel" id="tab-projects">${buildProjectsTab(r)}</div>`:''}
+    ${showSeminars?`<div class="tab-panel" id="tab-seminars">${buildSeminarsTab(r)}</div>`:''}
+  </div>
+
+  <div style="text-align:center;padding:4px 0 8px">
+    <button class="btn-o" onclick="resetVerify()" style="width:100%;justify-content:center">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      Verify Another Certificate
+    </button>
+  </div>`;
+}
+
+function buildExamTab(r){
+  const examData=r.examData;
+  if(!examData||examData.score==null)return'<div class="empty-tab"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><p>No exam data recorded.</p></div>';
+  const score=examData.score;
+  const pass=score>=70;
+  // Real stored answers if available, otherwise null
+  const storedAnswers=examData.answers; // object {0:chosenIdx, 1:chosenIdx, ...} or null
+  const questionsCorrect=storedAnswers?EXAM_QS.filter((_,i)=>storedAnswers[i]===EXAM_QS[i].ans).length:Math.round(score/10);
+
+  let html=`<div style="display:flex;flex-direction:column;gap:14px">`;
+
+  html+=`<div class="exam-card">
+    <div class="exam-card-head">
+      <div class="exam-card-t">Exam Results — ${r.course.name}</div>
+      <span class="bdg ${pass?'ok':'rd'}">${pass?'Passed':'Not Passed'}</span>
+    </div>
+    <div style="padding:20px 16px;text-align:center">
+      <div class="exam-score-big ${pass?'pass':'fail'}">${score}<span style="font-size:1.1rem;opacity:.5">/100</span></div>
+      <div style="font-size:.74rem;color:var(--t2);margin-bottom:14px">${pass?'Passed — certificate eligible (70+ required)':'Score recorded'}</div>
+      <div style="margin-bottom:6px;display:flex;justify-content:space-between">
+        <span style="font-family:var(--fm);font-size:.5rem;color:var(--t3)">Score</span>
+        <span style="font-family:var(--fm);font-size:.5rem;color:var(--t3)">${score}/100</span>
+      </div>
+      <div class="exam-bar-bg"><div id="examBarFill" class="exam-bar-fill ${pass?'pass':'fail'}" style="width:0%" data-score="${score}"></div></div>
+      <div style="display:flex;justify-content:space-between;margin-top:4px">
+        <span style="font-family:var(--fm);font-size:.46rem;color:var(--t3)">0</span>
+        <span style="font-family:var(--fm);font-size:.46rem;color:var(--amber)">Pass: 70</span>
+        <span style="font-family:var(--fm);font-size:.46rem;color:var(--t3)">100</span>
+      </div>
+    </div>
+  </div>`;
+
+  html+=`<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
+    <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--rs);padding:13px;text-align:center">
+      <div style="font-family:var(--fd);font-size:1.3rem;font-weight:900;color:${pass?'var(--green)':'var(--red)'}">${score}</div>
+      <div style="font-family:var(--fm);font-size:.46rem;color:var(--t3);text-transform:uppercase;letter-spacing:.08em;margin-top:3px">Marks</div>
+    </div>
+    <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--rs);padding:13px;text-align:center">
+      <div style="font-family:var(--fd);font-size:1.3rem;font-weight:900;color:var(--green)">${questionsCorrect}</div>
+      <div style="font-family:var(--fm);font-size:.46rem;color:var(--t3);text-transform:uppercase;letter-spacing:.08em;margin-top:3px">Correct</div>
+    </div>
+    <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--rs);padding:13px;text-align:center">
+      <div style="font-family:var(--fd);font-size:1.3rem;font-weight:900;color:var(--red)">${10-questionsCorrect}</div>
+      <div style="font-family:var(--fm);font-size:.46rem;color:var(--t3);text-transform:uppercase;letter-spacing:.08em;margin-top:3px">Wrong</div>
+    </div>
+  </div>`;
+
+  if(examData.examDate){
+    html+=`<div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--rs);padding:12px 14px;display:flex;align-items:center;justify-content:space-between">
+      <span style="font-family:var(--fm);font-size:.52rem;color:var(--t3)">Exam Date</span>
+      <span style="font-family:var(--fm);font-size:.56rem;color:var(--text);font-weight:700">${fmtDate(examData.examDate)}</span>
+    </div>`;
+  }
+
+  html+=`<div style="font-family:var(--fm);font-size:.5rem;color:var(--t3);text-transform:uppercase;letter-spacing:.1em">Questions & Answers</div>`;
+
+  // If we have storedAnswers (real per-question data), show exactly what the student chose
+  // Otherwise show the correct answers with note about score
+  const hasRealAnswers=storedAnswers!=null&&Object.keys(storedAnswers).length>0;
+
+  if(!hasRealAnswers){
+    html+=`<div style="background:var(--gA);border:1px solid rgba(200,169,110,.2);border-radius:var(--rs);padding:12px 14px;font-size:.72rem;color:var(--t2);line-height:1.7">
+      <strong style="color:var(--gold)">Score recorded:</strong> ${score}/100. The student's individual answer choices were not stored per question — only the final score is saved. Correct answers are highlighted below.
+    </div>`;
+  }
+
+  EXAM_QS.forEach((q,qi)=>{
+    const chosenIdx=hasRealAnswers?(storedAnswers[qi]!=null?storedAnswers[qi]:storedAnswers[String(qi)]):null;
+    const correctIdx=q.ans;
+    // If real answers: correct = chosen===correct, wrong = chosen!==correct
+    // If no real answers: derive from score (first N questions correct approximation)
+    const wasCorrect=hasRealAnswers?(chosenIdx===correctIdx):(qi<questionsCorrect);
+
+    html+=`<div class="q-review-item ${wasCorrect?'correct':'wrong'}">
+      <div class="q-num-lbl">Q${qi+1} · ${wasCorrect?'✓ Correct (+10 marks)':'✗ Incorrect (0 marks)'}</div>
+      <div class="q-text-lbl">${q.q}</div>
+      <div>`;
+
+    q.opts.forEach((opt,oi)=>{
+      const isCorrect=oi===correctIdx;
+      const isChosenWrong=hasRealAnswers&&chosenIdx===oi&&oi!==correctIdx;
+      let cls='neutral';
+      if(isCorrect)cls='correct-ans';
+      else if(isChosenWrong)cls='wrong-chosen';
+
+      html+=`<div class="q-opt-row ${cls}">
+        <div class="q-opt-dot"><div class="q-opt-dot-in"></div></div>
+        <div style="flex:1">${opt}</div>
+        ${isCorrect?`<span class="bdg ok" style="font-size:.44rem;flex-shrink:0">Correct</span>`:''}
+        ${isChosenWrong?`<span class="bdg rd" style="font-size:.44rem;flex-shrink:0">Student chose</span>`:''}
+        ${hasRealAnswers&&chosenIdx===oi&&isCorrect?`<span class="bdg ok" style="font-size:.44rem;flex-shrink:0">Student chose ✓</span>`:''}
+      </div>`;
+    });
+
+    html+=`</div></div>`;
+  });
+
+  html+=`</div>`;
+  return html;
+}
+
+function buildProjectsTab(r){
+  const allProjects=r.allProjects||[];
+  if(!allProjects.length)return'<div class="empty-tab"><svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg><p>No project submissions found.</p></div>';
+
+  const approvedCount=allProjects.filter(p=>(p.status||p.projectStatus)==='approved').length;
+  let html=`<div style="display:flex;flex-direction:column;gap:0">`;
+
+  if(approvedCount>0){
+    html+=`<div style="background:var(--grA);border:1px solid rgba(34,197,94,.2);border-radius:var(--r);padding:13px 15px;display:flex;align-items:center;gap:10px;margin-bottom:12px">
+      <svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:var(--green);fill:none;stroke-width:2.2;stroke-linecap:round;flex-shrink:0"><circle cx="12" cy="12" r="10"/><polyline points="20 6 9 17 4 12"/></svg>
+      <div>
+        <div style="font-size:.76rem;font-weight:700;color:var(--green)">${approvedCount} Project${approvedCount>1?'s':''} Approved</div>
+        <div style="font-family:var(--fm);font-size:.5rem;color:var(--t2)">Reviewed and approved by Biluxe10 admin</div>
+      </div>
+    </div>`;
+  }
+
+  allProjects.forEach((p,idx)=>{
+    const title=p.projectTitle||p.title||('Project '+(idx+1));
+    const desc=p.description||p.desc||'';
+    const link=p.projectLink||p.link||'';
+    const githubLink=p.githubLink||'';
+    const status=p.status||p.projectStatus||'submitted';
+    const submittedDate=fmtDate(p.submittedAt);
+    const statusColor=status==='approved'?'var(--green)':status==='rejected'?'var(--red)':'var(--amber)';
+    const statusBg=status==='approved'?'var(--grA)':status==='rejected'?'var(--reA)':'var(--amA)';
+
+    html+=`<div class="project-card" style="margin-bottom:12px">
+      <div class="project-card-head">
+        <div class="project-card-t">${title}</div>
+        <div class="project-card-s">${p.courseName||r.course.name}${submittedDate!=='—'?' · '+submittedDate:''}</div>
+      </div>
+      <div class="project-body">
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+          <span class="bdg" style="background:${statusBg};color:${statusColor};border:1px solid ${statusColor}40">${status.toUpperCase()}</span>
+          ${p.examScore!=null?`<span class="bdg gd">Exam: ${p.examScore}/100</span>`:''}
+        </div>`;
+
+    if(desc){
+      html+=`<div>
+        <div class="project-field-l">Project Description</div>
+        <div class="project-field-v">${desc}</div>
+      </div>`;
+    }
+
+    html+=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div>
+        <div class="project-field-l">Submitted By</div>
+        <div class="project-field-v" style="font-size:.72rem">${p.userName||r.student.name}</div>
+      </div>
+      <div>
+        <div class="project-field-l">Date</div>
+        <div class="project-field-v" style="font-size:.72rem">${submittedDate}</div>
+      </div>
+    </div>`;
+
+    // Only show link if the student actually submitted one
+    if(link){
+      // Try to detect if it's a website link
+      html+=`<div>
+        <div class="project-field-l">Project Link (Submitted by Student)</div>
+        <a href="${link}" target="_blank" rel="noopener noreferrer" class="project-link-btn">
+          <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          Open Project
+        </a>
+        <div style="font-family:var(--fm);font-size:.48rem;color:var(--t3);margin-top:6px;word-break:break-all">${link}</div>
+      </div>`;
+    }
+
+    if(githubLink){
+      html+=`<div>
+        <div class="project-field-l">GitHub Repository</div>
+        <a href="${githubLink}" target="_blank" rel="noopener noreferrer" class="project-link-btn" style="color:var(--vio);background:var(--viA);border-color:rgba(167,139,250,.3)">
+          <svg viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0020 4.77 5.07 5.07 0 0019.91 1S18.73.65 16 2.48a13.38 13.38 0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 005 4.77a5.44 5.44 0 00-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 009 18.13V22"/></svg>
+          GitHub
+        </a>
+      </div>`;
+    }
+
+    if(!link&&!githubLink){
+      html+=`<div style="font-family:var(--fm);font-size:.6rem;color:var(--t3);padding:10px;background:var(--bg4);border-radius:var(--rs)">No project link was submitted.</div>`;
+    }
+
+    html+=`</div></div>`;
+  });
+
+  html+=`</div>`;
+  return html;
+}
+
+function buildSeminarsTab(r){
+  const seminars=r.seminars||[];
+  if(!seminars.length)return'<div class="empty-tab"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><p>No seminar records found.</p></div>';
+
+  let html=`<div style="display:flex;flex-direction:column;gap:0">
+    <div style="background:var(--cyA);border:1px solid rgba(34,211,238,.2);border-radius:var(--r);padding:13px 15px;display:flex;align-items:center;gap:10px;margin-bottom:12px">
+      <svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:var(--cyan);fill:none;stroke-width:2;stroke-linecap:round;flex-shrink:0"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      <div>
+        <div style="font-size:.76rem;font-weight:700;color:var(--cyan)">${seminars.length} Seminar${seminars.length>1?'s':''} Attended</div>
+        <div style="font-family:var(--fm);font-size:.5rem;color:var(--t2)">Proof submitted and recorded in Biluxe10 database</div>
+      </div>
+    </div>`;
+
+  seminars.forEach((sm,idx)=>{
+    const name=sm.seminarName||sm.name||('Seminar '+(idx+1));
+    const proofLink=sm.seminarProofLink||sm.proofLink||sm.link||'';
+    const videoLink=sm.videoLink||sm.seminarVideoLink||'';
+    const attendedDate=fmtDate(sm.submittedAt||sm.date||sm.attendedAt);
+    const notes=sm.notes||sm.description||'';
+
+    // Detect YouTube embed ID
+    function getYTId(url){
+      if(!url)return null;
+      const m=url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/))([a-zA-Z0-9_-]{11})/);
+      return m?m[1]:null;
+    }
+    const ytId=getYTId(videoLink)||getYTId(proofLink);
+    // Detect direct video file
+    const isVideoFile=proofLink&&(proofLink.match(/\.(mp4|webm|mov|avi|mkv)/i));
+    // Detect image
+    const isImage=proofLink&&(proofLink.match(/\.(jpg|jpeg|png|gif|webp)/i));
+
+    html+=`<div class="seminar-card">
+      <div class="seminar-card-head">
+        <div class="seminar-card-t">${name}</div>
+        <div class="seminar-card-s">Attended: ${attendedDate}</div>
+      </div>
+      <div class="seminar-body">
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <span class="bdg cy">Attended</span>
+          <span class="bdg ok">Verified</span>
+        </div>`;
+
+    if(notes){
+      html+=`<div>
+        <div class="project-field-l">Notes</div>
+        <div class="project-field-v">${notes}</div>
+      </div>`;
+    }
+
+    html+=`<div>
+      <div class="project-field-l">Attended By</div>
+      <div class="project-field-v" style="font-size:.72rem">${sm.userName||r.student.name}</div>
+    </div>`;
+
+    // Show video if YouTube ID found
+    if(ytId){
+      html+=`<div>
+        <div class="project-field-l">Seminar Video (Submitted)</div>
+        <div class="vid-embed-wrap" style="margin-top:6px">
+          <iframe src="https://www.youtube-nocookie.com/embed/${ytId}?modestbranding=1&rel=0&showinfo=0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+        </div>
+      </div>`;
+    }
+    // Show direct video file player
+    else if(isVideoFile){
+      html+=`<div>
+        <div class="project-field-l">Seminar Video (Submitted)</div>
+        <video controls style="width:100%;border-radius:8px;margin-top:6px;background:#000;max-height:240px" preload="metadata">
+          <source src="${proofLink}">
+          Your browser does not support video playback.
+        </video>
+      </div>`;
+    }
+    // Show image if it's an image file
+    else if(isImage){
+      html+=`<div>
+        <div class="project-field-l">Certificate / Proof (Submitted)</div>
+        <img src="${proofLink}" alt="Seminar certificate" style="width:100%;border-radius:8px;margin-top:6px;border:1px solid var(--border2)">
+      </div>`;
+    }
+    // Show link button if it's any other link
+    else if(proofLink){
+      html+=`<div>
+        <div class="project-field-l">Certificate / Proof (Submitted)</div>
+        <a href="${proofLink}" target="_blank" rel="noopener noreferrer" class="seminar-link-btn">
+          <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          View Certificate / Proof
+        </a>
+      </div>`;
+    }else{
+      html+=`<div style="font-family:var(--fm);font-size:.6rem;color:var(--t3);padding:10px;background:var(--bg4);border-radius:var(--rs)">Proof stored internally in Biluxe10 database.</div>`;
+    }
+
+    // Also show separate videoLink if different from proofLink
+    if(videoLink&&videoLink!==proofLink&&!ytId&&!isVideoFile){
+      html+=`<div>
+        <div class="project-field-l">Video Link (Submitted)</div>
+        <a href="${videoLink}" target="_blank" rel="noopener noreferrer" class="seminar-link-btn">
+          <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          Watch Video
+        </a>
+      </div>`;
+    }
+
+    html+=`</div></div>`;
+  });
+
+  html+=`</div>`;
+  return html;
+}
+
+function activateTab(tabId,el){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('on'));
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('on'));
+  const btn=el||document.querySelector(`.tab-btn[data-tab="${tabId}"]`);
+  if(btn)btn.classList.add('on');
+  const panel=document.getElementById('tab-'+tabId);
+  if(panel)panel.classList.add('on');
+}
+
+function animateExamBar(){
+  const bar=document.getElementById('examBarFill');
+  if(bar){const sc=parseFloat(bar.dataset.score||'0');setTimeout(()=>bar.style.width=sc+'%',100);}
+}
+
+function copyVerifyLink(certId){
+  const url=location.origin+location.pathname+'?id='+certId;
+  navigator.clipboard.writeText(url).then(()=>toast('Verification link copied!'));
+}
+
+function shareVerifyLink(certId,name,course){
+  const url=location.origin+location.pathname+'?id='+certId;
+  const text=name+' completed "'+course+'" at Biluxe10 🎓\nVerify: '+url;
+  if(navigator.share){navigator.share({title:'Biluxe10 Certificate',text,url}).catch(()=>{});}
+  else{navigator.clipboard.writeText(text).then(()=>toast('Copied!'));}
+}
+
+function resetVerify(){
+  document.getElementById('certIdInp').value='';
+  document.getElementById('resultArea').innerHTML='';
+  document.getElementById('resultArea').style.display='none';
+  document.getElementById('howSection').style.display='block';
+  window.scrollTo({top:0,behavior:'smooth'});
+  history.replaceState({},'',location.pathname);
+}
+
+let toastTm;
+function toast(msg){
+  const el=document.getElementById('toast');
+  el.textContent=msg;
+  el.classList.add('on');
+  clearTimeout(toastTm);
+  toastTm=setTimeout(()=>el.classList.remove('on'),3200);
+}
+</script>
+</body>
+</html>
