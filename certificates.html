@@ -1,0 +1,1177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Biluxe10 — My Certificates</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,700;0,9..144,900;1,9..144,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&family=Great+Vibes&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+--bg:#07070A;--bg2:#0D0D12;--bg3:#121218;--bg4:#18181F;
+--border:rgba(255,255,255,0.055);--border2:rgba(255,255,255,0.10);
+--gold:#C8A96E;--gold2:#E2C48A;--gold3:#F0D9A8;
+--gA:rgba(200,169,110,0.08);--gB:rgba(200,169,110,0.15);
+--green:#22C55E;--grA:rgba(34,197,94,0.1);
+--red:#EF4444;--reA:rgba(239,68,68,0.1);
+--blue:#60A5FA;--blA:rgba(96,165,250,0.1);
+--vio:#A78BFA;--viA:rgba(167,139,250,0.1);
+--amber:#F59E0B;--amA:rgba(245,158,11,0.1);
+--cyan:#22D3EE;--cyA:rgba(34,211,238,0.1);
+--pink:#F472B6;--pkA:rgba(244,114,182,0.1);
+--ink:#07070A;--text:#EDEDF0;--t2:#9B9BA8;--t3:#4B4B5A;--t4:#2A2A35;
+--fd:'Fraunces',serif;--fb:'Plus Jakarta Sans',sans-serif;--fm:'JetBrains Mono',monospace;
+--r:14px;--rs:10px;--nav:60px;
+--ease:cubic-bezier(0.16,1,0.3,1);--spring:cubic-bezier(0.34,1.56,0.64,1);
+}
+html,body{min-height:100vh}
+body{background:var(--bg);color:var(--text);font-family:var(--fb);line-height:1.6;overflow-x:hidden}
+body.lock{overflow:hidden}
+button,input,select,textarea{font-family:var(--fb)}
+::-webkit-scrollbar{width:3px}
+::-webkit-scrollbar-thumb{background:rgba(200,169,110,0.2);border-radius:2px}
+
+/* GUARD */
+#guard{position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;transition:opacity .7s ease;padding:24px}
+#guard.fade{opacity:0;pointer-events:none}
+#guard.gone{display:none}
+.g-logo{font-family:var(--fd);font-size:clamp(2.6rem,10vw,4rem);font-weight:900;color:var(--gold);letter-spacing:-.03em;line-height:1;text-align:center;animation:logoPulse 2.5s ease infinite}
+@keyframes logoPulse{0%,100%{text-shadow:0 0 30px rgba(200,169,110,0.3)}50%{text-shadow:0 0 70px rgba(200,169,110,0.7)}}
+.g-spin{width:30px;height:30px;border:2.5px solid rgba(200,169,110,.12);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.g-msg{font-family:var(--fm);font-size:.56rem;color:var(--t3);letter-spacing:.2em;text-transform:uppercase;text-align:center}
+.g-err-box{display:none;flex-direction:column;align-items:center;gap:14px;text-align:center;max-width:320px;width:100%}
+.g-err-box.show{display:flex}
+.g-err-title{font-family:var(--fd);font-size:1.1rem;color:var(--red)}
+.g-err-desc{font-size:.78rem;color:var(--t2);line-height:1.8}
+.g-err-btn{padding:11px 26px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--ink);border:none;border-radius:var(--rs);font-weight:800;font-size:.8rem;cursor:pointer;margin-top:4px}
+
+/* APP */
+#app{display:flex;flex-direction:column;min-height:100vh;opacity:0;transition:opacity .6s ease}
+#app.show{opacity:1}
+
+/* TOPBAR */
+.topbar{height:var(--nav);background:rgba(7,7,10,0.96);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 16px;position:sticky;top:0;z-index:200;gap:10px}
+.tb-left{display:flex;align-items:center;gap:10px}
+.tb-back{width:34px;height:34px;border-radius:50%;background:var(--bg3);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;cursor:pointer;-webkit-tap-highlight-color:transparent;text-decoration:none;flex-shrink:0}
+.tb-back svg{width:16px;height:16px;stroke:var(--text);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.tb-logo{font-family:var(--fd);font-size:1.05rem;font-weight:900;color:var(--gold);white-space:nowrap}
+.tb-div{width:1px;height:16px;background:var(--border2)}
+.tb-page{font-size:.82rem;font-weight:700;color:var(--t2)}
+
+/* BOTTOM NAV */
+#bnav{position:fixed;bottom:0;left:0;right:0;z-index:500;background:rgba(8,8,13,0.97);backdrop-filter:blur(24px);border-top:1px solid var(--border2);display:flex;align-items:center;justify-content:space-around;height:62px;padding-bottom:env(safe-area-inset-bottom)}
+.bn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;flex:1;height:100%;cursor:pointer;border:none;background:none;padding:0;position:relative;transition:all .2s;-webkit-tap-highlight-color:transparent}
+.bn-ic{width:24px;height:24px;display:flex;align-items:center;justify-content:center;transition:transform .25s var(--spring)}
+.bn-ic svg{width:20px;height:20px;stroke:var(--t3);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;transition:stroke .2s}
+.bn-lb{font-family:var(--fm);font-size:.46rem;color:var(--t3);letter-spacing:.06em;text-transform:uppercase;transition:color .2s}
+.bn.on .bn-ic{transform:translateY(-3px) scale(1.15)}
+.bn.on .bn-ic svg{stroke:var(--gold)}
+.bn.on .bn-lb{color:var(--gold)}
+.bn::after{content:'';position:absolute;top:6px;left:50%;transform:translateX(-50%) scaleX(0);width:24px;height:2px;background:linear-gradient(90deg,var(--gold),var(--gold2));border-radius:2px;transition:transform .25s var(--spring)}
+.bn.on::after{transform:translateX(-50%) scaleX(1)}
+
+/* MAIN */
+#main{flex:1;padding:14px;display:flex;flex-direction:column;gap:16px;padding-bottom:82px}
+
+/* BUTTONS */
+.btn-g{padding:9px 16px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--ink);border:none;border-radius:var(--rs);font-weight:800;font-size:.72rem;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:6px;-webkit-tap-highlight-color:transparent}
+.btn-g:active{transform:scale(.96)}
+.btn-sm{padding:5px 12px;background:var(--gA);color:var(--gold);border:1px solid rgba(200,169,110,.2);border-radius:7px;font-weight:700;font-size:.64rem;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:5px;-webkit-tap-highlight-color:transparent}
+.btn-sm:active{transform:scale(.95)}
+.btn-red{padding:5px 12px;background:var(--reA);color:var(--red);border:1px solid rgba(239,68,68,.2);border-radius:7px;font-weight:700;font-size:.64rem;cursor:pointer;display:inline-flex;align-items:center;gap:5px}
+.btn-o{padding:8px 14px;background:transparent;color:var(--t2);border:1px solid var(--border2);border-radius:var(--rs);font-weight:600;font-size:.72rem;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+
+/* BADGES */
+.bdg{display:inline-flex;align-items:center;padding:3px 8px;border-radius:5px;font-family:var(--fm);font-size:.5rem;font-weight:700;letter-spacing:.04em;white-space:nowrap}
+.bdg.ok{background:var(--grA);color:var(--green);border:1px solid rgba(34,197,94,.2)}
+.bdg.pn{background:var(--amA);color:var(--amber);border:1px solid rgba(245,158,11,.2)}
+.bdg.gd{background:var(--gA);color:var(--gold);border:1px solid rgba(200,169,110,.2)}
+.bdg.rd{background:var(--reA);color:var(--red);border:1px solid rgba(239,68,68,.2)}
+.bdg.cy{background:var(--cyA);color:var(--cyan);border:1px solid rgba(34,211,238,.2)}
+.bdg.vio{background:var(--viA);color:var(--vio);border:1px solid rgba(167,139,250,.2)}
+.bdg.bl{background:var(--blA);color:var(--blue);border:1px solid rgba(96,165,250,.2)}
+
+/* TOAST */
+#toast{position:fixed;bottom:76px;left:50%;transform:translateX(-50%) translateY(20px);z-index:9999;background:var(--bg3);border:1px solid var(--border2);border-radius:20px;padding:11px 18px;display:flex;align-items:center;gap:8px;opacity:0;transition:all .32s var(--spring);font-size:.74rem;color:var(--text);box-shadow:0 12px 40px rgba(0,0,0,.5);white-space:nowrap;max-width:90vw;overflow:hidden;text-overflow:ellipsis}
+#toast.on{transform:translateX(-50%) translateY(0);opacity:1}
+
+/* SECTION HEADER */
+.sec-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.sec-title{font-family:var(--fd);font-size:1.05rem;font-weight:900}
+
+/* HERO */
+.hero{border-radius:18px;padding:20px 18px;background:linear-gradient(135deg,rgba(200,169,110,0.1),rgba(167,139,250,0.05));border:1px solid rgba(200,169,110,0.22);position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-40px;right:-40px;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,rgba(200,169,110,0.12),transparent);pointer-events:none}
+.hero-tag{font-family:var(--fm);font-size:.5rem;color:var(--gold);letter-spacing:.14em;text-transform:uppercase;margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.hero-dot{width:5px;height:5px;border-radius:50%;background:var(--gold);animation:dotPulse 2s ease infinite}
+@keyframes dotPulse{0%,100%{opacity:1}50%{opacity:.3}}
+.hero-title{font-family:var(--fd);font-size:1.3rem;font-weight:900;line-height:1.2;margin-bottom:4px}
+.hero-sub{font-size:.74rem;color:var(--t2);line-height:1.7}
+
+/* STATS */
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.stat-box{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:12px;text-align:center}
+.stat-n{font-family:var(--fd);font-size:1.4rem;font-weight:900;color:var(--gold);line-height:1}
+.stat-l{font-family:var(--fm);font-size:.46rem;color:var(--t3);text-transform:uppercase;letter-spacing:.08em;margin-top:4px}
+
+/* INFO CARD */
+.info-card{border-radius:var(--r);padding:14px 16px;display:flex;gap:12px;align-items:flex-start;border:1px solid}
+.info-card.amber{background:rgba(245,158,11,0.06);border-color:rgba(245,158,11,.22)}
+.info-card.gold{background:var(--gA);border-color:rgba(200,169,110,.22)}
+.info-card svg{flex-shrink:0;margin-top:2px}
+.info-card-t{font-size:.78rem;font-weight:700;margin-bottom:3px}
+.info-card-d{font-size:.72rem;color:var(--t2);line-height:1.7}
+
+/* UPLOAD CARD — for submitting proof */
+.upload-card{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r);overflow:hidden}
+.upload-card-hd{padding:13px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:8px}
+.upload-card-title{font-family:var(--fd);font-size:.88rem;font-weight:700}
+.upload-body{padding:16px;display:flex;flex-direction:column;gap:12px}
+.fg{display:flex;flex-direction:column;gap:5px}
+.fl{font-family:var(--fm);font-size:.52rem;color:var(--t3);text-transform:uppercase;letter-spacing:.08em;display:block}
+.fi{width:100%;background:var(--bg3);border:1.5px solid var(--border2);border-radius:var(--rs);padding:10px 13px;color:var(--text);font-size:.8rem;outline:none;transition:border-color .2s;-webkit-appearance:none}
+.fi:focus{border-color:rgba(200,169,110,.4);box-shadow:0 0 0 3px rgba(200,169,110,.07)}
+.ftxt{width:100%;background:var(--bg3);border:1.5px solid var(--border2);border-radius:var(--rs);padding:10px 13px;color:var(--text);font-size:.78rem;outline:none;resize:vertical;min-height:72px;transition:border-color .2s}
+.ftxt:focus{border-color:rgba(200,169,110,.4)}
+
+/* CERT LIST */
+.cert-list{display:flex;flex-direction:column;gap:12px}
+.cert-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;transition:border-color .25s}
+.cert-card.approved{border-color:rgba(200,169,110,.3)}
+.cert-card-top{padding:14px 16px;display:flex;align-items:flex-start;gap:12px}
+.cert-icon{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1.4rem}
+.cert-info{flex:1;min-width:0}
+.cert-name{font-family:var(--fd);font-size:.92rem;font-weight:700;line-height:1.3;margin-bottom:3px}
+.cert-sub{font-family:var(--fm);font-size:.5rem;color:var(--gold);letter-spacing:.08em;text-transform:uppercase;margin-bottom:7px}
+.cert-chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.chip{display:flex;align-items:center;gap:4px;font-family:var(--fm);font-size:.5rem;color:var(--t3)}
+.chip svg{width:11px;height:11px;stroke:var(--t3);fill:none;stroke-width:2;stroke-linecap:round}
+.cert-card-actions{padding:0 16px 14px;display:flex;gap:8px;flex-wrap:wrap}
+
+/* PROGRESS SECTION */
+.prog-section{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
+.prog-hd{padding:13px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.prog-title{font-family:var(--fd);font-size:.88rem;font-weight:700}
+.prog-item{display:flex;align-items:center;gap:12px;padding:11px 16px;border-bottom:1px solid var(--border)}
+.prog-item:last-child{border-bottom:none}
+.prog-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.prog-dot.done{background:var(--green)}
+.prog-dot.inprog{background:var(--amber)}
+.prog-dot.idle{background:var(--t3)}
+.prog-info{flex:1;min-width:0}
+.prog-name{font-size:.76rem;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.prog-meta{font-family:var(--fm);font-size:.5rem;color:var(--t3);margin-top:2px}
+.prog-right{display:flex;flex-direction:column;gap:4px;align-items:flex-end;flex-shrink:0}
+.prog-pct{font-family:var(--fm);font-size:.52rem;color:var(--gold)}
+.prog-bar{width:56px;height:3px;background:var(--bg4);border-radius:3px;overflow:hidden}
+.prog-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--gold),var(--gold2))}
+
+/* EMPTY */
+.empty-box{display:flex;flex-direction:column;align-items:center;gap:14px;padding:40px 20px;text-align:center}
+.empty-ic{width:60px;height:60px;border-radius:50%;background:var(--gA);border:1px solid rgba(200,169,110,.2);display:flex;align-items:center;justify-content:center;font-size:1.6rem}
+.empty-t{font-family:var(--fd);font-size:.98rem;font-weight:700}
+.empty-s{font-size:.74rem;color:var(--t2);line-height:1.75;max-width:270px}
+
+/* MODAL OVERLAY */
+.modal-bg{position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,.88);backdrop-filter:blur(14px);display:none;align-items:center;justify-content:center;padding:16px}
+.modal-bg.on{display:flex}
+.modal{background:var(--bg2);border:1px solid var(--border2);border-radius:18px;width:100%;max-width:460px;max-height:90vh;overflow-y:auto;position:relative}
+.modal-hd{padding:15px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--bg2);z-index:5}
+.modal-title{font-family:var(--fd);font-size:.98rem;font-weight:700}
+.modal-close{width:28px;height:28px;border-radius:50%;background:var(--bg4);border:none;color:var(--t2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.82rem;flex-shrink:0}
+.modal-close:hover{background:var(--reA);color:var(--red)}
+.modal-body{padding:18px}
+.modal-foot{padding:13px 18px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end;position:sticky;bottom:0;background:var(--bg2)}
+
+/* CERT VIEWER MODAL */
+#certViewModal{position:fixed;inset:0;z-index:3000;background:rgba(0,0,0,.94);backdrop-filter:blur(18px);display:none;flex-direction:column;align-items:center;overflow-y:auto;padding:14px 12px 90px}
+#certViewModal.on{display:flex}
+.cv-topbar{width:100%;max-width:520px;display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-shrink:0}
+.cv-close{width:36px;height:36px;border-radius:50%;background:var(--bg3);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;cursor:pointer;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+.cv-close svg{width:16px;height:16px;stroke:var(--text);fill:none;stroke-width:2;stroke-linecap:round}
+.cv-actions{display:flex;gap:8px}
+
+/* ════════════════════════════════
+   CERTIFICATE DESIGN
+════════════════════════════════ */
+.certificate{width:100%;max-width:520px;background:#FFFDF6;border-radius:12px;overflow:hidden;position:relative;box-shadow:0 32px 80px rgba(0,0,0,.65);color:#1a1a1a;flex-shrink:0}
+.cert-stripe-t{height:5px;background:linear-gradient(90deg,#C8A96E,#E2C48A,#C8A96E)}
+.cert-outer{position:absolute;inset:8px;border:1.5px solid rgba(200,169,110,0.38);border-radius:8px;pointer-events:none;z-index:2}
+.cert-inner{position:absolute;inset:12px;border:0.5px solid rgba(200,169,110,0.18);border-radius:6px;pointer-events:none;z-index:2}
+.cert-corner{position:absolute;z-index:3;width:30px;height:30px}
+.cert-corner.tl{top:6px;left:6px}
+.cert-corner.tr{top:6px;right:6px;transform:scaleX(-1)}
+.cert-corner.bl{bottom:6px;left:6px;transform:scaleY(-1)}
+.cert-corner.br{bottom:6px;right:6px;transform:scale(-1)}
+.cert-body{position:relative;z-index:4;padding:24px 24px 20px}
+.cert-logo-row{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:16px;padding-bottom:13px;border-bottom:1px solid rgba(200,169,110,0.2)}
+.cert-logo-t{font-family:'Fraunces',serif;font-size:1.45rem;font-weight:900;color:#1a1a1a;letter-spacing:-.02em;line-height:1}
+.cert-logo-t sup{font-size:.4em;color:#888;font-weight:400;vertical-align:super}
+.cert-logo-sub{font-family:'JetBrains Mono',monospace;font-size:.4rem;color:#888;letter-spacing:.14em;text-transform:uppercase;margin-top:2px;text-align:center}
+.cert-est{background:linear-gradient(135deg,rgba(200,169,110,0.14),rgba(200,169,110,0.05));border:1px solid rgba(200,169,110,0.3);border-radius:6px;padding:4px 10px;font-family:'JetBrains Mono',monospace;font-size:.44rem;color:#8B6914;text-transform:uppercase;letter-spacing:.1em}
+.cert-hd-row{text-align:center;margin-bottom:10px}
+.cert-of{font-family:'JetBrains Mono',monospace;font-size:.5rem;color:#888;letter-spacing:.22em;text-transform:uppercase;margin-bottom:3px}
+.cert-completion{font-family:'Fraunces',serif;font-size:1.55rem;font-weight:900;color:#1a1a1a;line-height:1.1}
+.cert-completion span{color:#C8A96E}
+.cert-div{display:flex;align-items:center;gap:8px;margin:11px 0}
+.cert-dline{flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(200,169,110,0.4),transparent)}
+.cert-dstar{color:#C8A96E;font-size:.8rem;line-height:1}
+.cert-certifies{font-family:'JetBrains Mono',monospace;font-size:.44rem;color:#888;text-align:center;letter-spacing:.18em;text-transform:uppercase;margin-bottom:5px}
+.cert-recipient{font-family:'Great Vibes',cursive;font-size:2.3rem;color:#1a1a1a;text-align:center;line-height:1.2;margin-bottom:4px}
+.cert-has-comp{font-size:.68rem;color:#555;text-align:center;line-height:1.65;margin-bottom:11px}
+.cert-course-box{background:linear-gradient(135deg,rgba(200,169,110,0.1),rgba(200,169,110,0.04));border:1px solid rgba(200,169,110,0.3);border-radius:8px;padding:11px 15px;text-align:center;margin-bottom:11px}
+.cert-course-lbl{font-family:'JetBrains Mono',monospace;font-size:.42rem;color:#8B6914;letter-spacing:.14em;text-transform:uppercase;margin-bottom:4px}
+.cert-course-nm{font-family:'Fraunces',serif;font-size:.98rem;font-weight:700;color:#1a1a1a;line-height:1.3}
+.cert-bundle-nm{font-family:'JetBrains Mono',monospace;font-size:.43rem;color:#888;margin-top:3px;letter-spacing:.05em}
+.cert-achs{display:flex;flex-wrap:wrap;gap:5px;justify-content:center;margin-bottom:11px}
+.cert-ach{display:flex;align-items:center;gap:4px;padding:4px 9px;border-radius:20px;font-family:'JetBrains Mono',monospace;font-size:.44rem;font-weight:700;letter-spacing:.03em}
+.cert-ach.exam{background:rgba(34,197,94,0.1);color:#16a34a;border:1px solid rgba(34,197,94,0.22)}
+.cert-ach.proj{background:rgba(96,165,250,0.1);color:#2563eb;border:1px solid rgba(96,165,250,0.22)}
+.cert-ach.watch{background:rgba(200,169,110,0.12);color:#8B6914;border:1px solid rgba(200,169,110,0.28)}
+.cert-ach.special{background:rgba(167,139,250,0.1);color:#7c3aed;border:1px solid rgba(167,139,250,0.22)}
+.cert-ach.seminar{background:rgba(34,211,238,0.1);color:#0891b2;border:1px solid rgba(34,211,238,0.22)}
+.cert-ach svg{width:10px;height:10px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round}
+.cert-desc{font-size:.63rem;color:#555;text-align:center;line-height:1.75;margin-bottom:15px;padding:0 4px}
+.cert-sig-row{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:13px;gap:10px}
+.cert-sig-block{flex:1;text-align:center}
+.cert-sig-img{height:50px;display:flex;align-items:flex-end;justify-content:center;margin-bottom:4px}
+.cert-sig-line{height:1px;background:rgba(0,0,0,0.15);margin-bottom:4px}
+.cert-sig-name{font-family:'JetBrains Mono',monospace;font-size:.45rem;color:#333;letter-spacing:.05em;font-weight:700}
+.cert-sig-ttl{font-family:'JetBrains Mono',monospace;font-size:.38rem;color:#888;letter-spacing:.04em;margin-top:1px}
+.cert-seal{width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#C8A96E,#E2C48A);display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 14px rgba(200,169,110,.4);position:relative}
+.cert-seal::before{content:'';position:absolute;inset:3px;border-radius:50%;border:1.5px dashed rgba(255,255,255,.5)}
+.cert-seal-t{font-family:'JetBrains Mono',monospace;font-size:.3rem;color:#7a4e0a;font-weight:700;letter-spacing:.04em;text-transform:uppercase;text-align:center;line-height:1.4;position:relative;z-index:1}
+.cert-seal-ic{font-size:.9rem;position:relative;z-index:1;margin-bottom:1px}
+.cert-footer{background:rgba(200,169,110,0.06);border-top:1px solid rgba(200,169,110,0.15);padding:10px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.cert-id-block .lbl{font-family:'JetBrains Mono',monospace;font-size:.38rem;color:#888;text-transform:uppercase;letter-spacing:.1em}
+.cert-id-block .val{font-family:'JetBrains Mono',monospace;font-size:.46rem;color:#333;letter-spacing:.04em;font-weight:700;margin-top:1px}
+.cert-id-block .verify{font-family:'JetBrains Mono',monospace;font-size:.38rem;color:#8B6914;margin-top:3px}
+.cert-stripe-b{height:4px;background:linear-gradient(90deg,#C8A96E,#E2C48A,#7C3AED,#E2C48A,#C8A96E)}
+</style>
+</head>
+<body>
+
+<div id="toast"></div>
+
+<!-- ══════════════════════════════
+     GUARD
+══════════════════════════════ -->
+<div id="guard">
+  <div class="g-logo">Biluxe<sup style="font-size:.45em;color:rgba(200,169,110,.5);font-weight:400">10</sup></div>
+  <div class="g-spin" id="gSpin"></div>
+  <div class="g-msg" id="gMsg">Verifying access…</div>
+  <div class="g-err-box" id="gErrBox">
+    <div class="g-err-title" id="gErrTitle">Access Denied</div>
+    <div class="g-err-desc" id="gErrDesc">You need to log in to view certificates.</div>
+    <button class="g-err-btn" onclick="location.href='auth.html'">Go to Login</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════
+     APP
+══════════════════════════════ -->
+<div id="app">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="tb-left">
+      <a href="index.html" class="tb-back">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      </a>
+      <div class="tb-logo">Biluxe<sup style="font-size:.48em;color:var(--t3);font-weight:400">10</sup></div>
+      <div class="tb-div"></div>
+      <div class="tb-page">My Certificates</div>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div id="main">
+
+    <!-- HERO -->
+    <div class="hero">
+      <div class="hero-tag"><div class="hero-dot"></div>Achievement Vault</div>
+      <div class="hero-title" id="heroTitle">Your Certificates</div>
+      <div class="hero-sub">Upload your course completion proof, exam scores, projects and seminar certificates to get your official Biluxe10 certificate.</div>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats-row">
+      <div class="stat-box">
+        <div class="stat-n" id="statCerts">0</div>
+        <div class="stat-l">Issued</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-n" id="statProjects">0</div>
+        <div class="stat-l">Projects</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-n" id="statSeminars">0</div>
+        <div class="stat-l">Seminars</div>
+      </div>
+    </div>
+
+    <!-- SUBMIT PROOF SECTION -->
+    <div>
+      <div class="sec-hd">
+        <div class="sec-title">Submit for Certificate</div>
+        <button class="btn-sm" onclick="toggleUpload()">+ Submit</button>
+      </div>
+
+      <div id="uploadSection" style="display:none">
+        <div class="upload-card">
+          <div class="upload-card-hd">
+            <div class="upload-card-title">📋 Certificate Application</div>
+            <span class="bdg gd">Step 1 of 1</span>
+          </div>
+          <div class="upload-body">
+
+            <div class="info-card gold" style="margin-bottom:4px">
+              <svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:var(--gold);fill:none;stroke-width:1.8;stroke-linecap:round">
+                <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+              </svg>
+              <div>
+                <div class="info-card-t" style="color:var(--gold)">How it works</div>
+                <div class="info-card-d">Fill in your course name, upload proof links (Google Drive / YouTube / screenshots), and submit. Admin reviews within 24 hours and issues your certificate.</div>
+              </div>
+            </div>
+
+            <div class="fg">
+              <label class="fl">Course Name *</label>
+              <input class="fi" id="upCourse" placeholder="e.g. Machine Learning Fundamentals">
+            </div>
+
+            <div class="fg">
+              <label class="fl">Your Full Name *</label>
+              <input class="fi" id="upName" placeholder="As you want it on the certificate">
+            </div>
+
+            <div class="fg">
+              <label class="fl">Exam Score (out of 100)</label>
+              <input class="fi" id="upScore" type="number" min="0" max="100" placeholder="e.g. 88">
+            </div>
+
+            <div class="fg">
+              <label class="fl">Course Progress %</label>
+              <input class="fi" id="upProgress" type="number" min="0" max="100" placeholder="e.g. 100">
+            </div>
+
+            <div class="fg">
+              <label class="fl">Project Title (if any)</label>
+              <input class="fi" id="upProject" placeholder="e.g. My AI Startup Dashboard">
+            </div>
+
+            <div class="fg">
+              <label class="fl">Project Link (Google Drive / GitHub / YouTube)</label>
+              <input class="fi" id="upProjectLink" type="url" placeholder="https://drive.google.com/...">
+            </div>
+
+            <div class="fg">
+              <label class="fl">Seminar / Workshop Name (if any)</label>
+              <input class="fi" id="upSeminar" placeholder="e.g. AI Summit 2024 by Biluxe10">
+            </div>
+
+            <div class="fg">
+              <label class="fl">Seminar Certificate / Proof Link</label>
+              <input class="fi" id="upSeminarLink" type="url" placeholder="https://drive.google.com/...">
+            </div>
+
+            <div class="fg">
+              <label class="fl">Additional Notes (optional)</label>
+              <textarea class="ftxt" id="upNote" placeholder="Any extra info for admin…"></textarea>
+            </div>
+
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <button class="btn-g" onclick="submitCertRequest()">
+                <svg viewBox="0 0 24 24" style="width:13px;height:13px;stroke:#000;fill:none;stroke-width:2.2;stroke-linecap:round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                Submit Request
+              </button>
+              <button class="btn-o" onclick="toggleUpload()">Cancel</button>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PENDING REQUESTS -->
+    <div id="pendingSection" style="display:none">
+      <div class="sec-hd">
+        <div class="sec-title">⏳ Pending Requests</div>
+        <span class="bdg pn" id="pendingCount">0</span>
+      </div>
+      <div id="pendingList" class="cert-list"></div>
+    </div>
+
+    <!-- ISSUED CERTIFICATES -->
+    <div>
+      <div class="sec-hd">
+        <div class="sec-title">🏆 My Certificates</div>
+        <span class="bdg ok" id="certCount">0</span>
+      </div>
+      <div class="cert-list" id="certList">
+        <div class="empty-box">
+          <div class="empty-ic">🏆</div>
+          <div class="empty-t">No certificates yet</div>
+          <div class="empty-s">Complete a course and submit your proof above. Admin will issue your certificate within 24 hours.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- COURSE PROGRESS -->
+    <div class="prog-section">
+      <div class="prog-hd">
+        <div class="prog-title">📚 Submitted Work</div>
+        <span class="bdg gd" id="progCount">0 items</span>
+      </div>
+      <div id="progList">
+        <div style="padding:20px;text-align:center;font-family:var(--fm);font-size:.58rem;color:var(--t3)">No submissions yet</div>
+      </div>
+    </div>
+
+  </div><!-- /main -->
+
+  <!-- BOTTOM NAV -->
+  <div id="bnav">
+    <button class="bn" onclick="location.href='index.html'">
+      <div class="bn-ic"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
+      <div class="bn-lb">Home</div>
+    </button>
+    <button class="bn" onclick="location.href='courses.html'">
+      <div class="bn-ic"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg></div>
+      <div class="bn-lb">Courses</div>
+    </button>
+    <button class="bn on">
+      <div class="bn-ic"><svg viewBox="0 0 24 24" style="stroke:var(--gold)"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg></div>
+      <div class="bn-lb" style="color:var(--gold)">Certs</div>
+    </button>
+    <button class="bn" onclick="location.href='dashboard.html'">
+      <div class="bn-ic"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+      <div class="bn-lb">Profile</div>
+    </button>
+  </div>
+
+</div><!-- /app -->
+
+<!-- ══════════════════════════════
+     CERTIFICATE VIEW MODAL
+══════════════════════════════ -->
+<div id="certViewModal">
+  <div class="cv-topbar">
+    <div class="cv-close" onclick="closeCertView()">
+      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+    </div>
+    <div style="font-family:var(--fd);font-size:.9rem;font-weight:700;color:#fff">Certificate</div>
+    <div class="cv-actions">
+      <button class="btn-sm" onclick="shareCert()">
+        <svg viewBox="0 0 24 24" style="width:12px;height:12px;stroke:var(--gold);fill:none;stroke-width:2;stroke-linecap:round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+        Share
+      </button>
+      <button class="btn-sm" onclick="copyCertLink()">
+        <svg viewBox="0 0 24 24" style="width:12px;height:12px;stroke:var(--gold);fill:none;stroke-width:2;stroke-linecap:round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+        Copy Link
+      </button>
+    </div>
+  </div>
+
+  <!-- THE CERTIFICATE ELEMENT -->
+  <div class="certificate" id="certificateEl">
+    <div class="cert-stripe-t"></div>
+
+    <!-- Corner ornaments -->
+    <div class="cert-corner tl">
+      <svg viewBox="0 0 30 30" width="30" height="30">
+        <path d="M2 2 L13 2 L13 5 L5 5 L5 13 L2 13 Z" fill="none" stroke="#C8A96E" stroke-width="1.2"/>
+        <circle cx="3.5" cy="3.5" r="1.4" fill="#C8A96E"/>
+      </svg>
+    </div>
+    <div class="cert-corner tr">
+      <svg viewBox="0 0 30 30" width="30" height="30">
+        <path d="M2 2 L13 2 L13 5 L5 5 L5 13 L2 13 Z" fill="none" stroke="#C8A96E" stroke-width="1.2"/>
+        <circle cx="3.5" cy="3.5" r="1.4" fill="#C8A96E"/>
+      </svg>
+    </div>
+    <div class="cert-corner bl">
+      <svg viewBox="0 0 30 30" width="30" height="30">
+        <path d="M2 2 L13 2 L13 5 L5 5 L5 13 L2 13 Z" fill="none" stroke="#C8A96E" stroke-width="1.2"/>
+        <circle cx="3.5" cy="3.5" r="1.4" fill="#C8A96E"/>
+      </svg>
+    </div>
+    <div class="cert-corner br">
+      <svg viewBox="0 0 30 30" width="30" height="30">
+        <path d="M2 2 L13 2 L13 5 L5 5 L5 13 L2 13 Z" fill="none" stroke="#C8A96E" stroke-width="1.2"/>
+        <circle cx="3.5" cy="3.5" r="1.4" fill="#C8A96E"/>
+      </svg>
+    </div>
+    <div class="cert-outer"></div>
+    <div class="cert-inner"></div>
+
+    <div class="cert-body">
+      <!-- Logo -->
+      <div class="cert-logo-row">
+        <div style="text-align:center">
+          <div class="cert-logo-t">Biluxe<sup>10</sup></div>
+          <div class="cert-logo-sub">India's Advanced Ed-Tech Platform</div>
+        </div>
+        <div class="cert-est">Est. 2024</div>
+      </div>
+
+      <!-- Heading -->
+      <div class="cert-hd-row">
+        <div class="cert-of">Certificate</div>
+        <div class="cert-completion">of <span>Completion</span></div>
+      </div>
+
+      <!-- Divider -->
+      <div class="cert-div">
+        <div class="cert-dline"></div>
+        <div class="cert-dstar">✦</div>
+        <div class="cert-dstar">✦</div>
+        <div class="cert-dstar">✦</div>
+        <div class="cert-dline"></div>
+      </div>
+
+      <!-- Recipient -->
+      <div class="cert-certifies">This Certifies That</div>
+      <div class="cert-recipient" id="cv-name">Student Name</div>
+      <div class="cert-has-comp">has successfully completed all requirements and demonstrated<br>proficiency in the following course offered by Biluxe10</div>
+
+      <!-- Course box -->
+      <div class="cert-course-box">
+        <div class="cert-course-lbl">Course of Study</div>
+        <div class="cert-course-nm" id="cv-course">Course Name</div>
+        <div class="cert-bundle-nm" id="cv-bundle">Bundle</div>
+      </div>
+
+      <!-- Achievement pills -->
+      <div class="cert-achs" id="cv-achs"></div>
+
+      <!-- Description -->
+      <div class="cert-desc" id="cv-desc">This certificate is awarded in recognition of dedication and successful completion of all course requirements.</div>
+
+      <!-- Signatures -->
+      <div class="cert-sig-row">
+        <div class="cert-sig-block">
+          <div class="cert-sig-img">
+            <svg viewBox="0 0 140 70" width="128" height="54" xmlns="http://www.w3.org/2000/svg">
+              <path d="M25 15 C25 15 21 11 19 13 C15 17 15 27 17 35 C19 43 23 49 27 51 C31 53 35 51 37 47 C39 43 39 37 37 33 C35 29 31 27 29 27 C27 27 25 29 25 31 C25 33 27 35 29 35 C33 35 37 33 41 31 C45 29 49 25 51 23 C53 21 53 19 51 19 C47 19 43 23 41 27 C39 31 37 37 37 43 C37 49 39 55 43 57" fill="none" stroke="#1a1a1a" stroke-width="2" stroke-linecap="round"/>
+              <path d="M43 22 L57 50" fill="none" stroke="#1a1a1a" stroke-width="2" stroke-linecap="round"/>
+              <path d="M49 20 L63 52" fill="none" stroke="#1a1a1a" stroke-width="2" stroke-linecap="round"/>
+              <path d="M63 44 Q73 42 83 44 Q89 45 93 44" fill="none" stroke="#1a1a1a" stroke-width="1.8" stroke-linecap="round"/>
+              <circle cx="96" cy="44" r="1.5" fill="#1a1a1a"/>
+            </svg>
+          </div>
+          <div class="cert-sig-line"></div>
+          <div class="cert-sig-name">Syed Afshar Khadri</div>
+          <div class="cert-sig-ttl">Founder &amp; Director, Biluxe10</div>
+        </div>
+
+        <div class="cert-seal">
+          <div class="cert-seal-ic">🏆</div>
+          <div class="cert-seal-t">VERIFIED<br>BILUXE10<br>CERTIFIED</div>
+        </div>
+
+        <div class="cert-sig-block">
+          <div class="cert-sig-img" style="flex-direction:column;justify-content:flex-end;gap:2px">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:.4rem;color:#888;text-transform:uppercase;letter-spacing:.08em;text-align:center;margin-bottom:3px">Issued On</div>
+            <div style="font-family:'Fraunces',serif;font-size:.85rem;font-weight:700;color:#1a1a1a;text-align:center" id="cv-date">—</div>
+          </div>
+          <div class="cert-sig-line"></div>
+          <div class="cert-sig-name">Academic Director</div>
+          <div class="cert-sig-ttl">Biluxe10 Academy</div>
+        </div>
+      </div>
+    </div><!-- /cert-body -->
+
+    <!-- Footer -->
+    <div class="cert-footer">
+      <div class="cert-id-block">
+        <div class="lbl">Certificate ID</div>
+        <div class="val" id="cv-certid">BLX-000000</div>
+        <div class="verify">Verify at biluxe10.com/verify</div>
+      </div>
+    </div>
+
+    <div class="cert-stripe-b"></div>
+  </div><!-- /certificate -->
+</div><!-- /certViewModal -->
+
+<script>
+/* ═══════════════════════════════════════════
+   FIREBASE — EXACT SAME CONFIG AS ADMIN
+═══════════════════════════════════════════ */
+const FB_CFG = {
+  apiKey:            "AIzaSyDxxkC9iD1V1w-53Kf4oBrHEXlBLvCc7sE",
+  authDomain:        "biluxe10-3e894.firebaseapp.com",
+  projectId:         "biluxe10-3e894",
+  storageBucket:     "biluxe10-3e894.appspot.com",
+  messagingSenderId: "804749588233",
+  appId:             "1:804749588233:web:7777648c0c7834733c05d8"
+};
+if (!firebase.apps.length) firebase.initializeApp(FB_CFG);
+const AUTH = firebase.auth();
+const DB   = firebase.firestore();
+const fts  = () => firebase.firestore.FieldValue.serverTimestamp();
+
+/* ═══════════════════════════════════════════
+   CONSTANTS — MUST MATCH ADMIN EXACTLY
+═══════════════════════════════════════════ */
+const COL          = 'user_collection'; // admin.html uses this
+const ADMIN_EMAILS = ['biluxe10@gmail.com'];
+
+/* ═══════════════════════════════════════════
+   san() — EXACT COPY FROM ADMIN
+   email → Firestore doc ID
+═══════════════════════════════════════════ */
+const san = e => e.toLowerCase().trim()
+  .replace(/\./g, '_')
+  .replace(/@/g,  '__at__');
+
+/* ═══════════════════════════════════════════
+   HELPERS
+═══════════════════════════════════════════ */
+const T    = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+const fmtD = ts => {
+  if (!ts) return '—';
+  try {
+    const d = ts.toDate ? ts.toDate() : new Date(ts);
+    if (isNaN(d)) return '—';
+    return d.toLocaleDateString('en-IN', { day:'numeric', month:'long', year:'numeric' });
+  } catch(e) { return '—'; }
+};
+const fmtShort = ts => {
+  if (!ts) return '—';
+  try {
+    const d = ts.toDate ? ts.toDate() : new Date(ts);
+    return d.toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'numeric' });
+  } catch(e) { return '—'; }
+};
+
+function hashCode(str) {
+  let h = 0;
+  for (let i = 0; i < str.length; i++) h = Math.imul(31, h) + str.charCodeAt(i) | 0;
+  return h;
+}
+// Matches admin.html makeCertId exactly
+function makeCertId(courseId, email) {
+  return 'BLX-' + Math.abs(hashCode(courseId + (email || '')))
+    .toString(36).toUpperCase().padEnd(6,'0').substring(0,6);
+}
+
+/* ═══════════════════════════════════════════
+   TOAST
+═══════════════════════════════════════════ */
+let _tt;
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('on');
+  clearTimeout(_tt);
+  _tt = setTimeout(() => el.classList.remove('on'), 3200);
+}
+
+/* ═══════════════════════════════════════════
+   GLOBAL STATE
+═══════════════════════════════════════════ */
+let CUR_USER   = null;  // Firebase Auth user
+let USER_DOC   = null;  // Firestore user document data
+let EMAIL_ID   = '';    // sanitized email = doc ID
+let CERTS      = [];    // from certificates subcollection
+let REQUESTS   = [];    // from cert_requests subcollection
+let PROJECTS   = [];    // from projects subcollection
+let SEMINARS   = [];    // from seminars subcollection
+let ACTIVE_CERT = null; // cert currently shown in modal
+
+/* ═══════════════════════════════════════════
+   AUTH — NO ADMIN REDIRECT, JUST CHECK LOGIN
+═══════════════════════════════════════════ */
+const _authTO = setTimeout(() => showErr('Taking too long. Please refresh.'), 10000);
+
+AUTH.onAuthStateChanged(async fbUser => {
+  clearTimeout(_authTO);
+
+  // Not logged in → go to login
+  if (!fbUser) {
+    location.href = 'auth.html';
+    return;
+  }
+
+  // If admin is browsing this page let them in but show their certs too
+  // (admin.html handles the admin panel separately)
+  CUR_USER = fbUser;
+  EMAIL_ID = san(fbUser.email);
+
+  T('gMsg', 'Loading your data…');
+
+  try {
+    // Fetch user doc
+    const docSnap = await DB.collection(COL).doc(EMAIL_ID).get();
+
+    if (!docSnap.exists) {
+      // No doc yet — user registered but hasn't set up
+      showErr('Account not found. <a href="auth.html" style="color:var(--gold)">Sign in again</a>');
+      return;
+    }
+
+    USER_DOC = docSnap.data();
+
+    // Payment check — only non-admins need approved payment
+    const isAdmin = ADMIN_EMAILS.includes(fbUser.email.toLowerCase());
+    if (!isAdmin && USER_DOC.paymentStatus !== 'approved') {
+      showErr('Your payment is pending approval.<br><span style="color:var(--t2);font-size:.72rem">Contact support on WhatsApp if already paid.</span>');
+      return;
+    }
+
+    // Set display name
+    const displayName = USER_DOC.fullName || fbUser.displayName || fbUser.email.split('@')[0];
+    T('heroTitle', displayName + "'s Certificates");
+
+    // Load all subcollections in parallel
+    await loadAllSubcollections();
+
+    // Build page
+    buildPage();
+
+    // Hide guard, show app
+    const guard = document.getElementById('guard');
+    guard.classList.add('fade');
+    setTimeout(() => {
+      guard.classList.add('gone');
+      document.getElementById('app').classList.add('show');
+    }, 700);
+
+  } catch(err) {
+    console.error('Init error:', err);
+    showErr('Error loading data: ' + err.message);
+  }
+});
+
+/* ═══════════════════════════════════════════
+   SHOW ERROR IN GUARD
+═══════════════════════════════════════════ */
+function showErr(html) {
+  document.getElementById('gSpin').style.display = 'none';
+  document.getElementById('gMsg').style.display  = 'none';
+  const box = document.getElementById('gErrBox');
+  box.classList.add('show');
+  document.getElementById('gErrDesc').innerHTML = html;
+}
+
+/* ═══════════════════════════════════════════
+   LOAD ALL SUBCOLLECTIONS
+   These are the Firestore paths admin uses
+═══════════════════════════════════════════ */
+async function loadAllSubcollections() {
+  CERTS    = [];
+  REQUESTS = [];
+  PROJECTS = [];
+  SEMINARS = [];
+
+  const base = DB.collection(COL).doc(EMAIL_ID);
+
+  // 1. Admin-issued certificates
+  //    Path: user_collection/{emailId}/certificates/{courseId}
+  try {
+    const snap = await base.collection('certificates').get();
+    snap.forEach(d => CERTS.push({ _id: d.id, ...d.data() }));
+  } catch(e) { console.warn('certs:', e.message); }
+
+  // 2. Certificate requests user submitted
+  //    Path: user_collection/{emailId}/cert_requests/{requestId}
+  try {
+    const snap = await base.collection('cert_requests').orderBy('submittedAt','desc').get();
+    snap.forEach(d => REQUESTS.push({ _id: d.id, ...d.data() }));
+  } catch(e) {
+    // orderBy may fail if no index — try without
+    try {
+      const snap2 = await base.collection('cert_requests').get();
+      snap2.forEach(d => REQUESTS.push({ _id: d.id, ...d.data() }));
+    } catch(e2) { console.warn('requests:', e2.message); }
+  }
+
+  // 3. Projects submitted by user
+  //    Path: user_collection/{emailId}/projects/{projectId}
+  try {
+    const snap = await base.collection('projects').get();
+    snap.forEach(d => PROJECTS.push({ _id: d.id, ...d.data() }));
+  } catch(e) { console.warn('projects:', e.message); }
+
+  // 4. Seminars / workshops attended
+  //    Path: user_collection/{emailId}/seminars/{seminarId}
+  try {
+    const snap = await base.collection('seminars').get();
+    snap.forEach(d => SEMINARS.push({ _id: d.id, ...d.data() }));
+  } catch(e) { console.warn('seminars:', e.message); }
+
+  // 5. Also check course_progress (admin writes here too)
+  //    Path: user_collection/{emailId}/course_progress/{courseId}
+  //    Not stored globally — used inline below in buildSubmittedWork()
+}
+
+/* ═══════════════════════════════════════════
+   BUILD PAGE
+═══════════════════════════════════════════ */
+function buildPage() {
+  const approved = CERTS.filter(c => c.status === 'approved' || !c.status);
+  const pending  = REQUESTS.filter(r => r.status === 'pending');
+
+  // Stats
+  T('statCerts',    approved.length);
+  T('statProjects', PROJECTS.length);
+  T('statSeminars', SEMINARS.length);
+  T('certCount',    approved.length + ' issued');
+  T('pendingCount', pending.length);
+
+  // Render sections
+  renderCerts(approved);
+  renderPending(pending);
+  renderSubmittedWork();
+}
+
+/* ═══════════════════════════════════════════
+   RENDER ISSUED CERTIFICATES
+═══════════════════════════════════════════ */
+function renderCerts(list) {
+  const el = document.getElementById('certList');
+  if (!list.length) {
+    el.innerHTML = `
+      <div class="empty-box">
+        <div class="empty-ic">🏆</div>
+        <div class="empty-t">No certificates yet</div>
+        <div class="empty-s">Submit your course completion proof above. Admin will review and issue your official certificate.</div>
+      </div>`;
+    return;
+  }
+  el.innerHTML = list.map(cert => {
+    const cid     = cert.certId || makeCertId(cert.courseId || cert._id, CUR_USER.email);
+    const dateStr = fmtShort(cert.issuedAt);
+    return `
+      <div class="cert-card approved">
+        <div class="cert-card-top">
+          <div class="cert-icon" style="background:var(--gA);border:1px solid rgba(200,169,110,.2)">🏆</div>
+          <div class="cert-info">
+            <div class="cert-name">${cert.courseName || cert.courseId || 'Certificate'}</div>
+            <div class="cert-sub">${cert.bundleName || 'Biluxe10 · ' + (cert.type === 'special' ? 'Special Course' : 'Bundle Course')}</div>
+            <div class="cert-chips">
+              ${(cert.examScore || 0) >= 0 && cert.examScore != null ? `<div class="chip"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Exam: ${cert.examScore}/100</div>` : ''}
+              ${cert.projectTitle ? `<div class="chip"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>${cert.projectTitle}</div>` : ''}
+              <div class="chip"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>${dateStr}</div>
+            </div>
+            <span class="bdg ok">✓ Verified Certificate</span>
+          </div>
+        </div>
+        <div class="cert-card-actions">
+          <button class="btn-g" onclick="viewCert('${cert._id}')">
+            <svg viewBox="0 0 24 24" style="width:13px;height:13px;stroke:#000;fill:none;stroke-width:2.2;stroke-linecap:round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>
+            View Certificate
+          </button>
+          <button class="btn-sm" onclick="copyCertLinkById('${cid}')">
+            <svg viewBox="0 0 24 24" style="width:11px;height:11px;stroke:var(--gold);fill:none;stroke-width:2;stroke-linecap:round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+            Share
+          </button>
+          ${cert.verifyUrl || cid ? `<button class="btn-sm" onclick="window.open('verify.html?id=${cid}','_blank')">🔗 Verify</button>` : ''}
+        </div>
+      </div>`;
+  }).join('');
+}
+
+/* ═══════════════════════════════════════════
+   RENDER PENDING REQUESTS
+═══════════════════════════════════════════ */
+function renderPending(list) {
+  const sec = document.getElementById('pendingSection');
+  const el  = document.getElementById('pendingList');
+  if (!list.length) { sec.style.display = 'none'; return; }
+  sec.style.display = 'block';
+  T('pendingCount', list.length);
+  el.innerHTML = list.map(r => `
+    <div class="cert-card">
+      <div class="cert-card-top">
+        <div class="cert-icon" style="background:var(--amA);border:1px solid rgba(245,158,11,.2)">⏳</div>
+        <div class="cert-info">
+          <div class="cert-name">${r.courseName || '—'}</div>
+          <div class="cert-sub">Submitted ${fmtShort(r.submittedAt)}</div>
+          <div class="cert-chips">
+            ${r.examScore != null ? `<div class="chip"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Score: ${r.examScore}/100</div>` : ''}
+            ${r.projectTitle ? `<div class="chip"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16"/></svg>${r.projectTitle}</div>` : ''}
+            ${r.seminarName ? `<div class="chip">🎤 ${r.seminarName}</div>` : ''}
+          </div>
+          <span class="bdg pn">⏳ Pending Admin Review</span>
+        </div>
+      </div>
+      <div class="cert-card-actions">
+        <div style="font-family:var(--fm);font-size:.58rem;color:var(--amber);padding:4px 0">Admin reviews within 24 hours. You will be notified on WhatsApp.</div>
+      </div>
+    </div>`).join('');
+}
+
+/* ═══════════════════════════════════════════
+   RENDER SUBMITTED WORK (Projects + Seminars)
+═══════════════════════════════════════════ */
+function renderSubmittedWork() {
+  const el  = document.getElementById('progList');
+  const all = [
+    ...PROJECTS.map(p => ({ type:'project', ...p })),
+    ...SEMINARS.map(s => ({ type:'seminar', ...s })),
+    ...REQUESTS.map(r => ({ type:'request', ...r }))
+  ];
+
+  T('progCount', all.length + ' item' + (all.length !== 1 ? 's' : ''));
+
+  if (!all.length) {
+    el.innerHTML = `<div style="padding:20px;text-align:center;font-family:var(--fm);font-size:.58rem;color:var(--t3)">Nothing submitted yet. Use the form above to submit your work.</div>`;
+    return;
+  }
+
+  el.innerHTML = all.map(item => {
+    let icon  = '📄', label = '', meta = '', statusClass = 'inprog', statusLabel = 'Submitted';
+    if (item.type === 'project') {
+      icon  = '💼';
+      label = item.title || item.projectTitle || 'Project';
+      meta  = item.courseId || item.courseName || '';
+      if (item.status === 'approved') { statusClass = 'done'; statusLabel = 'Approved'; }
+      else if (item.status === 'rejected') { statusClass = 'idle'; statusLabel = 'Rejected'; }
+    } else if (item.type === 'seminar') {
+      icon  = '🎤';
+      label = item.seminarName || item.name || 'Seminar';
+      meta  = fmtShort(item.date || item.attendedAt || item.submittedAt);
+      statusClass = 'done'; statusLabel = 'Attended';
+    } else {
+      icon  = '📋';
+      label = item.courseName || 'Cert Request';
+      meta  = 'Exam: ' + (item.examScore != null ? item.examScore + '/100' : '—');
+      if (item.status === 'approved') { statusClass = 'done'; statusLabel = 'Approved'; }
+    }
+    return `
+      <div class="prog-item">
+        <div class="prog-dot ${statusClass}"></div>
+        <div class="prog-info">
+          <div class="prog-name">${icon} ${label}</div>
+          <div class="prog-meta">${meta} · ${statusLabel}</div>
+        </div>
+        ${item.projectLink || item.seminarProofLink ? `
+        <a href="${item.projectLink || item.seminarProofLink}" target="_blank" class="btn-sm" style="font-size:.5rem;padding:4px 8px">View</a>` : ''}
+      </div>`;
+  }).join('');
+}
+
+/* ═══════════════════════════════════════════
+   TOGGLE UPLOAD FORM
+═══════════════════════════════════════════ */
+function toggleUpload() {
+  const sec = document.getElementById('uploadSection');
+  sec.style.display = sec.style.display === 'none' ? 'block' : 'none';
+  if (sec.style.display === 'block') {
+    // Pre-fill name from user doc
+    const nameEl = document.getElementById('upName');
+    if (nameEl && !nameEl.value) {
+      nameEl.value = USER_DOC.fullName || CUR_USER.displayName || '';
+    }
+    sec.scrollIntoView({ behavior:'smooth', block:'start' });
+  }
+}
+
+/* ═══════════════════════════════════════════
+   SUBMIT CERTIFICATE REQUEST
+   Saves to: user_collection/{emailId}/cert_requests/{autoId}
+   Admin sees this and issues the cert manually
+═══════════════════════════════════════════ */
+async function submitCertRequest() {
+  const courseName    = document.getElementById('upCourse').value.trim();
+  const studentName   = document.getElementById('upName').value.trim();
+  const examScore     = parseInt(document.getElementById('upScore').value) || null;
+  const progress      = parseInt(document.getElementById('upProgress').value) || null;
+  const projectTitle  = document.getElementById('upProject').value.trim();
+  const projectLink   = document.getElementById('upProjectLink').value.trim();
+  const seminarName   = document.getElementById('upSeminar').value.trim();
+  const seminarLink   = document.getElementById('upSeminarLink').value.trim();
+  const note          = document.getElementById('upNote').value.trim();
+
+  if (!courseName)   { toast('⚠ Enter the course name'); return; }
+  if (!studentName)  { toast('⚠ Enter your full name');  return; }
+
+  const btn = document.querySelector('#uploadSection .btn-g');
+  if (btn) { btn.disabled = true; btn.textContent = 'Submitting…'; }
+
+  try {
+    const base    = DB.collection(COL).doc(EMAIL_ID);
+    const now     = fts();
+    const reqData = {
+      courseName,
+      studentName,
+      email:        CUR_USER.email,
+      status:       'pending',
+      submittedAt:  now,
+      updatedAt:    now
+    };
+    if (examScore  != null) reqData.examScore  = examScore;
+    if (progress   != null) reqData.progress   = progress;
+    if (projectTitle)       reqData.projectTitle = projectTitle;
+    if (projectLink)        reqData.projectLink  = projectLink;
+    if (seminarName)        reqData.seminarName  = seminarName;
+    if (seminarLink)        reqData.seminarProofLink = seminarLink;
+    if (note)               reqData.adminNote    = note;
+
+    // Save cert request
+    await base.collection('cert_requests').add(reqData);
+
+    // If project link provided, also save to projects subcollection
+    if (projectTitle || projectLink) {
+      await base.collection('projects').add({
+        title:       projectTitle || courseName + ' Project',
+        projectTitle,
+        projectLink,
+        courseName,
+        courseId:    courseName.toLowerCase().replace(/\s+/g,'-'),
+        status:      'pending',
+        submittedAt: now
+      });
+    }
+
+    // If seminar provided, save to seminars subcollection
+    if (seminarName) {
+      await base.collection('seminars').add({
+        seminarName,
+        name:            seminarName,
+        seminarProofLink: seminarLink,
+        status:          'attended',
+        submittedAt:     now
+      });
+    }
+
+    // Also update course_progress so admin can see it
+    if (courseName) {
+      const courseId = courseName.toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,'');
+      await base.collection('course_progress').doc(courseId).set({
+        courseName,
+        progress:    progress || 0,
+        examScore:   examScore || 0,
+        projectTitle,
+        projectLink,
+        projectStatus: 'pending',
+        updatedAt:   now
+      }, { merge: true });
+    }
+
+    toast('✅ Submitted! Admin will review within 24 hours.');
+
+    // Clear form
+    ['upCourse','upScore','upProgress','upProject','upProjectLink','upSeminar','upSeminarLink','upNote']
+      .forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+    document.getElementById('uploadSection').style.display = 'none';
+
+    // Reload data
+    await loadAllSubcollections();
+    buildPage();
+
+  } catch(err) {
+    console.error('Submit error:', err);
+    toast('❌ Error: ' + err.message);
+  } finally {
+    if (btn) { btn.disabled = false; btn.innerHTML = `<svg viewBox="0 0 24 24" style="width:13px;height:13px;stroke:#000;fill:none;stroke-width:2.2;stroke-linecap:round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>Submit Request`; }
+  }
+}
+
+/* ═══════════════════════════════════════════
+   VIEW CERTIFICATE
+═══════════════════════════════════════════ */
+function viewCert(certDocId) {
+  const cert = CERTS.find(c => c._id === certDocId);
+  if (!cert) { toast('Certificate not found'); return; }
+  ACTIVE_CERT = cert;
+  fillCertModal(cert);
+  document.getElementById('certViewModal').classList.add('on');
+  document.body.classList.add('lock');
+}
+
+function closeCertView() {
+  document.getElementById('certViewModal').classList.remove('on');
+  document.body.classList.remove('lock');
+}
+
+/* ═══════════════════════════════════════════
+   FILL CERTIFICATE MODAL
+═══════════════════════════════════════════ */
+function fillCertModal(cert) {
+  const studentName = cert.studentName || USER_DOC.fullName || CUR_USER.email.split('@')[0];
+  const courseName  = cert.courseName  || cert.courseId || 'Course';
+  const bundleName  = cert.bundleName  || 'Biluxe10 Bundle';
+  const certId      = cert.certId      || makeCertId(cert.courseId || cert._id, CUR_USER.email);
+  const dateStr     = fmtD(cert.issuedAt);
+
+  // Fill text fields
+  T('cv-name',   studentName);
+  T('cv-course', courseName);
+  T('cv-bundle', bundleName);
+  T('cv-date',   dateStr);
+  T('cv-certid', certId);
+
+  // Achievement pills
+  const achEl = document.getElementById('cv-achs');
+  let achHTML = '';
+  if ((cert.progress || 0) >= 100 || cert.status === 'approved') {
+    achHTML += `<div class="cert-ach watch"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Course Complete</div>`;
+  }
+  if (cert.examScore != null && cert.examScore >= 0) {
+    achHTML += `<div class="cert-ach exam"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Exam: ${cert.examScore}/100</div>`;
+  }
+  if (cert.projectTitle) {
+    achHTML += `<div class="cert-ach proj"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>${cert.projectTitle.substring(0,24)}</div>`;
+  }
+  if (cert.type === 'special') {
+    achHTML += `<div class="cert-ach special"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Professional Cert</div>`;
+  }
+  if (cert.seminarName) {
+    achHTML += `<div class="cert-ach seminar"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/></svg>${cert.seminarName.substring(0,20)}</div>`;
+  }
+  achEl.innerHTML = achHTML;
+
+  // Description
+  let desc = `This certificate is awarded to <strong>${studentName}</strong> for successfully completing <strong>${courseName}</strong>`;
+  if (cert.examScore != null) desc += `, achieving a score of <strong>${cert.examScore}/100</strong> in the final exam`;
+  if (cert.projectTitle) desc += `, and submitting the project "<strong>${cert.projectTitle}</strong>"`;
+  desc += '. This demonstrates readiness for real-world professional opportunities.';
+  document.getElementById('cv-desc').innerHTML = desc;
+}
+
+/* ═══════════════════════════════════════════
+   SHARE / COPY
+═══════════════════════════════════════════ */
+function shareCert() {
+  if (!ACTIVE_CERT) return;
+  const certId = ACTIVE_CERT.certId || makeCertId(ACTIVE_CERT.courseId || ACTIVE_CERT._id, CUR_USER.email);
+  const link   = 'https://biluxe10.com/verify?id=' + certId;
+  const text   = `🎓 I earned the "${ACTIVE_CERT.courseName}" certificate from Biluxe10!\nVerify: ${link}`;
+  if (navigator.share) {
+    navigator.share({ title:'Biluxe10 Certificate', text, url: link }).catch(() => {});
+  } else {
+    navigator.clipboard.writeText(text).then(() => toast('Copied to clipboard!')).catch(() => toast('Copy failed'));
+  }
+}
+
+function copyCertLink() {
+  if (!ACTIVE_CERT) return;
+  const certId = ACTIVE_CERT.certId || makeCertId(ACTIVE_CERT.courseId || ACTIVE_CERT._id, CUR_USER.email);
+  copyCertLinkById(certId);
+}
+
+function copyCertLinkById(certId) {
+  const link = 'https://biluxe10.com/verify?id=' + certId;
+  navigator.clipboard.writeText(link)
+    .then(() => toast('✅ Verification link copied!'))
+    .catch(() => toast('Could not copy — link: ' + link));
+}
+
+/* ═══════════════════════════════════════════
+   CLOSE MODAL ON BACKDROP TAP
+═══════════════════════════════════════════ */
+document.getElementById('certViewModal').addEventListener('click', function(e) {
+  if (e.target === this) closeCertView();
+});
+</script>
+</body>
+</html>
