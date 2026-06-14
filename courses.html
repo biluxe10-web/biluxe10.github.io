@@ -1526,7 +1526,7 @@ async function sendTutor(){
     const res=await fetch('/api/groq',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({model:'llama3-8b-8192',messages:[{role:'system',content:sys},...tutorHistory],max_tokens:700,temperature:0.7})
+      body:JSON.stringify({model:'llama-3.3-70b-versatile',messages:[{role:'system',content:sys},...tutorHistory],max_tokens:700,temperature:0.7})
     });
     if(!res.ok)throw new Error('API '+res.status);
     const data=await res.json();
@@ -1569,16 +1569,16 @@ async function generateNotes(){
   content.textContent='Generating '+type+' for '+course+'…';
   const prompts={
     summary:`Write a comprehensive chapter summary for the course "${course}". Cover key concepts, main topics, important takeaways, and practical applications. Format with clear sections.`,
-    keypoints:`List 20 key points from "${course}". Number each. Concise and exam-relevant.`,
-    flashcards:`Create 15 flashcard Q&A pairs for "${course}".\nFormat:\nQ: [Question]\nA: [Answer]\n`,
-    quiz:`Create a 10-question practice quiz for "${course}".\n[Q]. Question?\na) b) c) d)\nAnswer: [letter]\n`,
+    keypoints:`List 40 key points from "${course}". Number each. Concise and exam-relevant.`,
+    flashcards:`Create 30 flashcard Q&A pairs for "${course}".\nFormat:\nQ: [Question]\nA: [Answer]\n`,
+    quiz:`Create a 50-question practice quiz for "${course}".\n[Q]. Question?\na) b) c) d)\nAnswer: [letter]\n`,
     mindmap:`Text mind map for "${course}" with indented hierarchy. Main topic → branches → sub-branches.`
   };
   try{
     const res=await fetch('/api/groq',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({model:'llama3-8b-8192',messages:[{role:'system',content:'You are an expert educational content creator for Biluxe10 Ed-Tech Platform. Create high-quality study materials.'},{role:'user',content:prompts[type]}],max_tokens:1200,temperature:0.5})
+      body:JSON.stringify({model:'llama-3.3-70b-versatile',messages:[{role:'system',content:'You are an expert educational content creator for Biluxe10 Ed-Tech Platform. Create high-quality study materials.'},{role:'user',content:prompts[type]}],max_tokens:1200,temperature:0.5})
     });
     if(!res.ok)throw new Error('API');
     const data=await res.json();
@@ -1628,7 +1628,7 @@ function buildExam(){
   if(existingScore!=null){renderExamResult(existingScore);return;}
   wrap.innerHTML=`<div class="exam-intro">
     <div class="exam-intro-t">Final Exam — ${CURRENT_COURSE?.name||'Course'}</div>
-    <div class="exam-intro-d">Answer all 10 questions. Minimum 70 marks to pass and unlock certificate.</div>
+    <div class="exam-intro-d">Answer all 100 questions. Minimum 70 marks to pass and unlock certificate.</div>
     <div class="exam-rules">
       <div class="exam-rule"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>100 marks (10 per question)</div>
       <div class="exam-rule"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Minimum 70 marks to pass</div>
