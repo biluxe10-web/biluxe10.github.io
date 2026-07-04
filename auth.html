@@ -1146,26 +1146,7 @@ async function handleSignIn(){
 }
 
 /* ═══════════════════════ EMAIL VERIFICATION ═══════════════════════ */
-async function checkVerificationStatus(){
-  setLoad('verifyBtn',true,'Checking…');
-  clearAlert('verifyAlert');
-  try{
-    let user=AUTH.currentUser;
-    if(!user&&G.pendingEmail){
-      showAlert('verifyAlert','Please sign in with your password to confirm verification.','info');
-      setLoad('verifyBtn',false,'✓ I\'ve Verified My Email');
-      // Show a mini sign-in prompt
-      const pass=prompt(`Enter your password for ${G.pendingEmail} to confirm email verification:`);
-      if(!pass){return;}
-      const cred=await AUTH.signInWithEmailAndPassword(G.pendingEmail,pass);
-      user=cred.user;
-    }
-    if(!user){showAlert('verifyAlert','Session expired. Please sign in again.','err');setLoad('verifyBtn',false,'✓ I\'ve Verified My Email');return;}
-    await user.reload();
-    if(!user.emailVerified){
-      showAlert('verifyAlert','Email not yet verified. Please click the link in your inbox (also check Spam folder).','err');
-      setLoad('verifyBtn',false,'✓ I\'ve Verified My Email');return;
-    }
+
     // Email is verified
     const emailId=san(user.email);
     await DB.collection(COL).doc(emailId).update({emailVerified:true,updatedAt:fts()}).catch(()=>{});
