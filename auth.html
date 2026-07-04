@@ -1,0 +1,1452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="robots" content="noindex, nofollow">
+<title>Biluxe10 — Join or Sign In</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,700;0,9..144,900;1,9..144,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#07070A;--bg2:#0D0D12;--bg3:#121218;--bg4:#18181F;--bg5:#1E1E28;
+  --border:rgba(255,255,255,0.055);--border2:rgba(255,255,255,0.1);--border3:rgba(255,255,255,0.16);
+  --gold:#C8A96E;--gold2:#E2C48A;--gold3:#F0D9A8;
+  --gA:rgba(200,169,110,0.08);--gB:rgba(200,169,110,0.15);--gC:rgba(200,169,110,0.04);
+  --green:#22C55E;--grA:rgba(34,197,94,0.1);--grB:rgba(34,197,94,0.18);
+  --red:#EF4444;--reA:rgba(239,68,68,0.1);
+  --blue:#60A5FA;--blA:rgba(96,165,250,0.1);
+  --amber:#F59E0B;--amA:rgba(245,158,11,0.1);
+  --ink:#07070A;--text:#EDEDF0;--t2:#9B9BA8;--t3:#4B4B5A;--t4:#2A2A35;
+  --fd:'Fraunces',serif;--fb:'Plus Jakarta Sans',sans-serif;--fm:'JetBrains Mono',monospace;
+  --r:16px;--rs:12px;
+  --ease:cubic-bezier(0.16,1,0.3,1);--spring:cubic-bezier(0.34,1.56,0.64,1);
+}
+html,body{min-height:100vh}
+body{background:var(--bg);color:var(--text);font-family:var(--fb);line-height:1.6;overflow-x:hidden}
+button,input,select,textarea{font-family:var(--fb)}
+::-webkit-scrollbar{width:3px}
+::-webkit-scrollbar-thumb{background:rgba(200,169,110,0.25);border-radius:2px}
+a{text-decoration:none}
+
+/* ═══════════════════════════════════════════════════════════
+   ANIMATED BACKGROUND — floating orbs + grain + glow
+   ═══════════════════════════════════════════════════════════ */
+.bg-fx{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.bg-fx::before{content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 800px 600px at 15% -10%,rgba(200,169,110,0.08),transparent),
+             radial-gradient(ellipse 600px 500px at 90% 100%,rgba(167,139,250,0.05),transparent),
+             radial-gradient(ellipse 500px 400px at 50% 50%,rgba(96,165,250,0.02),transparent)}
+.grain{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0.02;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size:256px}
+.orb{position:absolute;border-radius:50%;filter:blur(70px);opacity:0.5;animation:orbFloat 18s ease-in-out infinite}
+.orb1{width:340px;height:340px;top:-100px;left:-80px;background:rgba(200,169,110,0.16);animation-delay:0s}
+.orb2{width:280px;height:280px;bottom:-80px;right:-60px;background:rgba(167,139,250,0.1);animation-delay:-6s}
+.orb3{width:220px;height:220px;top:40%;right:10%;background:rgba(96,165,250,0.06);animation-delay:-12s}
+@keyframes orbFloat{
+  0%,100%{transform:translate(0,0) scale(1)}
+  33%{transform:translate(30px,-40px) scale(1.08)}
+  66%{transform:translate(-25px,25px) scale(0.95)}
+}
+
+/* ═══════════════════════════════════════════════════════════
+   LAYOUT
+   ═══════════════════════════════════════════════════════════ */
+.layout{display:grid;grid-template-columns:380px 1fr;min-height:100vh;position:relative;z-index:1}
+
+/* SIDEBAR */
+.sidebar{background:var(--bg2);border-right:1px solid var(--border);position:sticky;top:0;height:100vh;overflow:hidden;display:flex;flex-direction:column}
+.sb-inner{display:flex;flex-direction:column;height:100%;padding:36px 32px;position:relative;overflow:hidden}
+.sb-orb{position:absolute;border-radius:50%;filter:blur(60px);pointer-events:none}
+.sb-orb1{width:300px;height:300px;top:-80px;right:-60px;background:rgba(200,169,110,0.08)}
+.sb-orb2{width:220px;height:220px;bottom:-60px;left:-40px;background:rgba(167,139,250,0.05)}
+
+.sb-logo{font-family:var(--fd);font-size:1.15rem;font-weight:900;color:var(--gold);letter-spacing:-0.01em;flex-shrink:0;position:relative;z-index:1}
+.sb-logo sup{font-size:0.45em;color:var(--t3);font-weight:400}
+
+.sb-body{flex:1;display:flex;flex-direction:column;justify-content:center;padding:24px 0;position:relative;z-index:1}
+.sb-tag{font-family:var(--fm);font-size:0.55rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);border-left:2px solid var(--gold);padding-left:10px;margin-bottom:16px;display:block;transition:all 0.4s var(--ease)}
+.sb-h{font-family:var(--fd);font-size:clamp(1.5rem,2.4vw,2.3rem);font-weight:900;line-height:1.12;margin-bottom:12px;color:var(--text);transition:all 0.4s var(--ease)}
+.sb-h em{color:var(--gold);font-style:italic}
+.sb-p{font-size:0.78rem;color:var(--t2);line-height:1.9;margin-bottom:26px;transition:all 0.4s var(--ease)}
+.sb-perks{display:flex;flex-direction:column;gap:9px}
+.sb-perk{display:flex;align-items:flex-start;gap:11px;background:rgba(255,255,255,0.02);border:1px solid var(--border);padding:11px 13px;border-radius:var(--rs);transition:border-color 0.2s}
+.sb-perk:hover{border-color:rgba(200,169,110,0.18)}
+.sp-icon{font-size:0.9rem;flex-shrink:0;margin-top:2px}
+.sp-title{font-size:0.74rem;font-weight:700;color:var(--text);margin-bottom:2px}
+.sp-desc{font-size:0.64rem;color:var(--t3);line-height:1.55}
+
+/* PROGRESS */
+.sb-progress{flex-shrink:0;padding-top:18px;border-top:1px solid var(--border);position:relative;z-index:1}
+.sp-label{font-family:var(--fm);font-size:0.52rem;color:var(--t3);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:9px}
+.sp-track{height:2px;background:var(--bg4);border-radius:2px;overflow:hidden;margin-bottom:11px}
+.sp-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--gold),rgba(200,169,110,0.4));transition:width 0.6s var(--ease);width:15%}
+.sp-dots{display:flex;gap:0;margin-bottom:9px}
+.sp-dot-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;font-family:var(--fm);font-size:0.46rem;color:var(--t4);text-align:center;transition:color 0.3s}
+.sp-dot{width:7px;height:7px;border-radius:50%;background:var(--bg4);border:1.5px solid var(--t4);transition:all 0.35s var(--spring);flex-shrink:0}
+.sp-dot-item.done{color:var(--t2)}
+.sp-dot-item.done .sp-dot{background:var(--gold);border-color:var(--gold);box-shadow:0 0 8px rgba(200,169,110,0.5)}
+.sp-dot-item.active{color:var(--gold)}
+.sp-dot-item.active .sp-dot{background:transparent;border-color:var(--gold);box-shadow:0 0 0 3px rgba(200,169,110,0.18)}
+.sb-copy{font-family:var(--fm);font-size:0.46rem;color:var(--t4);margin-top:8px}
+
+/* MAIN */
+.main{padding:44px clamp(20px,4vw,56px);display:flex;align-items:flex-start;justify-content:center;background:var(--bg);overflow-y:auto;min-height:100vh;position:relative;z-index:1}
+.auth-box{width:100%;max-width:460px;padding-top:4px}
+
+/* MOBILE TOP LOGO (hidden on desktop) */
+.mobile-logo{display:none;text-align:center;margin-bottom:22px}
+.mobile-logo .ml-name{font-family:var(--fd);font-size:1.3rem;font-weight:900;color:var(--gold)}
+.mobile-logo .ml-name sup{font-size:0.45em;color:var(--t3);font-weight:400}
+.mobile-logo .ml-tag{font-family:var(--fm);font-size:0.6rem;color:var(--t3);letter-spacing:0.08em;margin-top:4px}
+
+/* BACK BUTTON */
+.back-btn{display:none;align-items:center;gap:6px;font-size:0.72rem;color:var(--t3);background:none;border:none;cursor:pointer;margin-bottom:20px;padding:4px 0;transition:color 0.2s}
+.back-btn:hover{color:var(--gold)}
+.back-btn.show{display:flex}
+.back-btn svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;flex-shrink:0}
+
+/* STEPS */
+.step{display:none}
+.step.active{display:block;animation:fadeUp 0.36s var(--ease)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+/* STEP HEADER */
+.step-h{font-family:var(--fd);font-size:1.55rem;font-weight:900;color:var(--text);margin-bottom:6px;line-height:1.2}
+.step-sub{font-size:0.78rem;color:var(--t2);margin-bottom:22px;line-height:1.85}
+
+/* ═══════════════════════════════════════════════════════════
+   GLASSMORPHISM CARD (used for auth container)
+   ═══════════════════════════════════════════════════════════ */
+.glass-card{background:rgba(255,255,255,0.025);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+  border:1px solid var(--border2);border-radius:20px;padding:26px 24px;box-shadow:0 20px 60px rgba(0,0,0,0.35)}
+
+/* ═══════════════════════════════════════════════════════════
+   ROLE CARDS
+   ═══════════════════════════════════════════════════════════ */
+.role-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+.role-card{background:var(--bg2);border:2px solid var(--border);border-radius:16px;padding:20px 16px;cursor:pointer;transition:all 0.25s var(--ease);position:relative;overflow:hidden}
+.role-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--gold),var(--gold2));opacity:0;transition:opacity 0.25s}
+.role-card:hover{border-color:rgba(200,169,110,0.3);transform:translateY(-3px);box-shadow:0 12px 32px rgba(0,0,0,0.3)}
+.role-card.sel{border-color:var(--gold);background:var(--gC)}
+.role-card.sel::before{opacity:1}
+.rc-tick{position:absolute;top:10px;right:10px;width:20px;height:20px;border-radius:50%;background:var(--gold);color:var(--ink);font-size:0.58rem;font-weight:900;display:none;align-items:center;justify-content:center;animation:popIn 0.3s var(--spring)}
+@keyframes popIn{from{transform:scale(0)}to{transform:scale(1)}}
+.role-card.sel .rc-tick{display:flex}
+.rc-icon{font-size:1.9rem;margin-bottom:10px}
+.rc-name{font-family:var(--fd);font-size:0.95rem;font-weight:700;color:var(--text);margin-bottom:5px}
+.rc-desc{font-size:0.66rem;color:var(--t2);line-height:1.7;margin-bottom:10px}
+.rc-rate{font-family:var(--fm);font-size:0.52rem;color:var(--gold);background:var(--gA);border:1px solid rgba(200,169,110,0.2);padding:3px 8px;border-radius:5px;display:inline-block}
+
+/* ═══════════════════════════════════════════════════════════
+   GOOGLE SIGN-IN — PRIMARY CTA (visually strongest)
+   ═══════════════════════════════════════════════════════════ */
+.google-btn{
+  width:100%;padding:15px 18px;background:#fff;color:#1F1F1F;border:none;border-radius:14px;
+  font-weight:700;font-size:0.92rem;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:12px;
+  transition:all 0.25s var(--spring);position:relative;overflow:hidden;
+  box-shadow:0 4px 20px rgba(255,255,255,0.08),0 1px 3px rgba(0,0,0,0.2);
+}
+.google-btn::after{content:'';position:absolute;inset:0;border-radius:14px;padding:1.5px;
+  background:linear-gradient(135deg,var(--gold),transparent 40%,transparent 60%,var(--gold2));
+  -webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude;
+  opacity:0;transition:opacity 0.3s}
+.google-btn:hover{transform:translateY(-2px) scale(1.008);box-shadow:0 10px 34px rgba(200,169,110,0.28),0 4px 14px rgba(0,0,0,0.3)}
+.google-btn:hover::after{opacity:1}
+.google-btn:active{transform:translateY(0) scale(0.995)}
+.google-btn:disabled{opacity:0.6;cursor:not-allowed;transform:none}
+.google-btn svg{width:20px;height:20px;flex-shrink:0}
+.google-btn .gld{display:none;width:16px;height:16px;border:2px solid rgba(0,0,0,0.15);border-top-color:#1F1F1F;border-radius:50%;animation:spin 0.7s linear infinite}
+.google-btn.loading .gld{display:inline-block}
+.google-btn.loading .gtxt{display:none}
+.google-cta-label{font-family:var(--fm);font-size:0.5rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);text-align:center;margin-bottom:9px;display:flex;align-items:center;justify-content:center;gap:6px}
+.google-cta-label .spark{animation:sparkle 2s ease-in-out infinite}
+@keyframes sparkle{0%,100%{opacity:0.5;transform:scale(1)}50%{opacity:1;transform:scale(1.15)}}
+.google-perk-row{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:10px;flex-wrap:wrap}
+.gperk{display:flex;align-items:center;gap:5px;font-size:0.6rem;color:var(--t3)}
+.gperk svg{width:11px;height:11px;stroke:var(--green);fill:none;stroke-width:2.5}
+
+/* DIVIDER */
+.divider{display:flex;align-items:center;gap:12px;margin:20px 0}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border2)}
+.divider span{font-size:0.6rem;color:var(--t3);font-family:var(--fm);letter-spacing:0.08em;text-transform:uppercase;white-space:nowrap}
+
+/* PHONE AUTH PLACEHOLDER */
+.phone-cta{width:100%;padding:12px;background:transparent;border:1.5px dashed var(--border3);border-radius:var(--rs);
+  color:var(--t3);font-weight:600;font-size:0.78rem;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;
+  transition:all 0.2s;margin-top:10px}
+.phone-cta:hover{border-color:rgba(200,169,110,0.35);color:var(--gold)}
+.phone-cta .soon-badge{font-family:var(--fm);font-size:0.48rem;background:var(--gA);color:var(--gold);padding:2px 6px;border-radius:4px;letter-spacing:0.04em}
+
+/* ═══════════════════════════════════════════════════════════
+   TABS
+   ═══════════════════════════════════════════════════════════ */
+.atabs{display:flex;gap:2px;background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:3px;margin-bottom:22px}
+.atab{flex:1;padding:10px 0;border:none;background:transparent;color:var(--t3);font-size:0.78rem;font-weight:700;cursor:pointer;border-radius:9px;transition:all 0.2s}
+.atab.active{background:var(--bg4);color:var(--text);border:1px solid var(--border2)}
+.atab-panel{display:none}
+.atab-panel.active{display:block;animation:fadeUp 0.3s var(--ease)}
+
+/* ═══════════════════════════════════════════════════════════
+   FORM
+   ═══════════════════════════════════════════════════════════ */
+.fgroup{margin-bottom:14px}
+.flabel{display:flex;align-items:center;justify-content:space-between;font-family:var(--fm);font-size:0.55rem;color:var(--t3);letter-spacing:0.09em;text-transform:uppercase;margin-bottom:6px}
+.flabel-note{text-transform:none;letter-spacing:0;font-size:0.53rem;color:var(--t4);font-weight:400}
+.fi-wrap{position:relative}
+.fi-icon{position:absolute;left:13px;top:50%;transform:translateY(-50%);font-size:0.74rem;color:var(--t3);pointer-events:none;z-index:1}
+.finput{width:100%;background:var(--bg3);border:1.5px solid var(--border2);border-radius:var(--rs);padding:12px 14px;color:var(--text);font-size:0.84rem;outline:none;transition:all 0.2s;-webkit-appearance:none}
+.fi-wrap .finput{padding-left:38px}
+.finput:focus{border-color:rgba(200,169,110,0.45);box-shadow:0 0 0 3px rgba(200,169,110,0.08);background:var(--bg4)}
+.finput::placeholder{color:var(--t4)}
+.finput.err{border-color:rgba(239,68,68,0.5);background:rgba(239,68,68,0.03)}
+.finput.ok{border-color:rgba(34,197,94,0.4)}
+.finput[readonly]{color:var(--gold);cursor:default;background:var(--gC)}
+.f2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+/* PASSWORD FIELD */
+.pw-wrap{position:relative}
+.pw-wrap .finput{padding-left:38px;padding-right:44px}
+.pw-toggle{position:absolute;right:13px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--t3);font-size:0.74rem;padding:3px 5px;transition:color 0.2s;border-radius:4px}
+.pw-toggle:hover{color:var(--gold);background:var(--gA)}
+
+/* VALIDATION MSGS */
+.vmsg{font-size:0.66rem;margin-top:5px;line-height:1.5;display:none;align-items:center;gap:4px}
+.vmsg.show{display:flex}
+.vmsg.e{color:var(--red)}.vmsg.g{color:var(--green)}.vmsg.i{color:var(--gold)}
+
+/* PASSWORD STRENGTH */
+.pw-strength{margin-top:7px;display:none}
+.pw-strength.show{display:block}
+.pws-bars{display:flex;gap:3px;margin-bottom:4px}
+.pws-bar{flex:1;height:2px;border-radius:2px;background:var(--bg4);transition:background 0.3s}
+.pws-bar.weak{background:var(--red)}
+.pws-bar.fair{background:var(--amber)}
+.pws-bar.strong{background:var(--green)}
+.pws-label{font-family:var(--fm);font-size:0.52rem;color:var(--t3)}
+
+.pw-rules{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:11px 13px;margin-top:7px;display:none}
+.pw-rules.show{display:block}
+.pwr-item{display:flex;align-items:center;gap:6px;font-size:0.66rem;color:var(--t3);margin-bottom:4px;transition:color 0.2s}
+.pwr-item:last-child{margin-bottom:0}
+.pwr-item.pass{color:var(--green)}
+.pwr-item.fail{color:var(--t4)}
+.pwr-dot{width:5px;height:5px;border-radius:50%;background:var(--t4);flex-shrink:0;transition:background 0.2s}
+.pwr-item.pass .pwr-dot{background:var(--green)}
+
+/* INFO BOX */
+.info-box{background:var(--bg3);border:1px solid var(--border);border-radius:var(--rs);padding:12px 15px;font-size:0.74rem;color:var(--t2);line-height:1.85;margin-bottom:16px}
+.info-box strong{color:var(--gold)}
+.info-box a{color:var(--gold)}
+
+/* ALERT */
+.alert{padding:12px 15px;border-radius:var(--rs);font-size:0.76rem;line-height:1.65;margin-bottom:13px;display:none;animation:fadeUp 0.3s var(--ease)}
+.alert.show{display:flex;gap:9px;align-items:flex-start}
+.alert.err{background:var(--reA);border:1px solid rgba(239,68,68,0.22);color:#FCA5A5}
+.alert.ok{background:var(--grA);border:1px solid rgba(34,197,94,0.22);color:#86EFAC}
+.alert.info{background:var(--gA);border:1px solid rgba(200,169,110,0.22);color:var(--gold2)}
+.alert-icon{font-size:1.05rem;flex-shrink:0;margin-top:1px}
+
+/* BUTTONS */
+.btn-p{width:100%;padding:14px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--ink);border:none;border-radius:var(--rs);font-weight:800;font-size:0.86rem;cursor:pointer;transition:all 0.22s var(--ease);position:relative;overflow:hidden;letter-spacing:0.01em}
+.btn-p:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(200,169,110,0.32)}
+.btn-p:active{transform:translateY(0)}
+.btn-p:disabled{opacity:0.45;cursor:not-allowed;transform:none;box-shadow:none}
+.btn-p.loading{opacity:0.75;cursor:not-allowed}
+.btn-s{width:100%;padding:12px;background:transparent;color:var(--t2);border:1px solid var(--border2);border-radius:var(--rs);font-weight:600;font-size:0.8rem;cursor:pointer;transition:all 0.2s;margin-top:9px}
+.btn-s:hover{border-color:rgba(200,169,110,0.3);color:var(--gold)}
+.ld{display:none;width:14px;height:14px;border:2px solid rgba(0,0,0,0.2);border-top-color:var(--ink);border-radius:50%;animation:spin 0.7s linear infinite;margin-right:7px;vertical-align:middle;flex-shrink:0}
+.btn-p.loading .ld{display:inline-block}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* LEGAL + TOGGLE */
+.legal{font-size:0.64rem;color:var(--t4);text-align:center;margin-top:14px;line-height:1.8}
+.legal a{color:var(--gold)}
+.toggle-row{text-align:center;margin-top:18px;padding-top:16px;border-top:1px solid var(--border);font-size:0.76rem;color:var(--t3)}
+.tlink{color:var(--gold);font-weight:700;cursor:pointer;padding:2px 8px;border-radius:4px;background:var(--gA);margin-left:4px;transition:all 0.2s;display:inline-block}
+.tlink:hover{background:var(--gB)}
+
+/* BUNDLE CARDS */
+.bundle-scroll{max-height:52vh;overflow-y:auto;padding-right:3px;margin-bottom:14px}
+.bundle-scroll::-webkit-scrollbar{width:2px}
+.bundle-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
+.bcard{background:var(--bg2);border:2px solid var(--border);border-radius:14px;padding:16px 14px;cursor:pointer;transition:all 0.22s var(--ease);position:relative;overflow:hidden;--acc:#C8A96E}
+.bcard-bar{position:absolute;top:0;left:0;right:0;height:2px;background:var(--acc);opacity:0.5;transition:opacity 0.22s}
+.bcard-tick{position:absolute;top:9px;right:9px;width:17px;height:17px;border-radius:50%;background:var(--acc);color:#07070A;font-size:0.54rem;font-weight:900;display:none;align-items:center;justify-content:center}
+.bcard.sel{border-color:var(--acc);background:rgba(255,255,255,0.018)}
+.bcard.sel .bcard-bar{opacity:1}
+.bcard.sel .bcard-tick{display:flex}
+.bcard:hover{transform:translateY(-3px);border-color:rgba(200,169,110,0.28);box-shadow:0 10px 28px rgba(0,0,0,0.3)}
+.bcard-icon{font-size:1.5rem;margin-bottom:8px}
+.bcard-name{font-family:var(--fm);font-size:0.52rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--t3);margin-bottom:3px}
+.bcard-price{font-family:var(--fd);font-size:1.2rem;font-weight:900;color:var(--acc);margin-bottom:4px}
+.bcard-lpa{font-family:var(--fm);font-size:0.52rem;color:var(--green);background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.15);padding:2px 7px;border-radius:4px;display:inline-block;margin-bottom:9px}
+.bcard-skills{list-style:none;display:flex;flex-direction:column;gap:2px}
+.bcard-skills li{font-size:0.62rem;color:var(--t2);display:flex;align-items:center;gap:5px}
+.bcard-skills li::before{content:'·';color:var(--acc)}
+.sel-summary{background:var(--bg3);border:1px solid var(--border2);border-radius:var(--rs);padding:11px 15px;display:flex;justify-content:space-between;align-items:center;font-size:0.76rem;color:var(--t2);margin-bottom:13px}
+.sel-right{font-family:var(--fd);font-size:1.05rem;font-weight:900;color:var(--gold)}
+
+/* VERIFY SCREEN */
+.verify-icon-wrap{text-align:center;margin-bottom:18px}
+.verify-icon{width:76px;height:76px;border-radius:50%;background:var(--gA);border:1.5px solid rgba(200,169,110,0.25);display:inline-flex;align-items:center;justify-content:center;font-size:2rem;animation:floatIcon 3s ease-in-out infinite}
+@keyframes floatIcon{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.verify-email-chip{background:var(--bg3);border:1px solid var(--border2);border-radius:10px;padding:10px 14px;text-align:center;font-family:var(--fm);font-size:0.78rem;color:var(--gold);margin-bottom:16px;word-break:break-all}
+.verify-actions{display:flex;flex-direction:column;gap:9px}
+.verify-hint{display:flex;align-items:flex-start;gap:9px;font-size:0.7rem;color:var(--t3);line-height:1.75;margin-top:14px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--rs);padding:11px 13px}
+
+/* GOOGLE USER BADGE */
+.google-user-card{display:flex;align-items:center;gap:12px;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--rs);padding:13px 15px;margin-bottom:18px}
+.gu-avatar{width:42px;height:42px;border-radius:50%;object-fit:cover;border:2px solid rgba(200,169,110,0.3);flex-shrink:0}
+.gu-avatar-fallback{width:42px;height:42px;border-radius:50%;background:var(--gA);border:2px solid rgba(200,169,110,0.3);display:flex;align-items:center;justify-content:center;font-family:var(--fd);font-weight:900;color:var(--gold);flex-shrink:0}
+.gu-info{flex:1;min-width:0}
+.gu-name{font-size:0.82rem;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gu-email{font-size:0.66rem;color:var(--t3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gu-verified{font-family:var(--fm);font-size:0.5rem;color:var(--green);background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.18);padding:2px 7px;border-radius:5px;display:inline-flex;align-items:center;gap:3px;margin-top:3px}
+
+/* PAYMENT (kept from original system) */
+.pay-summary{background:var(--bg2);border:1px solid var(--border2);border-radius:14px;padding:15px;margin-bottom:15px}
+.pay-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border);font-size:0.78rem}
+.pay-row:last-child{border:none;padding-top:9px}
+.pay-label{font-family:var(--fm);font-size:0.58rem;color:var(--t3);letter-spacing:0.05em;text-transform:uppercase}
+.pay-val{font-weight:600;color:var(--text)}
+.pay-price{font-family:var(--fd)!important;font-size:1.15rem!important;color:var(--gold)!important;font-weight:900!important}
+.pay-upi-row{display:flex;align-items:center;gap:8px;font-family:var(--fm);font-size:0.72rem}
+.copy-btn{padding:4px 9px;font-size:0.56rem;background:var(--gA);color:var(--gold);border:1px solid rgba(200,169,110,0.2);border-radius:5px;cursor:pointer;font-weight:700;transition:background 0.18s}
+.copy-btn:hover{background:var(--gB)}
+.pay-sect{font-family:var(--fm);font-size:0.55rem;color:var(--t3);letter-spacing:0.12em;text-transform:uppercase;margin:15px 0 9px}
+.qr-wrap{text-align:center;margin:9px 0 15px}
+.qr-box{width:160px;height:160px;border-radius:12px;background:white;display:inline-flex;align-items:center;justify-content:center;overflow:hidden;border:2px solid rgba(200,169,110,0.2);padding:6px}
+.qr-box img{width:100%;height:100%;object-fit:contain;border-radius:4px}
+.utr-input{width:100%;background:var(--bg3);border:1.5px solid var(--border2);border-radius:var(--rs);padding:13px 15px;color:var(--text);font-size:0.86rem;font-family:var(--fm);outline:none;transition:all 0.2s;letter-spacing:0.06em;margin-top:6px}
+.utr-input:focus{border-color:rgba(200,169,110,0.4);box-shadow:0 0 0 3px rgba(200,169,110,0.08);background:var(--bg4)}
+.utr-input::placeholder{color:var(--t4);font-family:var(--fb);letter-spacing:0}
+.pay-note{background:var(--bg3);border:1px solid var(--border);border-radius:var(--rs);padding:12px 14px;font-size:0.7rem;color:var(--t2);line-height:1.8;display:flex;gap:9px;align-items:flex-start;margin-top:14px}
+
+/* RESULT */
+.big-icon{font-size:3.2rem;text-align:center;margin-bottom:14px;animation:popIn 0.4s var(--spring)}
+.big-h{font-family:var(--fd);font-size:1.5rem;font-weight:900;text-align:center;margin-bottom:16px}
+.big-h.ok{color:var(--green)}.big-h.pend{color:var(--amber)}.big-h.err{color:var(--red)}
+.result-card{background:var(--bg2);border-radius:14px;padding:20px;font-size:0.78rem;color:var(--t2);line-height:1.9}
+.result-card p{margin-bottom:9px}
+.result-card strong{color:var(--text)}
+.result-card.green-bd{border:1px solid rgba(34,197,94,0.2)}
+.result-card.amber-bd{border:1px solid rgba(245,158,11,0.2)}
+.result-card.gold-bd{border:1px solid rgba(200,169,110,0.25)}
+.result-contact{margin-top:13px;padding-top:13px;border-top:1px solid var(--border);font-size:0.7rem;color:var(--t3)}
+
+/* FULL-SCREEN LOADING OVERLAY */
+.load-overlay{position:fixed;inset:0;z-index:9998;background:rgba(7,7,10,0.88);backdrop-filter:blur(8px);
+  display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.3s var(--ease)}
+.load-overlay.show{opacity:1;pointer-events:auto}
+.load-spinner{width:52px;height:52px;border:3px solid rgba(200,169,110,0.15);border-top-color:var(--gold);border-radius:50%;animation:spin 0.8s linear infinite}
+.load-box{display:flex;flex-direction:column;align-items:center;gap:16px}
+.load-text{font-family:var(--fm);font-size:0.72rem;color:var(--t2);letter-spacing:0.05em}
+
+/* TOAST */
+#toast{position:fixed;bottom:22px;right:22px;left:auto;z-index:9999;background:var(--bg3);border:1px solid var(--border2);border-radius:14px;padding:13px 17px;max-width:300px;display:flex;align-items:center;gap:10px;transform:translateY(90px);opacity:0;transition:all 0.4s var(--spring);font-size:0.76rem;color:var(--text);pointer-events:none;box-shadow:0 14px 44px rgba(0,0,0,0.5)}
+#toast.on{transform:translateY(0);opacity:1}
+#toast.err{border-color:rgba(239,68,68,0.3)}
+#toast.ok{border-color:rgba(34,197,94,0.3)}
+@media(max-width:500px){#toast{left:16px;right:16px;max-width:none;bottom:16px}}
+
+/* MOBILE */
+@media(max-width:860px){
+  .layout{grid-template-columns:1fr}
+  .sidebar{display:none}
+  .main{padding:28px 18px}
+  .mobile-logo{display:block}
+}
+@media(max-width:500px){
+  .role-grid{grid-template-columns:1fr}
+  .bundle-grid{grid-template-columns:1fr 1fr}
+  .f2{grid-template-columns:1fr}
+  .glass-card{padding:22px 18px;border-radius:18px}
+  .google-perk-row{gap:10px}
+}
+</style>
+</head>
+<body>
+<div class="bg-fx">
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+  <div class="orb orb3"></div>
+</div>
+<div class="grain"></div>
+<div id="toast"></div>
+
+<!-- FULL SCREEN LOADING OVERLAY -->
+<div class="load-overlay" id="loadOverlay">
+  <div class="load-box">
+    <div class="load-spinner"></div>
+    <div class="load-text" id="loadText">Setting things up…</div>
+  </div>
+</div>
+
+<div class="layout">
+  <!-- ══════════════════════ SIDEBAR (desktop) ══════════════════════ -->
+  <aside class="sidebar">
+    <div class="sb-inner">
+      <div class="sb-orb sb-orb1"></div>
+      <div class="sb-orb sb-orb2"></div>
+      <div class="sb-logo">Biluxe<sup>10</sup></div>
+      <div class="sb-body">
+        <span class="sb-tag" id="sbTag">Getting Started</span>
+        <h2 class="sb-h" id="sbH">Choose how you<br>want to <em>grow.</em></h2>
+        <p class="sb-p" id="sbP">Join as a learner and get full course access, or as a partner and earn referral commissions. Both paths unlock real earnings.</p>
+        <div class="sb-perks">
+          <div class="sb-perk"><span class="sp-icon">⚡</span><div><div class="sp-title">1-Tap Sign In</div><div class="sp-desc">Continue with Google — no passwords, no waiting</div></div></div>
+          <div class="sb-perk"><span class="sp-icon">📚</span><div><div class="sp-title">Full Course Access</div><div class="sp-desc">9 bundles from ₹499 to ₹23,999 · 60+ courses</div></div></div>
+          <div class="sb-perk"><span class="sp-icon">💰</span><div><div class="sp-title">Real Earnings</div><div class="sp-desc">Learner: 65% direct + 10% passive · Partner: 40% direct</div></div></div>
+          <div class="sb-perk"><span class="sp-icon">🏆</span><div><div class="sp-title">Certificates</div><div class="sp-desc">Verified certificates on course completion + exam</div></div></div>
+        </div>
+      </div>
+      <div class="sb-progress">
+        <div class="sp-label">Your progress</div>
+        <div class="sp-track"><div class="sp-fill" id="spFill"></div></div>
+        <div class="sp-dots" id="spDots">
+          <div class="sp-dot-item active" id="sd1"><div class="sp-dot"></div>Role</div>
+          <div class="sp-dot-item" id="sd2"><div class="sp-dot"></div>Account</div>
+          <div class="sp-dot-item" id="sd3"><div class="sp-dot"></div>Verify</div>
+          <div class="sp-dot-item" id="sd4"><div class="sp-dot"></div>Access</div>
+        </div>
+        <div class="sb-copy">© 2026 Biluxe10 Ed-Tech · India</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ══════════════════════ MAIN ══════════════════════ -->
+  <main class="main">
+    <div class="auth-box">
+
+      <div class="mobile-logo">
+        <div class="ml-name">Biluxe<sup>10</sup></div>
+        <div class="ml-tag">Learn. Earn. Grow.</div>
+      </div>
+
+      <button class="back-btn" id="backBtn" onclick="goBack()">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+        Back
+      </button>
+
+      <!-- ══ STEP 1: ROLE SELECTION ══ -->
+      <div class="step active" id="step1">
+        <h2 class="step-h">How do you want to join?</h2>
+        <p class="step-sub">Pick your path — you can switch later by contacting support.</p>
+
+        <div class="role-grid">
+          <div class="role-card" id="rc-learner" onclick="pickRole('learner',this)">
+            <div class="rc-tick">✓</div>
+            <div class="rc-icon">📚</div>
+            <div class="rc-name">Learn & Grow</div>
+            <div class="rc-desc">Full course access in your chosen bundle + earn from every referral you make.</div>
+            <span class="rc-rate">65% Direct + 10% Passive</span>
+          </div>
+          <div class="role-card" id="rc-partner" onclick="pickRole('partner',this)">
+            <div class="rc-tick">✓</div>
+            <div class="rc-icon">🤝</div>
+            <div class="rc-name">Partner</div>
+            <div class="rc-desc">No course fees. Promote Biluxe10 and earn 40% commission on every sale.</div>
+            <span class="rc-rate">40% Direct · Free</span>
+          </div>
+        </div>
+
+        <div class="info-box" style="font-size:0.7rem">
+          <strong>Example — Learner:</strong> Refer a ₹999 bundle → earn up to ₹650 directly, plus ₹100 passive when their referral joins.<br><br>
+          <strong>Example — Partner:</strong> Refer the same ₹999 bundle → earn up to ₹400 directly. No investment needed.
+        </div>
+
+        <button class="btn-p" id="roleBtn" onclick="showStep(2)" disabled>
+          <span class="ld"></span>Continue →
+        </button>
+
+        <div class="toggle-row">
+          Already have an account?
+          <span class="tlink" onclick="goSignIn()">Sign in →</span>
+        </div>
+      </div>
+
+      <!-- ══ STEP 2: AUTHENTICATION ══ -->
+      <div class="step" id="step2">
+        <div class="glass-card">
+          <h2 class="step-h" id="authHead">Create your account</h2>
+          <p class="step-sub" id="authSub">One tap with Google, or use email — your choice.</p>
+
+          <!-- PRIMARY CTA: GOOGLE SIGN-IN -->
+          <div class="google-cta-label"><span class="spark">✦</span> Fastest way in <span class="spark">✦</span></div>
+          <button class="google-btn" id="googleBtn" onclick="handleGoogleSignIn()">
+            <span class="gld"></span>
+            <svg viewBox="0 0 48 48"><path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12s5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24s8.955,20,20,20s20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"/><path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"/><path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"/><path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"/></svg>
+            <span class="gtxt">Continue with Google</span>
+          </button>
+          <div class="google-perk-row">
+            <span class="gperk"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>No password</span>
+            <span class="gperk"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Auto-verified</span>
+            <span class="gperk"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Instant access</span>
+          </div>
+
+          <div class="divider"><span>or continue with email</span></div>
+
+          <div class="atabs">
+            <button class="atab active" id="tab-su" onclick="switchTab('su')">Create Account</button>
+            <button class="atab" id="tab-si" onclick="switchTab('si')">Sign In</button>
+          </div>
+
+          <!-- SIGN UP PANEL -->
+          <div class="atab-panel active" id="panel-su">
+            <div class="alert" id="suAlert"></div>
+
+            <div class="f2">
+              <div class="fgroup">
+                <div class="flabel">Full Name</div>
+                <div class="fi-wrap">
+                  <span class="fi-icon">👤</span>
+                  <input type="text" class="finput" id="suName" placeholder="Your name" oninput="vName()">
+                </div>
+                <div class="vmsg e" id="vName">⚠ Enter your full name (min 3 characters)</div>
+              </div>
+              <div class="fgroup">
+                <div class="flabel">Phone</div>
+                <div class="fi-wrap">
+                  <span class="fi-icon">📱</span>
+                  <input type="tel" class="finput" id="suPhone" placeholder="10-digit number" maxlength="10" inputmode="numeric" oninput="this.value=this.value.replace(/\D/g,'');vPhone()">
+                </div>
+                <div class="vmsg e" id="vPhone">⚠ Enter a valid 10-digit number</div>
+              </div>
+            </div>
+
+            <div class="fgroup">
+              <div class="flabel">Email Address</div>
+              <div class="fi-wrap">
+                <span class="fi-icon">✉️</span>
+                <input type="email" class="finput" id="suEmail" placeholder="you@example.com" oninput="vEmail('suEmail','vSuEmail','vSuEmailOk')">
+              </div>
+              <div class="vmsg e" id="vSuEmail">⚠ Enter a valid email address</div>
+              <div class="vmsg g" id="vSuEmailOk">✓ Looks good</div>
+            </div>
+
+            <div class="fgroup">
+              <div class="flabel">Password</div>
+              <div class="pw-wrap">
+                <span class="fi-icon">🔒</span>
+                <input type="password" class="finput" id="suPass" placeholder="Min 8 characters" oninput="vPass();checkPwStrength()">
+                <button type="button" class="pw-toggle" id="suPassToggleBtn" onclick="togglePw('suPass','suPassToggleBtn')">👁</button>
+              </div>
+              <div class="pw-strength" id="pwStrength">
+                <div class="pws-bars">
+                  <div class="pws-bar" id="psb1"></div><div class="pws-bar" id="psb2"></div>
+                  <div class="pws-bar" id="psb3"></div><div class="pws-bar" id="psb4"></div>
+                </div>
+                <div class="pws-label" id="psLabel">Password strength</div>
+              </div>
+              <div class="pw-rules" id="pwRules">
+                <div class="pwr-item" id="pr1"><div class="pwr-dot"></div>At least 8 characters</div>
+                <div class="pwr-item" id="pr2"><div class="pwr-dot"></div>One uppercase letter</div>
+                <div class="pwr-item" id="pr3"><div class="pwr-dot"></div>One number</div>
+                <div class="pwr-item" id="pr4"><div class="pwr-dot"></div>One special character (bonus)</div>
+              </div>
+              <div class="vmsg e" id="vPass">⚠ Add an uppercase letter and a number</div>
+            </div>
+
+            <div class="fgroup" id="refGroup">
+              <div class="flabel">Referral Code <span class="flabel-note">(optional)</span></div>
+              <div class="fi-wrap">
+                <span class="fi-icon">🎁</span>
+                <input type="text" class="finput" id="suRef" placeholder="e.g. BLX2026001" style="text-transform:uppercase" oninput="this.value=this.value.toUpperCase();clearRefMsg()" onblur="checkRefCode()">
+              </div>
+              <div class="vmsg i" id="vRefNote">Checking code…</div>
+              <div class="vmsg g" id="vRefOk">✓ Referral code verified!</div>
+              <div class="vmsg e" id="vRefErr">⚠ Invalid referral code</div>
+            </div>
+
+            <button class="btn-p" id="suBtn" onclick="handleSignUp()">
+              <span class="ld"></span><span>Create Account →</span>
+            </button>
+
+            <p class="legal">By continuing you agree to our <a href="#">Terms</a> and <a href="#">Privacy Policy</a>.</p>
+          </div>
+
+          <!-- SIGN IN PANEL -->
+          <div class="atab-panel" id="panel-si">
+            <div class="alert" id="siAlert"></div>
+
+            <div class="fgroup">
+              <div class="flabel">Email Address</div>
+              <div class="fi-wrap">
+                <span class="fi-icon">✉️</span>
+                <input type="email" class="finput" id="siEmail" placeholder="you@example.com" oninput="vEmail('siEmail','vSiEmail',null)" onkeydown="handleEnterSI(event)">
+              </div>
+              <div class="vmsg e" id="vSiEmail">⚠ Enter a valid email address</div>
+            </div>
+
+            <div class="fgroup">
+              <div class="flabel">Password</div>
+              <div class="pw-wrap">
+                <span class="fi-icon">🔒</span>
+                <input type="password" class="finput" id="siPass" placeholder="Your password" onkeydown="handleEnterSI(event)">
+                <button type="button" class="pw-toggle" id="siPassToggleBtn" onclick="togglePw('siPass','siPassToggleBtn')">👁</button>
+              </div>
+              <a href="#" class="forgot-link" onclick="handleForgotPassword();return false" style="font-family:var(--fm);font-size:0.58rem;color:var(--t3);margin-top:5px;display:inline-block">Forgot password?</a>
+            </div>
+
+            <button class="btn-p" id="siBtn" onclick="handleSignIn()">
+              <span class="ld"></span><span>Sign In →</span>
+            </button>
+          </div>
+
+          <!-- OPTIONAL PHONE AUTH PLACEHOLDER -->
+          <button class="phone-cta" type="button" onclick="toast('📱','Phone sign-in is launching soon!')">
+            📞 Continue with Phone <span class="soon-badge">SOON</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- ══ STEP VERIFY (email/password users only) ══ -->
+      <div class="step" id="stepVerify">
+        <div class="glass-card">
+          <div class="verify-icon-wrap"><div class="verify-icon">📧</div></div>
+          <h2 class="step-h" style="text-align:center">Verify your email</h2>
+          <p class="step-sub" style="text-align:center">We sent a one-click verification link to</p>
+          <div class="verify-email-chip" id="verifyEmailDisplay"></div>
+
+          <div class="alert" id="verifyAlert"></div>
+
+          <div class="verify-actions">
+            <button class="btn-p" onclick="openGmail()">
+              <span>📬 Open Gmail →</span>
+            </button>
+            <button class="btn-s" id="verifiedBtn" onclick="handleCheckVerified()">
+              <span class="ld"></span><span>✓ I Verified — Continue</span>
+            </button>
+            <button class="btn-s" id="resendBtn" onclick="resendVerification()" style="border-style:dashed">
+              Resend email
+            </button>
+          </div>
+
+          <div class="verify-hint">
+            <span>💡</span>
+            <span>Didn't get it? Check your spam folder, or tap <strong style="color:var(--gold)">Resend email</strong> above. Signing up with Google skips this step entirely.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ STEP 3: PARTNER DASHBOARD REDIRECT ══ -->
+      <div class="step" id="step3">
+        <div class="glass-card" style="text-align:center">
+          <div class="big-icon">🤝</div>
+          <h2 class="step-h">You're all set, Partner!</h2>
+          <p class="step-sub">Redirecting you to your dashboard to grab your referral link and start earning.</p>
+        </div>
+      </div>
+
+      <!-- ══ STEP 3b: BUNDLE SELECTION (learners) ══ -->
+      <div class="step" id="step3b">
+        <h2 class="step-h">Pick your bundle</h2>
+        <p class="step-sub">Every bundle has a real salary target. Start small, upgrade anytime.</p>
+
+        <div class="bundle-scroll">
+          <div class="bundle-grid" id="bundleGrid"></div>
+        </div>
+
+        <div class="sel-summary" id="bundleSummary" style="display:none">
+          <span>Selected</span><span class="sel-right" id="bundleSummaryText">—</span>
+        </div>
+
+        <div class="alert" id="b3Alert"></div>
+        <button class="btn-p" id="bundleNextBtn" onclick="bundleNext()" disabled>
+          <span class="ld"></span><span>Continue to Payment →</span>
+        </button>
+      </div>
+
+      <!-- ══ STEP 4: PAYMENT ══ -->
+      <div class="step" id="step4">
+        <h2 class="step-h">Complete payment</h2>
+        <p class="step-sub">Pay via UPI and enter your UTR. Access approved in 2–6 hrs (9 AM–9 PM IST, Mon–Sat).</p>
+        <div id="payContent"></div>
+      </div>
+
+      <!-- ══ STEP 5: RESULT ══ -->
+      <div class="step" id="step5">
+        <div class="big-icon" id="s5icon">⏳</div>
+        <div class="big-h" id="s5head"></div>
+        <div class="result-card" id="s5card"></div>
+        <button class="btn-s" onclick="location.href='index.html'" style="margin-top:16px">← Back to Home</button>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════
+   FIREBASE SETUP
+   ═══════════════════════════════════════════════════════════ */
+const FB_CFG={
+  apiKey:"AIzaSyDxxkC9iD1V1w-53Kf4oBrHEXlBLvCc7sE",
+  authDomain:"biluxe10-3e894.firebaseapp.com",
+  projectId:"biluxe10-3e894",
+  storageBucket:"biluxe10-3e894.appspot.com",
+  messagingSenderId:"804749588233",
+  appId:"1:804749588233:web:7777648c0c7834733c05d8"
+};
+if(!firebase.apps.length)firebase.initializeApp(FB_CFG);
+const AUTH=firebase.auth(),DB=firebase.firestore();
+const COL='user_collection';
+AUTH.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(()=>{});
+const GOOGLE_PROVIDER=new firebase.auth.GoogleAuthProvider();
+GOOGLE_PROVIDER.setCustomParameters({prompt:'select_account'});
+
+/* ═══════════════════════════════════════════════════════════
+   CONSTANTS
+   ═══════════════════════════════════════════════════════════ */
+const BUNDLES=[
+  {key:'starter',    icon:'🌟',name:'Starter',      price:499,  lpa:'₹3 LPA',     color:'#C8A96E',skills:['Digital Entrepreneurship','Canva','WhatsApp Business','ChatGPT']},
+  {key:'pro',        icon:'📈',name:'Pro',           price:999,  lpa:'₹3–4 LPA',   color:'#60A5FA',skills:['Affiliate Marketing','SEO & Blogging','Social Media Mgmt','Google & FB Ads']},
+  {key:'professional',icon:'🎨',name:'Professional', price:2499, lpa:'₹3–4 LPA',   color:'#A78BFA',skills:['UI/UX Design','No-Code Web Dev','Video Editing','E-commerce']},
+  {key:'elite',      icon:'📊',name:'Elite',         price:3699, lpa:'₹4–6 LPA',   color:'#22D3EE',skills:['Excel & Data Analysis','SQL','Power BI & Tableau','Python Basics']},
+  {key:'premium',    icon:'💻',name:'Premium',       price:4999, lpa:'₹6–8 LPA',   color:'#34D399',skills:['HTML CSS JS','React.js','Node.js & Express','MongoDB']},
+  {key:'master',     icon:'☁️',name:'Master',        price:6999, lpa:'₹8–12 LPA',  color:'#F59E0B',skills:['AWS Cloud','Docker & Kubernetes','CI/CD','Cybersecurity']},
+  {key:'elitepro',   icon:'🤖',name:'Elite Pro',     price:11999,lpa:'₹12–16 LPA', color:'#FB923C',skills:['Python for Data Science','Machine Learning','Deep Learning','MLOps']},
+  {key:'legend',     icon:'🧠',name:'Legend',        price:15999,lpa:'₹14–18 LPA', color:'#F472B6',skills:['Generative AI & LLMs','LangChain','RAG','Fine-Tuning']},
+  {key:'ultimate',   icon:'👑',name:'Ultimate',      price:23999,lpa:'₹16–25 LPA', color:'#F0D9A8',skills:['AI Product Management','AI Strategy & Leadership','AI Ethics','Building AI Startups']},
+];
+const UPI_ID='biluxe10@upi';
+
+const SB_CTX={
+  1:{tag:'Getting Started',     h:'Choose how you<br>want to <em>grow.</em>',      p:'Join as a learner or partner. Both paths earn from referrals.'},
+  2:{tag:'Create Account',      h:'One tap with<br><em>Google.</em>',              p:'Continue with Google for instant, verified access — or use email.'},
+  verify:{tag:'Verify Email',   h:'Check your<br><em>inbox.</em>',                 p:'Click the verification link we sent. Google sign-ins skip this step.'},
+  3:{tag:'Partner Dashboard',   h:'You\'re set,<br><em>Partner!</em>',             p:'Share your link and earn 40% on every referral. Withdraw from ₹500.'},
+  '3b':{tag:'Pick Bundle',      h:'Every bundle has a<br><em>salary target.</em>', p:'Nine bundles from ₹499 to ₹23,999. Start small, upgrade anytime.'},
+  4:{tag:'Secure Payment',      h:'One payment.<br><em>Lifetime access.</em>',     p:'Pay via UPI and enter your UTR. Approved in 2–6 hours.'},
+  5:{tag:'Payment Submitted',   h:'Almost<br><em>there!</em>',                     p:'Admin will approve your access within 2–6 hours (9 AM–9 PM IST).'},
+};
+const PROG={1:'15%',2:'35%',verify:'52%',3:'100%','3b':'60%',4:'82%',5:'100%'};
+
+/* ═══════════════════════════════════════════════════════════
+   STATE
+   ═══════════════════════════════════════════════════════════ */
+let G={role:null,bundle:null,currentStep:1,sess:null,pendingEmail:null,verifyPollTimer:null};
+const urlP=new URLSearchParams(window.location.search);
+const REF_FROM_URL=(urlP.get('ref')||'').toUpperCase();
+
+/* ═══════════════════════════════════════════════════════════
+   HELPERS
+   ═══════════════════════════════════════════════════════════ */
+const $=id=>document.getElementById(id);
+const san=e=>e.toLowerCase().trim().replace(/@/g,'__at__').replace(/\./g,'_');
+const toINR=n=>'₹'+Number(n).toLocaleString('en-IN');
+const fts=firebase.firestore.FieldValue.serverTimestamp;
+
+let _tt;
+function toast(ic,msg,type){
+  const el=$('toast');
+  el.innerHTML=`<span style="font-size:1rem">${ic}</span><span>${msg}</span>`;
+  el.className='';el.classList.add('on');if(type)el.classList.add(type);
+  clearTimeout(_tt);
+  _tt=setTimeout(()=>el.classList.remove('on'),3800);
+}
+function copyText(t){navigator.clipboard.writeText(t).then(()=>toast('📋','Copied!'));}
+function togglePw(id,btnId){const i=$(id),b=$(btnId);if(!i)return;const s=i.type==='password';i.type=s?'text':'password';if(b)b.textContent=s?'🙈':'👁';}
+function setLoad(id,on,txt){
+  const b=$(id);if(!b)return;
+  b.classList.toggle('loading',on);b.disabled=on;
+  const sp=b.querySelector('span:not(.ld)');if(sp&&txt)sp.textContent=txt;
+}
+function showAlert(id,msg,type='err'){
+  const el=$(id);if(!el)return;
+  const ic={err:'⚠',ok:'✅',info:'ℹ'}[type]||'ℹ';
+  el.innerHTML=`<span class="alert-icon">${ic}</span><span>${msg}</span>`;
+  el.className='alert show '+type;
+}
+function clearAlert(id){const el=$(id);if(el)el.className='alert';}
+function handleEnterSI(e){if(e.key==='Enter')handleSignIn();}
+function showFullLoader(on,text){
+  const ov=$('loadOverlay');if(!ov)return;
+  if(text)$('loadText').textContent=text;
+  ov.classList.toggle('show',on);
+}
+
+/* Friendly error messages for common Firebase Auth error codes */
+function friendlyAuthError(e){
+  const M={
+    'auth/email-already-in-use':'This email is already registered. Please sign in instead.',
+    'auth/invalid-email':'That email address doesn\'t look right.',
+    'auth/weak-password':'Password too weak. Add numbers and uppercase letters.',
+    'auth/network-request-failed':'Network error. Please check your connection and try again.',
+    'auth/too-many-requests':'Too many attempts. Please wait a few minutes and try again.',
+    'auth/user-not-found':'No account found with this email. Try creating one instead.',
+    'auth/wrong-password':'Incorrect password. Please try again.',
+    'auth/invalid-credential':'Incorrect email or password.',
+    'auth/popup-closed-by-user':'Sign-in was cancelled. Give it another try whenever you\'re ready.',
+    'auth/cancelled-popup-request':'Sign-in was cancelled. Please try again.',
+    'auth/popup-blocked':'Your browser blocked the sign-in popup. Please allow popups for this site and try again.',
+    'auth/account-exists-with-different-credential':'This email is already linked to a different sign-in method. Try signing in with email/password instead.',
+  };
+  return M[e.code]||('Something went wrong: '+(e.message||'please try again.'));
+}
+
+/* ═══════════════════════════════════════════════════════════
+   PROGRESS / SIDEBAR
+   ═══════════════════════════════════════════════════════════ */
+function showStep(n){
+  G.currentStep=n;
+  document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));
+  let key;
+  if(n==='verify')key='stepVerify';
+  else if(n==='3b')key='step3b';
+  else key='step'+n;
+  const el=$(key);if(el)el.classList.add('active');
+
+  const ctx=SB_CTX[n];
+  if(ctx){
+    const tag=$('sbTag'),h=$('sbH'),p=$('sbP');
+    if(tag)tag.textContent=ctx.tag;if(h)h.innerHTML=ctx.h;if(p)p.textContent=ctx.p;
+  }
+  const pf=$('spFill');if(pf)pf.style.width=PROG[n]||'15%';
+
+  const stepMap={1:1,2:2,verify:3,3:4,'3b':3,4:4,5:5};
+  const cur=stepMap[n]||1;
+  [1,2,3,4].forEach(i=>{
+    const d=$('sd'+i);if(!d)return;
+    d.classList.remove('active','done');
+    if(i<cur)d.classList.add('done');
+    else if(i===cur)d.classList.add('active');
+  });
+
+  const bb=$('backBtn');
+  if(bb)bb.classList.toggle('show',n===2||n==='verify'||n==='3b'||n===4);
+}
+
+function goBack(){
+  const c=G.currentStep;
+  if(c===2||c==='verify')showStep(1);
+  else if(c==='3b')showStep(2);
+  else if(c===4)showStep('3b');
+}
+function goSignIn(){
+  // Jump straight to step 2 sign-in tab even without a role — role only matters for new signups
+  showStep(2);switchTab('si');
+}
+function switchTab(tab){
+  ['su','si'].forEach(t=>{$('tab-'+t).classList.toggle('active',t===tab);$('panel-'+t).classList.toggle('active',t===tab);});
+}
+
+/* ═══════════════════════════════════════════════════════════
+   VALIDATION
+   ═══════════════════════════════════════════════════════════ */
+function setV(inp,ok,errId,okId){
+  const el=$(inp);if(!el)return ok;
+  const has=el.value.trim().length>0;
+  el.classList.toggle('err',!ok&&has);
+  el.classList.toggle('ok',ok&&has);
+  if(errId){const e=$(errId);if(e)e.className='vmsg'+(!ok&&has?' show e':'');}
+  if(okId){const o=$(okId);if(o)o.className='vmsg'+(ok&&has?' show g':'');}
+  return ok;
+}
+function vName(){
+  const v=$('suName')?.value.trim()||'';
+  const ok=v.length>=3;
+  setV('suName',ok,'vName',null);return ok;
+}
+function vPhone(){
+  const v=$('suPhone')?.value.replace(/\D/g,'')||'';
+  const ok=v.length===10;
+  setV('suPhone',ok,'vPhone',null);return ok;
+}
+function vEmail(inputId,errId,okId){
+  const v=$(inputId)?.value.trim()||'';
+  const ok=/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+  setV(inputId,ok,errId,okId||null);
+  return ok;
+}
+function vPass(){
+  const v=$('suPass')?.value||'';
+  const ok=v.length>=8&&/[A-Z]/.test(v)&&/[0-9]/.test(v);
+  const has=v.length>0;
+  const pw=$('suPass');
+  if(pw){pw.classList.toggle('err',!ok&&has);pw.classList.toggle('ok',ok&&has);}
+  const ve=$('vPass');
+  if(ve)ve.className='vmsg'+(!ok&&has?' show e':'');
+  return ok;
+}
+function checkPwStrength(){
+  const v=$('suPass')?.value||'';
+  const sr=$('pwStrength'),rr=$('pwRules');
+  if(!sr)return;
+  if(!v){sr.classList.remove('show');if(rr)rr.classList.remove('show');return;}
+  sr.classList.add('show');if(rr)rr.classList.add('show');
+  const r1=v.length>=8,r2=/[A-Z]/.test(v),r3=/[0-9]/.test(v),r4=/[!@#$%^&*]/.test(v);
+  const score=[r1,r2,r3,r4].filter(Boolean).length;
+  const bars=['psb1','psb2','psb3','psb4'];
+  const label={1:'Weak',2:'Fair',3:'Good',4:'Strong'}[score]||'Too short';
+  const cls={1:'weak',2:'fair',3:'fair',4:'strong'}[score]||'';
+  bars.forEach((bid,i)=>{const b=$(bid);if(b){b.className='pws-bar';if(i<score)b.classList.add(cls);}});
+  const pl=$('psLabel');if(pl){pl.textContent=label+' password';pl.style.color={Weak:'var(--red)',Fair:'var(--amber)',Good:'var(--green)',Strong:'var(--green)'}[label]||'var(--t3)';}
+  [['pr1',r1],['pr2',r2],['pr3',r3],['pr4',r4]].forEach(([id,ok])=>{const el=$(id);if(el){el.className='pwr-item '+(ok?'pass':'fail');}});
+}
+
+let _refCheckTimer;
+function clearRefMsg(){
+  ['vRefOk','vRefErr','vRefNote'].forEach(id=>{const el=$(id);if(el)el.className='vmsg';});
+  const inp=$('suRef');if(inp){inp.classList.remove('ok','err');}
+  clearTimeout(_refCheckTimer);
+}
+async function checkRefCode(){
+  const code=$('suRef')?.value.trim().toUpperCase()||'';
+  if(!code)return;
+  clearRefMsg();
+  const n=$('vRefNote');if(n)n.className='vmsg show i';
+  try{
+    const q=await DB.collection(COL).where('referralCode','==',code).limit(1).get();
+    if(n)n.className='vmsg';
+    if(q.empty){
+      const e=$('vRefErr');if(e)e.className='vmsg show e';
+      const inp=$('suRef');if(inp)inp.classList.add('err');
+    }else{
+      const o=$('vRefOk');if(o)o.className='vmsg show g';
+      const inp=$('suRef');if(inp){inp.classList.add('ok');inp.readOnly=true;}
+      toast('✅','Referral code verified!','ok');
+    }
+  }catch(e){if(n)n.className='vmsg';}
+}
+
+/* ═══════════════════════════════════════════════════════════
+   DEVICE ID (fraud / duplicate-account prevention)
+   ═══════════════════════════════════════════════════════════ */
+function getDeviceId(){
+  let d=localStorage.getItem('b10_did');
+  if(!d){
+    try{
+      const raw=[navigator.userAgent,navigator.language,screen.width,screen.height,new Date().getTimezoneOffset()].join('|');
+      d='dv_'+btoa(unescape(encodeURIComponent(raw))).replace(/[^a-zA-Z0-9]/g,'').substr(0,20)+'_'+Date.now().toString(36);
+    }catch(e){d='dv_'+Math.random().toString(36).substr(2,18)+Date.now().toString(36);}
+    localStorage.setItem('b10_did',d);
+  }
+  return d;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   REFERRAL CODE GENERATOR
+   ═══════════════════════════════════════════════════════════ */
+async function genRefCode(){
+  const ref=DB.collection('app_meta').doc('referral_counter');
+  let n=1;
+  try{
+    await DB.runTransaction(async tx=>{
+      const doc=await tx.get(ref);
+      n=doc.exists?(doc.data().count||0)+1:1;
+      tx.set(ref,{count:n},{merge:true});
+    });
+  }catch(e){n=Math.floor(Math.random()*9000)+1000;}
+  return`BLX10${new Date().getFullYear()}${String(n).padStart(3,'0')}`;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   ROLE SELECTION
+   ═══════════════════════════════════════════════════════════ */
+function pickRole(role,card){
+  G.role=role;
+  document.querySelectorAll('.role-card').forEach(c=>c.classList.remove('sel'));
+  card.classList.add('sel');
+  $('roleBtn').disabled=false;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   FIRESTORE USER DOC BUILDER (shared by Google + Email flows)
+   Ensures required schema from your existing platform.
+   ═══════════════════════════════════════════════════════════ */
+function buildUserDoc({uid,email,fullName,photoURL,role,referralCode,referredBy,loginMethod,emailVerified,phoneNumber,deviceId}){
+  const now=fts();
+  const isPartner=role==='partner';
+  return{
+    userId:uid,
+    email,emailId:san(email),
+    fullName:fullName||'',
+    photoURL:photoURL||null,
+    phoneNumber:phoneNumber||'',
+    username:(email||'').split('@')[0],
+    role,isPartner,userType:role,accountType:role,memberType:role,
+    status:isPartner?'active':'pending',
+    accountStatus:isPartner?'active':'pending',
+    isActive:true,
+    emailVerified:!!emailVerified,
+    loginMethod:loginMethod||'email',
+    referralCode,
+    referredBy:isPartner?'':(referredBy||''),
+    referralLink:`${window.location.origin}/auth.html?ref=${referralCode}`,
+    teamSize:0,team:[],
+    selectedBundle:'',bundleName:'',bundlePrice:0,bundleAmount:0,
+    paymentStatus:isPartner?'not_applicable':'payment_pending',
+    paymentMethod:'',paymentProofUTR:'',paidAt:null,
+    totalEarning:0,monthlyEarning:0,weeklyEarning:0,dailyEarning:0,
+    bonusEarning:0,withdrawnAmount:0,pendingWithdrawal:0,commissionGenerated:0,
+    lastDailyReset:now,lastWeeklyReset:now,lastMonthlyReset:now,
+    telegram_chat_id:null,telegramChatId:null,profileImageKey:null,
+    createdAt:now,approvedAt:isPartner?now:null,lastLogin:now,updatedAt:now,
+    deviceId,
+    dashboardAccess:isPartner
+      ?{earnings:true,profile:true,referral:true,support:true,courses:false,games:false}
+      :{earnings:true,profile:true,referral:true,support:true,courses:true,games:true},
+  };
+}
+
+/* ═══════════════════════════════════════════════════════════
+   GOOGLE SIGN-IN  (PRIMARY 1-TAP FLOW)
+   ═══════════════════════════════════════════════════════════ */
+async function handleGoogleSignIn(){
+  const btn=$('googleBtn');
+  btn.classList.add('loading');btn.disabled=true;
+  try{
+    const result=await AUTH.signInWithPopup(GOOGLE_PROVIDER);
+    const user=result.user;
+    const isNewUser=result.additionalUserInfo?.isNewUser;
+    const email=(user.email||'').toLowerCase();
+    const emailId=san(email);
+
+    showFullLoader(true,'Setting up your account…');
+
+    const docRef=DB.collection(COL).doc(emailId);
+    const existing=await docRef.get();
+
+    if(!existing.exists){
+      // ── NEW USER via Google ──
+      // Role must be chosen; if not chosen yet (e.g. signed in directly from step1), default to learner
+      const role=G.role||'learner';
+      const deviceId=getDeviceId();
+      let referrerEmailId='';
+      const ref=(REF_FROM_URL||'').toUpperCase();
+      if(role!=='partner'&&ref){
+        try{
+          const refQ=await DB.collection(COL).where('referralCode','==',ref).limit(1).get();
+          if(!refQ.empty)referrerEmailId=refQ.docs[0].id;
+        }catch(e){}
+      }
+      const myRefCode=await genRefCode();
+      const userDoc=buildUserDoc({
+        uid:user.uid,email,fullName:user.displayName||'',photoURL:user.photoURL||'',
+        role,referralCode:myRefCode,referredBy:referrerEmailId,
+        loginMethod:'google',emailVerified:true,phoneNumber:user.phoneNumber||'',deviceId,
+      });
+      await docRef.set(userDoc,{merge:true});
+      if(role!=='partner'&&referrerEmailId){
+        await DB.collection(COL).doc(referrerEmailId).update({
+          teamSize:firebase.firestore.FieldValue.increment(1)
+        }).catch(()=>{});
+      }
+      G.role=role;
+      showFullLoader(false);
+      toast('✅','Welcome to Biluxe10!','ok');
+      routeAfterAuth(userDoc);
+    }else{
+      // ── EXISTING USER via Google — skip verification completely ──
+      const data=existing.data();
+      const updates={
+        lastLogin:fts(),updatedAt:fts(),
+        emailVerified:true,
+        loginMethod:'google',
+        photoURL:user.photoURL||data.photoURL||null,
+      };
+      await docRef.set(updates,{merge:true});
+      showFullLoader(false);
+      toast('👋','Welcome back!','ok');
+      routeAfterAuth({...data,...updates});
+    }
+  }catch(e){
+    showFullLoader(false);
+    if(e.code!=='auth/popup-closed-by-user'&&e.code!=='auth/cancelled-popup-request'){
+      toast('⚠',friendlyAuthError(e),'err');
+    }
+  }
+  btn.classList.remove('loading');btn.disabled=false;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   ROUTING AFTER SUCCESSFUL AUTH
+   Learner → bundle selection (if none yet) or dashboard
+   Partner → dashboard directly
+   ═══════════════════════════════════════════════════════════ */
+function routeAfterAuth(data){
+  const emailId=data.emailId||san(data.email);
+  G.sess={emailId,role:data.role,email:data.email};
+  sessionStorage.setItem('b10_sess',JSON.stringify(G.sess));
+
+  const isPartner=data.role==='partner'||data.isPartner===true;
+  if(isPartner){
+    showStep(3);
+    setTimeout(()=>{ location.href='dashboard.html'; },1400);
+    return;
+  }
+  // Learner
+  if(data.paymentStatus==='approved'){
+    showStep(3);
+    $('step3').querySelector('.step-h').textContent='Welcome back!';
+    $('step3').querySelector('.step-sub').textContent='Redirecting you to your dashboard…';
+    setTimeout(()=>{ location.href='dashboard.html'; },1200);
+    return;
+  }
+  if(data.selectedBundle){
+    // Already picked a bundle but payment pending/incomplete — go straight to payment
+    const b=BUNDLES.find(x=>x.key===data.selectedBundle);
+    if(b){G.bundle=b;showStep(4);renderPayment();return;}
+  }
+  renderBundles();
+  showStep('3b');
+}
+
+/* ═══════════════════════════════════════════════════════════
+   SIGN UP  (email + password)
+   ═══════════════════════════════════════════════════════════ */
+async function handleSignUp(){
+  clearAlert('suAlert');
+  const name=$('suName')?.value.trim()||'';
+  const email=$('suEmail')?.value.trim().toLowerCase()||'';
+  const phone=$('suPhone')?.value.trim().replace(/\D/g,'')||'';
+  const pass=$('suPass')?.value||'';
+  const refRaw=G.role==='partner'?'':($('suRef')?.value.trim()||REF_FROM_URL);
+  const ref=refRaw.toUpperCase();
+
+  const n1=vName(),n2=vEmail('suEmail','vSuEmail','vSuEmailOk'),n3=vPhone(),n4=vPass();
+  if(!n1||!n2||!n3||!n4){showAlert('suAlert','Please fix the highlighted fields above.');return;}
+  if(!G.role){G.role='learner';} // sensible default if user skipped role step
+
+  setLoad('suBtn',true,'Creating account…');
+  try{
+    const emailId=san(email);
+    const deviceId=getDeviceId();
+    const existing=await DB.collection(COL).doc(emailId).get();
+    if(existing.exists){showAlert('suAlert','This email is already registered. Please sign in instead.');setLoad('suBtn',false,'Create Account →');return;}
+    const devQ=await DB.collection(COL).where('deviceId','==',deviceId).limit(1).get();
+    if(!devQ.empty){showAlert('suAlert','An account already exists on this device. Please sign in.');setLoad('suBtn',false,'Create Account →');return;}
+
+    let referrerEmailId='';
+    if(G.role!=='partner'&&ref){
+      const refQ=await DB.collection(COL).where('referralCode','==',ref).limit(1).get();
+      if(refQ.empty){
+        const e=$('vRefErr');if(e)e.className='vmsg show e';
+        showAlert('suAlert','Invalid referral code. Leave it blank if you don\'t have one.');
+        setLoad('suBtn',false,'Create Account →');return;
+      }
+      referrerEmailId=refQ.docs[0].id;
+    }
+
+    const userCred=await AUTH.createUserWithEmailAndPassword(email,pass);
+    const fbUser=userCred.user;
+    const myRefCode=await genRefCode();
+    const userDoc=buildUserDoc({
+      uid:fbUser.uid,email,fullName:name,photoURL:'',
+      role:G.role,referralCode:myRefCode,referredBy:referrerEmailId,
+      loginMethod:'email',emailVerified:false,phoneNumber:phone,deviceId,
+    });
+    await DB.collection(COL).doc(emailId).set(userDoc,{merge:true});
+
+    if(G.role!=='partner'&&referrerEmailId){
+      await DB.collection(COL).doc(referrerEmailId).update({
+        teamSize:firebase.firestore.FieldValue.increment(1)
+      }).catch(()=>{});
+    }
+
+    await fbUser.sendEmailVerification({url:window.location.origin+'/auth.html'});
+    G.pendingEmail=email;
+    const ded=$('verifyEmailDisplay');if(ded)ded.textContent=email;
+    toast('📧','Verification email sent!','ok');
+    showStep('verify');
+    startVerifyPolling();
+  }catch(e){
+    showAlert('suAlert',friendlyAuthError(e));
+    try{const u=AUTH.currentUser;if(u&&!u.emailVerified)await u.delete();}catch(ce){}
+  }
+  setLoad('suBtn',false,'Create Account →');
+}
+
+/* ═══════════════════════════════════════════════════════════
+   EMAIL VERIFICATION SCREEN — simplified UX
+   ═══════════════════════════════════════════════════════════ */
+function openGmail(){
+  window.open('https://mail.google.com','_blank');
+}
+async function resendVerification(){
+  clearAlert('verifyAlert');
+  const u=AUTH.currentUser;
+  if(!u){showAlert('verifyAlert','Session expired. Please sign in again to resend.','err');return;}
+  setLoad('resendBtn',true,'Sending…');
+  try{
+    await u.sendEmailVerification({url:window.location.origin+'/auth.html'});
+    toast('📧','Verification email resent!','ok');
+  }catch(e){
+    showAlert('verifyAlert',friendlyAuthError(e));
+  }
+  setLoad('resendBtn',false,'Resend email');
+}
+async function handleCheckVerified(){
+  clearAlert('verifyAlert');
+  setLoad('verifiedBtn',true,'Checking…');
+  try{
+    const u=AUTH.currentUser;
+    if(!u){showAlert('verifyAlert','Session expired. Please sign in again.','err');setLoad('verifiedBtn',false,'✓ I Verified — Continue');return;}
+    await u.reload();
+    if(!u.emailVerified){
+      showAlert('verifyAlert','Still not verified — please click the link in your email first, then try again.');
+      setLoad('verifiedBtn',false,'✓ I Verified — Continue');
+      return;
+    }
+    const emailId=san(u.email);
+    await DB.collection(COL).doc(emailId).set({emailVerified:true,updatedAt:fts()},{merge:true});
+    const snap=await DB.collection(COL).doc(emailId).get();
+    const data=snap.exists?snap.data():{email:u.email,emailId,role:G.role};
+    stopVerifyPolling();
+    toast('✅','Email verified!','ok');
+    routeAfterAuth(data);
+  }catch(e){
+    showAlert('verifyAlert',friendlyAuthError(e));
+  }
+  setLoad('verifiedBtn',false,'✓ I Verified — Continue');
+}
+function startVerifyPolling(){
+  stopVerifyPolling();
+  // Gentle background auto-check every 5s so the user doesn't have to tap if they verify on another tab
+  G.verifyPollTimer=setInterval(async()=>{
+    try{
+      const u=AUTH.currentUser;
+      if(!u)return;
+      await u.reload();
+      if(u.emailVerified)handleCheckVerified();
+    }catch(e){}
+  },5000);
+}
+function stopVerifyPolling(){
+  if(G.verifyPollTimer){clearInterval(G.verifyPollTimer);G.verifyPollTimer=null;}
+}
+
+/* ═══════════════════════════════════════════════════════════
+   SIGN IN  (email + password)
+   ═══════════════════════════════════════════════════════════ */
+async function handleSignIn(){
+  clearAlert('siAlert');
+  const email=$('siEmail')?.value.trim().toLowerCase()||'';
+  const pass=$('siPass')?.value||'';
+  if(!vEmail('siEmail','vSiEmail',null)){showAlert('siAlert','Please enter a valid email address.');return;}
+  if(!pass){showAlert('siAlert','Please enter your password.');return;}
+  setLoad('siBtn',true,'Signing in…');
+  try{
+    const userCred=await AUTH.signInWithEmailAndPassword(email,pass);
+    const fbUser=userCred.user;
+    await fbUser.reload();
+    if(!fbUser.emailVerified){
+      const ded=$('verifyEmailDisplay');if(ded)ded.textContent=email;
+      showStep('verify');
+      startVerifyPolling();
+      setLoad('siBtn',false,'Sign In →');
+      return;
+    }
+    const emailId=san(email);
+    const snap=await DB.collection(COL).doc(emailId).get();
+    if(!snap.exists){
+      showAlert('siAlert','Account data not found. Please contact support.');
+      setLoad('siBtn',false,'Sign In →');return;
+    }
+    const data=snap.data();
+    await DB.collection(COL).doc(emailId).set({lastLogin:fts(),updatedAt:fts()},{merge:true});
+    toast('👋','Welcome back!','ok');
+    routeAfterAuth(data);
+  }catch(e){
+    showAlert('siAlert',friendlyAuthError(e));
+  }
+  setLoad('siBtn',false,'Sign In →');
+}
+
+async function handleForgotPassword(){
+  const email=$('siEmail')?.value.trim().toLowerCase()||'';
+  if(!vEmail('siEmail','vSiEmail',null)){showAlert('siAlert','Enter your email above first, then tap "Forgot password?" again.','info');return;}
+  try{
+    await AUTH.sendPasswordResetEmail(email);
+    toast('📧','Password reset email sent!','ok');
+  }catch(e){
+    showAlert('siAlert',friendlyAuthError(e));
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   BUNDLE SELECTION (learners only)
+   ═══════════════════════════════════════════════════════════ */
+function renderBundles(){
+  const grid=$('bundleGrid');if(!grid)return;
+  grid.innerHTML=BUNDLES.map(b=>`
+    <div class="bcard" style="--acc:${b.color}" onclick="pickBundle('${b.key}',this)">
+      <div class="bcard-bar"></div>
+      <div class="bcard-tick">✓</div>
+      <div class="bcard-icon">${b.icon}</div>
+      <div class="bcard-name">${b.name}</div>
+      <div class="bcard-price">${toINR(b.price)}</div>
+      <div class="bcard-lpa">${b.lpa}</div>
+      <ul class="bcard-skills">${b.skills.slice(0,3).map(s=>`<li>${s}</li>`).join('')}</ul>
+    </div>
+  `).join('');
+}
+function pickBundle(key,card){
+  const b=BUNDLES.find(x=>x.key===key);if(!b)return;
+  G.bundle=b;
+  document.querySelectorAll('.bcard').forEach(c=>c.classList.remove('sel'));
+  card.classList.add('sel');
+  const sum=$('bundleSummary');if(sum)sum.style.display='flex';
+  const st=$('bundleSummaryText');if(st)st.textContent=`${b.icon} ${b.name} — ${toINR(b.price)}`;
+  $('bundleNextBtn').disabled=false;
+}
+async function bundleNext(){
+  clearAlert('b3Alert');
+  if(!G.bundle){showAlert('b3Alert','Please select a bundle to continue.');return;}
+  const sess=G.sess||JSON.parse(sessionStorage.getItem('b10_sess')||'null');
+  if(!sess?.emailId){showAlert('b3Alert','Session expired. Please sign in again.');return;}
+  setLoad('bundleNextBtn',true,'Loading…');
+  try{
+    await DB.collection(COL).doc(sess.emailId).set({
+      selectedBundle:G.bundle.key,bundleName:G.bundle.name,
+      bundlePrice:G.bundle.price,bundleAmount:G.bundle.price,
+      updatedAt:fts(),
+    },{merge:true});
+    showStep(4);
+    renderPayment();
+  }catch(e){
+    showAlert('b3Alert','Something went wrong: '+e.message);
+  }
+  setLoad('bundleNextBtn',false,'Continue to Payment →');
+}
+
+/* ═══════════════════════════════════════════════════════════
+   PAYMENT (UPI + UTR)
+   ═══════════════════════════════════════════════════════════ */
+function renderPayment(){
+  const el=$('payContent');if(!el||!G.bundle)return;
+  const qrUrl=`https://api.qrserver.com/v1/create-qr-code/?size=260x260&data=upi://pay?pa=${UPI_ID}%26pn=Biluxe10%26am=${G.bundle.price}%26cu=INR`;
+  el.innerHTML=`
+    <div class="pay-summary">
+      <div class="pay-row"><span class="pay-label">Bundle</span><span class="pay-val">${G.bundle.icon} ${G.bundle.name}</span></div>
+      <div class="pay-row"><span class="pay-label">Amount</span><span class="pay-val pay-price">${toINR(G.bundle.price)}</span></div>
+    </div>
+    <div class="pay-sect">Step 1 — Pay via UPI</div>
+    <div class="pay-upi-row">
+      <span>${UPI_ID}</span>
+      <button class="copy-btn" onclick="copyText('${UPI_ID}')">Copy</button>
+    </div>
+    <div class="pay-sect">Step 2 — Scan QR Code</div>
+    <div class="qr-wrap"><div class="qr-box"><img src="${qrUrl}" alt="UPI QR Code" loading="lazy"></div></div>
+    <div class="pay-sect">Step 3 — Enter your UTR / Transaction ID</div>
+    <div style="font-size:0.72rem;color:var(--t2);margin-bottom:7px;line-height:1.75">After payment, find the <strong style="color:var(--text)">UTR / Transaction ID</strong> in your UPI app's transaction history. It's a 12-digit number like <span style="font-family:var(--fm);color:var(--gold)">426159873201</span>.</div>
+    <input type="text" class="utr-input" id="utrInput" placeholder="Enter 12-digit UTR e.g. 426159873201" maxlength="22" inputmode="numeric" oninput="this.value=this.value.replace(/\D/g,'');validateUTR()">
+    <div class="vmsg e" id="vUtr" style="margin-top:5px">⚠ Enter a valid 10–12 digit UTR number</div>
+    <div class="vmsg g" id="vUtrOk" style="margin-top:5px">✓ UTR looks valid</div>
+    <div class="alert" id="payAlert" style="margin-top:12px"></div>
+    <button class="btn-p" id="payBtn" onclick="submitPayment()" style="margin-top:12px">
+      <span class="ld"></span><span>Submit Payment →</span>
+    </button>
+    <div class="pay-note"><span>🕒</span><span>Approval takes <strong>2–6 hours</strong> during 9 AM–9 PM IST, Monday to Saturday. You'll get access as soon as admin approves.</span></div>
+  `;
+}
+function validateUTR(){
+  const v=$('utrInput')?.value||'';
+  const ok=v.length>=10;
+  const e=$('vUtr'),o=$('vUtrOk');
+  if(e)e.className='vmsg'+(!ok&&v.length>0?' show e':'');
+  if(o)o.className='vmsg'+(ok?' show g':'');
+}
+async function submitPayment(){
+  const utr=$('utrInput')?.value.trim()||'';
+  clearAlert('payAlert');
+  if(!utr||utr.length<10){
+    const e=$('vUtr');if(e)e.className='vmsg show e';
+    return;
+  }
+  if(!G.bundle){toast('⚠','Bundle not selected.','err');return;}
+  const sess=G.sess||JSON.parse(sessionStorage.getItem('b10_sess')||'null');
+  if(!sess?.emailId){showAlert('payAlert','Session expired. Please sign in again.','err');return;}
+  setLoad('payBtn',true,'Submitting…');
+  try{
+    const now=fts();
+    await DB.collection(COL).doc(sess.emailId).set({
+      selectedBundle:G.bundle.key,
+      bundleName:G.bundle.name,
+      bundlePrice:G.bundle.price,
+      bundleAmount:G.bundle.price,
+      paymentStatus:'pending',
+      paymentMethod:'upi',
+      paymentProofUTR:utr,
+      paidAt:now,updatedAt:now,
+    },{merge:true});
+    showStep(5);
+    $('s5icon').textContent='⏳';
+    $('s5head').textContent='Payment Under Review';
+    $('s5head').className='big-h pend';
+    $('s5card').className='result-card amber-bd';
+    $('s5card').innerHTML=`
+      <p>Payment of <strong>${toINR(G.bundle.price)}</strong> submitted for the <strong>${G.bundle.icon} ${G.bundle.name} Bundle</strong>.</p>
+      <p>UTR recorded: <strong style="font-family:var(--fm)">${utr}</strong></p>
+      <p>Admin will verify and grant you full access within <strong>2–6 hours</strong> (9 AM–9 PM IST, Mon–Sat).</p>
+      <p>Once approved you can log in and access your dashboard, all courses, referral links, and earnings.</p>
+      <div class="result-contact">
+        Need help?
+        <a href="https://wa.me/919019254743" target="_blank" style="color:#25D366">WhatsApp +91 90192 54743</a> ·
+        <a href="mailto:help.biluxe10@gmail.com">help.biluxe10@gmail.com</a>
+      </div>
+    `;
+  }catch(e){showAlert('payAlert','Submission failed: '+e.message+'. Please try again or contact support.','err');setLoad('payBtn',false,'Submit Payment →');}
+}
+
+/* ═══════════════════════════════════════════════════════════
+   AUTO-DETECT LOGGED-IN USERS (persistent sessions)
+   ═══════════════════════════════════════════════════════════ */
+AUTH.onAuthStateChanged(async user=>{
+  if(!user)return;
+  try{
+    // Google users are always considered verified; email users must actually be verified
+    const isGoogleUser=user.providerData.some(p=>p.providerId==='google.com');
+    if(!isGoogleUser){
+      await user.reload();
+      if(!user.emailVerified)return;
+    }
+    const emailId=san(user.email);
+    const snap=await DB.collection(COL).doc(emailId).get();
+    if(!snap.exists)return;
+    const data=snap.data();
+    if(!data.emailVerified){
+      await DB.collection(COL).doc(emailId).set({emailVerified:true},{merge:true}).catch(()=>{});
+    }
+    const isPartner=data.role==='partner'||data.isPartner===true||(data.userType||'').toLowerCase().includes('partner');
+    const shouldRedirect=isPartner?(data.paymentStatus||'not_applicable')==='not_applicable':data.paymentStatus==='approved';
+    if(shouldRedirect&&!location.pathname.includes('dashboard.html')){
+      location.href='dashboard.html';
+    }
+  }catch(e){}
+});
+
+/* ═══════════════════════════════════════════════════════════
+   INIT
+   ═══════════════════════════════════════════════════════════ */
+document.addEventListener('DOMContentLoaded',()=>{
+  if(REF_FROM_URL){
+    const r=$('suRef');
+    if(r){r.value=REF_FROM_URL;r.readOnly=true;}
+    const ok=$('vRefOk');if(ok)ok.className='vmsg show g';
+  }
+  try{
+    const saved=sessionStorage.getItem('b10_sess');
+    if(saved){G.sess=JSON.parse(saved);G.role=G.sess.role;}
+  }catch(e){}
+  document.addEventListener('keydown',e=>{
+    if(e.key!=='Enter')return;
+    const s2=$('step2');
+    if(s2&&s2.classList.contains('active')){
+      if($('panel-si')&&$('panel-si').classList.contains('active'))handleSignIn();
+    }
+    const s1=$('step1');
+    if(s1&&s1.classList.contains('active')&&!$('roleBtn').disabled)showStep(2);
+  });
+});
+</script>
+</body>
+</html>
