@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Biluxe10 — Course Demo Preview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,700;0,9..144,900;1,9..144,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+--bg:#07070A;--bg2:#0D0D12;--bg3:#121218;--bg4:#18181F;
+--border:rgba(255,255,255,0.055);--border2:rgba(255,255,255,0.1);
+--gold:#C8A96E;--gold2:#E2C48A;
+--green:#22C55E;
+--red:#EF4444;--reA:rgba(239,68,68,0.1);
+--amber:#F59E0B;--amA:rgba(245,158,11,0.1);
+--text:#EDEDF0;--t2:#9B9BA8;--t3:#4B4B5A;
+--fd:'Fraunces',serif;--fb:'Plus Jakarta Sans',sans-serif;--fm:'JetBrains Mono',monospace;
+--r:14px;--rs:10px;--nav:60px;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--fb);line-height:1.6;overflow-x:hidden;min-height:100vh}
+::-webkit-scrollbar{width:3px}
+::-webkit-scrollbar-thumb{background:rgba(200,169,110,0.2);border-radius:2px}
+button{font-family:var(--fb)}
+body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+background:radial-gradient(ellipse 600px 400px at 20% 0%,rgba(200,169,110,0.04),transparent),
+radial-gradient(ellipse 400px 400px at 85% 80%,rgba(167,139,250,0.03),transparent)}
+.topbar{height:var(--nav);background:rgba(7,7,10,0.94);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 16px;position:sticky;top:0;z-index:200;gap:10px}
+.tb-l{display:flex;align-items:center;gap:10px}
+.tb-logo{font-family:var(--fd);font-size:1.05rem;font-weight:900;color:var(--gold)}
+.tb-divider{width:1px;height:16px;background:var(--border2)}
+.tb-pg{font-size:.82rem;font-weight:700;color:var(--t2)}
+.tb-live{display:flex;align-items:center;gap:4px;padding:4px 9px;background:var(--bg3);border:1px solid var(--border);border-radius:20px;font-family:var(--fm);font-size:.5rem;color:var(--t2)}
+.live-dot{width:5px;height:5px;border-radius:50%;background:var(--green);animation:pulse 2.5s ease infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+#main{flex:1;padding:14px 14px 40px;display:flex;flex-direction:column;gap:22px;max-width:640px;margin:0 auto;position:relative;z-index:1}
+.page-head{padding:6px 2px 2px}
+.page-head-t{font-family:var(--fd);font-size:1.3rem;font-weight:900}
+.page-head-s{font-size:.76rem;color:var(--t2);margin-top:4px;line-height:1.7}
+.demo-bdg{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;background:var(--amA);color:var(--amber);border:1px solid rgba(245,158,11,.25);border-radius:20px;font-family:var(--fm);font-size:.5rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-top:10px}
+.course-step{display:flex;flex-direction:column;gap:10px}
+.step-head{display:flex;align-items:center;gap:10px}
+.step-num{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#07070A;font-family:var(--fd);font-weight:900;font-size:.85rem;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.step-title{font-family:var(--fd);font-size:1rem;font-weight:800}
+.step-sub{font-family:var(--fm);font-size:.52rem;color:var(--t3);letter-spacing:.06em;text-transform:uppercase;margin-top:2px}
+
+.course-card-closed{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;cursor:pointer;transition:all .2s;-webkit-tap-highlight-color:transparent}
+.course-card-closed:active{transform:scale(.985)}
+.ccc-thumb{width:100%;height:190px;position:relative;background:linear-gradient(135deg,rgba(200,169,110,.14),rgba(167,139,250,.06));display:flex;align-items:center;justify-content:center;overflow:hidden}
+.ccc-thumb::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 30% 30%,rgba(200,169,110,.15),transparent 60%)}
+.ccc-play-btn{width:58px;height:58px;border-radius:50%;background:rgba(7,7,10,0.55);border:1.5px solid rgba(200,169,110,.5);display:flex;align-items:center;justify-content:center;position:relative;z-index:2;backdrop-filter:blur(6px);transition:transform .2s}
+.course-card-closed:active .ccc-play-btn{transform:scale(.92)}
+.ccc-play-btn svg{width:22px;height:22px;margin-left:3px}
+.ccc-badge{position:absolute;top:12px;right:12px;display:flex;align-items:center;gap:4px;padding:4px 10px;background:rgba(7,7,10,.65);border:1px solid rgba(255,255,255,.12);border-radius:20px;font-family:var(--fm);font-size:.5rem;color:var(--gold);backdrop-filter:blur(6px)}
+.ccc-body{padding:14px 16px}
+.ccc-title{font-family:var(--fd);font-size:1rem;font-weight:800;margin-bottom:4px}
+.ccc-sub{font-family:var(--fm);font-size:.56rem;color:var(--t3);letter-spacing:.04em}
+.ccc-cta{margin-top:10px;display:flex;align-items:center;gap:6px;font-size:.72rem;color:var(--gold);font-weight:700}
+.ccc-cta svg{width:14px;height:14px}
+
+.player-card{background:#000;border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
+.video-wrap{width:100%;position:relative;background:#000;overflow:hidden;user-select:none;-webkit-user-select:none}
+.video-wrap:fullscreen{width:100vw;height:100vh;display:flex;align-items:center;justify-content:center}
+.video-wrap:-webkit-full-screen{width:100vw;height:100vh;display:flex;align-items:center;justify-content:center}
+.video-wrap.is-fs .vid-iframe-wrap{width:100%;height:100%;padding-bottom:0}
+.video-wrap.is-fs .vid-iframe-wrap iframe{top:-9%;height:122%}
+.vid-mask-top{position:absolute;top:0;left:0;right:0;height:56px;background:#000;z-index:10;pointer-events:none}
+.vid-mask-bot{position:absolute;bottom:0;left:0;right:0;height:64px;background:#000;z-index:10;pointer-events:none}
+.vid-mask-l{position:absolute;top:0;left:0;bottom:0;width:4px;background:#000;z-index:10;pointer-events:none}
+.vid-mask-r{position:absolute;top:0;right:0;bottom:0;width:4px;background:#000;z-index:10;pointer-events:none}
+.vid-iframe-wrap{width:100%;padding-bottom:56.25%;position:relative;overflow:hidden}
+.vid-iframe-wrap iframe{position:absolute;top:-56px;left:0;width:100%;height:calc(100% + 120px);border:none}
+/* click-shield now sits ABOVE the iframe at all times (z-index higher than
+   iframe) and is created immediately — before the iframe even loads — so
+   YouTube's native red play button can never be tapped or even flash
+   unobstructed. It only forwards taps to our own play/pause handler. */
+.vid-click-shield{position:absolute;top:0;left:0;right:0;bottom:64px;z-index:16;background:transparent;cursor:pointer}
+.vid-controls{position:absolute;bottom:0;left:0;right:0;z-index:20;background:linear-gradient(transparent,rgba(0,0,0,0.95));padding:14px 16px 10px;display:flex;flex-direction:column;gap:10px}
+.vid-progress{width:100%;height:5px;background:rgba(255,255,255,.18);border-radius:5px;cursor:pointer;position:relative;-webkit-tap-highlight-color:transparent}
+.vid-progress-fill{height:100%;border-radius:5px;background:linear-gradient(90deg,var(--gold),var(--gold2));transition:width .3s linear;pointer-events:none}
+.vid-progress-thumb{position:absolute;top:50%;transform:translate(50%,-50%);width:14px;height:14px;border-radius:50%;background:var(--gold);box-shadow:0 0 6px rgba(200,169,110,.6);pointer-events:none;transition:right .3s linear}
+.vid-btns{display:flex;align-items:center;gap:16px}
+.vid-btn{background:none;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent;padding:4px;position:relative}
+.vid-btn.play-btn{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold2));box-shadow:0 2px 10px rgba(200,169,110,.35)}
+.vid-btn.play-btn svg{width:16px;height:16px}
+.vid-btn.fs-btn{margin-left:2px}
+.vid-skip-lbl{font-family:var(--fm);font-size:.46rem;color:rgba(255,255,255,.65);text-align:center;margin-top:1px;pointer-events:none;letter-spacing:.02em}
+.vid-skip-wrap{display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer}
+.vid-time{font-family:var(--fm);font-size:.6rem;color:rgba(255,255,255,.75);margin-left:auto}
+/* loading overlay is now ABOVE the click-shield (z-index 18) and is
+   present in the DOM from first paint — before any iframe src is ever
+   set — so nothing YouTube renders can show through it. */
+.vid-loading{position:absolute;inset:0;z-index:18;display:flex;align-items:center;justify-content:center;transition:opacity .4s ease;backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);background:rgba(7,7,10,0.6)}
+.vid-loading.hide{opacity:0;pointer-events:none}
+.vid-loading-inner{display:flex;flex-direction:column;align-items:center;gap:12px}
+.vid-spin{width:34px;height:34px;border:2.5px solid rgba(200,169,110,.18);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.vid-loading-txt{font-family:var(--fm);font-size:.56rem;color:var(--gold);letter-spacing:.1em;text-transform:uppercase}
+.player-meta{padding:14px 16px;background:var(--bg2);border-top:1px solid var(--border)}
+.pm-title{font-family:var(--fd);font-size:.95rem;font-weight:700;margin-bottom:3px}
+.pm-course{font-family:var(--fm);font-size:.56rem;color:var(--t3);letter-spacing:.04em}
+.pm-timer-row{display:flex;align-items:center;justify-content:space-between;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)}
+.pm-timer-lbl{font-family:var(--fm);font-size:.5rem;color:var(--t3);text-transform:uppercase;letter-spacing:.08em}
+.pm-timer-val{font-family:var(--fm);font-size:.72rem;color:var(--gold);font-weight:700}
+.pm-timer-val.warn{color:var(--red)}
+.pm-progress-bar{height:3px;background:var(--bg4);border-radius:3px;overflow:hidden;margin-top:8px}
+.pm-progress-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--gold),var(--gold2));transition:width 1s linear}
+.finished-overlay{position:absolute;inset:0;z-index:30;background:rgba(7,7,10,0.97);display:none;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center;padding:24px;backdrop-filter:blur(6px)}
+.finished-overlay.on{display:flex}
+.fo-icon{width:44px;height:44px;border-radius:50%;background:var(--reA);border:1px solid rgba(239,68,68,.3);display:flex;align-items:center;justify-content:center}
+.fo-icon svg{width:22px;height:22px;stroke:var(--red);fill:none;stroke-width:1.8;stroke-linecap:round}
+.fo-title{font-family:var(--fd);font-size:1.05rem;font-weight:900;color:#fff}
+.fo-sub{font-size:.74rem;color:var(--t2);line-height:1.7;max-width:280px}
+.fo-badge{display:inline-flex;align-items:center;gap:5px;padding:5px 12px;background:var(--amA);color:var(--amber);border:1px solid rgba(245,158,11,.25);border-radius:20px;font-family:var(--fm);font-size:.52rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-top:4px}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="tb-l">
+    <div class="tb-logo">Biluxe<sup style="font-size:.5em;color:var(--t3);font-weight:400">10</sup></div>
+    <div class="tb-divider"></div>
+    <div class="tb-pg">Course Demo</div>
+  </div>
+  <div class="tb-live"><div class="live-dot"></div>Preview</div>
+</div>
+
+<div id="main">
+
+  <div class="page-head">
+    <div class="page-head-t">Course Preview</div>
+    <div class="page-head-s">Machine Learning starts automatically below. Tap the AI &amp; ML Live card to open its preview.</div>
+    <div class="demo-bdg">
+      <svg viewBox="0 0 24 24" style="width:11px;height:11px;stroke:var(--amber);fill:none;stroke-width:2;stroke-linecap:round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      10-Minute Demo Preview Per Course
+    </div>
+  </div>
+
+  <!-- COURSE 1 : MACHINE LEARNING — autoplays immediately, blur covers from frame 1 -->
+  <div class="course-step" id="step1">
+    <div class="step-head">
+      <div class="step-num">1</div>
+      <div>
+        <div class="step-title">Machine Learning Fundamentals</div>
+        <div class="step-sub">Course Demo · Master Bundle</div>
+      </div>
+    </div>
+
+    <div class="player-card">
+      <div class="video-wrap" id="videoWrap1">
+        <div class="vid-mask-top"></div>
+        <div class="vid-mask-bot"></div>
+        <div class="vid-mask-l"></div>
+        <div class="vid-mask-r"></div>
+        <div class="vid-iframe-wrap" id="vidIframeWrap1"></div>
+        <div class="vid-click-shield" onclick="togglePlayPause(1)"></div>
+        <div class="vid-loading" id="vidLoading1">
+          <div class="vid-loading-inner">
+            <div class="vid-spin"></div>
+            <div class="vid-loading-txt">Loading Preview…</div>
+          </div>
+        </div>
+        <div class="vid-controls" id="vidControls1">
+          <div class="vid-progress" id="vidProgress1" onclick="event.stopPropagation();seekVideo(1,event)">
+            <div class="vid-progress-fill" id="vidProgFill1" style="width:0%"></div>
+            <div class="vid-progress-thumb" id="vidProgThumb1" style="right:100%"></div>
+          </div>
+          <div class="vid-btns">
+            <div class="vid-skip-wrap" onclick="event.stopPropagation();skipVideo(1,-10)">
+              <button class="vid-btn">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                  <path d="M12 5V2L7 6l5 4V7a5 5 0 11-4.9 6" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                </svg>
+              </button>
+              <div class="vid-skip-lbl">10</div>
+            </div>
+            <button class="vid-btn play-btn" id="playPauseBtn1" onclick="event.stopPropagation();togglePlayPause(1)">
+              <svg viewBox="0 0 24 24" id="playIcon1" fill="none">
+                <rect x="6" y="5" width="4" height="14" rx="1.2" fill="#07070A"/>
+                <rect x="14" y="5" width="4" height="14" rx="1.2" fill="#07070A"/>
+              </svg>
+            </button>
+            <div class="vid-skip-wrap" onclick="event.stopPropagation();skipVideo(1,10)">
+              <button class="vid-btn">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                  <path d="M12 5V2l5 4-5 4V7a5 5 0 104.9 6" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                </svg>
+              </button>
+              <div class="vid-skip-lbl">10</div>
+            </div>
+            <div class="vid-time" id="vidTime1">0:00 / 10:00</div>
+            <button class="vid-btn fs-btn" onclick="event.stopPropagation();toggleFullscreen(1)">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" id="fsIcon1">
+                <path d="M8 3H5a2 2 0 00-2 2v3M16 3h3a2 2 0 012 2v3M21 16v3a2 2 0 01-2 2h-3M8 21H5a2 2 0 01-2-2v-3" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div class="finished-overlay" id="finishedOverlay1">
+          <div class="fo-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+          <div class="fo-title">Demo Finished</div>
+          <div class="fo-sub">You've watched the full 10-minute preview. Enrol to unlock the complete course.</div>
+          <div class="fo-badge">Paid Content</div>
+        </div>
+      </div>
+      <div class="player-meta">
+        <div class="pm-title">Machine Learning Fundamentals — Preview</div>
+        <div class="pm-course">DEMO · 10 MIN LIMIT · NO DOWNLOAD</div>
+        <div class="pm-timer-row">
+          <div class="pm-timer-lbl">Preview Time Remaining</div>
+          <div class="pm-timer-val" id="pmTimer1">10:00</div>
+        </div>
+        <div class="pm-progress-bar"><div class="pm-progress-fill" id="pmProgFill1" style="width:0%"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COURSE 2 : AI & ML LIVE — closed card until clicked -->
+  <div class="course-step" id="step2">
+    <div class="step-head">
+      <div class="step-num">2</div>
+      <div>
+        <div class="step-title">AI &amp; Machine Learning Live Session</div>
+        <div class="step-sub">Course Demo · Elite Pro Bundle</div>
+      </div>
+    </div>
+
+    <div class="course-card-closed" id="closedCard2" onclick="openCourse2()">
+      <div class="ccc-thumb">
+        <div class="ccc-badge">
+          <svg viewBox="0 0 24 24" style="width:10px;height:10px;stroke:var(--gold);fill:none;stroke-width:2;stroke-linecap:round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          10 MIN PREVIEW
+        </div>
+        <div class="ccc-play-btn">
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M9 6.5v11l9-5.5-9-5.5z" fill="var(--gold)"/>
+          </svg>
+        </div>
+      </div>
+      <div class="ccc-body">
+        <div class="ccc-title">AI &amp; Machine Learning Live Session</div>
+        <div class="ccc-sub">TAP TO OPEN COURSE PREVIEW</div>
+        <div class="ccc-cta">
+          Start Preview
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="player-card" id="playerCard2" style="display:none">
+      <div class="video-wrap" id="videoWrap2">
+        <div class="vid-mask-top"></div>
+        <div class="vid-mask-bot"></div>
+        <div class="vid-mask-l"></div>
+        <div class="vid-mask-r"></div>
+        <div class="vid-iframe-wrap" id="vidIframeWrap2"></div>
+        <div class="vid-click-shield" onclick="togglePlayPause(2)"></div>
+        <div class="vid-loading" id="vidLoading2">
+          <div class="vid-loading-inner">
+            <div class="vid-spin"></div>
+            <div class="vid-loading-txt">Loading Preview…</div>
+          </div>
+        </div>
+        <div class="vid-controls" id="vidControls2">
+          <div class="vid-progress" id="vidProgress2" onclick="event.stopPropagation();seekVideo(2,event)">
+            <div class="vid-progress-fill" id="vidProgFill2" style="width:0%"></div>
+            <div class="vid-progress-thumb" id="vidProgThumb2" style="right:100%"></div>
+          </div>
+          <div class="vid-btns">
+            <div class="vid-skip-wrap" onclick="event.stopPropagation();skipVideo(2,-10)">
+              <button class="vid-btn">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                  <path d="M12 5V2L7 6l5 4V7a5 5 0 11-4.9 6" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                </svg>
+              </button>
+              <div class="vid-skip-lbl">10</div>
+            </div>
+            <button class="vid-btn play-btn" id="playPauseBtn2" onclick="event.stopPropagation();togglePlayPause(2)">
+              <svg viewBox="0 0 24 24" id="playIcon2" fill="none">
+                <rect x="6" y="5" width="4" height="14" rx="1.2" fill="#07070A"/>
+                <rect x="14" y="5" width="4" height="14" rx="1.2" fill="#07070A"/>
+              </svg>
+            </button>
+            <div class="vid-skip-wrap" onclick="event.stopPropagation();skipVideo(2,10)">
+              <button class="vid-btn">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                  <path d="M12 5V2l5 4-5 4V7a5 5 0 104.9 6" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                </svg>
+              </button>
+              <div class="vid-skip-lbl">10</div>
+            </div>
+            <div class="vid-time" id="vidTime2">0:00 / 10:00</div>
+            <button class="vid-btn fs-btn" onclick="event.stopPropagation();toggleFullscreen(2)">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" id="fsIcon2">
+                <path d="M8 3H5a2 2 0 00-2 2v3M16 3h3a2 2 0 012 2v3M21 16v3a2 2 0 01-2 2h-3M8 21H5a2 2 0 01-2-2v-3" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div class="finished-overlay" id="finishedOverlay2">
+          <div class="fo-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+          <div class="fo-title">Demo Finished</div>
+          <div class="fo-sub">You've watched the full 10-minute preview. Enrol to unlock the complete course.</div>
+          <div class="fo-badge">Paid Content</div>
+        </div>
+      </div>
+      <div class="player-meta">
+        <div class="pm-title">AI &amp; Machine Learning Live — Preview</div>
+        <div class="pm-course">DEMO · 10 MIN LIMIT · NO DOWNLOAD</div>
+        <div class="pm-timer-row">
+          <div class="pm-timer-lbl">Preview Time Remaining</div>
+          <div class="pm-timer-val" id="pmTimer2">10:00</div>
+        </div>
+        <div class="pm-progress-bar"><div class="pm-progress-fill" id="pmProgFill2" style="width:0%"></div></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* ══════════════════════════════════════════
+   DEMO PLAYER — FIX: no exposed YouTube play button.
+   The loading blur + click-shield are both in the DOM
+   before the iframe's src is ever set, and the loading
+   blur sits at a higher z-index than everything except
+   the finished-overlay. So there is no frame where
+   YouTube's native red play button is visible or tappable.
+══════════════════════════════════════════ */
+
+const PREVIEW_LIMIT = 600;
+
+const PLAYERS = {
+  1:{videoId:'hR-tMLTMw0s',isPlaying:false,watched:0,srcPos:0,interval:null,ended:false,ready:false,skipDone:false,skipAt:15,skipTo:75},
+  2:{videoId:'tzzz8w53FV4',isPlaying:false,watched:0,srcPos:0,interval:null,ended:false,ready:false,skipDone:true,skipAt:null,skipTo:null}
+};
+
+function openCourse2(){
+  document.getElementById('closedCard2').style.display='none';
+  document.getElementById('playerCard2').style.display='block';
+  loadDemoVideo(2);
+  document.getElementById('playerCard2').scrollIntoView({behavior:'smooth',block:'center'});
+}
+
+function loadDemoVideo(n){
+  const p = PLAYERS[n];
+  p.isPlaying=false;
+  p.watched=0;
+  p.srcPos=0;
+  p.ended=false;
+  p.ready=false;
+  if(n===1)p.skipDone=false;
+  clearInterval(p.interval);
+
+  const fill=document.getElementById('vidProgFill'+n);
+  const thumb=document.getElementById('vidProgThumb'+n);
+  const pmFill=document.getElementById('pmProgFill'+n);
+  const loading=document.getElementById('vidLoading'+n);
+  if(fill)fill.style.width='0%';
+  if(thumb)thumb.style.right='100%';
+  if(pmFill)pmFill.style.width='0%';
+  if(loading)loading.classList.remove('hide'); // ensure blur is showing before iframe loads
+  T('vidTime'+n,'0:00 / 10:00');
+  T('pmTimer'+n,'10:00');
+  const tv=document.getElementById('pmTimer'+n);
+  if(tv)tv.classList.remove('warn');
+
+  const wrap=document.getElementById('vidIframeWrap'+n);
+  wrap.innerHTML='';
+
+  const iframe=document.createElement('iframe');
+  iframe.id='ytFrame'+n;
+  iframe.allow='autoplay; encrypted-media; fullscreen; picture-in-picture';
+  iframe.allowFullscreen=true;
+  // autoplay=1 + mute=0: some browsers block unmuted autoplay; we briefly
+  // try unmuted, and the blur/shield mean the person never sees a paused
+  // native player even if the browser defers actual playback slightly.
+  iframe.src=`https://www.youtube-nocookie.com/embed/${p.videoId}?enablejsapi=1&controls=0&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3&disablekb=1&playsinline=1&autoplay=1&mute=0&fs=0&color=white&origin=${encodeURIComponent(location.origin)}`;
+  iframe.style.cssText='position:absolute;top:-56px;left:0;width:100%;height:calc(100% + 120px);border:none;pointer-events:none'; // pointer-events:none so ONLY our click-shield receives taps, never the raw iframe/YT UI
+  wrap.appendChild(iframe);
+
+  // force a play command shortly after load in case autoplay was silently blocked,
+  // then reveal the video by hiding the blur only once we've issued play.
+  setTimeout(()=>{
+    postToYT(n,'playVideo');
+  },400);
+
+  setTimeout(()=>{
+    p.ready=true;
+    p.isPlaying=true;
+    if(loading)loading.classList.add('hide');
+    updatePlayBtn(n);
+    startDemoTicker(n);
+  },1300);
+}
+
+function startDemoTicker(n){
+  const p=PLAYERS[n];
+  clearInterval(p.interval);
+  p.interval=setInterval(()=>{
+    if(!p.isPlaying||p.ended||!p.ready)return;
+
+    p.watched++;
+    p.srcPos++;
+
+    if(n===1 && !p.skipDone && p.watched>=p.skipAt){
+      p.skipDone=true;
+      p.srcPos=p.skipTo;
+      postToYT(n,'seekTo',p.skipTo);
+    }
+
+    if(p.watched>=PREVIEW_LIMIT){
+      p.watched=PREVIEW_LIMIT;
+      endPreview(n);
+      return;
+    }
+
+    const pct=(p.watched/PREVIEW_LIMIT)*100;
+    const fill=document.getElementById('vidProgFill'+n);
+    const thumb=document.getElementById('vidProgThumb'+n);
+    const pmFill=document.getElementById('pmProgFill'+n);
+    if(fill)fill.style.width=pct+'%';
+    if(thumb)thumb.style.right=(100-pct)+'%';
+    if(pmFill)pmFill.style.width=pct+'%';
+
+    const m=Math.floor(p.watched/60),s=Math.floor(p.watched%60);
+    T('vidTime'+n,m+':'+(s<10?'0':'')+s+' / 10:00');
+
+    const remain=PREVIEW_LIMIT-p.watched;
+    const rm=Math.floor(remain/60),rs=Math.floor(remain%60);
+    T('pmTimer'+n,rm+':'+(rs<10?'0':'')+rs);
+    if(remain<=60){
+      const tv=document.getElementById('pmTimer'+n);
+      if(tv)tv.classList.add('warn');
+    }
+  },1000);
+}
+
+function endPreview(n){
+  const p=PLAYERS[n];
+  p.ended=true;
+  p.isPlaying=false;
+  clearInterval(p.interval);
+  postToYT(n,'pauseVideo');
+  updatePlayBtn(n);
+  T('pmTimer'+n,'0:00');
+  const controls=document.getElementById('vidControls'+n);
+  if(controls){
+    controls.querySelectorAll('.vid-btn').forEach(b=>b.style.pointerEvents='none');
+    controls.style.opacity='0.4';
+  }
+  const overlay=document.getElementById('finishedOverlay'+n);
+  if(overlay)overlay.classList.add('on');
+  if(document.fullscreenElement)document.exitFullscreen();
+}
+
+function togglePlayPause(n){
+  const p=PLAYERS[n];
+  if(p.ended||!p.ready)return;
+  p.isPlaying=!p.isPlaying;
+  updatePlayBtn(n);
+  postToYT(n,p.isPlaying?'playVideo':'pauseVideo');
+}
+
+function updatePlayBtn(n){
+  const icon=document.getElementById('playIcon'+n);
+  if(!icon)return;
+  const p=PLAYERS[n];
+  if(p.isPlaying){
+    icon.innerHTML='<rect x="6" y="5" width="4" height="14" rx="1.2" fill="#07070A"/><rect x="14" y="5" width="4" height="14" rx="1.2" fill="#07070A"/>';
+  }else{
+    icon.innerHTML='<path d="M9 6.5v11l9-5.5-9-5.5z" fill="#07070A"/>';
+  }
+}
+
+function skipVideo(n,secs){
+  const p=PLAYERS[n];
+  if(p.ended||!p.ready)return;
+  p.watched=Math.max(0,Math.min(PREVIEW_LIMIT,p.watched+secs));
+  p.srcPos=Math.max(0,p.srcPos+secs);
+  postToYT(n,'seekTo',p.srcPos);
+  if(p.watched>=PREVIEW_LIMIT)endPreview(n);
+}
+
+function seekVideo(n,e){
+  const p=PLAYERS[n];
+  if(p.ended||!p.ready)return;
+  const bar=document.getElementById('vidProgress'+n);
+  if(!bar)return;
+  const rect=bar.getBoundingClientRect();
+  const pct=Math.max(0,Math.min(1,(e.clientX-rect.left)/rect.width));
+  p.watched=Math.round(pct*PREVIEW_LIMIT);
+  if(n===1 && p.watched>=p.skipAt){
+    p.skipDone=true;
+    p.srcPos=p.skipTo+(p.watched-p.skipAt);
+  }else{
+    p.srcPos=p.watched;
+  }
+  postToYT(n,'seekTo',p.srcPos);
+  const fill=document.getElementById('vidProgFill'+n);
+  const thumb=document.getElementById('vidProgThumb'+n);
+  if(fill)fill.style.width=(pct*100)+'%';
+  if(thumb)thumb.style.right=((1-pct)*100)+'%';
+  if(p.watched>=PREVIEW_LIMIT)endPreview(n);
+}
+
+function toggleFullscreen(n){
+  const el=document.getElementById('videoWrap'+n);
+  if(!el)return;
+  const isFs=document.fullscreenElement===el;
+  if(!isFs){
+    const req=el.requestFullscreen||el.webkitRequestFullscreen||el.mozRequestFullScreen;
+    if(req)req.call(el);
+  }else{
+    const exit=document.exitFullscreen||document.webkitExitFullscreen||document.mozCancelFullScreen;
+    if(exit)exit.call(document);
+  }
+}
+
+document.addEventListener('fullscreenchange',()=>{
+  [1,2].forEach(n=>{
+    const wrap=document.getElementById('videoWrap'+n);
+    const icon=document.getElementById('fsIcon'+n);
+    if(!wrap||!icon)return;
+    const isFs=document.fullscreenElement===wrap;
+    wrap.classList.toggle('is-fs',isFs);
+    icon.innerHTML=isFs
+      ? '<path d="M8 3v3a2 2 0 01-2 2H3M16 3v3a2 2 0 002 2h3M21 16h-3a2 2 0 00-2 2v3M8 21v-3a2 2 0 00-2-2H3" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>'
+      : '<path d="M8 3H5a2 2 0 00-2 2v3M16 3h3a2 2 0 012 2v3M21 16v3a2 2 0 01-2 2h-3M8 21H5a2 2 0 01-2-2v-3" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>';
+  });
+});
+
+function postToYT(n,fn,arg){
+  const frame=document.getElementById('ytFrame'+n);
+  if(!frame)return;
+  const msg=arg!=null
+    ?{event:'command',func:fn,args:[arg,true]}
+    :{event:'command',func:fn};
+  try{frame.contentWindow.postMessage(JSON.stringify(msg),'*');}catch(e){}
+}
+
+function T(id,v){const el=document.getElementById(id);if(el)el.textContent=v;}
+
+document.addEventListener('contextmenu',e=>{
+  if(e.target.closest('.player-card')){e.preventDefault();return false;}
+});
+
+loadDemoVideo(1);
+</script>
+</body>
+</html>
