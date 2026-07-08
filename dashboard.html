@@ -1,0 +1,1548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Biluxe10 — Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,700;0,9..144,900;1,9..144,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+<script>
+/* ══════════════════════════════════════════════════════════════
+   FIREBASE SETUP
+   This connects the page to your Firebase project. Do not edit
+   these values unless you change Firebase projects.
+══════════════════════════════════════════════════════════════ */
+const firebaseConfig={apiKey:"AIzaSyDxxkC9iD1V1w-53Kf4oBrHEXlBLvCc7sE",authDomain:"biluxe10-3e894.firebaseapp.com",projectId:"biluxe10-3e894",storageBucket:"biluxe10-3e894.appspot.com",messagingSenderId:"804749588233",appId:"1:804749588233:web:7777648c0c7834733c05d8"};
+if(!firebase.apps.length)firebase.initializeApp(firebaseConfig);
+const AUTH=firebase.auth(),DB=firebase.firestore();
+
+// Turns an email into a safe Firestore document ID (no dots/@ allowed as-is)
+const san=e=>e.toLowerCase().trim().replace(/\./g,'_').replace(/@/g,'__at__');
+
+/* ══════════════════════════════════════════════════════════════
+   WHICH FIRESTORE COLLECTION HOLDS USERS?
+   Your project has used a few different spellings over time.
+   This list is tried in order — whichever one actually has the
+   signed-in user's document becomes the collection used for the
+   rest of the session. This is why users may show up under
+   different-looking collection names in the Firebase console —
+   they are NOT duplicated, this is just backwards-compatibility.
+══════════════════════════════════════════════════════════════ */
+const COLS=['User-collection','user_collection','users','User_collection','user-collection'];
+let COL='User-collection';
+</script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+--bg:#07070A;--bg2:#0D0D12;--bg3:#121218;--bg4:#18181F;--bg5:#1E1E28;
+--border:rgba(255,255,255,0.055);--border2:rgba(255,255,255,0.1);--border3:rgba(255,255,255,0.16);
+--gold:#C8A96E;--gold2:#E2C48A;--gold3:#F0D9A8;
+--gA:rgba(200,169,110,0.08);--gB:rgba(200,169,110,0.15);--gC:rgba(200,169,110,0.04);
+--green:#22C55E;--grA:rgba(34,197,94,0.1);--grB:rgba(34,197,94,0.18);
+--red:#EF4444;--reA:rgba(239,68,68,0.1);
+--blue:#60A5FA;--blA:rgba(96,165,250,0.1);
+--vio:#A78BFA;--viA:rgba(167,139,250,0.1);
+--amber:#F59E0B;--amA:rgba(245,158,11,0.1);
+--cyan:#22D3EE;--cyA:rgba(34,211,238,0.1);
+--ink:#07070A;--text:#EDEDF0;--t2:#9B9BA8;--t3:#4B4B5A;--t4:#2A2A35;
+--fd:'Fraunces',serif;--fb:'Plus Jakarta Sans',sans-serif;--fm:'JetBrains Mono',monospace;
+--r:14px;--rs:10px;--nav:60px;
+--ease:cubic-bezier(0.16,1,0.3,1);--spring:cubic-bezier(0.34,1.56,0.64,1);
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--fb);line-height:1.6;overflow-x:hidden;min-height:100vh}
+body.lock{overflow:hidden}
+::-webkit-scrollbar{width:3px}
+::-webkit-scrollbar-thumb{background:rgba(200,169,110,0.2);border-radius:2px}
+button,input,select,textarea{font-family:var(--fb)}
+body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+background:radial-gradient(ellipse 600px 400px at 20% 0%,rgba(200,169,110,0.04),transparent),
+radial-gradient(ellipse 400px 400px at 85% 80%,rgba(167,139,250,0.03),transparent)}
+
+/* PARTICLES */
+#particles{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.pt{position:absolute;border-radius:50%;animation:ptFloat linear infinite;opacity:0}
+@keyframes ptFloat{0%{transform:translateY(100vh) rotate(0deg);opacity:0}10%{opacity:.5}90%{opacity:.15}100%{transform:translateY(-100px) rotate(720deg);opacity:0}}
+
+/* GUARD (loading / auth check screen) */
+#guard{position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;transition:opacity .7s ease}
+#guard.fade{opacity:0;pointer-events:none}
+#guard.gone{display:none}
+.g-logo{font-family:var(--fd);font-size:clamp(3rem,10vw,5rem);font-weight:900;color:var(--gold);letter-spacing:-.03em;line-height:1;animation:logoPulse 2s ease infinite}
+@keyframes logoPulse{0%,100%{text-shadow:0 0 30px rgba(200,169,110,0.3)}50%{text-shadow:0 0 60px rgba(200,169,110,0.6)}}
+.g-logo sup{font-size:.4em;color:var(--t3);font-weight:400;vertical-align:super}
+.g-spin{width:32px;height:32px;border:2.5px solid rgba(200,169,110,.12);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.g-msg{font-family:var(--fm);font-size:.58rem;color:var(--t3);letter-spacing:.2em;text-transform:uppercase;text-align:center}
+.g-err{display:none;flex-direction:column;align-items:center;gap:14px;text-align:center;padding:24px;max-width:340px}
+.g-err-t{font-family:var(--fd);font-size:1.1rem;color:var(--red)}
+.g-err-d{font-size:.8rem;color:var(--t2);line-height:1.75}
+.g-btn{padding:11px 26px;background:var(--gold);color:var(--ink);border:none;border-radius:8px;font-weight:800;font-size:.8rem;cursor:pointer}
+
+/* APP SHELL */
+#app{display:flex;flex-direction:column;min-height:100vh;opacity:0;transition:opacity .6s ease;position:relative;z-index:1}
+#app.show{opacity:1}
+
+/* TOPBAR */
+.topbar{height:var(--nav);background:rgba(7,7,10,0.94);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 16px;position:sticky;top:0;z-index:100;gap:10px}
+.tb-l{display:flex;align-items:center;gap:10px}
+.tb-logo{font-family:var(--fd);font-size:1.05rem;font-weight:900;color:var(--gold)}
+.tb-divider{width:1px;height:16px;background:var(--border2)}
+.tb-pg{font-size:.82rem;font-weight:700;color:var(--t2)}
+.tb-r{display:flex;align-items:center;gap:8px}
+.tb-live{display:flex;align-items:center;gap:4px;padding:4px 9px;background:var(--bg3);border:1px solid var(--border);border-radius:20px;font-family:var(--fm);font-size:.5rem;color:var(--t2)}
+.live-dot{width:5px;height:5px;border-radius:50%;background:var(--green);animation:pulse 2.5s ease infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.tb-time{font-family:var(--fm);font-size:.52rem;color:var(--t3)}
+.tb-av{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--gold),rgba(200,169,110,.4));display:flex;align-items:center;justify-content:center;font-family:var(--fd);font-size:.85rem;font-weight:700;color:var(--ink);border:2px solid rgba(200,169,110,.3);cursor:pointer;overflow:hidden;flex-shrink:0;position:relative}
+.tb-av img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+
+/* BOTTOM NAV */
+#bnav{position:fixed;bottom:0;left:0;right:0;z-index:500;background:rgba(8,8,13,0.97);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-top:1px solid var(--border2);display:flex;align-items:center;justify-content:space-around;height:62px;padding:0 4px;padding-bottom:env(safe-area-inset-bottom)}
+.bn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;flex:1;height:100%;cursor:pointer;border:none;background:none;padding:0;position:relative;transition:all .2s;-webkit-tap-highlight-color:transparent}
+.bn-ic{display:flex;align-items:center;justify-content:center;width:24px;height:24px;transition:transform .25s var(--spring)}
+.bn-ic svg{width:20px;height:20px;stroke:var(--t3);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;transition:stroke .2s}
+.bn-lb{font-family:var(--fm);font-size:.46rem;color:var(--t3);letter-spacing:.06em;text-transform:uppercase;transition:color .2s}
+.bn.on .bn-lb{color:var(--gold)}
+.bn.on .bn-ic{transform:translateY(-3px) scale(1.15)}
+.bn.on .bn-ic svg{stroke:var(--gold)}
+.bn::after{content:'';position:absolute;top:6px;left:50%;transform:translateX(-50%) scaleX(0);width:24px;height:2px;background:linear-gradient(90deg,var(--gold),var(--gold2));border-radius:2px;transition:transform .25s var(--spring)}
+.bn.on::after{transform:translateX(-50%) scaleX(1)}
+.bn-pav{width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,var(--gold),rgba(200,169,110,.4));display:flex;align-items:center;justify-content:center;font-family:var(--fd);font-size:.6rem;font-weight:700;color:var(--ink);border:1.5px solid rgba(200,169,110,.3);overflow:hidden;position:relative;transition:transform .25s var(--spring)}
+.bn-pav img{width:100%;height:100%;object-fit:cover}
+
+/* MAIN */
+#main{flex:1;display:flex;flex-direction:column;padding-bottom:70px}
+
+/* PAGES */
+.pg{flex:1;padding:14px;display:none;flex-direction:column;gap:14px;animation:pgIn .3s var(--ease)}
+.pg.on{display:flex}
+@keyframes pgIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* SECTION HEADINGS */
+.sec-t{font-family:var(--fd);font-size:1.05rem;font-weight:900}
+.sec-s{font-size:.74rem;color:var(--t2);margin-top:2px}
+
+/* GREETING HERO */
+.greeting-hero{border-radius:18px;padding:18px 16px 20px;position:relative;overflow:hidden;border:1px solid rgba(200,169,110,0.18);min-height:175px}
+.gh-bg{position:absolute;inset:0;z-index:0;transition:all 1s ease}
+.gh-bg.morning{background:linear-gradient(135deg,rgba(255,183,77,0.13),rgba(200,169,110,0.06))}
+.gh-bg.afternoon{background:linear-gradient(135deg,rgba(200,169,110,0.11),rgba(96,165,250,0.05))}
+.gh-bg.evening{background:linear-gradient(135deg,rgba(167,139,250,0.11),rgba(200,169,110,0.07))}
+.gh-bg.night{background:linear-gradient(135deg,rgba(20,20,35,0.8),rgba(200,169,110,0.04))}
+.gh-orb{position:absolute;border-radius:50%;filter:blur(50px);pointer-events:none}
+.gh-orb1{width:160px;height:160px;top:-60px;right:-40px;background:rgba(200,169,110,0.07);animation:orbF 8s ease-in-out infinite}
+.gh-orb2{width:120px;height:120px;bottom:-40px;left:5%;background:rgba(167,139,250,0.05);animation:orbF 10s ease-in-out infinite reverse}
+@keyframes orbF{0%,100%{transform:translate(0,0)}50%{transform:translate(15px,-15px)}}
+.gh-inner{position:relative;z-index:1}
+.gh-row{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:11px}
+.gh-tag{font-family:var(--fm);font-size:.5rem;color:var(--gold);letter-spacing:.14em;text-transform:uppercase;margin-bottom:3px;display:flex;align-items:center;gap:5px}
+.gh-tag-dot{width:5px;height:5px;border-radius:50%;background:var(--gold);animation:pulse 2s ease infinite}
+.gh-greet{font-family:var(--fd);font-size:1.25rem;font-weight:900;line-height:1.2;margin-bottom:2px}
+.gh-greet em{font-style:italic;color:var(--gold)}
+.gh-uname{font-family:var(--fd);font-size:1.55rem;font-weight:900;color:var(--gold);line-height:1.1;margin-bottom:6px}
+.gh-quote{font-size:.7rem;color:var(--t2);line-height:1.7;margin-bottom:13px;font-style:italic;border-left:2px solid rgba(200,169,110,0.28);padding-left:10px}
+.gh-btns{display:flex;gap:8px;flex-wrap:wrap}
+.gh-prof{width:56px;height:56px;border-radius:50%;flex-shrink:0;background:linear-gradient(135deg,var(--gold),rgba(200,169,110,.4));display:flex;align-items:center;justify-content:center;font-family:var(--fd);font-size:1.35rem;font-weight:900;color:var(--ink);border:2.5px solid rgba(200,169,110,.35);box-shadow:0 4px 18px rgba(200,169,110,.18);overflow:hidden;cursor:pointer;position:relative}
+.gh-prof img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
+.gh-prof .cam-ov{position:absolute;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .2s;border-radius:50%}
+.gh-prof:hover .cam-ov,.gh-prof:active .cam-ov{opacity:1}
+
+/* MODE BANNER */
+.mode-b{display:flex;align-items:flex-start;gap:12px;padding:12px 14px;border-radius:var(--r);border:1px solid;font-size:.75rem;line-height:1.65}
+.mode-b.lg{background:rgba(96,165,250,.05);border-color:rgba(96,165,250,.2);color:#93C5FD}
+.mode-b.pt{background:rgba(200,169,110,.06);border-color:rgba(200,169,110,.2);color:var(--gold2)}
+.mode-b-ic{flex-shrink:0;margin-top:2px}
+.mode-b-t{font-family:var(--fd);font-size:.88rem;font-weight:700;margin-bottom:2px}
+
+/* STAT CARDS 2x2 */
+.sg4{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.sc{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:14px;position:relative;overflow:hidden;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .2s}
+.sc::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--sc-c,var(--gold)),transparent);opacity:0;transition:opacity .3s}
+.sc:active{transform:scale(.97)}
+.sc:active::before,.sc:hover::before{opacity:1}
+.sc-ring{position:absolute;top:-22px;right:-22px;width:65px;height:65px;border-radius:50%;border:1px solid var(--sc-c,rgba(200,169,110,0.08));opacity:.35}
+.sc-lb{font-family:var(--fm);font-size:.49rem;color:var(--t3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:7px;display:flex;align-items:center;gap:5px}
+.sc-lb svg{width:11px;height:11px;stroke:var(--sc-c,var(--t3));fill:none;stroke-width:2;stroke-linecap:round}
+.sc-vl{font-family:var(--fd);font-size:1.3rem;font-weight:900;line-height:1;margin-bottom:4px;transition:all .4s var(--ease)}
+.sc-nt{font-family:var(--fm);font-size:.49rem;color:var(--t3)}
+.sc-bar{height:2px;background:var(--bg4);border-radius:2px;margin-top:10px;overflow:hidden}
+.sc-bf{height:100%;border-radius:2px;transition:width .8s var(--ease)}
+
+/* CARDS */
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
+.chd{padding:13px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:8px}
+.cht{font-family:var(--fd);font-size:.9rem;font-weight:700}
+
+/* BUTTONS */
+.btn-g{padding:9px 16px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--ink);border:none;border-radius:var(--rs);font-weight:800;font-size:.72rem;cursor:pointer;transition:all .2s;-webkit-tap-highlight-color:transparent;display:inline-flex;align-items:center;gap:6px}
+.btn-g:active{transform:scale(.96);opacity:.9}
+.btn-o{padding:9px 16px;background:transparent;color:var(--t2);border:1px solid var(--border2);border-radius:var(--rs);font-weight:600;font-size:.72rem;cursor:pointer;transition:all .2s;-webkit-tap-highlight-color:transparent;display:inline-flex;align-items:center;gap:6px}
+.btn-o:active{opacity:.7}
+.btn-danger{padding:9px 16px;background:rgba(239,68,68,0.08);color:var(--red);border:1px solid rgba(239,68,68,.28);border-radius:var(--rs);font-weight:700;font-size:.72rem;cursor:pointer;transition:all .2s;-webkit-tap-highlight-color:transparent;display:inline-flex;align-items:center;gap:6px}
+.btn-danger:active{background:rgba(239,68,68,0.16);transform:scale(.96)}
+.btn-sm{padding:5px 12px;background:var(--gA);color:var(--gold);border:1px solid rgba(200,169,110,.2);border-radius:7px;font-weight:700;font-size:.64rem;cursor:pointer;transition:all .2s;-webkit-tap-highlight-color:transparent;display:inline-flex;align-items:center;gap:5px}
+.btn-sm:active{background:var(--gB)}
+
+/* BADGES */
+.bdg{display:inline-flex;align-items:center;padding:3px 7px;border-radius:5px;font-family:var(--fm);font-size:.5rem;font-weight:700;letter-spacing:.04em}
+.bdg.ok{background:var(--grA);color:var(--green);border:1px solid rgba(34,197,94,.2)}
+.bdg.pn{background:var(--amA);color:var(--amber);border:1px solid rgba(245,158,11,.2)}
+.bdg.bl{background:var(--blA);color:var(--blue);border:1px solid rgba(96,165,250,.2)}
+.bdg.gd{background:var(--gA);color:var(--gold);border:1px solid rgba(200,169,110,.2)}
+
+/* QUICK ACTIONS */
+.qa-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.qa{display:flex;align-items:center;gap:10px;padding:12px 13px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;transition:all .2s;text-align:left;width:100%;-webkit-tap-highlight-color:transparent;border:none}
+.qa:active{background:var(--gA);border:1px solid rgba(200,169,110,.18);transform:scale(.97)}
+.qa-ic{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.qa-ic svg{width:18px;height:18px;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;fill:none}
+.qa-t{font-size:.72rem;font-weight:700;color:var(--text);line-height:1.3}
+.qa-s{font-family:var(--fm);font-size:.48rem;color:var(--t3);margin-top:2px}
+
+/* TEAM / ACTIVITY */
+.act-it{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)}
+.act-it:last-child{border-bottom:none}
+.act-av{width:30px;height:30px;border-radius:50%;background:var(--bg4);display:flex;align-items:center;justify-content:center;font-family:var(--fd);font-size:.72rem;font-weight:700;color:var(--gold);flex-shrink:0;border:1px solid var(--border)}
+.act-t{font-size:.73rem;color:var(--text);font-weight:600}
+.act-s{font-family:var(--fm);font-size:.5rem;margin-top:1px}
+
+/* AFFILIATE */
+.aff-hero{background:linear-gradient(135deg,rgba(200,169,110,0.09),rgba(167,139,250,0.05));border:1px solid rgba(200,169,110,0.2);border-radius:16px;padding:20px 18px;position:relative;overflow:hidden}
+.aff-hero::before{content:'';position:absolute;top:-30px;right:-30px;width:140px;height:140px;border-radius:50%;background:radial-gradient(circle,rgba(200,169,110,0.1),transparent);pointer-events:none}
+.aff-hero-t{font-family:var(--fd);font-size:1.3rem;font-weight:900;margin-bottom:5px}
+.aff-hero-t em{font-style:italic;color:var(--gold)}
+.aff-hero-s{font-size:.75rem;color:var(--t2);line-height:1.75;margin-bottom:14px}
+.aff-steps{display:flex;flex-direction:column;gap:9px;margin-top:14px}
+.aff-step{background:rgba(13,13,18,0.7);border:1px solid var(--border);border-radius:var(--r);padding:12px;display:flex;gap:12px;align-items:flex-start}
+.aff-step-n{font-family:var(--fd);font-size:1.4rem;font-weight:900;color:var(--gold);line-height:1;flex-shrink:0}
+.aff-step-t{font-size:.77rem;font-weight:700;margin-bottom:2px}
+.aff-step-s{font-family:var(--fm);font-size:.52rem;color:var(--t3);line-height:1.6}
+
+/* REF LINK */
+.ref-box{background:var(--bg3);border:1px solid var(--border2);border-radius:var(--rs);display:flex;align-items:center;overflow:hidden}
+.ref-inp{flex:1;background:none;border:none;padding:11px 13px;font-family:var(--fm);font-size:.62rem;color:var(--text);outline:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.ref-copy{padding:11px 14px;background:var(--gA);border:none;border-left:1px solid var(--border);color:var(--gold);font-weight:700;font-size:.66rem;cursor:pointer;white-space:nowrap;-webkit-tap-highlight-color:transparent;display:flex;align-items:center;gap:5px}
+.ref-copy svg{width:13px;height:13px;stroke:var(--gold);fill:none;stroke-width:2;stroke-linecap:round}
+.ref-copy:active{background:var(--gB)}
+
+/* REF STATS */
+.ref-stats-g{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.ref-stat{background:var(--bg3);border:1px solid var(--border);border-radius:var(--rs);padding:13px;text-align:center}
+.ref-stat-vl{font-family:var(--fd);font-size:1.3rem;font-weight:900;color:var(--gold);margin-bottom:3px;transition:all .4s var(--ease)}
+.ref-stat-lb{font-family:var(--fm);font-size:.48rem;color:var(--t3);text-transform:uppercase;letter-spacing:.08em}
+
+/* BUNDLE COMM TABLE */
+.bun-tbl{width:100%;border-collapse:collapse;font-size:.72rem}
+.bun-tbl th{font-family:var(--fm);font-size:.47rem;color:var(--t3);text-transform:uppercase;letter-spacing:.08em;padding:9px 12px;text-align:left;border-bottom:1px solid var(--border)}
+.bun-tbl td{padding:10px 12px;border-bottom:1px solid var(--border);color:var(--t2);vertical-align:middle}
+.bun-tbl tr:last-child td{border-bottom:none}
+.bun-name{color:var(--text);font-weight:700}
+.comm-pct{font-family:var(--fm);font-weight:700;color:var(--amber)}
+.comm-amt{font-family:var(--fd);font-weight:900;color:var(--green)}
+
+/* TEAM */
+.team-grid{display:flex;flex-direction:column;gap:8px}
+.tm-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--rs);padding:12px;display:flex;align-items:center;gap:10px}
+.tm-av{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--gold),rgba(200,169,110,.4));display:flex;align-items:center;justify-content:center;font-family:var(--fd);font-size:.85rem;font-weight:700;color:var(--ink);flex-shrink:0}
+.tm-nm{font-size:.75rem;font-weight:700}
+.tm-mt{font-family:var(--fm);font-size:.5rem;color:var(--t3);margin-top:2px}
+.tm-e{margin-left:auto;font-family:var(--fd);font-size:.78rem;font-weight:700;color:var(--gold);white-space:nowrap}
+
+/* EARNINGS */
+.earn-g{display:flex;flex-direction:column;gap:10px}
+.earn-stat{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:16px;position:relative;overflow:hidden}
+.earn-stat-lb{font-family:var(--fm);font-size:.52rem;color:var(--t3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px;display:flex;align-items:center;gap:5px}
+.earn-stat-lb svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round}
+.earn-stat-vl{font-family:var(--fd);font-size:1.6rem;font-weight:900;color:var(--gold);line-height:1;margin-bottom:3px;transition:all .4s var(--ease)}
+.earn-stat-nt{font-family:var(--fm);font-size:.5rem;color:var(--t3)}
+.earn-chart{height:56px;display:flex;align-items:flex-end;gap:3px;margin-top:12px}
+.ebar{flex:1;border-radius:3px 3px 0 0;background:linear-gradient(180deg,var(--gold),rgba(200,169,110,.18));min-height:4px;transition:height .8s var(--ease);cursor:pointer}
+.earn-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+/* TABLE */
+.tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:collapse;font-size:.72rem;min-width:360px}
+th{font-family:var(--fm);font-size:.47rem;color:var(--t3);text-transform:uppercase;letter-spacing:.08em;padding:9px 12px;text-align:left;border-bottom:1px solid var(--border);white-space:nowrap}
+td{padding:10px 12px;border-bottom:1px solid var(--border);color:var(--t2);vertical-align:middle}
+td:first-child{color:var(--text)}
+tr:last-child td{border-bottom:none}
+.ta{text-align:right}
+.cr{color:var(--green)!important;font-weight:700}
+.dr{color:var(--red)!important;font-weight:700}
+
+/* WITHDRAWAL */
+.wd-inp{width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--rs);padding:11px 13px;font-size:.8rem;color:var(--text);outline:none;transition:border-color .2s;margin-bottom:10px;-webkit-appearance:none}
+.wd-inp:focus{border-color:rgba(200,169,110,.38)}
+.wd-label{font-family:var(--fm);font-size:.52rem;color:var(--t3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px;display:block}
+.wd-bal-box{background:linear-gradient(135deg,var(--gA),var(--gC));border:1px solid rgba(200,169,110,.2);border-radius:var(--r);padding:18px;text-align:center;margin-bottom:16px}
+.wd-bal-lb{font-family:var(--fm);font-size:.52rem;color:var(--t3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px}
+.wd-bal-vl{font-family:var(--fd);font-size:2rem;font-weight:900;color:var(--gold);margin-bottom:3px;transition:all .4s var(--ease)}
+.wd-bal-nt{font-family:var(--fm);font-size:.52rem;color:var(--t3)}
+.wd-hist-it{display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--border)}
+.wd-hist-it:last-child{border-bottom:none}
+.wd-nm{font-size:.76rem;font-weight:700}
+.wd-mt{font-family:var(--fm);font-size:.5rem;color:var(--t3);margin-top:2px}
+
+/* PROFILE */
+.prof-hero{display:flex;flex-direction:column;align-items:center;gap:14px;padding:24px 16px;background:var(--bg2);border:1px solid var(--border);border-radius:18px;position:relative;overflow:hidden}
+.prof-hero::before{content:'';position:absolute;top:-40px;right:-40px;width:150px;height:150px;border-radius:50%;background:radial-gradient(circle,rgba(200,169,110,0.07),transparent);pointer-events:none}
+.pav-wrap{position:relative;width:80px;height:80px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.pav{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,var(--gold),rgba(200,169,110,.4));display:flex;align-items:center;justify-content:center;font-family:var(--fd);font-size:2rem;font-weight:900;color:var(--ink);border:3px solid rgba(200,169,110,.35);box-shadow:0 4px 24px rgba(200,169,110,.15);overflow:hidden}
+.pav img{width:100%;height:100%;object-fit:cover}
+.pav-cam{position:absolute;bottom:2px;right:2px;width:24px;height:24px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;border:2px solid var(--bg);box-shadow:0 2px 8px rgba(0,0,0,.4)}
+.pav-cam svg{width:12px;height:12px;stroke:var(--ink);fill:none;stroke-width:2.2;stroke-linecap:round}
+.p-nm{font-family:var(--fd);font-size:1.2rem;font-weight:900;text-align:center}
+.p-em{font-family:var(--fm);font-size:.62rem;color:var(--t3);margin-top:2px;text-align:center}
+.p-tr{font-family:var(--fm);font-size:.58rem;color:var(--gold);margin-top:4px}
+.p-photo-actions{display:flex;gap:8px;margin-top:2px}
+.pf{display:flex;flex-direction:column;gap:12px;padding:16px}
+.pff{display:flex;flex-direction:column;gap:5px}
+.pf-lb{font-family:var(--fm);font-size:.52rem;color:var(--t3);text-transform:uppercase;letter-spacing:.08em}
+.pf-in{background:var(--bg3);border:1px solid var(--border2);border-radius:var(--rs);padding:11px 13px;font-size:.82rem;color:var(--text);outline:none;transition:border-color .2s;width:100%;-webkit-appearance:none}
+.pf-in:focus{border-color:rgba(200,169,110,.38)}
+.pf-in:disabled{opacity:.5;cursor:not-allowed}
+.pf-sv{padding:12px 22px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--ink);border:none;border-radius:var(--rs);font-weight:800;font-size:.78rem;cursor:pointer;width:100%;margin-top:4px}
+.pstat{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--border);font-size:.74rem}
+.pstat:last-child{border-bottom:none}
+.bun-box{display:flex;align-items:center;gap:12px;padding:14px;background:var(--bg3);border-radius:var(--rs);margin:12px}
+.bi-ic{width:32px;height:32px;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.bi-tr{font-family:var(--fm);font-size:.5rem;color:var(--gold);text-transform:uppercase;letter-spacing:.1em}
+.bi-nm{font-family:var(--fd);font-size:.95rem;font-weight:700;margin-top:2px}
+.bi-ac{font-family:var(--fm);font-size:.52rem;color:var(--t3);margin-top:2px}
+.bi-lpa{font-size:.7rem;color:var(--t2);margin-top:4px}
+
+/* SUPPORT */
+.sup-g{display:flex;flex-direction:column;gap:10px}
+.sup-c{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:16px;cursor:pointer;transition:all .2s;-webkit-tap-highlight-color:transparent}
+.sup-c:active{transform:scale(.98);opacity:.85}
+.sup-online{font-family:var(--fm);font-size:.48rem;color:var(--green);margin-bottom:6px;display:flex;align-items:center;gap:4px}
+.sup-online::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--green);display:inline-block}
+.sup-ic-row{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+.sup-ic{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sup-ic svg{width:20px;height:20px;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.sup-t{font-weight:700;font-size:.85rem;margin-bottom:3px}
+.sup-d{font-size:.7rem;color:var(--t2);line-height:1.6;margin-bottom:5px}
+.sup-h{font-family:var(--fm);font-size:.6rem;font-weight:700}
+.faq-it{border-bottom:1px solid var(--border)}
+.faq-it:last-child{border-bottom:none}
+.faq-q{width:100%;padding:13px 16px;background:none;border:none;text-align:left;font-size:.77rem;font-weight:600;color:var(--text);cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:8px;-webkit-tap-highlight-color:transparent}
+.faq-ic{color:var(--gold);flex-shrink:0;transition:transform .2s;display:flex;align-items:center}
+.faq-ic svg{width:13px;height:13px;stroke:var(--gold);fill:none;stroke-width:2.4;stroke-linecap:round}
+.faq-a{display:none;padding:0 16px 13px;font-size:.74rem;color:var(--t2);line-height:1.75}
+.faq-it.open .faq-a{display:block}
+.faq-it.open .faq-ic{transform:rotate(45deg)}
+
+/* EMPTY */
+.empty{text-align:center;padding:28px 16px;color:var(--t3)}
+.empty-ic{width:40px;height:40px;border-radius:12px;background:var(--bg3);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;margin:0 auto 10px}
+.empty-ic svg{width:20px;height:20px;stroke:var(--t3);fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.empty p{font-size:.72rem;line-height:1.75}
+
+/* IMG MODAL (set / remove profile photo) */
+.img-modal{position:fixed;inset:0;z-index:8000;background:rgba(0,0,0,.88);backdrop-filter:blur(10px);display:none;flex-direction:column;align-items:center;justify-content:center;padding:20px;gap:16px}
+.img-modal.on{display:flex}
+.img-modal-t{font-family:var(--fd);font-size:1rem;font-weight:700}
+.img-preview{width:220px;height:220px;border-radius:50%;object-fit:cover;border:3px solid rgba(200,169,110,.4);box-shadow:0 4px 30px rgba(200,169,110,.18)}
+.img-preview-empty{width:220px;height:220px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--bg3);border:3px dashed var(--border3)}
+.img-preview-empty svg{width:56px;height:56px;stroke:var(--t3);fill:none;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
+.img-modal-btns{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+
+/* TOAST */
+#toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);z-index:9999;background:var(--bg3);border:1px solid var(--border2);border-radius:20px;padding:11px 18px;display:flex;align-items:center;gap:8px;opacity:0;transition:all .32s var(--spring);font-size:.74rem;color:var(--text);box-shadow:0 12px 40px rgba(0,0,0,.5);white-space:nowrap;max-width:92vw}
+#toast.on{transform:translateX(-50%) translateY(0);opacity:1}
+
+/* EARN PULSE ANIMATION */
+@keyframes numPop{0%{transform:scale(1)}50%{transform:scale(1.08)}100%{transform:scale(1)}}
+.num-pop{animation:numPop .4s var(--spring)}
+</style>
+</head>
+<body>
+
+<div id="particles"></div>
+<div id="toast"></div>
+
+<!-- ══════════════════════════════════════
+     PROFILE PHOTO MODAL
+     Shown both when picking a new photo and
+     when there is no photo yet (in which case
+     it opens straight to the file picker).
+══════════════════════════════════════ -->
+<div class="img-modal" id="imgModal">
+  <div class="img-modal-t" id="imgModalTitle">Set Profile Photo</div>
+  <img class="img-preview" id="imgPreview" src="" alt="Preview" style="display:none">
+  <div class="img-preview-empty" id="imgPreviewEmpty" style="display:none">
+    <svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
+  </div>
+  <div class="img-modal-btns">
+    <button class="btn-g" id="imgModalSaveBtn" onclick="saveProfileImg()">
+      <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:#000;fill:none;stroke-width:2.5;stroke-linecap:round"><polyline points="20 6 9 17 4 12"/></svg>
+      Save Photo
+    </button>
+    <button class="btn-o" onclick="triggerFilePicker()">
+      <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
+      Choose Photo
+    </button>
+    <button class="btn-danger" id="imgModalRemoveBtn" onclick="removeProfileImg()">
+      <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m3 0v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6h14z"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+      Remove Photo
+    </button>
+    <button class="btn-o" onclick="closeImgModal()">Cancel</button>
+  </div>
+  <div style="font-family:var(--fm);font-size:.52rem;color:var(--t3);text-align:center;max-width:260px;line-height:1.7">Stored on this device only. Re-upload on new device.</div>
+</div>
+<input type="file" id="imgFileInp" accept="image/*" style="display:none" onchange="handleImgFile(event)">
+
+<!-- GUARD (shown while checking sign-in) -->
+<div id="guard">
+  <div class="g-logo">Biluxe<sup>10</sup></div>
+  <div class="g-spin" id="gSpin"></div>
+  <div class="g-msg" id="gMsg">Authenticating…</div>
+  <div class="g-err" id="gErr">
+    <div class="g-err-t">Access Denied</div>
+    <div class="g-err-d" id="gErrD">Something went wrong.</div>
+    <button class="g-btn" onclick="location.href='auth.html'">Back to Login</button>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="tb-l">
+      <div class="tb-logo">Biluxe<sup style="font-size:.5em;color:var(--t3);font-weight:400">10</sup></div>
+      <div class="tb-divider"></div>
+      <div class="tb-pg" id="tbPg">Dashboard</div>
+    </div>
+    <div class="tb-r">
+      <div class="tb-live"><div class="live-dot"></div>Live</div>
+      <div class="tb-time" id="tbClock">--:--</div>
+      <div class="tb-av" id="tbAv" onclick="goPage('profile')">
+        <span id="tbAvTxt">U</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div id="main">
+
+    <!-- ══ DASHBOARD ══ -->
+    <div class="pg on" id="pg-dashboard">
+
+      <!-- GREETING HERO -->
+      <div class="greeting-hero">
+        <div class="gh-bg morning" id="ghBg"></div>
+        <div class="gh-orb gh-orb1"></div>
+        <div class="gh-orb gh-orb2"></div>
+        <div class="gh-inner">
+          <div class="gh-row">
+            <div style="flex:1;min-width:0">
+              <div class="gh-tag"><div class="gh-tag-dot"></div>Biluxe10 Dashboard</div>
+              <div class="gh-greet" id="ghGreet">Good morning,</div>
+              <div class="gh-uname" id="ghName">User</div>
+            </div>
+            <div class="gh-prof" id="ghProf" onclick="openImgPicker()">
+              <span id="ghProfTxt">U</span>
+              <div class="cam-ov">
+                <svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:#fff;fill:none;stroke-width:1.8;stroke-linecap:round"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
+              </div>
+            </div>
+          </div>
+          <div class="gh-quote" id="ghQuote">"Investment in knowledge pays the best interest."</div>
+          <div class="gh-btns" id="ghBtns"></div>
+        </div>
+      </div>
+
+      <!-- MODE BANNER -->
+      <div class="mode-b lg" id="modeBanner">
+        <div class="mode-b-ic">
+          <svg viewBox="0 0 24 24" style="width:22px;height:22px;stroke:#93C5FD;fill:none;stroke-width:1.8;stroke-linecap:round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+        </div>
+        <div><div class="mode-b-t">Learn &amp; Grow Mode</div>Courses, affiliate earnings, and certificates unlocked.</div>
+      </div>
+
+      <!-- EARNINGS OVERVIEW HEADER -->
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
+        <div class="sec-t">Earnings Overview</div>
+        <div style="display:flex;align-items:center;gap:7px">
+          <div style="padding:4px 10px;background:var(--gA);border:1px solid rgba(200,169,110,.2);border-radius:20px;font-family:var(--fm);font-size:.52rem;color:var(--gold)" id="bunPill">Starter</div>
+          <button class="btn-sm" onclick="window.open('courses.html','_self')">
+            <svg viewBox="0 0 24 24" style="width:12px;height:12px;stroke:var(--gold);fill:none;stroke-width:2;stroke-linecap:round"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+            Courses
+          </button>
+        </div>
+      </div>
+
+      <!-- EARNING CARDS 2x2 -->
+      <div class="sg4" id="earningCards"></div>
+
+      <!-- QUICK ACTIONS -->
+      <div>
+        <div class="sec-t" style="margin-bottom:10px">Quick Actions</div>
+        <div class="qa-grid" id="quickActions"></div>
+      </div>
+
+      <!-- TEAM ACTIVITY -->
+      <div class="card">
+        <div class="chd">
+          <div class="cht">Team Activity</div>
+          <span class="bdg pn" id="tmCnt">0 members</span>
+        </div>
+        <div style="padding:12px 14px" id="recentAct">
+          <div class="empty">
+            <div class="empty-ic"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg></div>
+            <p>Activity appears as your team grows.</p>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /pg-dashboard -->
+
+    <!-- ══ AFFILIATE ══ -->
+    <div class="pg" id="pg-affiliate">
+      <div><div class="sec-t">Affiliate System</div><div class="sec-s">Earn by sharing Biluxe10. Up to 65% commission.</div></div>
+
+      <div class="aff-hero">
+        <div class="aff-hero-t">Earn <em>Real Money</em></div>
+        <div class="aff-hero-s">Share your link. When someone buys using your code, you earn automatically. Higher bundles = higher earnings.</div>
+        <div class="aff-steps">
+          <div class="aff-step">
+            <div class="aff-step-n">01</div>
+            <div><div class="aff-step-t">Share Your Link</div><div class="aff-step-s">WhatsApp, Instagram, Telegram</div></div>
+          </div>
+          <div class="aff-step">
+            <div class="aff-step-n">02</div>
+            <div><div class="aff-step-t">Friend Buys</div><div class="aff-step-s">They sign up using your referral code</div></div>
+          </div>
+          <div class="aff-step">
+            <div class="aff-step-n">03</div>
+            <div><div class="aff-step-t">You Earn</div><div class="aff-step-s">Auto-credited after admin approves payment</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="chd"><div class="cht">Your Referral Link</div></div>
+        <div style="padding:16px;display:flex;flex-direction:column;gap:12px">
+          <div>
+            <div class="wd-label">Referral Code</div>
+            <div style="display:flex;gap:8px;align-items:center;margin-top:5px">
+              <div style="background:var(--bg3);border:1px solid var(--border2);border-radius:var(--rs);padding:10px 14px;font-family:var(--fm);font-size:.9rem;font-weight:700;color:var(--gold);letter-spacing:.1em" id="refCode">—</div>
+              <button class="btn-sm" onclick="copyRefCode()">
+                <svg viewBox="0 0 24 24" style="width:12px;height:12px;stroke:var(--gold);fill:none;stroke-width:2;stroke-linecap:round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+                Copy Code
+              </button>
+            </div>
+          </div>
+          <div>
+            <div class="wd-label">Full Link</div>
+            <div class="ref-box" style="margin-top:5px">
+              <input class="ref-inp" id="refUrl" value="Loading…" readonly>
+              <button class="ref-copy" onclick="copyRef()">
+                <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+                Copy
+              </button>
+            </div>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn-g" onclick="shareWA()">
+              <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:none;stroke:#000;stroke-width:2;stroke-linecap:round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+              WhatsApp
+            </button>
+            <button class="btn-o" onclick="shareTG()">
+              <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+              Telegram
+            </button>
+            <button class="btn-o" onclick="shareNative()">
+              <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+              Share
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="ref-stats-g">
+        <div class="ref-stat"><div class="ref-stat-vl" id="rsTotalRef">0</div><div class="ref-stat-lb">Total Refs</div></div>
+        <div class="ref-stat"><div class="ref-stat-vl" id="rsActiveRef">0</div><div class="ref-stat-lb">Active</div></div>
+        <div class="ref-stat"><div class="ref-stat-vl" id="rsPending">0</div><div class="ref-stat-lb">Pending</div></div>
+        <div class="ref-stat"><div class="ref-stat-vl" id="rsTotalEarn">₹0</div><div class="ref-stat-lb">Total Earned</div></div>
+      </div>
+
+      <div class="card">
+        <div class="chd"><div class="cht">Commission Rates</div><span class="bdg ok">Up to 65%</span></div>
+        <div class="tbl-wrap">
+          <table class="bun-tbl">
+            <thead><tr><th>Bundle</th><th>Price</th><th>Rate</th><th>Earn</th></tr></thead>
+            <tbody id="bunCommBody"></tbody>
+          </table>
+        </div>
+        <div style="padding:10px 14px;font-family:var(--fm);font-size:.55rem;color:var(--t3);line-height:1.7;border-top:1px solid var(--border)">Commission is a random % up to 65%, credited after admin approval.</div>
+      </div>
+
+      <div class="card">
+        <div class="chd"><div class="cht">Your Team</div><span class="bdg pn" id="tmCnt2">0 members</span></div>
+        <div style="padding:12px" id="teamGrid">
+          <div class="empty">
+            <div class="empty-ic"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg></div>
+            <p>No referrals yet. Share your link!</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ EARNINGS ══ -->
+    <div class="pg" id="pg-earnings">
+      <div><div class="sec-t">Earnings</div><div class="sec-s">Real-time commission dashboard.</div></div>
+      <div class="earn-g">
+        <div class="earn-stat">
+          <div class="earn-stat-lb">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+            Total Earned
+          </div>
+          <div class="earn-stat-vl" id="eT">₹0</div>
+          <div class="earn-stat-nt">Lifetime earnings — updates instantly</div>
+          <div class="earn-chart" id="eBars"></div>
+        </div>
+        <div class="earn-row">
+          <div class="earn-stat">
+            <div class="earn-stat-lb">Monthly</div>
+            <div class="earn-stat-vl" id="eM" style="color:var(--green)">₹0</div>
+            <div class="earn-stat-nt">This month</div>
+          </div>
+          <div class="earn-stat">
+            <div class="earn-stat-lb">Available</div>
+            <div class="earn-stat-vl" id="eAv" style="color:var(--cyan)">₹0</div>
+            <div class="earn-stat-nt">Ready to withdraw</div>
+          </div>
+        </div>
+        <button class="btn-g" onclick="goPage('withdrawal')" style="width:100%;justify-content:center">
+          <svg viewBox="0 0 24 24" style="width:15px;height:15px;stroke:#000;fill:none;stroke-width:2;stroke-linecap:round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+          Withdraw Now
+        </button>
+        <div class="earn-row">
+          <div class="earn-stat">
+            <div class="earn-stat-lb">Weekly</div>
+            <div class="earn-stat-vl" id="eW" style="color:var(--amber);font-size:1.2rem">₹0</div>
+          </div>
+          <div class="earn-stat">
+            <div class="earn-stat-lb">Today</div>
+            <div class="earn-stat-vl" id="eTd" style="color:var(--vio);font-size:1.2rem">₹0</div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="chd"><div class="cht">Transaction History</div></div>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>Date</th><th>Type</th><th>Source</th><th class="ta">Amount</th><th>Status</th></tr></thead>
+            <tbody id="txBody"><tr><td colspan="5" style="text-align:center;padding:24px;color:var(--t3)">Loading…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ WITHDRAWAL ══ -->
+    <div class="pg" id="pg-withdrawal">
+      <div><div class="sec-t">Withdrawal</div><div class="sec-s">Min ₹500. Processed in 3–5 business days.</div></div>
+      <div class="card">
+        <div class="chd"><div class="cht">Request Withdrawal</div></div>
+        <div style="padding:16px">
+          <div class="wd-bal-box">
+            <div class="wd-bal-lb">Available Balance</div>
+            <div class="wd-bal-vl" id="wdBal">₹0</div>
+            <div class="wd-bal-nt">After pending withdrawals</div>
+          </div>
+          <div class="wd-label">Amount (Min ₹500)</div>
+          <input class="wd-inp" id="wdAmt" type="number" placeholder="Enter amount" min="500">
+          <div class="wd-label">Payment Method</div>
+          <select class="wd-inp" id="wdMeth" onchange="tgBank()">
+            <option value="upi">UPI</option>
+            <option value="bank">Bank Transfer</option>
+          </select>
+          <div class="wd-label">UPI ID / Account Number</div>
+          <input class="wd-inp" id="wdAcc" placeholder="UPI ID or Account Number">
+          <div id="wdBnkD" style="display:none">
+            <div class="wd-label">WhatsApp Number</div>
+            <input class="wd-inp" id="wdPh" placeholder="+91 9999999999">
+          </div>
+          <button class="btn-g" onclick="submitWD()" style="width:100%;justify-content:center;margin-top:4px">
+            Submit Request
+          </button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="chd"><div class="cht">Withdrawal History</div></div>
+        <div style="padding:12px" id="wdHist">
+          <div class="empty">
+            <div class="empty-ic"><svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg></div>
+            <p>No requests yet.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ PROFILE ══ -->
+    <div class="pg" id="pg-profile">
+      <div><div class="sec-t">Profile</div></div>
+      <div class="prof-hero">
+        <div class="pav-wrap" onclick="openImgPicker()">
+          <div class="pav" id="pAv"><span id="pAvTxt">U</span></div>
+          <div class="pav-cam">
+            <svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
+          </div>
+        </div>
+        <div>
+          <div class="p-nm" id="pNm">Loading…</div>
+          <div class="p-em" id="pEm">—</div>
+          <div class="p-tr" id="pTr">Member</div>
+        </div>
+        <div class="p-photo-actions">
+          <button class="btn-sm" onclick="openImgPicker()">
+            <svg viewBox="0 0 24 24" style="width:12px;height:12px;stroke:var(--gold);fill:none;stroke-width:2;stroke-linecap:round"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
+            Change Photo
+          </button>
+          <button class="btn-danger" id="pRemovePicBtn" onclick="removeProfileImg()" style="display:none">
+            <svg viewBox="0 0 24 24" style="width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m3 0v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6h14z"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+            Remove Photo
+          </button>
+        </div>
+        <div style="font-family:var(--fm);font-size:.52rem;color:var(--t3);text-align:center;line-height:1.7">Tap photo to update · Stored locally on device</div>
+      </div>
+
+      <div class="card">
+        <div class="chd"><div class="cht">Account Details</div></div>
+        <div class="pf">
+          <div class="pff"><div class="pf-lb">Full Name</div><input class="pf-in" id="pfNm" type="text" placeholder="Your Name"></div>
+          <div class="pff"><div class="pf-lb">WhatsApp</div><input class="pf-in" id="pfPh" type="tel" placeholder="+91 9999999999"></div>
+          <div class="pff"><div class="pf-lb">Email</div><input class="pf-in" id="pfEm" type="email" disabled></div>
+          <div class="pff"><div class="pf-lb">Referral Code</div><input class="pf-in" id="pfRf" type="text" disabled></div>
+          <button class="pf-sv" onclick="saveProfile()">Save Changes</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="chd"><div class="cht">Bundle &amp; Account</div></div>
+        <div class="bun-box">
+          <div class="bi-ic" id="bIc">
+            <svg viewBox="0 0 24 24" style="width:32px;height:32px;stroke:var(--gold);fill:none;stroke-width:1.6;stroke-linecap:round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          </div>
+          <div>
+            <div class="bi-tr" id="bTr">STARTER</div>
+            <div class="bi-nm" id="bNm">Starter Bundle</div>
+            <div class="bi-ac" id="bAc">Loading…</div>
+            <div class="bi-lpa" id="bLpa">Loading…</div>
+          </div>
+        </div>
+        <div style="padding:12px 16px">
+          <div class="pstat"><span style="color:var(--t3)">Payment</span><span class="bdg ok">Approved</span></div>
+          <div class="pstat"><span style="color:var(--t3)">Amount Paid</span><span id="pfAmt" style="font-family:var(--fd);font-weight:700">₹0</span></div>
+          <div class="pstat"><span style="color:var(--t3)">Member Since</span><span id="pfSince" style="color:var(--t2);font-size:.7rem">—</span></div>
+          <div class="pstat"><span style="color:var(--t3)">Account Type</span><span id="pfType" style="font-family:var(--fm);font-size:.58rem;color:var(--gold)">—</span></div>
+          <div class="pstat"><span style="color:var(--t3)">Telegram</span><span id="pfTg" style="font-family:var(--fm);font-size:.56rem">—</span></div>
+        </div>
+        <div style="padding:0 16px 16px">
+          <button class="btn-o" onclick="signOut()" style="width:100%;color:var(--red);border-color:rgba(239,68,68,.3);justify-content:center">Sign Out</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ SUPPORT ══ -->
+    <div class="pg" id="pg-support">
+      <div><div class="sec-t">Support</div><div class="sec-s">9 AM – 9 PM IST, Monday to Saturday.</div></div>
+      <div class="sup-g">
+        <div class="sup-c" onclick="window.open('https://wa.me/919019254743','_blank')">
+          <div class="sup-online">Online Now</div>
+          <div class="sup-ic-row">
+            <div class="sup-ic" style="background:rgba(37,211,102,0.1)"><svg viewBox="0 0 24 24" style="stroke:#25D366"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div>
+            <div class="sup-t">WhatsApp Support</div>
+          </div>
+          <div class="sup-d">Fastest — reply in minutes.</div>
+          <div class="sup-h" style="color:#25D366">+91 90192 54743</div>
+        </div>
+        <div class="sup-c" onclick="window.open('https://t.me/biluxe10_support','_blank')">
+          <div class="sup-online">Online</div>
+          <div class="sup-ic-row">
+            <div class="sup-ic" style="background:rgba(0,136,204,0.1)"><svg viewBox="0 0 24 24" style="stroke:#0088cc"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></div>
+            <div class="sup-t">Telegram</div>
+          </div>
+          <div class="sup-d">Join support group for instant help.</div>
+          <div class="sup-h" style="color:#0088cc">@biluxe10_support</div>
+        </div>
+        <div class="sup-c" onclick="location.href='mailto:help.biluxe10@gmail.com'">
+          <div class="sup-ic-row">
+            <div class="sup-ic" style="background:rgba(200,169,110,0.1)"><svg viewBox="0 0 24 24" style="stroke:var(--gold)"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
+            <div class="sup-t">Email</div>
+          </div>
+          <div class="sup-d">Response within 12 hours.</div>
+          <div class="sup-h" style="color:var(--gold)">help.biluxe10@gmail.com</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="chd"><div class="cht">FAQ</div></div>
+        <div>
+          <div class="faq-it"><button class="faq-q" onclick="tFaq(this)">Why is dashboard stuck loading? <span class="faq-ic"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button><div class="faq-a">Firebase can't reach your account. Ensure payment is approved. Clear browser cache and sign in again.</div></div>
+          <div class="faq-it"><button class="faq-q" onclick="tFaq(this)">How do I access my courses? <span class="faq-ic"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button><div class="faq-a">Click "Courses" in the bottom nav. All courses matching your bundle price are unlocked.</div></div>
+          <div class="faq-it"><button class="faq-q" onclick="tFaq(this)">When do referral earnings reflect? <span class="faq-ic"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button><div class="faq-a">Commission updates instantly when admin approves your referral's payment. Dashboard syncs in real-time.</div></div>
+          <div class="faq-it"><button class="faq-q" onclick="tFaq(this)">Minimum withdrawal amount? <span class="faq-ic"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button><div class="faq-a">Minimum ₹500. Processed in 3–5 business days via UPI or bank transfer.</div></div>
+          <div class="faq-it"><button class="faq-q" onclick="tFaq(this)">How is commission calculated? <span class="faq-ic"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button><div class="faq-a">Randomly assigned up to 65% of the bundle price. Larger bundles = higher absolute earnings.</div></div>
+          <div class="faq-it"><button class="faq-q" onclick="tFaq(this)">How do certificates work? <span class="faq-ic"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button><div class="faq-a">Complete course + pass AI exam + submit project. Certificate is issued by Biluxe10 and verifiable via QR code.</div></div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /main -->
+
+  <!-- BOTTOM NAV -->
+  <div id="bnav">
+    <button class="bn on" id="bn-dashboard" onclick="goPage('dashboard')">
+      <div class="bn-ic">
+        <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      </div>
+      <div class="bn-lb">Home</div>
+    </button>
+    <button class="bn" id="bn-affiliate" onclick="goPage('affiliate')">
+      <div class="bn-ic">
+        <svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+      </div>
+      <div class="bn-lb">Affiliate</div>
+    </button>
+    <button class="bn" id="bn-earnings" onclick="goPage('earnings')">
+      <div class="bn-ic">
+        <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+      </div>
+      <div class="bn-lb">Earnings</div>
+    </button>
+    <!-- COURSES → opens courses.html directly -->
+    <button class="bn" id="bn-courses" onclick="window.open('courses.html','_self')">
+      <div class="bn-ic">
+        <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+      </div>
+      <div class="bn-lb">Courses</div>
+    </button>
+    <button class="bn" id="bn-profile" onclick="goPage('profile')">
+      <div class="bn-ic" style="width:24px;height:24px">
+        <div class="bn-pav" id="bnPav"><span id="bnAvTxt">U</span></div>
+      </div>
+      <div class="bn-lb">Me</div>
+    </button>
+  </div>
+
+</div><!-- /app -->
+
+<script>
+/* ══════════════════════════════════════════════════════════════
+   STATE
+   These variables hold the signed-in user's data while the app
+   is running. They start empty and get filled in once Firebase
+   confirms who is logged in.
+══════════════════════════════════════════════════════════════ */
+let U={}, UD={}, BPRICE=0, IS_PARTNER=false, UNSUBS=[];
+let PROFILE_IMG_KEY='';
+let _pendingImgData=null;   // holds a newly-picked photo until "Save Photo" is tapped
+
+/* ══════════════════════════════════════════════════════════════
+   BUNDLE CATALOG (today: hardcoded here)
+   ------------------------------------------------------------
+   FUTURE CMS UPGRADE NOTE:
+   This array is the single place that lists bundle name/price/
+   target-LPA text for the dashboard. When the admin Course
+   Manager CMS is built (a Firestore collection such as
+   /courses or /site_config/courses_catalog), replace the
+   getBundleInfo() function below with a live Firestore read —
+   nothing else in this file needs to change, because every
+   other function calls getBundleInfo()/getBun() instead of
+   touching BUNDLES directly.
+══════════════════════════════════════════════════════════════ */
+const BUNDLES=[
+  {name:'Starter',p:499,lpa:'Target: ₹3 LPA'},
+  {name:'Pro',p:999,lpa:'Target: ₹3–4 LPA'},
+  {name:'Professional',p:2499,lpa:'Target: ₹3–4 LPA'},
+  {name:'Elite',p:3699,lpa:'Target: ₹4–6 LPA'},
+  {name:'Premium',p:4999,lpa:'Target: ₹6–8 LPA'},
+  {name:'Master',p:6999,lpa:'Target: ₹8–12 LPA'},
+  {name:'Elite Pro',p:11999,lpa:'Target: ₹12–16 LPA'},
+  {name:'Legend',p:15999,lpa:'Target: ₹14–18 LPA'},
+  {name:'Ultimate',p:23999,lpa:'Target: ₹16–25 LPA'},
+];
+
+const QUOTES=[
+  '"The secret of getting ahead is getting started." — Mark Twain',
+  '"Investment in knowledge pays the best interest." — Benjamin Franklin',
+  '"The expert in anything was once a beginner." — Helen Hayes',
+  '"Success is the sum of small efforts repeated day in and day out." — Robert Collier',
+  '"You don\'t have to be great to start, but you have to start to be great." — Zig Ziglar',
+  '"Education is the passport to the future." — Malcolm X',
+  '"Learning never exhausts the mind." — Leonardo da Vinci',
+];
+
+// Finds the bundle whose price is the closest match at or below what the user paid
+const getBun=p=>{let b=BUNDLES[0];for(const x of BUNDLES)if(x.p<=p)b=x;return b;};
+const T=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
+const fmt=n=>'₹'+(n||0).toLocaleString('en-IN');
+
+/* ══════════════════════════════════════════════════════════════
+   AVAILABLE BALANCE
+   ------------------------------------------------------------
+   Preferred source: a stored "availableBalance" field on the
+   user's Firestore document (kept in sync by admin.html whenever
+   a payment or withdrawal is approved).
+   Fallback: if that field isn't present yet (older accounts,
+   or before admin.html is upgraded to write it), we calculate
+   it the same way this dashboard always has —
+   totalEarning minus withdrawnAmount.
+   This means the page works correctly today AND will pick up
+   the new field automatically the moment admin.html starts
+   writing it — no further changes needed here.
+══════════════════════════════════════════════════════════════ */
+function getAvailableBalance(){
+  if(!UD)return 0;
+  if(typeof UD.availableBalance==='number')return Math.max(0,UD.availableBalance);
+  const tot=UD.totalEarning||0,wdn=UD.withdrawnAmount||0;
+  return Math.max(0,tot-wdn);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   PROFILE IMAGE — stored in localStorage (this device only)
+══════════════════════════════════════════════════════════════ */
+function getProfImg(){
+  if(!PROFILE_IMG_KEY)return null;
+  try{return localStorage.getItem(PROFILE_IMG_KEY)||null;}catch(e){return null;}
+}
+function setProfImg(d){
+  if(!PROFILE_IMG_KEY)return;
+  try{localStorage.setItem(PROFILE_IMG_KEY,d);}catch(e){toast('Storage full. Try a smaller image.');}
+}
+function clearProfImg(){
+  if(!PROFILE_IMG_KEY)return;
+  try{localStorage.removeItem(PROFILE_IMG_KEY);}catch(e){}
+}
+
+// Puts (or removes) the photo in every avatar spot across the app: topbar, hero, profile page, bottom nav
+function applyProfileImg(dataUrl){
+  const setImg=(containerId,txtId,abs)=>{
+    const wrap=document.getElementById(containerId);
+    const txt=document.getElementById(txtId);
+    if(!wrap)return;
+    let img=wrap.querySelector('img');
+    if(dataUrl){
+      if(!img){img=document.createElement('img');if(abs)img.style.cssText='position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:50%';else img.style.cssText='width:100%;height:100%;object-fit:cover;border-radius:50%';wrap.appendChild(img);}
+      img.src=dataUrl;if(txt)txt.style.display='none';
+    }else{if(img)img.remove();if(txt)txt.style.display='';}
+  };
+  setImg('ghProf','ghProfTxt',true);
+  setImg('pAv','pAvTxt',false);
+  setImg('tbAv','tbAvTxt',true);
+  const bnp=document.getElementById('bnPav');
+  const bnt=document.getElementById('bnAvTxt');
+  if(bnp){
+    let img=bnp.querySelector('img');
+    if(dataUrl){
+      if(!img){img=document.createElement('img');img.style.cssText='width:100%;height:100%;object-fit:cover;border-radius:50%;position:absolute;inset:0';bnp.style.position='relative';bnp.appendChild(img);}
+      img.src=dataUrl;if(bnt)bnt.style.display='none';
+    }else{if(img)img.remove();if(bnt)bnt.style.display='';}
+  }
+  // Show/hide the "Remove Photo" button on the profile page depending on whether a photo exists
+  const removeBtn=document.getElementById('pRemovePicBtn');
+  if(removeBtn)removeBtn.style.display=dataUrl?'inline-flex':'none';
+}
+
+// Refreshes the modal's preview area to match whatever photo currently exists (or the empty placeholder)
+function refreshModalPreview(){
+  const existing=getProfImg();
+  const previewImg=document.getElementById('imgPreview');
+  const previewEmpty=document.getElementById('imgPreviewEmpty');
+  const removeBtn=document.getElementById('imgModalRemoveBtn');
+  const saveBtn=document.getElementById('imgModalSaveBtn');
+  const titleEl=document.getElementById('imgModalTitle');
+  if(_pendingImgData){
+    previewImg.src=_pendingImgData;previewImg.style.display='block';previewEmpty.style.display='none';
+    saveBtn.style.display='inline-flex';
+    removeBtn.style.display=existing?'inline-flex':'none';
+    titleEl.textContent='Set Profile Photo';
+  }else if(existing){
+    previewImg.src=existing;previewImg.style.display='block';previewEmpty.style.display='none';
+    saveBtn.style.display='none';
+    removeBtn.style.display='inline-flex';
+    titleEl.textContent='Your Profile Photo';
+  }else{
+    previewImg.style.display='none';previewEmpty.style.display='flex';
+    saveBtn.style.display='none';
+    removeBtn.style.display='none';
+    titleEl.textContent='No Photo Yet';
+  }
+}
+
+function openImgPicker(){
+  // If there's no pending selection, show the modal first (with current photo, or an option to choose one)
+  _pendingImgData=null;
+  refreshModalPreview();
+  document.getElementById('imgModal').classList.add('on');
+}
+
+// Opens the device's file picker (called from the "Choose Photo" button inside the modal)
+function triggerFilePicker(){document.getElementById('imgFileInp').click();}
+
+function handleImgFile(e){
+  const file=e.target.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    const img=new Image();
+    img.onload=()=>{
+      const canvas=document.createElement('canvas');
+      const MAX=400;let w=img.width,h=img.height;
+      if(w>h){if(w>MAX){h=h*MAX/w;w=MAX;}}else{if(h>MAX){w=w*MAX/h;h=MAX;}}
+      canvas.width=w;canvas.height=h;
+      canvas.getContext('2d').drawImage(img,0,0,w,h);
+      const d=canvas.toDataURL('image/jpeg',.75);
+      _pendingImgData=d;
+      document.getElementById('imgModal').classList.add('on');
+      refreshModalPreview();
+    };img.src=ev.target.result;
+  };reader.readAsDataURL(file);e.target.value='';
+}
+
+function saveProfileImg(){
+  if(!_pendingImgData)return;
+  setProfImg(_pendingImgData);applyProfileImg(_pendingImgData);closeImgModal();toast('Profile photo saved!');
+}
+
+/* Removes the profile photo immediately — no confirmation step,
+   matches the "remove instantly + toast" behaviour requested. */
+function removeProfileImg(){
+  clearProfImg();
+  applyProfileImg(null);
+  _pendingImgData=null;
+  closeImgModal();
+  toast('Profile photo removed.');
+}
+
+function closeImgModal(){document.getElementById('imgModal').classList.remove('on');_pendingImgData=null;}
+
+/* ══════════════════════════════════════════════════════════════
+   PARTICLES (decorative floating dots in the background)
+══════════════════════════════════════════════════════════════ */
+function initParticles(){
+  const c=document.getElementById('particles');if(!c)return;
+  for(let i=0;i<10;i++){
+    const p=document.createElement('div');p.className='pt';
+    const sz=Math.random()*2.5+1;
+    p.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;background:rgba(200,169,110,${Math.random()*.25+.08});animation-duration:${Math.random()*18+14}s;animation-delay:${Math.random()*14}s`;
+    c.appendChild(p);
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   CLOCK
+══════════════════════════════════════════════════════════════ */
+function startClock(){
+  const u=()=>T('tbClock',new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}));
+  u();setInterval(u,1000);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   GREETING (changes with time of day)
+══════════════════════════════════════════════════════════════ */
+function updateGreeting(){
+  const h=new Date().getHours();
+  const tod=h<5?0:h<12?1:h<17?2:3;
+  const parts=['night','morning','afternoon','evening'];
+  const bgs=['night','morning','afternoon','evening'];
+  const bg=document.getElementById('ghBg');
+  if(bg){bg.className='gh-bg '+bgs[tod];}
+  T('ghGreet','Good '+parts[tod]+',');
+  T('ghName',U.name||'User');
+  T('ghQuote',QUOTES[Math.floor(Date.now()/86400000)%QUOTES.length]);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   AUTH — with timeout in case Firebase is slow to respond
+══════════════════════════════════════════════════════════════ */
+const authTO=setTimeout(()=>showErr('Firebase not responding. <a href="auth.html" style="color:var(--gold)">Sign in again</a>.'),9000);
+
+AUTH.onAuthStateChanged(async fbUser=>{
+  clearTimeout(authTO);
+  if(!fbUser){location.href='auth.html';return;}
+  try{
+    gMsg('Loading your profile…');
+    const emailId=san(fbUser.email);
+    U={email:fbUser.email,emailId,name:fbUser.displayName||fbUser.email.split('@')[0]};
+    PROFILE_IMG_KEY='biluxe10_profimg_'+emailId;
+
+    // Find the right Firestore collection (tries each known spelling until one has this user)
+    let docData=null;
+    for(const col of COLS){
+      try{
+        const snap=await DB.collection(col).doc(emailId).get();
+        if(snap.exists){docData=snap.data();COL=col;break;}
+      }catch(e){}
+    }
+
+    if(!docData){
+      showErr('Account not found. <a href="auth.html" style="color:var(--gold)">Sign up</a> or <a href="https://wa.me/919019254743" style="color:var(--gold)">contact support</a>.');
+      return;
+    }
+    if(docData.paymentStatus!=='approved'){
+      showErr('Payment pending admin approval. Contact: <a href="https://wa.me/919019254743" style="color:var(--gold)">WhatsApp +91 90192 54743</a>');
+      return;
+    }
+
+    UD=docData;
+    BPRICE=parseInt(docData.bundlePrice||docData.bundleAmount||0)||0;
+    const typeVal=(docData.userType||docData.accountType||docData.memberType||docData.type||'').toLowerCase();
+    IS_PARTNER=typeVal.includes('partner')||docData.isPartner===true;
+    if(docData.fullName)U.name=docData.fullName;
+
+    // Update last login (fire & forget — we don't wait for this to finish)
+    DB.collection(COL).doc(emailId).update({lastLogin:firebase.firestore.FieldValue.serverTimestamp()}).catch(()=>{});
+
+    initApp();
+
+    // Real-time subscription AFTER init — this is what makes earnings auto-update live
+    subscribeRT();
+
+    // Apply saved profile image (if this device has one stored)
+    const savedImg=getProfImg();
+    if(savedImg)applyProfileImg(savedImg);
+    else applyProfileImg(null); // ensures Remove button stays hidden when there's no photo
+
+    // Show app
+    const guard=document.getElementById('guard');
+    guard.classList.add('fade');
+    setTimeout(()=>{guard.classList.add('gone');document.getElementById('app').classList.add('show');},700);
+
+  }catch(err){showErr('Error: '+err.message);}
+});
+
+function gMsg(t){const el=document.getElementById('gMsg');if(el)el.textContent=t;}
+function showErr(html){
+  clearTimeout(authTO);
+  document.getElementById('gSpin').style.display='none';
+  document.getElementById('gMsg').style.display='none';
+  const e=document.getElementById('gErr');
+  e.style.display='flex';
+  document.getElementById('gErrD').innerHTML=html;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   REAL-TIME SUBSCRIPTION
+   This is what makes earnings auto-update the moment admin
+   approves a payment — no page refresh needed.
+══════════════════════════════════════════════════════════════ */
+function subscribeRT(){
+  // 1. Subscribe to user's own document — any field change triggers update
+  const u1=DB.collection(COL).doc(U.emailId).onSnapshot(snap=>{
+    if(!snap.exists)return;
+    const newData=snap.data();
+    const wasTotal=UD.totalEarning||0;
+    UD=newData;
+    BPRICE=parseInt(newData.bundlePrice||newData.bundleAmount||0)||0;
+
+    // Animate if earnings changed
+    const newTotal=newData.totalEarning||0;
+    if(newTotal>wasTotal){
+      document.querySelectorAll('.sc-vl,.earn-stat-vl,.wd-bal-vl').forEach(el=>{
+        el.classList.remove('num-pop');
+        void el.offsetWidth; // reflow, restarts the animation
+        el.classList.add('num-pop');
+        setTimeout(()=>el.classList.remove('num-pop'),500);
+      });
+    }
+    updateStats();
+    loadEarnings();
+    renderEarningCards();
+  },err=>console.warn('RT user error:',err));
+
+  // 2. Subscribe to referrals
+  const u2=DB.collection(COL).where('referredBy','==',U.emailId)
+    .onSnapshot(snap=>{
+      renderTeam(snap.docs.map(d=>({id:d.id,...d.data()})));
+    },err=>console.warn('RT team error:',err));
+
+  UNSUBS=[u1,u2];
+}
+
+/* ══════════════════════════════════════════════════════════════
+   INIT APP — fills in all the page content once user data is ready
+══════════════════════════════════════════════════════════════ */
+function initApp(){
+  initParticles();
+  startClock();
+  updateGreeting();
+  setInterval(updateGreeting,60000);
+
+  const nm=U.name;
+  const init=nm?nm[0].toUpperCase():'U';
+  const bun=getBun(BPRICE);
+
+  // Set initials everywhere (shown until/unless a photo is applied)
+  ['tbAvTxt','bnAvTxt','ghProfTxt','pAvTxt'].forEach(id=>T(id,init));
+
+  // Mode banner
+  const mb=document.getElementById('modeBanner');
+  if(IS_PARTNER){
+    mb.className='mode-b pt';
+    mb.innerHTML=`<div class="mode-b-ic"><svg viewBox="0 0 24 24" style="width:22px;height:22px;stroke:var(--gold2);fill:none;stroke-width:1.8;stroke-linecap:round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg></div><div><div class="mode-b-t">Partner Mode</div>Focus on referrals and maximising your team earnings.</div>`;
+  }
+
+  // Hero buttons
+  const ghB=document.getElementById('ghBtns');
+  if(IS_PARTNER){
+    ghB.innerHTML=`<button class="btn-g" onclick="goPage('affiliate')"><svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:#000;fill:none;stroke-width:2;stroke-linecap:round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>Share &amp; Earn</button><button class="btn-o" onclick="goPage('earnings')">View Earnings</button>`;
+  }else{
+    ghB.innerHTML=`<button class="btn-g" onclick="window.open('courses.html','_self')"><svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:#000;fill:none;stroke-width:2;stroke-linecap:round"><polygon points="5 3 19 12 5 21 5 3"/></svg>Continue Learning</button><button class="btn-o" onclick="goPage('affiliate')">Share &amp; Earn</button>`;
+  }
+
+  // Quick actions
+  const qa=document.getElementById('quickActions');
+  if(IS_PARTNER){
+    qa.innerHTML=`
+      <button class="qa" onclick="goPage('affiliate')" style="background:var(--bg3);border:1px solid var(--border)">
+        <div class="qa-ic" style="background:var(--gA)"><svg viewBox="0 0 24 24" style="stroke:var(--gold)"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></div>
+        <div><div class="qa-t">Share Referral</div><div class="qa-s">Earn per referral</div></div>
+      </button>
+      <button class="qa" onclick="goPage('earnings')" style="background:var(--bg3);border:1px solid var(--border)">
+        <div class="qa-ic" style="background:rgba(34,197,94,0.08)"><svg viewBox="0 0 24 24" style="stroke:var(--green)"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></div>
+        <div><div class="qa-t">View Earnings</div><div class="qa-s">Your commission</div></div>
+      </button>
+      <button class="qa" onclick="goPage('withdrawal')" style="background:var(--bg3);border:1px solid var(--border)">
+        <div class="qa-ic" style="background:rgba(96,165,250,0.08)"><svg viewBox="0 0 24 24" style="stroke:var(--blue)"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg></div>
+        <div><div class="qa-t">Withdraw</div><div class="qa-s">Min ₹500</div></div>
+      </button>
+      <button class="qa" onclick="goPage('support')" style="background:var(--bg3);border:1px solid var(--border)">
+        <div class="qa-ic" style="background:rgba(167,139,250,0.08)"><svg viewBox="0 0 24 24" style="stroke:var(--vio)"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div>
+        <div><div class="qa-t">Support</div><div class="qa-s">9AM–9PM IST</div></div>
+      </button>`;
+  }else{
+    qa.innerHTML=`
+      <button class="qa" onclick="window.open('courses.html','_self')" style="background:var(--bg3);border:1px solid var(--border)">
+        <div class="qa-ic" style="background:var(--gA)"><svg viewBox="0 0 24 24" style="stroke:var(--gold)"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
+        <div><div class="qa-t">Continue Learning</div><div class="qa-s">Resume your courses</div></div>
+      </button>
+      <button class="qa" onclick="goPage('affiliate')" style="background:var(--bg3);border:1px solid var(--border)">
+        <div class="qa-ic" style="background:rgba(34,197,94,0.08)"><svg viewBox="0 0 24 24" style="stroke:var(--green)"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></div>
+        <div><div class="qa-t">Affiliate</div><div class="qa-s">Up to 65% commission</div></div>
+      </button>
+      <button class="qa" onclick="goPage('withdrawal')" style="background:var(--bg3);border:1px solid var(--border)">
+        <div class="qa-ic" style="background:rgba(96,165,250,0.08)"><svg viewBox="0 0 24 24" style="stroke:var(--blue)"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg></div>
+        <div><div class="qa-t">Withdraw</div><div class="qa-s">Min ₹500</div></div>
+      </button>
+      <button class="qa" onclick="window.open('courses.html?tab=ai-tutor','_self')" style="background:var(--bg3);border:1px solid var(--border)">
+        <div class="qa-ic" style="background:rgba(167,139,250,0.08)"><svg viewBox="0 0 24 24" style="stroke:var(--vio)"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3M12 17h.01"/></svg></div>
+        <div><div class="qa-t">AI Tutor</div><div class="qa-s">Clear doubts free</div></div>
+      </button>`;
+  }
+
+  // Bundle pill
+  T('bunPill',bun.name);
+
+  // Profile page
+  T('pNm',nm);T('pEm',U.email);T('pTr',bun.name+' Member');
+  document.getElementById('pfNm').value=UD.fullName||'';
+  document.getElementById('pfPh').value=UD.phone||UD.whatsapp||'';
+  document.getElementById('pfEm').value=U.email;
+  document.getElementById('pfRf').value=UD.referralCode||'';
+  T('pfAmt',fmt(BPRICE));
+  T('pfType',IS_PARTNER?'Partner':'Learn & Grow');
+  T('pfSince',UD.createdAt?new Date(UD.createdAt.toDate()).toLocaleDateString('en-IN',{year:'numeric',month:'short',day:'numeric'}):'—');
+
+  const tg=UD.telegramChatId||UD.telegram_chat_id||null;
+  const pfTg=document.getElementById('pfTg');
+  if(pfTg){pfTg.textContent=tg?'Connected ('+tg+')':'Not connected';pfTg.style.color=tg?'var(--green)':'var(--red)';}
+
+  T('bTr',bun.name.toUpperCase());
+  T('bNm',IS_PARTNER?'Partner Account':bun.name+' Bundle');
+  T('bAc',IS_PARTNER?'Partner — Referral earnings focus':'Unlocked up to ₹'+BPRICE.toLocaleString('en-IN'));
+  T('bLpa',IS_PARTNER?'Partner Program':('Target — '+bun.lpa));
+
+  // Referral
+  T('refCode',UD.referralCode||'—');
+  const refUrl=window.location.origin+'/auth.html?ref='+(UD.referralCode||'');
+  const refInp=document.getElementById('refUrl');if(refInp)refInp.value=refUrl;
+
+  updateStats();
+  loadEarnings();
+  loadRefs();
+  loadWdHist();
+  buildBunCommTable();
+  renderEarningCards();
+}
+
+/* ══════════════════════════════════════════════════════════════
+   EARNING CARDS
+══════════════════════════════════════════════════════════════ */
+function renderEarningCards(){
+  const d=UD||{};
+  const tot=d.totalEarning||0,mon=d.monthlyEarning||0,wk=d.weeklyEarning||0,day=d.dailyEarning||0;
+  const mx=Math.max(tot,1);
+  const cards=[
+    {lb:'Today',vl:fmt(day),nt:'Daily earnings',pct:day/Math.max(mon/30||1,1)*100,c:'var(--amber)',bg:'linear-gradient(90deg,var(--amber),rgba(245,158,11,.25))'},
+    {lb:'Weekly',vl:fmt(wk),nt:'This week',pct:wk/Math.max(mon||1,1)*100,c:'var(--cyan)',bg:'linear-gradient(90deg,var(--cyan),rgba(34,211,238,.25))'},
+    {lb:'Monthly',vl:fmt(mon),nt:'This month',pct:mon/Math.max(mx*.4,1)*100,c:'var(--green)',bg:'linear-gradient(90deg,var(--green),rgba(34,197,94,.25))'},
+    {lb:'Total',vl:fmt(tot),nt:'Lifetime',pct:100,c:'var(--gold)',bg:'linear-gradient(90deg,var(--gold),rgba(200,169,110,.25))'},
+  ];
+  const c=document.getElementById('earningCards');if(!c)return;
+  c.innerHTML=cards.map((x,i)=>`
+    <div class="sc" onclick="goPage('earnings')" style="--sc-c:${x.c}">
+      <div class="sc-ring"></div>
+      <div class="sc-lb">
+        <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+        ${x.lb}
+      </div>
+      <div class="sc-vl" style="color:${x.c}" id="ecv-${i}">${x.vl}</div>
+      <div class="sc-nt">${x.nt}</div>
+      <div class="sc-bar"><div class="sc-bf" id="ecb-${i}" style="background:${x.bg};width:0%"></div></div>
+    </div>`).join('');
+  requestAnimationFrame(()=>{
+    cards.forEach((_,i)=>{
+      const bar=document.getElementById('ecb-'+i);
+      if(bar)setTimeout(()=>bar.style.width=Math.min(100,Math.max(2,cards[i].pct))+'%',100+i*60);
+    });
+  });
+}
+
+/* ══════════════════════════════════════════════════════════════
+   STATS — called by the real-time listener whenever data changes
+══════════════════════════════════════════════════════════════ */
+function updateStats(){
+  if(!UD)return;
+  const tot=UD.totalEarning||0,mon=UD.monthlyEarning||0,wk=UD.weeklyEarning||0,day=UD.dailyEarning||0;
+  const avail=getAvailableBalance();
+  T('eT',fmt(tot));T('eM',fmt(mon));T('eW',fmt(wk));T('eTd',fmt(day));T('eAv',fmt(avail));
+  T('wdBal',fmt(avail));
+  T('rsTotalEarn',fmt(tot));
+  renderBars(tot,mon,wk,day);
+}
+
+function renderBars(t,m,w,d){
+  const el=document.getElementById('eBars');if(!el)return;
+  el.innerHTML='';
+  const vals=[d,w,d*.8,m*.25,m*.4,m*.6,m*.8,m,t*.3,t*.5,t*.7,t];
+  const mx=Math.max(...vals,1);
+  vals.forEach(v=>{
+    const b=document.createElement('div');
+    b.className='ebar';
+    b.style.height=Math.max(4,v/mx*100)+'%';
+    b.title=fmt(v);
+    el.appendChild(b);
+  });
+}
+
+function loadEarnings(){
+  if(!UD)return;
+  const dt=new Date().toLocaleDateString('en-IN');
+  const wdn=UD.withdrawnAmount||0;
+  document.getElementById('txBody').innerHTML=`
+    <tr><td>${dt}</td><td>Commission</td><td>Team referrals</td><td class="ta cr">${fmt(UD.dailyEarning||0)}</td><td><span class="bdg ok">Credited</span></td></tr>
+    <tr><td>This week</td><td>Weekly Total</td><td>Team referrals</td><td class="ta cr">${fmt(UD.weeklyEarning||0)}</td><td><span class="bdg ok">Credited</span></td></tr>
+    <tr><td>This month</td><td>Monthly Total</td><td>Team referrals</td><td class="ta cr">${fmt(UD.monthlyEarning||0)}</td><td><span class="bdg ok">Credited</span></td></tr>
+    <tr><td>Lifetime</td><td><strong>Total Earned</strong></td><td>All referrals</td><td class="ta cr"><strong>${fmt(UD.totalEarning||0)}</strong></td><td><span class="bdg bl">All time</span></td></tr>
+    ${wdn>0?`<tr><td>Various</td><td>Withdrawn</td><td>Bank/UPI</td><td class="ta dr">-${fmt(wdn)}</td><td><span class="bdg pn">Paid out</span></td></tr>`:''}`;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   REFERRALS & TEAM
+══════════════════════════════════════════════════════════════ */
+async function loadRefs(){
+  try{
+    const snap=await DB.collection(COL).where('referredBy','==',U.emailId).get();
+    renderTeam(snap.docs.map(d=>({id:d.id,...d.data()})));
+  }catch(e){}
+}
+
+function renderTeam(members){
+  T('tmCnt',members.length+' member'+(members.length!==1?'s':''));
+  T('tmCnt2',members.length+' member'+(members.length!==1?'s':''));
+  T('rsTotalRef',members.length);
+  const active=members.filter(m=>m.paymentStatus==='approved').length;
+  T('rsActiveRef',active);
+  T('rsPending',members.length-active);
+
+  const grid=document.getElementById('teamGrid');
+  const act=document.getElementById('recentAct');
+
+  if(!members.length){
+    if(grid)grid.innerHTML='<div class="empty"><div class="empty-ic"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg></div><p>No referrals yet. Share your link!</p></div>';
+    if(act)act.innerHTML='<div class="empty"><div class="empty-ic"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div><p>Activity appears as your team grows.</p></div>';
+    return;
+  }
+
+  if(grid){
+    grid.innerHTML='<div class="team-grid">'+members.map(m=>{
+      const nm=m.fullName||m.email||'Member';
+      const st=m.paymentStatus==='approved'?'<span class="bdg ok">Active</span>':'<span class="bdg pn">Pending</span>';
+      const dt=m.createdAt?new Date(m.createdAt.toDate()).toLocaleDateString('en-IN'):'—';
+      const earn=m.commissionGenerated?fmt(m.commissionGenerated):'';
+      return`<div class="tm-card"><div class="tm-av">${nm[0].toUpperCase()}</div><div><div class="tm-nm">${nm}</div><div class="tm-mt">${dt} · ${st}</div></div>${earn?`<div class="tm-e">${earn}</div>`:''}</div>`;
+    }).join('')+'</div>';
+  }
+
+  if(act){
+    act.innerHTML=members.slice(0,4).map(m=>{
+      const nm=m.fullName||m.email||'Member';
+      const cl=m.paymentStatus==='approved'?'color:var(--green)':'color:var(--amber)';
+      const status=m.paymentStatus==='approved'?'Active & paid':'Pending payment';
+      return`<div class="act-it"><div class="act-av">${nm[0].toUpperCase()}</div><div><div class="act-t">${nm}</div><div class="act-s" style="${cl}">${status}</div></div></div>`;
+    }).join('');
+    if(members.length>4){act.innerHTML+=`<div style="padding:8px 0;font-family:var(--fm);font-size:.56rem;color:var(--t3);text-align:center">+${members.length-4} more member(s) — <span style="color:var(--gold);cursor:pointer" onclick="goPage('affiliate')">View all</span></div>`;}
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   BUNDLE COMMISSION TABLE
+══════════════════════════════════════════════════════════════ */
+function buildBunCommTable(){
+  const body=document.getElementById('bunCommBody');if(!body)return;
+  body.innerHTML=BUNDLES.map((b,i)=>{
+    const maxPct=Math.max(20,65-i*4);
+    const minPct=Math.max(10,maxPct-15);
+    const pct=minPct+Math.floor(Math.random()*(maxPct-minPct+1));
+    const earn=Math.round(b.p*pct/100);
+    return`<tr>
+      <td><div class="bun-name">${b.name}</div></td>
+      <td>₹${b.p.toLocaleString('en-IN')}</td>
+      <td><span class="comm-pct">${pct}%</span></td>
+      <td><span class="comm-amt">₹${earn.toLocaleString('en-IN')}</span></td>
+    </tr>`;
+  }).join('');
+}
+
+/* ══════════════════════════════════════════════════════════════
+   WITHDRAWAL
+══════════════════════════════════════════════════════════════ */
+function tgBank(){
+  document.getElementById('wdBnkD').style.display=document.getElementById('wdMeth').value==='bank'?'block':'none';
+}
+
+async function loadWdHist(){
+  try{
+    const snap=await DB.collection(COL).doc(U.emailId).collection('withdrawals')
+      .orderBy('createdAt','desc').limit(10).get();
+    const el=document.getElementById('wdHist');
+    if(snap.empty){
+      el.innerHTML='<div class="empty"><div class="empty-ic"><svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg></div><p>No requests yet.</p></div>';
+      return;
+    }
+    el.innerHTML=snap.docs.map(d=>{
+      const w=d.data();
+      const dt=w.createdAt?new Date(w.createdAt.toDate()).toLocaleDateString('en-IN'):'—';
+      const sc=w.status==='completed'?'ok':'pn';
+      return`<div class="wd-hist-it">
+        <div><div class="wd-nm">${fmt(w.amount||0)}</div><div class="wd-mt">${w.method||'UPI'} · ${dt}</div></div>
+        <span class="bdg ${sc}">${w.status||'pending'}</span>
+      </div>`;
+    }).join('');
+  }catch(e){}
+}
+
+async function submitWD(){
+  const amt=parseInt(document.getElementById('wdAmt').value)||0;
+  const mth=document.getElementById('wdMeth').value;
+  const acc=document.getElementById('wdAcc').value.trim();
+  const ph=document.getElementById('wdPh').value.trim();
+  const avail=getAvailableBalance();
+
+  if(amt<500){toast('Min withdrawal is ₹500');return;}
+  if(amt>avail){toast('Insufficient. Available: '+fmt(avail));return;}
+  if(!acc){toast('Enter UPI ID or account number');return;}
+
+  try{
+    await DB.collection(COL).doc(U.emailId).collection('withdrawals').add({
+      amount:amt,method:mth,account:acc,phone:ph,status:'pending',
+      userName:U.name,email:U.email,
+      createdAt:firebase.firestore.FieldValue.serverTimestamp()
+    });
+    toast('Request submitted! 3–5 business days.');
+    document.getElementById('wdAmt').value='';
+    document.getElementById('wdAcc').value='';
+    loadWdHist();
+  }catch(err){toast('Error: '+err.message);}
+}
+
+/* ══════════════════════════════════════════════════════════════
+   PROFILE SAVE
+══════════════════════════════════════════════════════════════ */
+async function saveProfile(){
+  const nm=document.getElementById('pfNm').value.trim();
+  const ph=document.getElementById('pfPh').value.trim();
+  if(!nm){toast('Enter your name');return;}
+  try{
+    await DB.collection(COL).doc(U.emailId).update({fullName:nm,phone:ph});
+    U.name=nm;
+    const init=nm[0].toUpperCase();
+    ['tbAvTxt','bnAvTxt','ghProfTxt','pAvTxt'].forEach(id=>T(id,init));
+    T('pNm',nm);updateGreeting();toast('Profile saved!');
+  }catch(err){toast('Error: '+err.message);}
+}
+
+/* ══════════════════════════════════════════════════════════════
+   REFERRAL SHARING
+══════════════════════════════════════════════════════════════ */
+function copyRef(){
+  const url=document.getElementById('refUrl').value;
+  navigator.clipboard.writeText(url).then(()=>toast('Link copied!'));
+}
+function copyRefCode(){
+  const code=document.getElementById('refCode').textContent;
+  navigator.clipboard.writeText(code).then(()=>toast('Code copied!'));
+}
+function shareWA(){
+  const url=document.getElementById('refUrl').value;
+  const msg=encodeURIComponent('Join Biluxe10!\n\n'+url+'\n\nPremium courses + Earn by referring + Certificates');
+  window.open('https://wa.me/?text='+msg,'_blank');
+}
+function shareTG(){
+  const url=document.getElementById('refUrl').value;
+  window.open('https://t.me/share/url?url='+encodeURIComponent(url)+'&text='+encodeURIComponent('Join Biluxe10!'),'_blank');
+}
+function shareNative(){
+  const url=document.getElementById('refUrl').value;
+  if(navigator.share)navigator.share({title:'Biluxe10',text:'Join Biluxe10!',url});
+  else copyRef();
+}
+
+/* ══════════════════════════════════════════════════════════════
+   NAVIGATION
+══════════════════════════════════════════════════════════════ */
+const PAGE_LABELS={dashboard:'Dashboard',affiliate:'Affiliate',earnings:'Earnings',withdrawal:'Withdrawal',profile:'Profile',support:'Support'};
+
+function goPage(pg){
+  document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.bn').forEach(b=>b.classList.remove('on'));
+  const target=document.getElementById('pg-'+pg);
+  if(target)target.classList.add('on');
+  const bnTarget=document.getElementById('bn-'+pg);
+  if(bnTarget)bnTarget.classList.add('on');
+  T('tbPg',PAGE_LABELS[pg]||pg);
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(pg==='affiliate')loadRefs();
+  if(pg==='withdrawal'){loadWdHist();T('wdBal',fmt(getAvailableBalance()));}
+}
+
+async function signOut(){
+  try{UNSUBS.forEach(u=>u&&u());await AUTH.signOut();location.href='auth.html';}
+  catch(e){location.href='auth.html';}
+}
+
+/* ══════════════════════════════════════════════════════════════
+   FAQ TOGGLE
+══════════════════════════════════════════════════════════════ */
+function tFaq(btn){btn.closest('.faq-it').classList.toggle('open');}
+
+/* ══════════════════════════════════════════════════════════════
+   TOAST
+══════════════════════════════════════════════════════════════ */
+let toastTm;
+function toast(msg){
+  const el=document.getElementById('toast');
+  el.innerHTML=`<svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:var(--gold);fill:none;stroke-width:2;stroke-linecap:round;flex-shrink:0"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><span>${msg}</span>`;
+  el.classList.add('on');
+  clearTimeout(toastTm);
+  toastTm=setTimeout(()=>el.classList.remove('on'),3000);
+}
+</script>
+</body>
+</html>
