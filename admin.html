@@ -455,6 +455,15 @@ button,input,select,textarea{font-family:var(--fb)}
   <div class="login-box">
     <div class="lb-title">Admin Sign In</div>
     <div class="lb-sub">Only authorised admin accounts can access this panel. All actions are logged.</div>
+    <button class="lf-btn" id="lgGoogleBtn" onclick="doGoogleLogin()" style="background:var(--bg3);color:var(--text);border:1.5px solid var(--border2);display:flex;align-items:center;justify-content:center;gap:9px;margin-bottom:16px">
+      <svg width="16" height="16" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.52 12.27c0-.85-.08-1.67-.22-2.45H12v4.64h6.47a5.53 5.53 0 0 1-2.4 3.63v3h3.88c2.27-2.09 3.57-5.17 3.57-8.82z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.07 7.93-2.91l-3.88-3a7.4 7.4 0 0 1-11-3.9H1.05v3.1A12 12 0 0 0 12 24z"/><path fill="#FBBC05" d="M5.05 14.19a7.2 7.2 0 0 1 0-4.38v-3.1H1.05a12 12 0 0 0 0 10.58z"/><path fill="#EA4335" d="M12 4.75c1.76 0 3.35.6 4.6 1.8l3.44-3.44A11.98 11.98 0 0 0 1.05 6.71l4 3.1A7.15 7.15 0 0 1 12 4.75z"/></svg>
+      Sign in with Google
+    </button>
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+      <div style="flex:1;height:1px;background:var(--border2)"></div>
+      <span style="font-family:var(--fm);font-size:.5rem;color:var(--t3);letter-spacing:.1em;text-transform:uppercase">or use password</span>
+      <div style="flex:1;height:1px;background:var(--border2)"></div>
+    </div>
     <label class="lf-label">Admin Email</label>
     <input class="lf-inp" id="lgEmail" type="email" placeholder="biluxe10@gmail.com" autocomplete="email" onkeydown="if(event.key==='Enter')doLogin()">
     <label class="lf-label">Password</label>
@@ -488,6 +497,10 @@ button,input,select,textarea{font-family:var(--fb)}
       </button>
 
       <div class="sb-sec">Content (CMS)</div>
+      <button class="si" id="si-bundles" onclick="goPage('bundles')">
+        <div class="si-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41L13.42 20.58a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><circle cx="7" cy="7" r="1"/></svg></div>
+        <span class="si-lbl">Bundles & Courses</span>
+      </button>
       <button class="si" id="si-courses" onclick="goPage('courses')">
         <div class="si-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15z"/></svg></div>
         <span class="si-lbl">Courses (CMS)</span>
@@ -814,6 +827,87 @@ button,input,select,textarea{font-family:var(--fb)}
       </div>
 
     </div>
+    <!-- ═══════════ PAGE: BUNDLES & COURSES ═══════════ -->
+    <div class="pg" id="pg-bundles">
+
+      <div class="alert info show">
+        <span style="display:flex"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></span>
+        <span>Two audiences, two ways to buy: a <strong>Bundle</strong> unlocks every course inside it, a single <strong>Individual Course</strong> unlocks just itself. Toggle Enabled/Disabled to control what buyers can access, edit a link any time, or delete a course. The ₹4,999 bundle is intentionally empty — add its courses whenever you're ready.</span>
+      </div>
+
+      <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+        <div class="srch-wrap" style="flex:1;min-width:200px">
+          <div class="srch-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg></div>
+          <input class="srch-inp" id="bndSearch" placeholder="Search a bundle or course name…" oninput="renderBundlesPage()">
+        </div>
+        <button class="btn-o" onclick="loadBundlesPage()">Refresh</button>
+      </div>
+
+      <!-- BUNDLE TABS -->
+      <div class="ftg-row" id="bndTabs"></div>
+
+      <div class="card">
+        <div class="chd">
+          <div class="cht" id="bndActiveTitle">Bundle</div>
+          <span class="bdg gg" id="bndActiveCount">0 courses</span>
+        </div>
+        <div class="tbl-wrap">
+          <table class="atbl">
+            <thead><tr><th>Course</th><th>Video Link</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody id="bndCoursesBody"><tr><td colspan="4" style="text-align:center;padding:32px;color:var(--t3)">Loading…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- INDIVIDUAL COURSES (single-purchase, not part of a bundle) -->
+      <div class="card">
+        <div class="chd">
+          <div class="cht"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l2.4 7.2H22l-6 4.6 2.3 7.2-6.3-4.6-6.3 4.6 2.3-7.2-6-4.6h7.6z"/></svg>Individual Courses (sold separately, not part of any bundle)</div>
+          <span class="bdg vio" id="bndIndivCount">0 courses</span>
+        </div>
+        <div class="tbl-wrap">
+          <table class="atbl">
+            <thead><tr><th>Course</th><th>Price</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody id="bndIndivBody"><tr><td colspan="4" style="text-align:center;padding:32px;color:var(--t3)">Loading…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ══ EDIT BUNDLE COURSE MODAL ══ -->
+    <div class="modal-bg" id="bnd-edit-modal">
+      <div class="modal">
+        <div class="modal-hd">
+          <div class="modal-title">Edit Course — <span id="bndEditName" style="color:var(--gold);margin-left:4px">—</span></div>
+          <button class="modal-close" onclick="closeModal('bnd-edit-modal')">✕</button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" id="bndEditKey">
+          <div class="fg">
+            <label class="fl">Course Name</label>
+            <input class="fi" id="bndEditNameInp">
+          </div>
+          <div class="fg" id="bndEditPriceWrap" style="display:none">
+            <label class="fl">Price (₹)</label>
+            <input class="fi" id="bndEditPrice" type="number" min="0">
+          </div>
+          <div class="fg">
+            <label class="fl">Video Link (YouTube / Drive / Vimeo / Custom)</label>
+            <input class="fi" id="bndEditLink" placeholder="https://…">
+          </div>
+          <label class="fchk">
+            <input type="checkbox" id="bndEditEnabled" checked> Enabled (visible & unlockable to buyers)
+          </label>
+        </div>
+        <div class="modal-foot">
+          <button class="btn-g" onclick="saveBundleCourseEdit()">Save Changes</button>
+          <button class="btn-red" onclick="deleteBundleCourse()">Delete Course</button>
+          <button class="btn-o" onclick="closeModal('bnd-edit-modal')">Cancel</button>
+        </div>
+      </div>
+    </div>
+
     <!-- ═══════════ PAGE: COURSES (CMS) ═══════════ -->
     <div class="pg" id="pg-courses">
 
@@ -1082,54 +1176,6 @@ button,input,select,textarea{font-family:var(--fb)}
         </div>
       </div>
     </div>
-    <!-- ═══════════ PAGE: CERTIFICATES ═══════════ -->
-    <div class="pg" id="pg-certificates">
-
-      <div class="chd" style="background:none;border:none;padding:0">
-        <div class="srch-wrap" style="flex:1;min-width:200px">
-          <div class="srch-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg></div>
-          <input class="srch-inp" id="certSearch" placeholder="Search by name, email, course, cert ID…" oninput="renderCertificates()">
-        </div>
-        <select class="fi" id="certFilterStatus" style="max-width:160px" onchange="renderCertificates()">
-          <option value="">All Status</option>
-          <option value="pending">Waiting Approval</option>
-          <option value="approved">Approved</option>
-          <option value="rejected">Rejected</option>
-        </select>
-        <button class="btn-o" onclick="exportCSV()">
-          <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
-          Export CSV
-        </button>
-        <button class="btn-g" onclick="openModal('cert-modal');prefillCertDate()">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="14" height="14"><path d="M12 5v14M5 12h14"/></svg>
-          Issue Certificate
-        </button>
-      </div>
-
-      <div class="card">
-        <div class="tbl-wrap">
-          <table class="atbl">
-            <thead><tr><th>Student</th><th>Course</th><th>Mentor</th><th>Score</th><th>Cert ID</th><th>Status</th><th>Issued</th><th>Actions</th></tr></thead>
-            <tbody id="certsBody">
-              <tr><td colspan="8"><div class="empty"><div class="empty-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="6"/></svg></div><p>Loading certificates…</p></div></td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- ══ CERTIFICATE DETAIL / REISSUE MODAL ══ -->
-    <div class="modal-bg" id="cert-detail-modal">
-      <div class="modal" style="max-width:480px">
-        <div class="modal-hd">
-          <div class="modal-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="6"/></svg>Certificate Details</div>
-          <button class="modal-close" onclick="closeModal('cert-detail-modal')">✕</button>
-        </div>
-        <div class="modal-body" id="certDetailBody"></div>
-        <div class="modal-foot" id="certDetailFoot"></div>
-      </div>
-    </div>
     <!-- ═══════════ PAGE: FOUNDER SIGNATURE SYSTEM ═══════════ -->
     <div class="pg" id="pg-signatures">
 
@@ -1354,7 +1400,7 @@ button,input,select,textarea{font-family:var(--fb)}
           </div>
           <div class="cmd-suggest">
             <span class="cmd-chip" onclick="fillCmd('Approve payment for user@example.com')">Approve payment for user@example.com</span>
-            <span class="cmd-chip" onclick="fillCmd('Generate certificate for Syed Afshar')">Generate certificate for Syed Afshar</span>
+            <span class="cmd-chip" onclick="fillCmd('Issue certificate to Syed Afshar')">Issue certificate to Syed Afshar</span>
             <span class="cmd-chip" onclick="fillCmd('Disable AI temporarily')">Disable AI temporarily</span>
             <span class="cmd-chip" onclick="fillCmd('Send notification to all users')">Send notification to all users</span>
           </div>
@@ -1971,6 +2017,102 @@ button,input,select,textarea{font-family:var(--fb)}
       <button class="btn-o" onclick="closeModal('spc-grant-modal')">Cancel</button>
     </div>
   </div>
+</div>
+
+<!-- ══ ISSUE CERTIFICATE MODAL (with live student search) ══ -->
+<div class="modal-bg" id="cert-modal">
+  <div class="modal" style="max-width:600px">
+    <div class="modal-hd">
+      <div class="modal-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="6"/><path d="M15.5 13.3L17 22l-5-3-5 3 1.5-8.7"/></svg>Issue Certificate</div>
+      <button class="modal-close" onclick="closeModal('cert-modal')">✕</button>
+    </div>
+    <div class="modal-body">
+
+      <div class="fg" style="position:relative">
+        <label class="fl">Find Student — just type a name or email *</label>
+        <div class="srch-wrap">
+          <div class="srch-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg></div>
+          <input class="srch-inp" id="ciSearch" placeholder="e.g. Syed Afshar…" autocomplete="off" oninput="renderCertUserHits()" onfocus="renderCertUserHits()">
+        </div>
+        <div id="ciHits" style="display:none;position:absolute;left:0;right:0;top:100%;margin-top:4px;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--rs);max-height:220px;overflow-y:auto;z-index:50;box-shadow:0 12px 32px rgba(0,0,0,.4)"></div>
+      </div>
+
+      <div id="ciSelectedBox" style="display:none;margin-bottom:14px;padding:10px 13px;background:var(--grA);border:1px solid rgba(34,197,94,.25);border-radius:var(--rs);font-size:.76rem;color:var(--t2);display:flex;align-items:center;justify-content:space-between;gap:8px">
+        <span>Selected: <strong id="ciSelectedName" style="color:var(--green)">—</strong> <span id="ciSelectedEmail" style="font-family:var(--fm);font-size:.64rem;color:var(--t3)"></span></span>
+        <button class="btn-o" style="padding:3px 9px;font-size:.62rem" onclick="clearCertSelection()">Change</button>
+      </div>
+
+      <input type="hidden" id="ciName">
+      <input type="hidden" id="ciEmail">
+
+      <div class="fg">
+        <label class="fl">Course Name *</label>
+        <input class="fi" id="ciCourse" placeholder="e.g. Affiliate Marketing Mastery">
+      </div>
+      <div class="fg">
+        <label class="fl">Bundle Name</label>
+        <input class="fi" id="ciBundleName" placeholder="e.g. Pro Bundle">
+      </div>
+      <div class="sg2">
+        <div class="fg">
+          <label class="fl">Exam Score (/100)</label>
+          <input class="fi" id="ciScore" type="number" min="0" max="100" value="85">
+        </div>
+        <div class="fg">
+          <label class="fl">Progress %</label>
+          <input class="fi" id="ciProgress" type="number" min="0" max="100" value="100">
+        </div>
+      </div>
+      <div class="fg">
+        <label class="fl">Project Title (optional)</label>
+        <input class="fi" id="ciProject" placeholder="e.g. Capstone Project">
+      </div>
+      <div class="fg">
+        <label class="fl">Issue Date</label>
+        <input class="fi" id="ciDate" type="date">
+      </div>
+
+      <div class="cert-preview-wrap">
+        <div class="cert-stripe-top"></div>
+        <div class="cert-inner">
+          <div class="cert-logo-row"><span class="cert-logo-t">Biluxe10<sup>®</sup></span></div>
+          <div class="cert-of">Certificate Of</div>
+          <div class="cert-main">Achieve<span>ment</span></div>
+          <div class="cert-div"><span class="cert-dline"></span><span class="cert-star">★</span><span class="cert-dline"></span></div>
+          <div class="cert-this">This certificate is proudly presented to</div>
+          <div class="cert-name" id="cpName">Student Name</div>
+          <div class="cert-course-box">
+            <div class="cert-course-lbl">For successfully completing</div>
+            <div class="cert-course-nm" id="cpCourse">Course Name</div>
+          </div>
+          <div class="cert-achs" id="cpAchs"></div>
+          <div class="cert-sig-row">
+            <div class="cert-sig-block">
+              <div class="cert-sig-line"></div>
+              <div class="cert-sig-nm">Founder</div>
+              <div class="cert-sig-ttl">Biluxe10</div>
+            </div>
+            <div class="cert-seal"><div class="cert-seal-t">Biluxe10<br>Verified</div></div>
+            <div class="cert-sig-block">
+              <div class="cert-sig-line"></div>
+              <div class="cert-sig-nm" id="cpDate">—</div>
+              <div class="cert-sig-ttl">Date Issued</div>
+            </div>
+          </div>
+        </div>
+        <div class="cert-footer">
+          <span class="cert-id-lbl">Certificate ID</span>
+          <span class="cert-id-val" id="cpCertId">—</span>
+        </div>
+        <div class="cert-stripe-bot"></div>
+      </div>
+
+    </div>
+    <div class="modal-foot">
+      <button class="btn-g" onclick="issueCertificate()">🎓 Issue Certificate</button>
+      <button class="btn-o" onclick="closeModal('cert-modal')">Cancel</button>
+    </div>
+  </div>
 </div><script>
 /* ═══════════════════════════════════
    FIREBASE INIT
@@ -2094,6 +2236,29 @@ async function doLogin(){
     btn.disabled=false;spin.classList.remove('show');
   }
 }
+async function doGoogleLogin(){
+  const errEl=$('lgErr'),btn=$('lgGoogleBtn');
+  errEl.classList.remove('show');
+  btn.disabled=true;
+  try{
+    const provider=new firebase.auth.GoogleAuthProvider();
+    provider.setCustomParameters({login_hint:ADMIN_EMAIL});
+    const result=await AUTH.signInWithPopup(provider);
+    const signedInEmail=(result.user.email||'').toLowerCase();
+    if(signedInEmail!==ADMIN_EMAIL.toLowerCase()){
+      await AUTH.signOut();
+      errEl.textContent='This Google account is not the authorised admin account.';
+      errEl.classList.add('show');
+    }
+    // onAuthStateChanged handles the success path (same guard as password login).
+  }catch(e){
+    if(e.code!=='auth/popup-closed-by-user'&&e.code!=='auth/cancelled-popup-request'){
+      errEl.textContent=e.message||'Google sign-in failed. Try again.';
+      errEl.classList.add('show');
+    }
+  }
+  btn.disabled=false;
+}
 async function doLogout(){
   await AUTH.signOut();location.reload();
 }
@@ -2103,6 +2268,7 @@ async function doLogout(){
 ═══════════════════════════════════ */
 const PAGE_LABELS={
   stats:'Dashboard',analytics:'Analytics',
+  bundles:'Bundles & Courses',
   courses:'Courses (CMS)',linkmgr:'Course Link Manager',mentors:'Mentors',banners:'Banner Manager',
   users:'User Management',payments:'Payments / UTR',
   special:'Special Courses',certificates:'Certificates',signatures:'Founder Signature',
@@ -2125,6 +2291,7 @@ function goPage(pg){
 
   if(pg==='stats')loadDashboard();
   else if(pg==='analytics')loadAnalytics();
+  else if(pg==='bundles')loadBundlesPage();
   else if(pg==='courses')loadCourses();
   else if(pg==='linkmgr')loadLinkMgr();
   else if(pg==='mentors')loadMentors();
@@ -2455,6 +2622,280 @@ async function loadAnalytics(){
   }catch(e){
     console.warn('Analytics error:',e.message);
   }
+}
+</script><script>
+/* ═══════════════════════════════════
+   BUNDLES & INDIVIDUAL COURSES
+   Read-only seed data (mirrors the public courses.html catalog,
+   so every course link the platform actually uses is visible
+   here in one place). Per-course admin changes — enable/disable,
+   edited link, edited name/price, or delete — are stored in
+   Firestore under bundle_course_overrides and merged on top of
+   the seed at render time, so nothing here can be corrupted and
+   every change is reversible.
+═══════════════════════════════════ */
+const BUNDLE_SEED=[
+  {id:'starter',name:'Starter',price:499,courses:[
+    {name:'Digital Entrepreneurship Basics',link:'https://www.youtube.com/watch?v=CcwYCG0Gggw'},
+    {name:'Canva & Content Creation',link:'https://www.youtube.com/watch?v=x7-XSJHcaVI'},
+    {name:'WhatsApp Business Marketing',link:'https://www.youtube.com/watch?v=PlVxtty0wrI'},
+    {name:'ChatGPT for Daily Work',link:'https://www.youtube.com/watch?v=IcCAEudzEDw'}
+  ]},
+  {id:'pro',name:'Pro',price:999,courses:[
+    {name:'Affiliate Marketing Mastery',link:'https://www.youtube.com/watch?v=TF3BhN_dTdo'},
+    {name:'SEO & Blogging',link:'https://www.youtube.com/watch?v=pDUMhloKybU'},
+    {name:'Social Media Management',link:'https://www.youtube.com/watch?v=9WVGLqiHVuk'},
+    {name:'Email Marketing',link:'https://www.youtube.com/watch?v=yn6L7q4V1xg'},
+    {name:'Google Ads & Facebook Ads',link:'https://www.youtube.com/watch?v=autzRHtt-RM'},
+    {name:'Freelancing Mastery',link:'https://www.youtube.com/watch?v=gMmTpoiITM4'}
+  ]},
+  {id:'professional',name:'Professional',price:2499,courses:[
+    {name:'UI/UX Design Complete',link:'https://www.youtube.com/watch?v=7m9OJRRPsZ8'},
+    {name:'No Code Web Development',link:'https://www.youtube.com/watch?v=9nIwTjG2fdI'},
+    {name:'Video Editing with CapCut',link:'https://www.youtube.com/watch?v=nXeslaOL_BE'},
+    {name:'Podcast & Audio Production',link:'https://www.youtube.com/watch?v=cGWFvYknE7o'},
+    {name:'Ecommerce Complete Course',link:'https://www.youtube.com/watch?v=5d9jtO0uOpk'},
+    {name:'Dropshipping & Print on Demand',link:'https://www.youtube.com/watch?v=0O-fc9iKv-U'}
+  ]},
+  {id:'elite',name:'Elite',price:3699,courses:[
+    {name:'Excel for Data Analysis',link:'https://www.youtube.com/watch?v=Kjz_DDO4Fzs'},
+    {name:'SQL for Beginners',link:'https://www.youtube.com/watch?v=7azCOKryADA'},
+    {name:'Power BI & Tableau',link:'https://www.youtube.com/watch?v=Gmk3DWOxVKQ'},
+    {name:'Python Basics',link:'https://www.youtube.com/watch?v=LgW6Vla0kXA'},
+    {name:'Business Analytics',link:'https://www.youtube.com/watch?v=cCTuOBOqSaM'},
+    {name:'Financial Accounting Basics',link:'https://www.youtube.com/watch?v=vO09q2V8TGQ'}
+  ]},
+  {id:'premium',name:'Premium',price:4999,courses:[]},
+  {id:'master',name:'Master',price:6999,courses:[
+    {name:'Python for Data Science',link:'https://www.youtube.com/watch?v=CMEWVn1uZpQ'},
+    {name:'Machine Learning Fundamentals',link:'https://www.youtube.com/watch?v=hR-tMLTMw0s'},
+    {name:'Deep Learning & Neural Networks',link:'https://www.youtube.com/watch?v=G1P2IaBcXx8'},
+    {name:'Natural Language Processing',link:'https://www.youtube.com/watch?v=BCLjPLeVCBY'},
+    {name:'Computer Vision',link:'https://www.youtube.com/watch?v=01sAkU_NvOY'},
+    {name:'Big Data Engineering',link:'https://www.youtube.com/watch?v=H5SHmiKTFsM'},
+    {name:'Data Engineering',link:'https://www.youtube.com/watch?v=hf2go3E2m8g'},
+    {name:'MLOps Fundamentals',link:'https://www.youtube.com/watch?v=dPmH3G9NQtY'},
+    {name:'End-to-End ML Project',link:'https://www.youtube.com/watch?v=o6vbe5G7xNo'},
+    {name:'Data Science Interview Prep',link:'https://www.youtube.com/watch?v=A3ZSv6IqXY8'}
+  ]},
+  {id:'elitepro',name:'Elite Pro',price:11999,courses:[
+    {name:'Generative AI & LLMs',link:'https://www.youtube.com/watch?v=d4yCWBGFCEs'},
+    {name:'Agentic AI Development',link:'https://www.youtube.com/watch?v=-rUKr8JDits'},
+    {name:'LangChain & LlamaIndex',link:'https://www.youtube.com/watch?v=-8IUWRtznX8'},
+    {name:'Vector Databases',link:'https://www.youtube.com/watch?v=8KrTO9bS91s'},
+    {name:'AI Agents for Business',link:'https://www.youtube.com/watch?v=EsTrWCV0Ph4'},
+    {name:'LLM Fine-Tuning',link:'https://www.youtube.com/watch?v=iOdFUJiB0Zc'},
+    {name:'RAG Implementation',link:'https://www.youtube.com/watch?v=o126p1QN_RI'},
+    {name:'Multi-Agent Systems',link:'https://www.youtube.com/watch?v=rHtRWyxVQps'},
+    {name:'AI Safety & Governance',link:'https://www.youtube.com/watch?v=b6HwyKFShek'},
+    {name:'AI Agents Capstone Project',link:'https://www.youtube.com/watch?v=HVi0F3YT13I'},
+    {name:'Prompt Engineering Mastery',link:'https://www.youtube.com/watch?v=YhRfgYH_AoU'},
+    {name:'AI API Integration',link:'https://www.youtube.com/watch?v=xcP9NE6C5EI'}
+  ]},
+  {id:'legend',name:'Legend',price:15999,courses:[
+    {name:'AI Product Management',link:'https://www.youtube.com/watch?v=IfW1FMDkw4k'},
+    {name:'AI Strategy & Roadmap',link:'https://www.youtube.com/watch?v=zwUSZD3t_BU'},
+    {name:'AI Team Leadership',link:'https://www.youtube.com/watch?v=1NMM9Q_TjxE'},
+    {name:'AI Project Management',link:'https://www.youtube.com/watch?v=lADZ6Pxy9m8'},
+    {name:'AI Ethics & Governance',link:'https://www.youtube.com/watch?v=VugSwwHaOgQ'},
+    {name:'AI Career Mastery',link:'https://www.youtube.com/watch?v=aIuPQjPQEb4'},
+    {name:'Resume & LinkedIn for AI',link:'https://www.youtube.com/watch?v=qCZlSCmphMM'},
+    {name:'Salary Negotiation',link:'https://www.youtube.com/watch?v=vLbrwSzXUro'},
+    {name:'Freelancing & Consulting for AI',link:'https://www.youtube.com/watch?v=Ozp3k4qzmHo'},
+    {name:'AI for Finance & Banking',link:'https://www.youtube.com/watch?v=Nh7OhW7ZcIU'},
+    {name:'AI for Healthcare',link:'https://www.youtube.com/watch?v=eZFtf69sido'},
+    {name:'AI for E-commerce & Retail',link:'https://www.youtube.com/watch?v=plo5kk_MzL4'}
+  ]},
+  {id:'ultimate',name:'Ultimate',price:23999,courses:[
+    {name:'AI for Manufacturing',link:'https://www.youtube.com/watch?v=bNiThiN8cLg'},
+    {name:'Edge AI & TinyML',link:'https://www.youtube.com/watch?v=2L5OTwh4-Ls'},
+    {name:'AI Model Optimization',link:'https://www.youtube.com/watch?v=zqoJCOgMd_4'},
+    {name:'Federated Learning',link:'https://www.youtube.com/watch?v=rwi3SamXpPY'},
+    {name:'Graph Neural Networks',link:'https://www.youtube.com/watch?v=ODLBt-OcL3A'},
+    {name:'Reinforcement Learning',link:'https://www.youtube.com/watch?v=VnpRp7ZglfA'},
+    {name:'Time Series Forecasting',link:'https://www.youtube.com/watch?v=qx5055j0U6c'},
+    {name:'Recommendation Systems',link:'https://www.youtube.com/watch?v=F2tn-BviO_U'},
+    {name:'AI Research Paper Implementation',link:'https://www.youtube.com/watch?v=onU5Hbb3qao'},
+    {name:'Building AI Startups',link:'https://www.youtube.com/watch?v=zO1098PFOw8'}
+  ]}
+];
+
+const INDIV_SEED=[
+  {id:'makeup',name:'Professional Make-up Artist',price:2300},
+  {id:'mehendi',name:'Bridal Mehendi Designer',price:1999},
+  {id:'fashion',name:'Fashion Designer',price:2100}
+];
+
+let _bndOverrides={};   // key -> {enabled, link, name, price, deleted}
+let _bndActiveTab='';
+
+function bndKey(bundleId,courseIdx){return bundleId+'__'+courseIdx;}
+
+async function loadBundlesPage(){
+  try{
+    const snap=await DB.collection('bundle_course_overrides').get();
+    _bndOverrides={};
+    snap.docs.forEach(d=>{_bndOverrides[d.id]=d.data();});
+  }catch(e){toast('❌','Could not load saved changes: '+e.message);}
+  if(!_bndActiveTab)_bndActiveTab=BUNDLE_SEED[0].id;
+  renderBundleTabs();
+  renderBundlesPage();
+}
+
+function renderBundleTabs(){
+  const wrap=$('bndTabs');
+  wrap.innerHTML=BUNDLE_SEED.map(b=>{
+    const activeCount=b.courses.filter((c,i)=>!_bndOverrides[bndKey(b.id,i)]?.deleted).length;
+    return`<button class="ftg${b.id===_bndActiveTab?' on':''}" onclick="switchBundleTab('${b.id}')">${esc(b.name)} <span style="opacity:.6">₹${b.price.toLocaleString('en-IN')}</span> ${activeCount?`· ${activeCount}`:'· empty'}</button>`;
+  }).join('');
+}
+
+function switchBundleTab(id){_bndActiveTab=id;renderBundleTabs();renderBundlesPage();}
+
+function renderBundlesPage(){
+  const q=($('bndSearch').value||'').toLowerCase().trim();
+  const bundle=BUNDLE_SEED.find(b=>b.id===_bndActiveTab)||BUNDLE_SEED[0];
+  T('bndActiveTitle',bundle.name+' Bundle — ₹'+bundle.price.toLocaleString('en-IN'));
+
+  let rows=bundle.courses.map((c,i)=>{
+    const key=bndKey(bundle.id,i);
+    const ov=_bndOverrides[key]||{};
+    return{key,name:ov.name??c.name,link:ov.link??c.link,enabled:ov.enabled!==false,deleted:ov.deleted===true};
+  }).filter(r=>!r.deleted);
+
+  if(q)rows=rows.filter(r=>r.name.toLowerCase().includes(q)||bundle.name.toLowerCase().includes(q));
+
+  T('bndActiveCount',rows.length+' course'+(rows.length===1?'':'s'));
+
+  const body=$('bndCoursesBody');
+  if(!bundle.courses.length){
+    body.innerHTML='<tr><td colspan="4" style="text-align:center;padding:32px;color:var(--t3)">This bundle has no courses yet. Add them whenever ready.</td></tr>';
+    return;
+  }
+  if(!rows.length){
+    body.innerHTML='<tr><td colspan="4" style="text-align:center;padding:32px;color:var(--t3)">No matching courses.</td></tr>';
+    return;
+  }
+  body.innerHTML=rows.map(r=>`<tr>
+    <td style="font-weight:600">${esc(r.name)}</td>
+    <td style="font-family:var(--fm);font-size:.62rem;max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"><a href="${esc(r.link)}" target="_blank" rel="noopener" style="color:var(--cyan)">${esc(r.link||'—')}</a></td>
+    <td><span class="bdg ${r.enabled?'ok':'gy'}">${r.enabled?'Enabled':'Disabled'}</span></td>
+    <td>
+      <div class="td-actions">
+        <button class="btn-sm" onclick="openBundleCourseEdit('${bundle.id}','${r.key}')">Edit</button>
+        <button class="btn-sm" onclick="toggleBundleCourse('${r.key}',${r.enabled})">${r.enabled?'Disable':'Enable'}</button>
+        <button class="btn-red" onclick="confirmDeleteBundleCourse('${bundle.id}','${r.key}','${esc(r.name).replace(/'/g,"\\'")}')">Delete</button>
+      </div>
+    </td>
+  </tr>`).join('');
+
+  renderIndivCourses(q);
+}
+
+async function toggleBundleCourse(key,currentlyEnabled){
+  try{
+    await DB.collection('bundle_course_overrides').doc(key).set({enabled:!currentlyEnabled},{merge:true});
+    _bndOverrides[key]={..._bndOverrides[key],enabled:!currentlyEnabled};
+    await logAudit(currentlyEnabled?'disable':'enable','course',key);
+    toast('✅',!currentlyEnabled?'Course enabled.':'Course disabled.');
+    renderBundlesPage();renderBundleTabs();
+  }catch(e){toast('❌',e.message);}
+}
+
+function openBundleCourseEdit(bundleId,key){
+  const idx=parseInt(key.split('__')[1]);
+  const bundle=BUNDLE_SEED.find(b=>b.id===bundleId);
+  const seed=bundle.courses[idx];
+  const ov=_bndOverrides[key]||{};
+  _bndIndivEditKey=false;
+  $('bndEditKey').value=key;
+  $('bndEditName').textContent=ov.name??seed.name;
+  $('bndEditNameInp').value=ov.name??seed.name;
+  $('bndEditPriceWrap').style.display='none';
+  $('bndEditLink').value=ov.link??seed.link;
+  $('bndEditEnabled').checked=ov.enabled!==false;
+  openModal('bnd-edit-modal');
+}
+
+async function saveBundleCourseEdit(){
+  const key=$('bndEditKey').value;
+  const name=$('bndEditNameInp').value.trim();
+  const link=$('bndEditLink').value.trim();
+  const enabled=$('bndEditEnabled').checked;
+  if(!name){toast('⚠️','Course name cannot be empty.');return;}
+  try{
+    const data={name,link,enabled};
+    if(_bndIndivEditKey)data.price=parseInt($('bndEditPrice').value)||0;
+    await DB.collection('bundle_course_overrides').doc(key).set(data,{merge:true});
+    _bndOverrides[key]={..._bndOverrides[key],...data};
+    await logAudit('update','course',name);
+    toast('✅','Course updated.');
+    closeModal('bnd-edit-modal');
+    renderBundlesPage();renderBundleTabs();
+  }catch(e){toast('❌',e.message);}
+}
+
+function confirmDeleteBundleCourse(bundleId,key,name){
+  confirm2(ICON_DEL,'Delete Course?','Remove "'+name+'" from this bundle? Buyers of this bundle will no longer see it. This can be restored later by an admin if needed.',()=>doDeleteBundleCourse(key));
+}
+async function doDeleteBundleCourse(key){
+  try{
+    await DB.collection('bundle_course_overrides').doc(key).set({deleted:true},{merge:true});
+    _bndOverrides[key]={..._bndOverrides[key],deleted:true};
+    await logAudit('delete','course',key);
+    toast('⚠️','Course deleted from bundle.');
+    closeModal('bnd-edit-modal');
+    renderBundlesPage();renderBundleTabs();
+  }catch(e){toast('❌',e.message);}
+}
+function deleteBundleCourse(){
+  const key=$('bndEditKey').value;
+  const bundleId=_bndActiveTab;
+  confirmDeleteBundleCourse(bundleId,key,$('bndEditNameInp').value||'this course');
+}
+
+/* ── INDIVIDUAL COURSES (single-purchase) ── */
+let _bndIndivEditKey=false;
+function renderIndivCourses(q){
+  q=q||'';
+  let rows=INDIV_SEED.map(c=>{
+    const ov=_bndOverrides['indiv__'+c.id]||{};
+    return{key:'indiv__'+c.id,name:ov.name??c.name,price:ov.price??c.price,enabled:ov.enabled!==false,deleted:ov.deleted===true};
+  }).filter(r=>!r.deleted);
+  if(q)rows=rows.filter(r=>r.name.toLowerCase().includes(q));
+  T('bndIndivCount',rows.length+' course'+(rows.length===1?'':'s'));
+  const body=$('bndIndivBody');
+  if(!rows.length){
+    body.innerHTML='<tr><td colspan="4" style="text-align:center;padding:32px;color:var(--t3)">No matching courses.</td></tr>';
+    return;
+  }
+  body.innerHTML=rows.map(r=>`<tr>
+    <td style="font-weight:600">${esc(r.name)}</td>
+    <td style="color:var(--gold);font-weight:700">₹${r.price.toLocaleString('en-IN')}</td>
+    <td><span class="bdg ${r.enabled?'ok':'gy'}">${r.enabled?'Enabled':'Disabled'}</span></td>
+    <td>
+      <div class="td-actions">
+        <button class="btn-sm" onclick="openIndivCourseEdit('${r.key}')">Edit</button>
+        <button class="btn-sm" onclick="toggleBundleCourse('${r.key}',${r.enabled})">${r.enabled?'Disable':'Enable'}</button>
+        <button class="btn-red" onclick="confirmDeleteBundleCourse('indiv','${r.key}','${esc(r.name).replace(/'/g,"\\'")}')">Delete</button>
+      </div>
+    </td>
+  </tr>`).join('');
+}
+
+function openIndivCourseEdit(key){
+  const id=key.replace('indiv__','');
+  const seed=INDIV_SEED.find(c=>c.id===id);
+  const ov=_bndOverrides[key]||{};
+  _bndIndivEditKey=true;
+  $('bndEditKey').value=key;
+  $('bndEditName').textContent=ov.name??seed.name;
+  $('bndEditNameInp').value=ov.name??seed.name;
+  $('bndEditPriceWrap').style.display='flex';
+  $('bndEditPrice').value=ov.price??seed.price;
+  $('bndEditLink').value=ov.link??'';
+  $('bndEditEnabled').checked=ov.enabled!==false;
+  openModal('bnd-edit-modal');
 }
 </script><script>
 /* ═══════════════════════════════════
@@ -3134,8 +3575,8 @@ function parseCommand(text){
   let m=t.match(/approve payment for (.+)/);
   if(m)return{action:'approve_payment',email:m[1].trim(),summary:'Approve pending payment for '+m[1].trim()};
 
-  m=t.match(/generate certificate for (.+)/);
-  if(m)return{action:'generate_certificate',name:m[1].trim(),summary:'Open Issue Certificate for "'+m[1].trim()+'"'};
+  m=t.match(/(?:generate|issue) certificate (?:for|to) (.+)/);
+  if(m)return{action:'generate_certificate',name:m[1].trim(),summary:'Open Issue Certificate search for "'+m[1].trim()+'"'};
 
   m=t.match(/disable ai/);
   if(m)return{action:'disable_ai',summary:'Disable AI platform-wide'};
@@ -3209,9 +3650,11 @@ async function executeCommand(parsed){
         cmdLog(`<div class="cmd-resp">⚠️ No user found with email ${esc(parsed.email)}.</div>`);
       }
     }else if(parsed.action==='generate_certificate'){
-      cmdLog(`<div class="cmd-resp">↪ Opening Issue Certificate form pre-filled for "${esc(parsed.name)}"…</div>`);
+      cmdLog(`<div class="cmd-resp">↪ Opening Issue Certificate — searching for "${esc(parsed.name)}"…</div>`);
       openModal('cert-modal');prefillCertDate();
-      const nameField=$('certStudentName');if(nameField)nameField.value=parsed.name;
+      await ensureUsersLoadedForCert();
+      $('ciSearch').value=parsed.name;
+      renderCertUserHits();
     }else if(parsed.action==='add_course'){
       cmdLog(`<div class="cmd-resp">↪ Opening Add Course form…</div>`);
       goPage('courses');openCourseModal();
@@ -3989,11 +4432,70 @@ function prefillSpecialFromUser(email){
 }
 
 /* ═══════════════════════════════════
-   CERTIFICATE ISSUANCE (kept from original)
+   CERTIFICATE ISSUANCE — LIVE STUDENT SEARCH
+   Type a name/email → matching users appear as clickable
+   results → click one → form auto-fills. No typing IDs.
 ═══════════════════════════════════ */
+async function ensureUsersLoadedForCert(){
+  if(_allUsers.length)return;
+  try{
+    const snap=await DB.collection(COL).limit(500).get();
+    _allUsers=snap.docs.map(d=>({id:d.id,...d.data()}));
+  }catch(e){/* silent — search box will just show no results */}
+}
+
+async function renderCertUserHits(){
+  const box=$('ciHits');
+  const q=($('ciSearch').value||'').trim().toLowerCase();
+  if(!q){box.style.display='none';box.innerHTML='';return;}
+  await ensureUsersLoadedForCert();
+  const hits=_allUsers.filter(u=>
+    (u.fullName||'').toLowerCase().includes(q)||
+    (u.email||'').toLowerCase().includes(q)
+  ).slice(0,8);
+  if(!hits.length){
+    box.innerHTML='<div style="padding:12px;font-size:.74rem;color:var(--t3)">No matching students found.</div>';
+    box.style.display='block';
+    return;
+  }
+  box.innerHTML=hits.map(u=>`
+    <div onclick="selectCertUser('${esc(u.id)}')" style="padding:9px 13px;cursor:pointer;border-bottom:1px solid var(--border);display:flex;flex-direction:column;gap:1px" onmouseover="this.style.background='var(--gA)'" onmouseout="this.style.background='transparent'">
+      <span style="font-size:.8rem;font-weight:600;color:var(--text)">${esc(u.fullName||'Unnamed')}</span>
+      <span style="font-family:var(--fm);font-size:.62rem;color:var(--t3)">${esc(u.email||'—')} · ${esc(u.bundleName||u.selectedBundle||'No bundle')}</span>
+    </div>`).join('');
+  box.style.display='block';
+}
+
+function selectCertUser(emailId){
+  const u=_allUsers.find(x=>x.id===emailId);
+  if(!u)return;
+  $('ciName').value=u.fullName||'';
+  $('ciEmail').value=u.email||'';
+  if(u.bundleName)$('ciBundleName').value=u.bundleName+' Bundle';
+  T('ciSelectedName',u.fullName||u.email||'—');
+  T('ciSelectedEmail',u.email||'');
+  $('ciSelectedBox').style.display='flex';
+  $('ciSearch').value='';
+  $('ciHits').style.display='none';
+  updateCertPreview();
+}
+
+function clearCertSelection(){
+  $('ciName').value='';$('ciEmail').value='';
+  $('ciSelectedBox').style.display='none';
+  $('ciSearch').value='';$('ciSearch').focus();
+  updateCertPreview();
+}
+
+document.addEventListener('click',e=>{
+  const hits=$('ciHits'),search=$('ciSearch');
+  if(hits&&search&&!hits.contains(e.target)&&e.target!==search)hits.style.display='none';
+});
+
 function prefillCertDate(){
   const di=$('ciDate');
   if(di){di.value=new Date().toISOString().split('T')[0];}
+  ensureUsersLoadedForCert();
   updateCertPreview();
 }
 
@@ -4002,6 +4504,9 @@ function prefillCertFromUser(emailId,nameEnc,emailEnc){
   const email=decodeURIComponent(emailEnc);
   $('ciEmail').value=email;
   $('ciName').value=name;
+  T('ciSelectedName',name||email);
+  T('ciSelectedEmail',email);
+  $('ciSelectedBox').style.display='flex';
   prefillCertDate();
   openModal('cert-modal');
 }
