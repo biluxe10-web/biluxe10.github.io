@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="robots" content="noindex, nofollow">
+<title>Biluxe10 — Meeting Rooms</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,700;0,9..144,900;1,9..144,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+<script src="https://meet.jit.si/external_api.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#07070A;--bg2:#0D0D12;--bg3:#121218;--bg4:#18181F;--bg5:#1E1E28;
+  --border:rgba(255,255,255,0.055);--border2:rgba(255,255,255,0.1);--border3:rgba(255,255,255,0.16);
+  --gold:#C8A96E;--gold2:#E2C48A;--gold3:#F0D9A8;
+  --gA:rgba(200,169,110,0.08);--gB:rgba(200,169,110,0.15);--gC:rgba(200,169,110,0.04);
+  --green:#22C55E;--grA:rgba(34,197,94,0.1);--grB:rgba(34,197,94,0.18);
+  --red:#EF4444;--reA:rgba(239,68,68,0.1);--reB:rgba(239,68,68,0.18);
+  --blue:#60A5FA;--blA:rgba(96,165,250,0.1);
+  --vio:#A78BFA;--viA:rgba(167,139,250,0.1);
+  --amber:#F59E0B;--amA:rgba(245,158,11,0.1);
+  --cyan:#22D3EE;--cyA:rgba(34,211,238,0.1);
+  --ink:#07070A;--text:#EDEDF0;--t2:#9B9BA8;--t3:#4B4B5A;--t4:#2A2A35;
+  --fd:'Fraunces',serif;--fb:'Plus Jakarta Sans',sans-serif;--fm:'JetBrains Mono',monospace;
+  --r:16px;--rs:12px;--nav:64px;
+  --ease:cubic-bezier(0.16,1,0.3,1);--spring:cubic-bezier(0.34,1.56,0.64,1);
+}
+html,body{min-height:100vh}
+body{background:var(--bg);color:var(--text);font-family:var(--fb);line-height:1.6;overflow-x:hidden}
+button,input,select,textarea{font-family:var(--fb)}
+::-webkit-scrollbar{width:3px}
+::-webkit-scrollbar-thumb{background:rgba(200,169,110,0.25);border-radius:2px}
+a{text-decoration:none;color:inherit}
+body.lock{overflow:hidden}
+
+/* ═══ BACKGROUND FX ═══ */
+.bg-fx{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.bg-fx::before{content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 800px 600px at 15% -10%,rgba(200,169,110,0.08),transparent),
+             radial-gradient(ellipse 600px 500px at 90% 100%,rgba(167,139,250,0.05),transparent),
+             radial-gradient(ellipse 500px 400px at 50% 50%,rgba(96,165,250,0.02),transparent)}
+.grain{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0.02;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size:256px}
+.orb{position:absolute;border-radius:50%;filter:blur(70px);opacity:0.5;animation:orbFloat 18s ease-in-out infinite}
+.orb1{width:340px;height:340px;top:-100px;left:-80px;background:rgba(200,169,110,0.16);animation-delay:0s}
+.orb2{width:280px;height:280px;bottom:-80px;right:-60px;background:rgba(167,139,250,0.1);animation-delay:-6s}
+.orb3{width:220px;height:220px;top:40%;right:10%;background:rgba(96,165,250,0.06);animation-delay:-12s}
+@keyframes orbFloat{0%,100%{transform:translate(0,0)}33%{transform:translate(20px,-25px)}66%{transform:translate(-15px,15px)}}
+
+/* ═══ SVG PATTERN (signature motif — hex mesh, echoes "room" grid/lattice) ═══ */
+.svg-mesh{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0.5;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='104' viewBox='0 0 120 104'%3E%3Cg fill='none' stroke='%23C8A96E' stroke-opacity='0.055' stroke-width='1'%3E%3Cpath d='M30 0 L60 17.3 L60 51.9 L30 69.2 L0 51.9 L0 17.3 Z'/%3E%3Cpath d='M90 0 L120 17.3 L120 51.9 L90 69.2 L60 51.9 L60 17.3 Z'/%3E%3Cpath d='M30 69.2 L60 86.5 L60 104 M90 69.2 L60 86.5 M90 69.2 L120 86.5 L120 104'/%3E%3C/g%3E%3C/svg%3E");
+  background-size:120px 104px}
+
+/* ═══ TYPOGRAPHY ═══ */
+.disp{font-family:var(--fd);font-weight:900;letter-spacing:-0.03em;line-height:1.02}
+.eyebrow{font-family:var(--fm);font-size:.7rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);display:flex;align-items:center;gap:8px}
+.eyebrow::before{content:'';width:16px;height:1px;background:var(--gold)}
+
+/* ═══ SCREENS (single-page state router) ═══ */
+.screen{position:fixed;inset:0;z-index:5;display:none;flex-direction:column;overflow-y:auto;overflow-x:hidden}
+.screen.on{display:flex}
+.screen-inner{flex:1;display:flex;flex-direction:column;position:relative;z-index:2}
+
+/* ═══ TOPBAR ═══ */
+.topbar{height:var(--nav);flex-shrink:0;display:flex;align-items:center;justify-content:space-between;
+  padding:0 20px;border-bottom:1px solid var(--border);background:rgba(7,7,10,0.7);backdrop-filter:blur(20px);
+  position:sticky;top:0;z-index:20}
+.tb-left{display:flex;align-items:center;gap:12px}
+.tb-back{width:38px;height:38px;border-radius:11px;border:1px solid var(--border2);background:var(--bg3);
+  display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .25s var(--ease);flex-shrink:0}
+.tb-back:hover{background:var(--bg4);border-color:var(--border3);transform:translateX(-2px)}
+.tb-back svg{width:18px;height:18px;stroke:var(--text)}
+.tb-logo{font-family:var(--fd);font-weight:900;font-size:1.15rem;color:var(--gold);letter-spacing:-.02em}
+.tb-logo sup{font-size:.5em;color:var(--t3);font-weight:400;vertical-align:super}
+.tb-title{font-size:.95rem;font-weight:700;color:var(--text)}
+.tb-sub{font-size:.72rem;color:var(--t2);font-family:var(--fm)}
+.tb-right{display:flex;align-items:center;gap:10px}
+.tb-avatar{width:36px;height:36px;border-radius:10px;background:var(--gA);border:1px solid var(--gB);
+  display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--gold);font-size:.85rem;overflow:hidden}
+.tb-avatar img{width:100%;height:100%;object-fit:cover}
+.pill{font-family:var(--fm);font-size:.65rem;font-weight:600;letter-spacing:.06em;padding:5px 10px;border-radius:20px;
+  display:flex;align-items:center;gap:5px;text-transform:uppercase}
+.pill-mentor{background:var(--gA);color:var(--gold2);border:1px solid var(--gB)}
+.pill-member{background:var(--blA);color:var(--blue);border:1px solid rgba(96,165,250,.2)}
+.pill-live{background:var(--reA);color:var(--red);border:1px solid var(--reB)}
+.pill-live::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--red);animation:pulseDot 1.4s ease infinite}
+@keyframes pulseDot{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* ═══ GUARD / LOADER ═══ */
+#guard{position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;transition:opacity .7s ease}
+#guard.fade{opacity:0;pointer-events:none}
+#guard.gone{display:none}
+.g-logo{font-family:var(--fd);font-size:clamp(2.6rem,9vw,4rem);font-weight:900;color:var(--gold);letter-spacing:-.03em;line-height:1;animation:logoPulse 2s ease infinite}
+@keyframes logoPulse{0%,100%{text-shadow:0 0 30px rgba(200,169,110,0.3)}50%{text-shadow:0 0 60px rgba(200,169,110,0.6)}}
+.g-logo sup{font-size:.38em;color:var(--t3);font-weight:400;vertical-align:super}
+.g-spin{width:30px;height:30px;border:2.5px solid rgba(200,169,110,.12);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.g-msg{font-size:.82rem;color:var(--t2);font-family:var(--fm)}
+.g-err{display:none;flex-direction:column;align-items:center;gap:14px;max-width:340px;text-align:center;padding:0 24px}
+.g-err svg{width:44px;height:44px;stroke:var(--red)}
+.g-err-txt{font-size:.88rem;color:var(--t2);line-height:1.6}
+.g-err-txt a{color:var(--gold);font-weight:600}
+
+/* === BUTTONS === */
+.btn{font-family:var(--fb);font-weight:700;font-size:.88rem;border:none;border-radius:12px;cursor:pointer;
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:13px 22px;transition:all .22s var(--ease);
+  position:relative;user-select:none}
+.btn:disabled{opacity:.5;cursor:not-allowed;pointer-events:none}
+.btn-gold{background:linear-gradient(135deg,var(--gold2),var(--gold));color:#0A0A0D;box-shadow:0 4px 18px rgba(200,169,110,.22)}
+.btn-gold:hover{transform:translateY(-1px);box-shadow:0 6px 24px rgba(200,169,110,.32)}
+.btn-gold:active{transform:translateY(0)}
+.btn-ghost{background:var(--bg3);color:var(--text);border:1px solid var(--border2)}
+.btn-ghost:hover{background:var(--bg4);border-color:var(--border3)}
+.btn-red{background:linear-gradient(135deg,#F87171,var(--red));color:#fff;box-shadow:0 4px 18px rgba(239,68,68,.25)}
+.btn-red:hover{transform:translateY(-1px);box-shadow:0 6px 22px rgba(239,68,68,.35)}
+.btn-outline{background:transparent;color:var(--gold);border:1.5px solid var(--gB)}
+.btn-outline:hover{background:var(--gA)}
+.btn-block{width:100%}
+.btn-sm{padding:9px 14px;font-size:.78rem;border-radius:9px}
+.btn-icon{width:44px;height:44px;padding:0;border-radius:50%}
+.btn .spin18{width:16px;height:16px;border:2px solid rgba(0,0,0,.2);border-top-color:currentColor;border-radius:50%;animation:spin .7s linear infinite}
+.btn.loading .btn-txt{visibility:hidden}
+.btn:not(.loading) .spin18{display:none}
+.btn.loading .spin18{position:absolute;display:block}
+.btn.loading{pointer-events:none}
+
+/* === CARDS === */
+.card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:24px;position:relative;overflow:hidden}
+.card-hover{transition:all .3s var(--ease);cursor:pointer}
+.card-hover:hover{border-color:var(--border3);transform:translateY(-2px);background:var(--bg4)}
+.glass{background:rgba(18,18,24,.6);backdrop-filter:blur(20px);border:1px solid var(--border2)}
+
+/* === FORMS === */
+.field{margin-bottom:16px}
+.field label{display:block;font-size:.76rem;font-weight:600;color:var(--t2);margin-bottom:7px;letter-spacing:.02em}
+.field input,.field textarea{width:100%;background:var(--bg2);border:1.5px solid var(--border2);border-radius:11px;
+  padding:13px 15px;color:var(--text);font-size:.92rem;transition:all .2s var(--ease);outline:none}
+.field input:focus,.field textarea:focus{border-color:var(--gold);background:var(--bg3);box-shadow:0 0 0 3px var(--gA)}
+.field input::placeholder{color:var(--t3)}
+.field-mono input{font-family:var(--fm);letter-spacing:.06em}
+.field-hint{font-size:.72rem;color:var(--t3);margin-top:6px}
+.field-wrap{position:relative}
+.field-icon-btn{position:absolute;right:6px;top:6px;bottom:6px;width:36px;border:none;background:transparent;
+  color:var(--t2);cursor:pointer;display:flex;align-items:center;justify-content:center;border-radius:8px}
+.field-icon-btn:hover{background:var(--bg4);color:var(--text)}
+.alert{padding:12px 14px;border-radius:11px;font-size:.82rem;display:none;align-items:flex-start;gap:9px;margin-bottom:16px;line-height:1.5}
+.alert.show{display:flex}
+.alert-err{background:var(--reA);border:1px solid var(--reB);color:#FCA5A5}
+.alert-ok{background:var(--grA);border:1px solid var(--grB);color:#86EFAC}
+.alert-info{background:var(--blA);border:1px solid rgba(96,165,250,.2);color:#93C5FD}
+
+/* === TOAST === */
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);z-index:99999;
+  background:var(--bg4);border:1px solid var(--border3);border-radius:13px;padding:13px 20px;
+  display:flex;align-items:center;gap:10px;font-size:.85rem;font-weight:600;opacity:0;pointer-events:none;
+  transition:all .35s var(--spring);box-shadow:0 12px 40px rgba(0,0,0,.5);max-width:90vw}
+#toast.on{opacity:1;transform:translateX(-50%) translateY(0);pointer-events:auto}
+#toast.err{border-color:var(--reB);background:#1A0E0E}
+#toast.ok{border-color:var(--grB);background:#0E1A11}
+
+/* === EMPTY STATE === */
+.empty{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:60px 24px;gap:14px}
+.empty-ic{width:64px;height:64px;border-radius:18px;background:var(--gA);border:1px solid var(--gB);
+  display:flex;align-items:center;justify-content:center}
+.empty-ic svg{width:28px;height:28px;stroke:var(--gold)}
+.empty h3{font-size:1.05rem;font-weight:800}
+.empty p{font-size:.85rem;color:var(--t2);max-width:280px}
+
+/* === MODAL === */
+.modal-bg{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.7);backdrop-filter:blur(6px);
+  display:none;align-items:flex-end;justify-content:center}
+.modal-bg.on{display:flex}
+@media(min-width:640px){.modal-bg{align-items:center}}
+.modal{background:var(--bg3);border:1px solid var(--border2);border-radius:22px 22px 0 0;width:100%;max-width:460px;
+  max-height:88vh;overflow-y:auto;padding:26px;transform:translateY(100%);transition:transform .4s var(--spring)}
+.modal-bg.on .modal{transform:translateY(0)}
+@media(min-width:640px){.modal{border-radius:20px}}
+.modal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.modal-close{width:32px;height:32px;border-radius:9px;background:var(--bg4);border:none;color:var(--t2);
+  cursor:pointer;display:flex;align-items:center;justify-content:center}
+
+/* === CREDS DISPLAY === */
+.credbox{background:var(--bg2);border:1.5px dashed var(--gB);border-radius:14px;padding:16px;display:flex;
+  align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}
+.credbox-l{display:flex;flex-direction:column;gap:3px}
+.credbox-lbl{font-size:.66rem;color:var(--t3);text-transform:uppercase;letter-spacing:.08em;font-family:var(--fm)}
+.credbox-val{font-family:var(--fm);font-size:1.15rem;font-weight:700;color:var(--gold2);letter-spacing:.04em}
+.credbox-copy{width:36px;height:36px;border-radius:10px;background:var(--gA);border:1px solid var(--gB);
+  color:var(--gold);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s}
+.credbox-copy:hover{background:var(--gB)}
+.credbox-copy svg{width:16px;height:16px}
+
+/* === ROOM LIST === */
+.room-item{background:var(--bg3);border:1px solid var(--border);border-radius:16px;padding:18px;margin-bottom:12px;
+  transition:all .25s var(--ease)}
+.room-item:hover{border-color:var(--border3)}
+.room-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:12px}
+.room-name{font-size:1rem;font-weight:800;margin-bottom:3px}
+.room-meta{font-size:.74rem;color:var(--t3);font-family:var(--fm)}
+.room-actions{display:flex;gap:8px;flex-wrap:wrap}
+
+.icon-sq{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.icon-sq svg{width:18px;height:18px}
+
+/* === CALL SCREEN === */
+.call-wrap{position:fixed;inset:0;z-index:50;background:#000;display:none;flex-direction:column}
+.call-wrap.on{display:flex}
+.call-top{height:56px;flex-shrink:0;display:flex;align-items:center;justify-content:space-between;
+  padding:0 16px;background:rgba(0,0,0,.55);position:relative;z-index:5}
+.call-top-l{display:flex;align-items:center;gap:10px}
+.call-timer{font-family:var(--fm);font-size:.8rem;color:#fff;background:rgba(255,255,255,.08);padding:5px 11px;border-radius:20px}
+#jitsiFrame{flex:1;width:100%;border:none;background:#000}
+.call-leaving{position:fixed;inset:0;z-index:60;background:rgba(0,0,0,.85);backdrop-filter:blur(8px);
+  display:none;align-items:center;justify-content:center}
+.call-leaving.on{display:flex}
+.leave-card{background:var(--bg3);border:1px solid var(--border3);border-radius:20px;padding:28px 26px;max-width:340px;
+  text-align:center;display:flex;flex-direction:column;align-items:center;gap:16px}
+.leave-ic{width:52px;height:52px;border-radius:16px;background:var(--reA);border:1px solid var(--reB);
+  display:flex;align-items:center;justify-content:center}
+.leave-ic svg{width:24px;height:24px;stroke:var(--red)}
+.leave-actions{display:flex;gap:10px;width:100%}
+.leave-actions .btn{flex:1}
+
+/* === STAT ROW === */
+.stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:22px}
+.stat-box{background:var(--bg3);border:1px solid var(--border);border-radius:13px;padding:14px 10px;text-align:center}
+.stat-num{font-family:var(--fd);font-weight:800;font-size:1.35rem;color:var(--gold2)}
+.stat-lbl{font-size:.64rem;color:var(--t3);text-transform:uppercase;letter-spacing:.06em;margin-top:2px}
+
+/* === CONTAINERS === */
+.container{width:100%;max-width:480px;margin:0 auto;padding:24px 20px 40px}
+.container-wide{width:100%;max-width:900px;margin:0 auto;padding:24px 20px 40px}
+
+@media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+</style>
+</head>
+<body>
+
+<div class="bg-fx"><div class="orb orb1"></div><div class="orb orb2"></div><div class="orb orb3"></div></div>
+<div class="grain"></div>
+<div class="svg-mesh"></div>
+
+<!-- ═══════════════ GUARD / SPLASH LOADER ═══════════════ -->
+<div id="guard">
+  <div class="g-logo">biluxe10<sup>rooms</sup></div>
+  <div class="g-spin" id="gSpin"></div>
+  <div class="g-msg" id="gMsg">Connecting to Biluxe10…</div>
+  <div class="g-err" id="gErr">
+    <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+    <div class="g-err-txt" id="gErrD">Something went wrong.</div>
+  </div>
+</div>
+
+<div id="app" style="display:none">
+<!-- ═══════════════════ SCREEN: SIGN IN (GATE) ═══════════════════ -->
+<div class="screen" id="scGate">
+  <div class="topbar">
+    <div class="tb-left"><span class="tb-logo">biluxe10<sup>rooms</sup></span></div>
+    <div class="tb-right"></div>
+  </div>
+  <div class="screen-inner">
+    <div class="container" style="flex:1;display:flex;flex-direction:column;justify-content:center">
+      <div class="eyebrow">Private meeting space</div>
+      <h1 class="disp" style="font-size:clamp(2rem,7vw,2.6rem);margin:14px 0 10px">Meet, mentor,<br><em style="font-style:italic;color:var(--gold2)">and grow —</em><br>together.</h1>
+      <p style="color:var(--t2);font-size:.92rem;max-width:360px;margin-bottom:28px">
+        A private video &amp; voice room space exclusively for Biluxe10 members and verified mentors.
+      </p>
+
+      <div class="alert alert-err" id="gateAlert"></div>
+
+      <button class="btn btn-gold btn-block" id="googleGateBtn" onclick="handleGoogleGate()" style="height:54px">
+        <span class="spin18"></span>
+        <span class="btn-txt" style="display:flex;align-items:center;gap:10px">
+          <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 0 1-1.8 2.72v2.26h2.9c1.7-1.56 2.7-3.87 2.7-6.62z"/><path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.9-2.26c-.8.54-1.84.86-3.06.86-2.35 0-4.34-1.59-5.05-3.72H.96v2.33A9 9 0 0 0 9 18z"/><path fill="#FBBC05" d="M3.95 10.7A5.4 5.4 0 0 1 3.67 9c0-.59.1-1.17.28-1.7V4.97H.96A9 9 0 0 0 0 9c0 1.45.35 2.83.96 4.03l2.99-2.33z"/><path fill="#EA4335" d="M9 3.58c1.32 0 2.5.46 3.44 1.35l2.58-2.58C13.46.89 11.43 0 9 0A9 9 0 0 0 .96 4.97l2.99 2.33C4.66 5.17 6.65 3.58 9 3.58z"/></svg>
+          Continue with Google
+        </span>
+      </button>
+      <p style="font-size:.72rem;color:var(--t3);margin-top:14px;text-align:center">
+        Access is restricted to registered Biluxe10 members.
+      </p>
+
+      <div class="stat-row">
+        <div class="stat-box"><div class="stat-num">HD</div><div class="stat-lbl">Video</div></div>
+        <div class="stat-box"><div class="stat-num">1000+</div><div class="stat-lbl">Members</div></div>
+        <div class="stat-box"><div class="stat-num">100%</div><div class="stat-lbl">Private</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ SCREEN: ROLE ROUTER (loading state after auth) ═══════════════════ -->
+<div class="screen" id="scRouting">
+  <div class="screen-inner" style="align-items:center;justify-content:center;gap:18px">
+    <div class="g-spin"></div>
+    <div style="font-family:var(--fm);font-size:.82rem;color:var(--t2)">Checking your access level…</div>
+  </div>
+</div>
+
+<!-- ═══════════════════ SCREEN: MENTOR — NOT VERIFIED YET ═══════════════════ -->
+<div class="screen" id="scPending">
+  <div class="topbar">
+    <div class="tb-left">
+      <button class="tb-back" onclick="handleSignOut()"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l-6-6 6-6"/></svg></button>
+      <span class="tb-title">Mentor verification</span>
+    </div>
+  </div>
+  <div class="screen-inner" style="align-items:center;justify-content:center">
+    <div class="container" style="text-align:center">
+      <div class="empty-ic" style="margin:0 auto 18px;width:72px;height:72px">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:32px;height:32px"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+      </div>
+      <h2 class="disp" style="font-size:1.5rem;margin-bottom:10px">Awaiting admin approval</h2>
+      <p style="color:var(--t2);font-size:.88rem;line-height:1.7;max-width:340px;margin:0 auto 24px">
+        Your mentor request is submitted. Once a Biluxe10 admin verifies your account, you'll be able to create meeting rooms.
+      </p>
+      <button class="btn btn-outline" onclick="location.reload()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
+        Check status again
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ SCREEN: MENTOR DASHBOARD ═══════════════════ -->
+<div class="screen" id="scMentor">
+  <div class="topbar">
+    <div class="tb-left">
+      <span class="tb-logo">biluxe10<sup>rooms</sup></span>
+    </div>
+    <div class="tb-right">
+      <span class="pill pill-mentor">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 15a3 3 0 100-6 3 3 0 000 6z"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06A1.65 1.65 0 004.6 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06A1.65 1.65 0 009 4.6a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+        Mentor
+      </span>
+      <div class="tb-avatar" id="mentorAvatar"></div>
+    </div>
+  </div>
+  <div class="screen-inner">
+    <div class="container">
+      <div class="eyebrow">Your rooms</div>
+      <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin:12px 0 22px;flex-wrap:wrap">
+        <h1 class="disp" style="font-size:clamp(1.6rem,5vw,2rem)">Meeting rooms</h1>
+        <button class="btn btn-gold btn-sm" onclick="openCreateRoomModal()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          New room
+        </button>
+      </div>
+      <div id="mentorRoomList"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ SCREEN: MEMBER JOIN ═══════════════════ -->
+<div class="screen" id="scMember">
+  <div class="topbar">
+    <div class="tb-left"><span class="tb-logo">biluxe10<sup>rooms</sup></span></div>
+    <div class="tb-right">
+      <span class="pill pill-member">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        Member
+      </span>
+      <div class="tb-avatar" id="memberAvatar"></div>
+    </div>
+  </div>
+  <div class="screen-inner" style="align-items:center;justify-content:center">
+    <div class="container">
+      <div class="eyebrow" style="justify-content:center">Join a session</div>
+      <h1 class="disp" style="font-size:clamp(1.6rem,6vw,2.1rem);text-align:center;margin:12px 0 8px">Enter room details</h1>
+      <p style="color:var(--t2);font-size:.86rem;text-align:center;margin-bottom:26px">
+        Ask your mentor for the Room ID and password to join.
+      </p>
+
+      <div class="card">
+        <div class="alert alert-err" id="joinAlert"></div>
+        <div class="field field-mono">
+          <label>Room ID</label>
+          <input type="text" id="joinRoomId" placeholder="e.g. B10-4X7K9" autocomplete="off" autocapitalize="characters">
+        </div>
+        <div class="field field-mono">
+          <label>Room password</label>
+          <div class="field-wrap">
+            <input type="password" id="joinPassword" placeholder="Enter password" autocomplete="off">
+            <button type="button" class="field-icon-btn" onclick="toggleJoinPw()" id="joinPwToggle">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+        </div>
+        <button class="btn btn-gold btn-block" id="joinBtn" onclick="handleJoinRoom()" style="height:52px;margin-top:6px">
+          <span class="spin18"></span>
+          <span class="btn-txt">Join meeting</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ CALL SCREEN (Jitsi) ═══════════════════ -->
+<div class="call-wrap" id="callWrap">
+  <div class="call-top">
+    <div class="call-top-l">
+      <button class="tb-back" style="background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.12)" onclick="requestLeaveCall()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l-6-6 6-6"/></svg>
+      </button>
+      <span class="pill pill-live">Live</span>
+      <span class="call-timer" id="callTimer">00:00</span>
+    </div>
+    <div style="font-size:.78rem;color:rgba(255,255,255,.6);font-family:var(--fm)" id="callRoomLabel"></div>
+  </div>
+  <div id="jitsiFrame"></div>
+</div>
+
+<!-- ═══════════════════ LEAVE CALL CONFIRM ═══════════════════ -->
+<div class="call-leaving" id="leaveConfirm">
+  <div class="leave-card">
+    <div class="leave-ic">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.68 13.31a16 16 0 003.41 2.6l1-1a1 1 0 011.11-.27 11.7 11.7 0 003.68.59 1 1 0 011 1V19a1 1 0 01-1 1A16 16 0 013 4a1 1 0 011-1h2.79a1 1 0 011 1 11.72 11.72 0 00.59 3.68 1 1 0 01-.27 1.11z"/><line x1="23" y1="1" x2="1" y2="23"/></svg>
+    </div>
+    <div>
+      <div style="font-weight:800;font-size:1.05rem;margin-bottom:6px">Leave the meeting?</div>
+      <div style="font-size:.83rem;color:var(--t2)">You'll be disconnected from the call. You can rejoin anytime with the same room ID and password.</div>
+    </div>
+    <div class="leave-actions">
+      <button class="btn btn-ghost" onclick="cancelLeaveCall()">Stay</button>
+      <button class="btn btn-red" onclick="confirmLeaveCall()">Leave call</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ CREATE ROOM MODAL ═══════════════════ -->
+<div class="modal-bg" id="createRoomModal">
+  <div class="modal">
+    <div class="modal-head">
+      <div>
+        <div class="eyebrow" style="margin-bottom:6px">New session</div>
+        <div style="font-weight:800;font-size:1.15rem">Create meeting room</div>
+      </div>
+      <button class="modal-close" onclick="closeCreateRoomModal()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="alert alert-err" id="createRoomAlert"></div>
+    <div class="field">
+      <label>Room title</label>
+      <input type="text" id="crTitle" placeholder="e.g. Weekly Growth Mentorship" maxlength="60">
+    </div>
+    <div class="field">
+      <label>Max participants</label>
+      <input type="number" id="crMax" placeholder="50" min="2" max="500" value="50">
+      <div class="field-hint">Jitsi handles large rooms well — set a limit that fits your session.</div>
+    </div>
+    <button class="btn btn-gold btn-block" id="crBtn" onclick="handleCreateRoom()" style="height:52px;margin-top:4px">
+      <span class="spin18"></span>
+      <span class="btn-txt">Generate room ID &amp; password</span>
+    </button>
+  </div>
+</div>
+
+<!-- ═══════════════════ ROOM CREATED SUCCESS MODAL ═══════════════════ -->
+<div class="modal-bg" id="roomCreatedModal">
+  <div class="modal">
+    <div class="modal-head">
+      <div>
+        <div class="eyebrow" style="margin-bottom:6px">Room ready</div>
+        <div style="font-weight:800;font-size:1.15rem">Share these with your members</div>
+      </div>
+      <button class="modal-close" onclick="closeRoomCreatedModal()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="credbox">
+      <div class="credbox-l"><span class="credbox-lbl">Room ID</span><span class="credbox-val" id="createdRoomId">—</span></div>
+      <button class="credbox-copy" onclick="copyCred('createdRoomId')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+      </button>
+    </div>
+    <div class="credbox">
+      <div class="credbox-l"><span class="credbox-lbl">Password</span><span class="credbox-val" id="createdRoomPw">—</span></div>
+      <button class="credbox-copy" onclick="copyCred('createdRoomPw')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+      </button>
+    </div>
+    <button class="btn btn-outline btn-block" onclick="copyBothCreds()" style="margin-top:6px">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+      Copy both
+    </button>
+    <button class="btn btn-gold btn-block" style="margin-top:10px;height:52px" onclick="closeRoomCreatedModal()">Done</button>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+</div>
+<script>
+/* ═══════════════════════════════════════════════════════════
+   FIREBASE INIT — real Biluxe10 project (from auth.html/dashboard.html)
+   ═══════════════════════════════════════════════════════════ */
+const firebaseConfig={
+  apiKey:"AIzaSyDxxkC9iD1V1w-53Kf4oBrHEXlBLvCc7sE",
+  authDomain:"biluxe10-3e894.firebaseapp.com",
+  projectId:"biluxe10-3e894",
+  storageBucket:"biluxe10-3e894.appspot.com",
+  messagingSenderId:"804749588233",
+  appId:"1:804749588233:web:7777648c0c7834733c05d8"
+};
+if(!firebase.apps.length)firebase.initializeApp(firebaseConfig);
+const AUTH=firebase.auth(),DB=firebase.firestore();
+AUTH.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(()=>{});
+const GOOGLE_PROVIDER=new firebase.auth.GoogleAuthProvider();
+GOOGLE_PROVIDER.setCustomParameters({prompt:'select_account'});
+const fts=firebase.firestore.FieldValue.serverTimestamp;
+
+/* Matches existing Biluxe10 pattern: sanitize email into a safe doc-id */
+const san=e=>(e||'').toLowerCase().trim().replace(/@/g,'__at__').replace(/\./g,'_');
+
+/* Collections — existing member collection (auto-detected like dashboard.html),
+   plus two NEW collections specific to the meeting-room feature */
+const USER_COLS=['user_collection','User-collection','users','User_collection','user-collection'];
+let USER_COL='user_collection';
+const MENTORS_COL='biluxe10_mentors';       // admin-verified mentor registry
+const ROOMS_COL='biluxe10_meeting_rooms';   // meeting rooms created by mentors
+const SESSIONS_COL='biluxe10_room_sessions';// join-log (optional audit trail)
+
+/* ═══════════════════════════════════════════════════════════
+   STATE
+   ═══════════════════════════════════════════════════════════ */
+let CURRENT_USER=null;      // {uid,email,emailId,name,photoURL}
+let CURRENT_ROLE=null;      // 'mentor' | 'member'
+let MENTOR_DOC=null;
+let MENTOR_ROOMS_UNSUB=null;
+let JITSI_API=null;
+let CALL_START_TS=null;
+let CALL_TIMER_INT=null;
+let IN_CALL=false;
+let ACTIVE_ROOM=null;       // room doc currently joined
+
+/* ═══════════════════════════════════════════════════════════
+   HELPERS
+   ═══════════════════════════════════════════════════════════ */
+const $=id=>document.getElementById(id);
+let _tt;
+function toast(msg,type){
+  const el=$('toast');
+  el.textContent=msg;
+  el.className='on'+(type?(' '+type):'');
+  clearTimeout(_tt);
+  _tt=setTimeout(()=>el.classList.remove('on'),3400);
+}
+function copyText(t){
+  navigator.clipboard.writeText(t).then(()=>toast('Copied to clipboard','ok')).catch(()=>toast('Could not copy','err'));
+}
+function copyCred(id){copyText($(id).textContent);}
+function copyBothCreds(){copyText('Room ID: '+$('createdRoomId').textContent+'\nPassword: '+$('createdRoomPw').textContent);}
+function setLoad(id,on){
+  const b=$(id);if(!b)return;
+  b.classList.toggle('loading',on);b.disabled=on;
+}
+function showAlert(id,msg){
+  const el=$(id);if(!el)return;
+  el.textContent=msg;el.classList.add('show');
+}
+function clearAlert(id){const el=$(id);if(el){el.classList.remove('show');el.textContent='';}}
+function initials(name){return (name||'?').trim().split(/\s+/).map(w=>w[0]).slice(0,2).join('').toUpperCase();}
+
+function genRoomId(){
+  const chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let s='B10-';
+  for(let i=0;i<5;i++)s+=chars[Math.floor(Math.random()*chars.length)];
+  return s;
+}
+function genPassword(){
+  const chars='abcdefghjkmnpqrstuvwxyz23456789';
+  let s='';
+  for(let i=0;i<8;i++)s+=chars[Math.floor(Math.random()*chars.length)];
+  return s;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   SCREEN ROUTER  (single-page — no reloads; satisfies "stay on same page")
+   Uses history.pushState so the hardware/browser back button
+   is intercepted rather than leaving the app.
+   ═══════════════════════════════════════════════════════════ */
+const SCREENS=['scGate','scRouting','scPending','scMentor','scMember'];
+let SCREEN_STACK=[];
+
+function showScreen(id,{push=true}={}){
+  SCREENS.forEach(s=>$(s).classList.toggle('on',s===id));
+  if(push){
+    SCREEN_STACK.push(id);
+    history.pushState({screen:id,depth:SCREEN_STACK.length},'',location.pathname);
+  }
+}
+
+window.addEventListener('popstate',e=>{
+  // STRICT BACK-BUTTON RULE:
+  // If in a call -> intercept, show leave-confirm, re-push state so URL doesn't actually change.
+  // If not in a call -> allow normal screen back-navigation within the app.
+  if(IN_CALL){
+    history.pushState({screen:'callWrap',depth:SCREEN_STACK.length+1},'',location.pathname);
+    requestLeaveCall();
+    return;
+  }
+  if($('leaveConfirm').classList.contains('on')){
+    cancelLeaveCall();
+    history.pushState({},'',location.pathname);
+    return;
+  }
+  if($('createRoomModal').classList.contains('on')){closeCreateRoomModal();history.pushState({},'',location.pathname);return;}
+  if($('roomCreatedModal').classList.contains('on')){closeRoomCreatedModal();history.pushState({},'',location.pathname);return;}
+
+  // Normal navigation: pop to previous known screen for this role
+  if(SCREEN_STACK.length>1){
+    SCREEN_STACK.pop();
+    const prev=SCREEN_STACK[SCREEN_STACK.length-1];
+    SCREENS.forEach(s=>$(s).classList.toggle('on',s===prev));
+  }else{
+    // At root — re-show current root screen (don't exit the app awkwardly)
+    const root=CURRENT_ROLE==='mentor'?'scMentor':(CURRENT_ROLE==='member'?'scMember':'scGate');
+    SCREENS.forEach(s=>$(s).classList.toggle('on',s===root));
+    history.pushState({screen:root,depth:1},'',location.pathname);
+  }
+});
+
+/* ═══════════════════════════════════════════════════════════
+   AUTH — Google Sign-In (Biluxe10 members only)
+   ═══════════════════════════════════════════════════════════ */
+async function handleGoogleGate(){
+  clearAlert('gateAlert');
+  setLoad('googleGateBtn',true);
+  try{
+    const result=await AUTH.signInWithPopup(GOOGLE_PROVIDER);
+    // onAuthStateChanged below drives the rest of the flow
+  }catch(e){
+    setLoad('googleGateBtn',false);
+    if(e.code!=='auth/popup-closed-by-user'&&e.code!=='auth/cancelled-popup-request'){
+      showAlert('gateAlert','Sign-in failed: '+(e.message||'please try again.'));
+    }
+  }
+}
+
+function handleSignOut(){
+  if(MENTOR_ROOMS_UNSUB){MENTOR_ROOMS_UNSUB();MENTOR_ROOMS_UNSUB=null;}
+  AUTH.signOut().then(()=>{
+    CURRENT_USER=null;CURRENT_ROLE=null;MENTOR_DOC=null;
+    SCREEN_STACK=[];
+    showScreen('scGate',{push:false});
+    history.replaceState({screen:'scGate',depth:1},'',location.pathname);
+  });
+}
+
+/* ═══════════════════════════════════════════════════════════
+   AUTH STATE — verify Biluxe10 membership, then route by role:
+   1. Look up biluxe10_mentors/{emailId} — if verifiedByAdmin===true -> Mentor Dashboard
+   2. Else if a pending mentor doc exists -> Pending screen
+   3. Else -> must be an existing Biluxe10 member (user_collection) -> Member join screen
+   New Google sign-ins with no member record are asked to register on the main site first.
+   ═══════════════════════════════════════════════════════════ */
+const authTimeout=setTimeout(()=>{
+  $('gSpin').style.display='none';
+  $('gErr').style.display='flex';
+  $('gErrD').innerHTML='Firebase is not responding. Please refresh the page.';
+},10000);
+
+AUTH.onAuthStateChanged(async fbUser=>{
+  if(!fbUser){
+    clearTimeout(authTimeout);
+    const guard=$('guard');
+    guard.classList.add('fade');
+    setTimeout(()=>{guard.classList.add('gone');document.getElementById('app').style.display='block';
+      showScreen('scGate',{push:false});
+      history.replaceState({screen:'scGate',depth:1},'',location.pathname);
+    },500);
+    return;
+  }
+  try{
+    $('gMsg').textContent='Verifying your Biluxe10 account…';
+    const email=(fbUser.email||'').toLowerCase();
+    const emailId=san(email);
+    CURRENT_USER={uid:fbUser.uid,email,emailId,name:fbUser.displayName||email.split('@')[0],photoURL:fbUser.photoURL||''};
+
+    // 1. Confirm this Google account belongs to a real Biluxe10 member
+    let memberDoc=null;
+    for(const col of USER_COLS){
+      try{
+        const snap=await DB.collection(col).doc(emailId).get();
+        if(snap.exists){memberDoc=snap.data();USER_COL=col;break;}
+      }catch(e){}
+    }
+    if(!memberDoc){
+      clearTimeout(authTimeout);
+      $('gSpin').style.display='none';
+      $('gErr').style.display='flex';
+      $('gErrD').innerHTML='This Google account isn\'t registered with Biluxe10 yet. Please sign up on the main site first, then return here.';
+      return;
+    }
+
+    // 2. Check mentor verification status
+    $('gMsg').textContent='Checking mentor access…';
+    const mentorSnap=await DB.collection(MENTORS_COL).doc(emailId).get();
+
+    clearTimeout(authTimeout);
+    const guard=$('guard');
+    guard.classList.add('fade');
+    setTimeout(()=>{
+      guard.classList.add('gone');
+      document.getElementById('app').style.display='block';
+      SCREEN_STACK=[];
+
+      if(mentorSnap.exists){
+        MENTOR_DOC=mentorSnap.data();
+        if(MENTOR_DOC.verifiedByAdmin===true){
+          CURRENT_ROLE='mentor';
+          renderMentorHeader();
+          showScreen('scMentor',{push:false});
+          history.replaceState({screen:'scMentor',depth:1},'',location.pathname);
+          subscribeMentorRooms();
+        }else{
+          CURRENT_ROLE='pending';
+          showScreen('scPending',{push:false});
+          history.replaceState({screen:'scPending',depth:1},'',location.pathname);
+        }
+      }else{
+        CURRENT_ROLE='member';
+        renderMemberHeader();
+        showScreen('scMember',{push:false});
+        history.replaceState({screen:'scMember',depth:1},'',location.pathname);
+      }
+    },500);
+
+  }catch(err){
+    clearTimeout(authTimeout);
+    $('gSpin').style.display='none';
+    $('gErr').style.display='flex';
+    $('gErrD').innerHTML='Error: '+(err.message||'something went wrong.');
+  }
+});
+
+function renderMentorHeader(){
+  const av=$('mentorAvatar');
+  if(CURRENT_USER.photoURL){av.innerHTML=`<img src="${CURRENT_USER.photoURL}" alt="">`;}
+  else{av.textContent=initials(CURRENT_USER.name);}
+}
+function renderMemberHeader(){
+  const av=$('memberAvatar');
+  if(CURRENT_USER.photoURL){av.innerHTML=`<img src="${CURRENT_USER.photoURL}" alt="">`;}
+  else{av.textContent=initials(CURRENT_USER.name);}
+}
+
+/* ═══════════════════════════════════════════════════════════
+   MENTOR — ROOM CREATION
+   ═══════════════════════════════════════════════════════════ */
+function openCreateRoomModal(){
+  clearAlert('createRoomAlert');
+  $('crTitle').value='';
+  $('crMax').value='50';
+  $('createRoomModal').classList.add('on');
+  document.body.classList.add('lock');
+}
+function closeCreateRoomModal(){
+  $('createRoomModal').classList.remove('on');
+  document.body.classList.remove('lock');
+}
+
+async function handleCreateRoom(){
+  clearAlert('createRoomAlert');
+  const title=$('crTitle').value.trim();
+  const max=parseInt($('crMax').value)||50;
+  if(!title){showAlert('createRoomAlert','Please give the room a title.');return;}
+  if(max<2||max>500){showAlert('createRoomAlert','Max participants must be between 2 and 500.');return;}
+
+  setLoad('crBtn',true);
+  try{
+    const roomId=genRoomId();
+    const password=genPassword();
+    const jitsiRoomName='biluxe10_'+roomId.replace(/-/g,'')+'_'+Date.now().toString(36);
+
+    const roomDoc={
+      roomId,password,
+      title,
+      maxParticipants:max,
+      mentorEmailId:CURRENT_USER.emailId,
+      mentorEmail:CURRENT_USER.email,
+      mentorName:CURRENT_USER.name,
+      mentorPhoto:CURRENT_USER.photoURL||'',
+      jitsiRoomName,
+      isActive:true,
+      createdAt:fts(),
+      updatedAt:fts(),
+    };
+    await DB.collection(ROOMS_COL).doc(roomId).set(roomDoc);
+
+    closeCreateRoomModal();
+    $('createdRoomId').textContent=roomId;
+    $('createdRoomPw').textContent=password;
+    $('roomCreatedModal').classList.add('on');
+    document.body.classList.add('lock');
+    toast('Room created successfully','ok');
+  }catch(e){
+    showAlert('createRoomAlert','Could not create room: '+(e.message||'try again.'));
+  }
+  setLoad('crBtn',false);
+}
+
+function closeRoomCreatedModal(){
+  $('roomCreatedModal').classList.remove('on');
+  document.body.classList.remove('lock');
+}
+
+/* Real-time list of this mentor's rooms */
+function subscribeMentorRooms(){
+  if(MENTOR_ROOMS_UNSUB)MENTOR_ROOMS_UNSUB();
+  MENTOR_ROOMS_UNSUB=DB.collection(ROOMS_COL)
+    .where('mentorEmailId','==',CURRENT_USER.emailId)
+    .onSnapshot(snap=>{
+      const rooms=[];
+      snap.forEach(d=>rooms.push({id:d.id,...d.data()}));
+      rooms.sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
+      renderMentorRooms(rooms);
+    },err=>{
+      console.error(err);
+      toast('Could not load rooms — check Firestore rules','err');
+    });
+}
+
+function renderMentorRooms(rooms){
+  const wrap=$('mentorRoomList');
+  if(!rooms.length){
+    wrap.innerHTML=`<div class="empty">
+      <div class="empty-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 12h8M12 8v8"/></svg></div>
+      <h3>No rooms yet</h3>
+      <p>Create your first meeting room to get a shareable ID and password for your members.</p>
+    </div>`;
+    return;
+  }
+  wrap.innerHTML=rooms.map(r=>`
+    <div class="room-item">
+      <div class="room-top">
+        <div>
+          <div class="room-name">${escapeHtml(r.title||'Untitled room')}</div>
+          <div class="room-meta">ID ${r.roomId} · Up to ${r.maxParticipants||50} people</div>
+        </div>
+        <span class="pill ${r.isActive?'pill-mentor':''}" style="${r.isActive?'':'background:var(--bg4);color:var(--t3);border-color:var(--border2)'}">${r.isActive?'Active':'Closed'}</span>
+      </div>
+      <div class="credbox" style="margin-bottom:12px">
+        <div class="credbox-l"><span class="credbox-lbl">Room ID</span><span class="credbox-val">${r.roomId}</span></div>
+        <button class="credbox-copy" onclick="copyText('${r.roomId}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg></button>
+      </div>
+      <div class="credbox">
+        <div class="credbox-l"><span class="credbox-lbl">Password</span><span class="credbox-val">${r.password}</span></div>
+        <button class="credbox-copy" onclick="copyText('${r.password}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg></button>
+      </div>
+      <div class="room-actions" style="margin-top:12px">
+        ${r.isActive?`<button class="btn btn-gold btn-sm" onclick="mentorJoinOwnRoom('${r.id}')">Start / join call</button>
+        <button class="btn btn-ghost btn-sm" onclick="toggleRoomActive('${r.id}',false)">Close room</button>`
+        :`<button class="btn btn-outline btn-sm" onclick="toggleRoomActive('${r.id}',true)">Reopen room</button>`}
+      </div>
+    </div>
+  `).join('');
+}
+
+function escapeHtml(s){
+  const d=document.createElement('div');d.textContent=s||'';return d.innerHTML;
+}
+
+async function toggleRoomActive(roomId,active){
+  try{
+    await DB.collection(ROOMS_COL).doc(roomId).update({isActive:active,updatedAt:fts()});
+    toast(active?'Room reopened':'Room closed','ok');
+  }catch(e){toast('Could not update room','err');}
+}
+
+async function mentorJoinOwnRoom(roomId){
+  try{
+    const snap=await DB.collection(ROOMS_COL).doc(roomId).get();
+    if(!snap.exists){toast('Room not found','err');return;}
+    startCall({id:snap.id,...snap.data()});
+  }catch(e){toast('Could not join room','err');}
+}
+
+/* ═══════════════════════════════════════════════════════════
+   MEMBER — JOIN BY ID + PASSWORD
+   ═══════════════════════════════════════════════════════════ */
+function toggleJoinPw(){
+  const i=$('joinPassword');
+  i.type=i.type==='password'?'text':'password';
+}
+
+async function handleJoinRoom(){
+  clearAlert('joinAlert');
+  const roomId=$('joinRoomId').value.trim().toUpperCase();
+  const pw=$('joinPassword').value;
+  if(!roomId||!pw){showAlert('joinAlert','Please enter both the Room ID and password.');return;}
+
+  setLoad('joinBtn',true);
+  try{
+    const snap=await DB.collection(ROOMS_COL).doc(roomId).get();
+    if(!snap.exists){showAlert('joinAlert','No room found with that ID. Double-check with your mentor.');setLoad('joinBtn',false);return;}
+    const room=snap.data();
+    if(!room.isActive){showAlert('joinAlert','This room has been closed by the mentor.');setLoad('joinBtn',false);return;}
+    if(room.password!==pw){showAlert('joinAlert','Incorrect password. Please try again.');setLoad('joinBtn',false);return;}
+
+    // Log join (best-effort, non-blocking)
+    DB.collection(SESSIONS_COL).add({
+      roomId:snap.id,memberEmailId:CURRENT_USER.emailId,memberName:CURRENT_USER.name,
+      memberEmail:CURRENT_USER.email,joinedAt:fts()
+    }).catch(()=>{});
+
+    setLoad('joinBtn',false);
+    startCall({id:snap.id,...room});
+  }catch(e){
+    showAlert('joinAlert','Could not join: '+(e.message||'try again.'));
+    setLoad('joinBtn',false);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   CALL — real Jitsi Meet embed (free, open-source, handles large groups)
+   ═══════════════════════════════════════════════════════════ */
+function startCall(room){
+  ACTIVE_ROOM=room;
+  $('callRoomLabel').textContent=room.title||room.roomId;
+  $('callWrap').classList.add('on');
+  document.body.classList.add('lock');
+  IN_CALL=true;
+  history.pushState({screen:'callWrap',depth:SCREEN_STACK.length+1},'',location.pathname);
+
+  const domain='meet.jit.si';
+  const options={
+    roomName:room.jitsiRoomName||('biluxe10_'+room.id),
+    parentNode:$('jitsiFrame'),
+    width:'100%',
+    height:'100%',
+    userInfo:{displayName:CURRENT_USER.name,email:CURRENT_USER.email},
+    configOverwrite:{
+      prejoinPageEnabled:true,
+      disableDeepLinking:true,
+      startWithAudioMuted:false,
+      startWithVideoMuted:false,
+      enableWelcomePage:false,
+      defaultLanguage:'en',
+    },
+    interfaceConfigOverwrite:{
+      SHOW_JITSI_WATERMARK:false,
+      SHOW_WATERMARK_FOR_GUESTS:false,
+      DEFAULT_BACKGROUND:'#07070A',
+      TOOLBAR_BUTTONS:['microphone','camera','closedcaptions','desktop','fullscreen',
+        'fodeviceselection','hangup','profile','chat','recording','settings','raisehand',
+        'videoquality','filmstrip','tileview','participants-pane'],
+    },
+  };
+  try{
+    JITSI_API=new JitsiMeetExternalAPI(domain,options);
+    JITSI_API.addEventListener('videoConferenceJoined',()=>{
+      CALL_START_TS=Date.now();
+      CALL_TIMER_INT=setInterval(updateCallTimer,1000);
+    });
+    JITSI_API.addEventListener('readyToClose',()=>{
+      endCallCleanup();
+    });
+    JITSI_API.addEventListener('videoConferenceLeft',()=>{
+      endCallCleanup();
+    });
+  }catch(e){
+    toast('Could not start video engine: '+(e.message||''),'err');
+    endCallCleanup();
+  }
+}
+
+function updateCallTimer(){
+  if(!CALL_START_TS)return;
+  const secs=Math.floor((Date.now()-CALL_START_TS)/1000);
+  const m=String(Math.floor(secs/60)).padStart(2,'0');
+  const s=String(secs%60).padStart(2,'0');
+  $('callTimer').textContent=m+':'+s;
+}
+
+/* STRICT BACK-BUTTON RULE:
+   - If currently in a call -> pressing the in-app back button (or hardware back)
+     must show a confirm dialog and can only leave by ending the call.
+   - If not in a call -> normal back navigation. */
+function requestLeaveCall(){
+  $('leaveConfirm').classList.add('on');
+}
+function cancelLeaveCall(){
+  $('leaveConfirm').classList.remove('on');
+}
+function confirmLeaveCall(){
+  $('leaveConfirm').classList.remove('on');
+  if(JITSI_API){
+    try{JITSI_API.executeCommand('hangup');}catch(e){}
+  }
+  endCallCleanup();
+}
+
+function endCallCleanup(){
+  IN_CALL=false;
+  clearInterval(CALL_TIMER_INT);
+  CALL_TIMER_INT=null;CALL_START_TS=null;
+  $('callTimer').textContent='00:00';
+  if(JITSI_API){
+    try{JITSI_API.dispose();}catch(e){}
+    JITSI_API=null;
+  }
+  $('jitsiFrame').innerHTML='';
+  $('callWrap').classList.remove('on');
+  document.body.classList.remove('lock');
+  ACTIVE_ROOM=null;
+  // Ensure the URL/history state reflects "not in call" so a subsequent
+  // back press behaves normally rather than re-triggering the call guard.
+  if(history.state && history.state.screen==='callWrap'){
+    history.back();
+  }
+}
+
+/* Warn on tab-close / refresh while in a call */
+window.addEventListener('beforeunload',e=>{
+  if(IN_CALL){e.preventDefault();e.returnValue='';}
+});
+</script>
+
+
+</body>
+</html>
