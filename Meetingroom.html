@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Basecamp — Team Rooms</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#14181C;
+    --ink-raised:#1B2126;
+    --ink-line:#2A3238;
+    --paper:#F0EDE6;
+    --paper-dim:#B8BCB6;
+    --signal:#4FA88C;
+    --signal-dim:#355B4F;
+    --you:#E8A23D;
+    --danger:#D8654F;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html,body{height:100%;}
+  body{
+    background:var(--ink);
+    color:var(--paper);
+    font-family:'Inter',sans-serif;
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+  }
+  .mono{font-family:'IBM Plex Mono',monospace;}
+  a{color:inherit;}
+  button{font-family:inherit;cursor:pointer;}
+  ::selection{background:var(--signal-dim);}
+
+  /* ---------- utility ---------- */
+  .screen{display:none;min-height:100vh;}
+  .screen.active{display:block;}
+  .wrap{max-width:960px;margin:0 auto;padding:0 24px;}
+  .eyebrow{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    color:var(--signal);
+  }
+  .visually-hidden{position:absolute;left:-9999px;}
+  :focus-visible{outline:2px solid var(--signal);outline-offset:2px;}
+
+  /* ---------- LOGIN ---------- */
+  #screen-login{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:24px;
+  }
+  .login-card{
+    width:100%;
+    max-width:420px;
+  }
+  .brand{
+    display:flex;
+    align-items:baseline;
+    gap:10px;
+    margin-bottom:36px;
+  }
+  .brand-mark{
+    width:12px;height:12px;border-radius:2px;
+    background:var(--signal);
+    box-shadow:0 0 0 3px var(--signal-dim);
+    flex-shrink:0;
+  }
+  .brand-name{font-size:20px;font-weight:800;letter-spacing:-0.01em;}
+  .brand-sub{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--paper-dim);}
+
+  h1.login-h{
+    font-size:28px;
+    font-weight:800;
+    letter-spacing:-0.02em;
+    line-height:1.2;
+    margin-bottom:8px;
+  }
+  .login-p{color:var(--paper-dim);font-size:14px;margin-bottom:28px;line-height:1.5;}
+
+  .field{margin-bottom:16px;}
+  .field label{
+    display:block;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:.1em;
+    color:var(--paper-dim);
+    margin-bottom:6px;
+  }
+  .field input{
+    width:100%;
+    background:var(--ink-raised);
+    border:1px solid var(--ink-line);
+    border-radius:var(--radius);
+    padding:12px 14px;
+    color:var(--paper);
+    font-size:15px;
+    font-family:inherit;
+    transition:border-color .15s;
+  }
+  .field input:focus{border-color:var(--signal);}
+  .field input::placeholder{color:#5A6169;}
+
+  .role-toggle{
+    display:flex;
+    gap:8px;
+    margin-bottom:24px;
+  }
+  .role-btn{
+    flex:1;
+    background:var(--ink-raised);
+    border:1px solid var(--ink-line);
+    border-radius:var(--radius);
+    padding:12px;
+    text-align:left;
+    color:var(--paper-dim);
+    transition:all .15s;
+  }
+  .role-btn .rb-title{font-weight:600;font-size:14px;color:var(--paper);display:block;margin-bottom:2px;}
+  .role-btn .rb-desc{font-size:12px;}
+  .role-btn.selected{border-color:var(--signal);background:rgba(79,168,140,0.1);}
+  .role-btn.selected .rb-title{color:var(--signal);}
+
+  .btn-primary{
+    width:100%;
+    background:var(--signal);
+    color:#0B1210;
+    border:none;
+    border-radius:var(--radius);
+    padding:14px;
+    font-size:15px;
+    font-weight:700;
+    transition:filter .15s;
+  }
+  .btn-primary:hover{filter:brightness(1.08);}
+  .btn-primary:disabled{opacity:.4;cursor:not-allowed;}
+
+  .login-foot{
+    margin-top:20px;
+    font-size:12px;
+    color:var(--paper-dim);
+    text-align:center;
+    font-family:'IBM Plex Mono',monospace;
+  }
+
+  /* ---------- DASHBOARD SHELL ---------- */
+  .topbar{
+    border-bottom:1px solid var(--ink-line);
+    background:var(--ink);
+    position:sticky;
+    top:0;
+    z-index:10;
+  }
+  .topbar-inner{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:16px 24px;
+  }
+  .topbar-left{display:flex;align-items:center;gap:10px;}
+  .who{display:flex;align-items:center;gap:10px;}
+  .avatar{
+    width:32px;height:32px;border-radius:8px;
+    background:var(--ink-raised);
+    border:1px solid var(--ink-line);
+    display:flex;align-items:center;justify-content:center;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:13px;font-weight:600;color:var(--signal);
+  }
+  .who-name{font-size:14px;font-weight:600;}
+  .who-role{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--paper-dim);text-transform:uppercase;letter-spacing:.08em;}
+  .btn-ghost{
+    background:transparent;
+    border:1px solid var(--ink-line);
+    color:var(--paper-dim);
+    border-radius:8px;
+    padding:8px 14px;
+    font-size:13px;
+    transition:all .15s;
+  }
+  .btn-ghost:hover{border-color:var(--paper-dim);color:var(--paper);}
+
+  .dash-header{padding:40px 0 24px;}
+  .dash-h1{font-size:26px;font-weight:800;letter-spacing:-0.02em;margin-top:8px;}
+  .dash-sub{color:var(--paper-dim);font-size:14px;margin-top:6px;max-width:520px;line-height:1.5;}
+
+  .section-title{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    text-transform:uppercase;
+    letter-spacing:.1em;
+    color:var(--paper-dim);
+    margin:32px 0 12px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+  }
+
+  /* create room bar (mentor only) */
+  .create-bar{
+    display:flex;
+    gap:8px;
+    margin-bottom:24px;
+  }
+  .create-bar input{
+    flex:1;
+    background:var(--ink-raised);
+    border:1px solid var(--ink-line);
+    border-radius:var(--radius);
+    padding:12px 14px;
+    color:var(--paper);
+    font-size:14px;
+  }
+  .create-bar input:focus{border-color:var(--signal);outline:none;}
+  .btn-create{
+    background:var(--signal);
+    color:#0B1210;
+    border:none;
+    border-radius:var(--radius);
+    padding:12px 18px;
+    font-weight:700;
+    font-size:14px;
+    white-space:nowrap;
+  }
+  .btn-create:hover{filter:brightness(1.08);}
+
+  /* room list — terminal directory feel */
+  .room-list{
+    border:1px solid var(--ink-line);
+    border-radius:var(--radius);
+    overflow:hidden;
+  }
+  .room-row{
+    display:flex;
+    align-items:center;
+    gap:16px;
+    padding:16px 18px;
+    border-bottom:1px solid var(--ink-line);
+    background:var(--ink-raised);
+    transition:background .15s;
+  }
+  .room-row:last-child{border-bottom:none;}
+  .room-row:hover{background:#212831;}
+  .room-status-dot{
+    width:8px;height:8px;border-radius:50%;
+    background:#5A6169;
+    flex-shrink:0;
+  }
+  .room-status-dot.live{background:var(--signal);box-shadow:0 0 0 3px var(--signal-dim);}
+  .room-main{flex:1;min-width:0;}
+  .room-code{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--paper-dim);}
+  .room-name{font-size:15px;font-weight:600;margin-top:2px;}
+  .room-meta{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--paper-dim);white-space:nowrap;}
+  .btn-join{
+    background:transparent;
+    border:1px solid var(--signal);
+    color:var(--signal);
+    border-radius:8px;
+    padding:8px 16px;
+    font-size:13px;
+    font-weight:600;
+    white-space:nowrap;
+    transition:all .15s;
+  }
+  .btn-join:hover{background:var(--signal);color:#0B1210;}
+  .btn-delete{
+    background:transparent;
+    border:none;
+    color:var(--paper-dim);
+    padding:8px;
+    font-size:16px;
+    line-height:1;
+    border-radius:6px;
+  }
+  .btn-delete:hover{color:var(--danger);}
+
+  .empty-state{
+    border:1px dashed var(--ink-line);
+    border-radius:var(--radius);
+    padding:36px 20px;
+    text-align:center;
+    color:var(--paper-dim);
+    font-size:14px;
+  }
+
+  /* ---------- MEETING ROOM ---------- */
+  #screen-meeting{background:#0B0E11;}
+  .meeting-topbar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:14px 20px;
+    background:var(--ink);
+    border-bottom:1px solid var(--ink-line);
+  }
+  .meeting-info{display:flex;align-items:center;gap:12px;}
+  .meeting-name{font-size:15px;font-weight:700;}
+  .meeting-code{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--paper-dim);}
+  .btn-leave{
+    background:var(--danger);
+    color:#1C0E0A;
+    border:none;
+    border-radius:8px;
+    padding:9px 18px;
+    font-weight:700;
+    font-size:13px;
+  }
+  .btn-leave:hover{filter:brightness(1.1);}
+  #jitsi-container{
+    width:100%;
+    height:calc(100vh - 61px);
+  }
+
+  /* responsive */
+  @media (max-width:600px){
+    .role-toggle{flex-direction:column;}
+    .room-row{flex-wrap:wrap;}
+    .room-meta{order:3;width:100%;}
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{transition:none !important;}
+  }
+</style>
+</head>
+<body>
+
+<!-- ===================== LOGIN ===================== -->
+<div class="screen active" id="screen-login">
+  <div class="login-card">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <span class="brand-name">Basecamp</span>
+      <span class="brand-sub mono">/ team rooms</span>
+    </div>
+
+    <h1 class="login-h">Sign in</h1>
+    <p class="login-p">Enter your name to open your rooms. No password — this runs entirely in your browser.</p>
+
+    <div class="field">
+      <label for="login-name">Your name</label>
+      <input id="login-name" type="text" placeholder="e.g. Sam Rivera" autocomplete="name">
+    </div>
+
+    <div class="field">
+      <label id="role-label">You are joining as</label>
+      <div class="role-toggle" role="group" aria-labelledby="role-label">
+        <button type="button" class="role-btn selected" id="role-mentor" data-role="mentor">
+          <span class="rb-title">Organizer</span>
+          <span class="rb-desc">Create and manage rooms</span>
+        </button>
+        <button type="button" class="role-btn" id="role-member" data-role="member">
+          <span class="rb-title">Member</span>
+          <span class="rb-desc">Join rooms you're invited to</span>
+        </button>
+      </div>
+    </div>
+
+    <button class="btn-primary" id="btn-login">Continue</button>
+    <p class="login-foot">rooms are stored on this device only</p>
+  </div>
+</div>
+
+<!-- ===================== ORGANIZER DASHBOARD ===================== -->
+<div class="screen" id="screen-mentor">
+  <div class="topbar">
+    <div class="topbar-inner wrap" style="max-width:960px;margin:0 auto;">
+      <div class="topbar-left">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <span class="brand-name" style="font-size:15px;">Basecamp</span>
+      </div>
+      <div class="who">
+        <div class="who-info" style="text-align:right;">
+          <div class="who-name" id="mentor-name-display">—</div>
+          <div class="who-role">Organizer</div>
+        </div>
+        <div class="avatar" id="mentor-avatar">—</div>
+        <button class="btn-ghost" id="mentor-logout">Sign out</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="dash-header">
+      <span class="eyebrow">Dashboard</span>
+      <h1 class="dash-h1">Your rooms</h1>
+      <p class="dash-sub">Create a room and share its code with your team. Anyone with the code can join while it's live.</p>
+    </div>
+
+    <div class="create-bar">
+      <input type="text" id="new-room-name" placeholder="Name this room, e.g. Weekly Standup" maxlength="60">
+      <button class="btn-create" id="btn-create-room">Create room</button>
+    </div>
+
+    <div class="section-title">All rooms</div>
+    <div id="mentor-room-list"></div>
+  </div>
+</div>
+
+<!-- ===================== MEMBER DASHBOARD ===================== -->
+<div class="screen" id="screen-member">
+  <div class="topbar">
+    <div class="topbar-inner wrap" style="max-width:960px;margin:0 auto;">
+      <div class="topbar-left">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <span class="brand-name" style="font-size:15px;">Basecamp</span>
+      </div>
+      <div class="who">
+        <div class="who-info" style="text-align:right;">
+          <div class="who-name" id="member-name-display">—</div>
+          <div class="who-role">Member</div>
+        </div>
+        <div class="avatar" id="member-avatar">—</div>
+        <button class="btn-ghost" id="member-logout">Sign out</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="dash-header">
+      <span class="eyebrow">Dashboard</span>
+      <h1 class="dash-h1">Available rooms</h1>
+      <p class="dash-sub">Join any room below, or enter a code someone shared with you directly.</p>
+    </div>
+
+    <div class="create-bar">
+      <input type="text" id="join-code-input" placeholder="Enter a room code" maxlength="20">
+      <button class="btn-create" id="btn-join-code">Join by code</button>
+    </div>
+
+    <div class="section-title">Open rooms</div>
+    <div id="member-room-list"></div>
+  </div>
+</div>
+
+<!-- ===================== MEETING ROOM ===================== -->
+<div class="screen" id="screen-meeting">
+  <div class="meeting-topbar">
+    <div class="meeting-info">
+      <span class="room-status-dot live" aria-hidden="true"></span>
+      <div>
+        <div class="meeting-name" id="meeting-room-name">Room</div>
+        <div class="meeting-code mono" id="meeting-room-code">CODE</div>
+      </div>
+    </div>
+    <button class="btn-leave" id="btn-leave-meeting">Leave room</button>
+  </div>
+  <div id="jitsi-container"></div>
+</div>
+
+<script src="https://meet.jit.si/external_api.js"></script>
+<script>
+(function(){
+  "use strict";
+
+  // ---------- state ----------
+  var STORAGE_KEY = "basecamp_rooms_v1";
+  var currentUser = null; // {name, role}
+  var jitsiApi = null;
+
+  function loadRooms(){
+    try{
+      var raw = localStorage.getItem(STORAGE_KEY);
+      return raw ? JSON.parse(raw) : [];
+    }catch(e){ return []; }
+  }
+  function saveRooms(rooms){
+    try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(rooms)); }catch(e){}
+  }
+  function genCode(){
+    var chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+    var code = "";
+    for(var i=0;i<6;i++){ code += chars[Math.floor(Math.random()*chars.length)]; }
+    return code.slice(0,3) + "-" + code.slice(3);
+  }
+  function initials(name){
+    var parts = name.trim().split(/\s+/);
+    var out = parts[0] ? parts[0][0] : "";
+    if(parts.length > 1) out += parts[parts.length-1][0];
+    return out.toUpperCase();
+  }
+  function escapeHtml(str){
+    var d = document.createElement("div");
+    d.textContent = str;
+    return d.innerHTML;
+  }
+  function showScreen(id){
+    document.querySelectorAll(".screen").forEach(function(s){ s.classList.remove("active"); });
+    document.getElementById(id).classList.add("active");
+  }
+
+  // ---------- login ----------
+  var selectedRole = "mentor";
+  document.getElementById("role-mentor").addEventListener("click", function(){ setRole("mentor"); });
+  document.getElementById("role-member").addEventListener("click", function(){ setRole("member"); });
+  function setRole(role){
+    selectedRole = role;
+    document.getElementById("role-mentor").classList.toggle("selected", role === "mentor");
+    document.getElementById("role-member").classList.toggle("selected", role === "member");
+  }
+
+  document.getElementById("btn-login").addEventListener("click", function(){
+    var name = document.getElementById("login-name").value.trim();
+    if(!name){
+      document.getElementById("login-name").focus();
+      return;
+    }
+    currentUser = { name: name, role: selectedRole };
+    if(selectedRole === "mentor"){
+      document.getElementById("mentor-name-display").textContent = name;
+      document.getElementById("mentor-avatar").textContent = initials(name);
+      renderMentorRooms();
+      showScreen("screen-mentor");
+    }else{
+      document.getElementById("member-name-display").textContent = name;
+      document.getElementById("member-avatar").textContent = initials(name);
+      renderMemberRooms();
+      showScreen("screen-member");
+    }
+  });
+  document.getElementById("login-name").addEventListener("keydown", function(e){
+    if(e.key === "Enter") document.getElementById("btn-login").click();
+  });
+
+  document.getElementById("mentor-logout").addEventListener("click", logout);
+  document.getElementById("member-logout").addEventListener("click", logout);
+  function logout(){
+    currentUser = null;
+    document.getElementById("login-name").value = "";
+    showScreen("screen-login");
+  }
+
+  // ---------- organizer dashboard ----------
+  document.getElementById("btn-create-room").addEventListener("click", function(){
+    var input = document.getElementById("new-room-name");
+    var name = input.value.trim();
+    if(!name) { input.focus(); return; }
+    var rooms = loadRooms();
+    rooms.unshift({
+      code: genCode(),
+      name: name,
+      host: currentUser.name,
+      createdAt: Date.now()
+    });
+    saveRooms(rooms);
+    input.value = "";
+    renderMentorRooms();
+  });
+  document.getElementById("new-room-name").addEventListener("keydown", function(e){
+    if(e.key === "Enter") document.getElementById("btn-create-room").click();
+  });
+
+  function renderMentorRooms(){
+    var rooms = loadRooms();
+    var el = document.getElementById("mentor-room-list");
+    if(rooms.length === 0){
+      el.innerHTML = '<div class="empty-state">No rooms yet — create one above to get started.</div>';
+      return;
+    }
+    var html = '<div class="room-list">';
+    rooms.forEach(function(r){
+      html += roomRowHtml(r, true);
+    });
+    html += '</div>';
+    el.innerHTML = html;
+
+    el.querySelectorAll("[data-join]").forEach(function(btn){
+      btn.addEventListener("click", function(){ joinRoom(btn.getAttribute("data-join"), btn.getAttribute("data-name")); });
+    });
+    el.querySelectorAll("[data-delete]").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        var code = btn.getAttribute("data-delete");
+        var rooms = loadRooms().filter(function(r){ return r.code !== code; });
+        saveRooms(rooms);
+        renderMentorRooms();
+      });
+    });
+  }
+
+  function roomRowHtml(r, isMentor){
+    var created = new Date(r.createdAt);
+    var timeStr = created.toLocaleDateString(undefined, { month:"short", day:"numeric" });
+    return (
+      '<div class="room-row">' +
+        '<span class="room-status-dot live" aria-hidden="true"></span>' +
+        '<div class="room-main">' +
+          '<div class="room-code mono">' + escapeHtml(r.code) + '</div>' +
+          '<div class="room-name">' + escapeHtml(r.name) + '</div>' +
+        '</div>' +
+        '<div class="room-meta">hosted by ' + escapeHtml(r.host) + ' · ' + timeStr + '</div>' +
+        '<button class="btn-join" data-join="' + escapeHtml(r.code) + '" data-name="' + escapeHtml(r.name) + '">Join</button>' +
+        (isMentor ? '<button class="btn-delete" data-delete="' + escapeHtml(r.code) + '" title="Delete room" aria-label="Delete room">&#10005;</button>' : '') +
+      '</div>'
+    );
+  }
+
+  // ---------- member dashboard ----------
+  function renderMemberRooms(){
+    var rooms = loadRooms();
+    var el = document.getElementById("member-room-list");
+    if(rooms.length === 0){
+      el.innerHTML = '<div class="empty-state">No rooms are open right now. Ask your organizer for a code, or check back soon.</div>';
+      return;
+    }
+    var html = '<div class="room-list">';
+    rooms.forEach(function(r){
+      html += roomRowHtml(r, false);
+    });
+    html += '</div>';
+    el.innerHTML = html;
+
+    el.querySelectorAll("[data-join]").forEach(function(btn){
+      btn.addEventListener("click", function(){ joinRoom(btn.getAttribute("data-join"), btn.getAttribute("data-name")); });
+    });
+  }
+
+  document.getElementById("btn-join-code").addEventListener("click", function(){
+    var input = document.getElementById("join-code-input");
+    var code = input.value.trim().toUpperCase();
+    if(!code) { input.focus(); return; }
+    var rooms = loadRooms();
+    var match = rooms.find(function(r){ return r.code.toUpperCase() === code; });
+    if(match){
+      joinRoom(match.code, match.name);
+    }else{
+      // allow joining an ad-hoc code even if not in the local directory
+      joinRoom(code, "Direct join");
+    }
+  });
+  document.getElementById("join-code-input").addEventListener("keydown", function(e){
+    if(e.key === "Enter") document.getElementById("btn-join-code").click();
+  });
+
+  // ---------- meeting room ----------
+  function joinRoom(code, name){
+    document.getElementById("meeting-room-name").textContent = name || "Room";
+    document.getElementById("meeting-room-code").textContent = code;
+    showScreen("screen-meeting");
+
+    var domain = "meet.jit.si";
+    var options = {
+      roomName: "basecamp-" + code.replace(/[^A-Za-z0-9]/g, ""),
+      width: "100%",
+      height: "100%",
+      parentNode: document.getElementById("jitsi-container"),
+      userInfo: { displayName: currentUser ? currentUser.name : "Guest" },
+      configOverwrite: {
+        prejoinPageEnabled: true,
+        disableDeepLinking: true
+      },
+      interfaceConfigOverwrite: {
+        SHOW_JITSI_WATERMARK: false,
+        SHOW_WATERMARK_FOR_GUESTS: false
+      }
+    };
+
+    if(jitsiApi){
+      jitsiApi.dispose();
+      jitsiApi = null;
+    }
+    document.getElementById("jitsi-container").innerHTML = "";
+    jitsiApi = new JitsiMeetExternalAPI(domain, options);
+  }
+
+  document.getElementById("btn-leave-meeting").addEventListener("click", function(){
+    if(jitsiApi){
+      jitsiApi.dispose();
+      jitsiApi = null;
+    }
+    document.getElementById("jitsi-container").innerHTML = "";
+    if(currentUser && currentUser.role === "mentor"){
+      renderMentorRooms();
+      showScreen("screen-mentor");
+    }else{
+      renderMemberRooms();
+      showScreen("screen-member");
+    }
+  });
+
+})();
+</script>
+</body>
+</html>
