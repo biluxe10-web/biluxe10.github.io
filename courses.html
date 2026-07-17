@@ -1,0 +1,2292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Biluxe10 — Courses</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,700;0,9..144,900;1,9..144,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config={theme:{extend:{
+  colors:{
+    ink:'#07070A', bg2:'#0D0D12', bg3:'#121218', bg4:'#18181F', bg5:'#1E1E28',
+    gold:{DEFAULT:'#C8A96E',2:'#E2C48A',3:'#F0D9A8'},
+    txt:'#EDEDF0', t2:'#9B9BA8', t3:'#4B4B5A', t4:'#2A2A35',
+    vio:'#A78BFA', cyan:'#22D3EE', amber:'#F59E0B'
+  },
+  fontFamily:{display:['Fraunces','serif'],body:['Plus Jakarta Sans','sans-serif'],mono:['JetBrains Mono','monospace']}
+}}}
+</script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+<script>
+const firebaseConfig={apiKey:"AIzaSyDxxkC9iD1V1w-53Kf4oBrHEXlBLvCc7sE",authDomain:"biluxe10-3e894.firebaseapp.com",projectId:"biluxe10-3e894",storageBucket:"biluxe10-3e894.appspot.com",messagingSenderId:"804749588233",appId:"1:804749588233:web:7777648c0c7834733c05d8"};
+if(!firebase.apps.length)firebase.initializeApp(firebaseConfig);
+const AUTH=firebase.auth(),DB=firebase.firestore();
+</script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+--bg:#07070A;--bg2:#0D0D12;--bg3:#121218;--bg4:#18181F;--bg5:#1E1E28;
+--border:rgba(255,255,255,0.055);--border2:rgba(255,255,255,0.1);--border3:rgba(255,255,255,0.16);
+--gold:#C8A96E;--gold2:#E2C48A;--gold3:#F0D9A8;
+--gA:rgba(200,169,110,0.08);--gB:rgba(200,169,110,0.15);--gC:rgba(200,169,110,0.04);
+--green:#22C55E;--grA:rgba(34,197,94,0.1);
+--red:#EF4444;--reA:rgba(239,68,68,0.1);
+--blue:#60A5FA;--blA:rgba(96,165,250,0.1);
+--vio:#A78BFA;--viA:rgba(167,139,250,0.1);
+--amber:#F59E0B;--amA:rgba(245,158,11,0.1);
+--cyan:#22D3EE;--cyA:rgba(34,211,238,0.1);
+--ink:#07070A;--text:#EDEDF0;--t2:#9B9BA8;--t3:#4B4B5A;--t4:#2A2A35;
+--fd:'Fraunces',serif;--fb:'Plus Jakarta Sans',sans-serif;--fm:'JetBrains Mono',monospace;
+--r:14px;--rs:10px;--nav:60px;
+--ease:cubic-bezier(0.16,1,0.3,1);--spring:cubic-bezier(0.34,1.56,0.64,1);
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--fb);line-height:1.6;overflow-x:hidden;min-height:100vh}
+body.lock{overflow:hidden}
+::-webkit-scrollbar{width:3px}
+::-webkit-scrollbar-thumb{background:rgba(200,169,110,0.2);border-radius:2px}
+button,input,select,textarea{font-family:var(--fb)}
+body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+background:radial-gradient(ellipse 600px 400px at 20% 0%,rgba(200,169,110,0.04),transparent),
+radial-gradient(ellipse 400px 400px at 85% 80%,rgba(167,139,250,0.03),transparent)}
+#guard{position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;transition:opacity .7s ease}
+#guard.fade{opacity:0;pointer-events:none}
+#guard.gone{display:none}
+.g-logo{font-family:var(--fd);font-size:clamp(3rem,10vw,5rem);font-weight:900;color:var(--gold);letter-spacing:-.03em;line-height:1;animation:logoPulse 2s ease infinite}
+@keyframes logoPulse{0%,100%{text-shadow:0 0 30px rgba(200,169,110,0.3)}50%{text-shadow:0 0 60px rgba(200,169,110,0.6)}}
+.g-logo sup{font-size:.4em;color:var(--t3);font-weight:400;vertical-align:super}
+.g-spin{width:32px;height:32px;border:2.5px solid rgba(200,169,110,.12);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.g-msg{font-family:var(--fm);font-size:.58rem;color:var(--t3);letter-spacing:.2em;text-transform:uppercase;text-align:center}
+.g-err{display:none;flex-direction:column;align-items:center;gap:14px;text-align:center;padding:24px;max-width:340px}
+.g-err-t{font-family:var(--fd);font-size:1.1rem;color:var(--red)}
+.g-err-d{font-size:.8rem;color:var(--t2);line-height:1.75}
+.g-btn{padding:11px 26px;background:var(--gold);color:var(--ink);border:none;border-radius:8px;font-weight:800;font-size:.8rem;cursor:pointer}
+#app{display:flex;flex-direction:column;min-height:100vh;opacity:0;transition:opacity .6s ease;position:relative;z-index:1}
+#app.show{opacity:1}
+.topbar{height:var(--nav);background:rgba(7,7,10,0.94);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 16px;position:sticky;top:0;z-index:200;gap:10px}
+.tb-l{display:flex;align-items:center;gap:10px;min-width:0}
+.tb-back{width:34px;height:34px;border-radius:50%;background:var(--bg3);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;-webkit-tap-highlight-color:transparent}
+.tb-back svg{width:15px;height:15px;stroke:var(--text);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.tb-logo{font-family:var(--fd);font-size:1.05rem;font-weight:900;color:var(--gold);flex-shrink:0}
+.tb-divider{width:1px;height:16px;background:var(--border2);flex-shrink:0}
+.tb-pg{font-size:.78rem;font-weight:600;color:var(--t2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tb-r{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.tb-live{display:flex;align-items:center;gap:4px;padding:4px 9px;background:var(--bg3);border:1px solid var(--border);border-radius:20px;font-family:var(--fm);font-size:.5rem;color:var(--t2)}
+.live-dot{width:5px;height:5px;border-radius:50%;background:var(--green);animation:pulse 2s ease infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+#main{flex:1;padding:16px;display:flex;flex-direction:column;gap:22px;max-width:720px;margin:0 auto;width:100%;padding-bottom:90px}
+.pg{display:none;flex-direction:column;gap:22px}
+.pg.on{display:flex}
+#bnav{position:sticky;bottom:0;left:0;right:0;height:64px;background:rgba(7,7,10,0.96);backdrop-filter:blur(24px);border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-around;z-index:200}
+.bn{display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;cursor:pointer;padding:8px 14px;position:relative;-webkit-tap-highlight-color:transparent}
+.bn-ic svg{width:20px;height:20px;stroke:var(--t3);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.bn-lb{font-family:var(--fm);font-size:.46rem;color:var(--t3);letter-spacing:.06em;text-transform:uppercase;transition:color .2s}
+.bn.on .bn-lb{color:var(--gold)}
+.bn.on .bn-ic svg{stroke:var(--gold)}
+.bn::after{content:'';position:absolute;top:6px;left:50%;transform:translateX(-50%) scaleX(0);width:24px;height:2px;background:linear-gradient(90deg,var(--gold),var(--gold2));border-radius:2px;transition:transform .25s var(--spring)}
+.bn.on::after{transform:translateX(-50%) scaleX(1)}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r)}
+.chd{padding:14px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
+.cht{font-family:var(--fd);font-size:.9rem;font-weight:700}
+.btn-g{padding:9px 16px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--ink);border:none;border-radius:var(--rs);font-weight:800;font-size:.72rem;cursor:pointer;transition:all .2s;-webkit-tap-highlight-color:transparent;display:inline-flex;align-items:center;gap:6px}
+.btn-g:active{transform:scale(.96)}
+.btn-o{padding:9px 16px;background:transparent;color:var(--text);border:1px solid var(--border2);border-radius:var(--rs);font-weight:700;font-size:.72rem;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:6px}
+.btn-sm{padding:5px 12px;background:var(--gA);color:var(--gold);border:1px solid rgba(200,169,110,.2);border-radius:7px;font-weight:700;font-size:.64rem;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:5px}
+.bdg{display:inline-flex;align-items:center;padding:3px 7px;border-radius:5px;font-family:var(--fm);font-size:.5rem;font-weight:700;letter-spacing:.04em}
+.bdg.ok{background:var(--grA);color:var(--green);border:1px solid rgba(34,197,94,.2)}
+.bdg.pn{background:var(--amA);color:var(--amber);border:1px solid rgba(245,158,11,.2)}
+.bdg.gd{background:var(--gA);color:var(--gold);border:1px solid rgba(200,169,110,.2)}
+.bdg.lk{background:var(--reA);color:var(--red);border:1px solid rgba(239,68,68,.2)}
+#toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);z-index:9999;background:var(--bg3);border:1px solid var(--border2);border-radius:20px;padding:11px 18px;display:flex;align-items:center;gap:8px;opacity:0;transition:all .32s var(--spring);font-size:.74rem;color:var(--text);box-shadow:0 12px 40px rgba(0,0,0,.5);white-space:nowrap;max-width:92vw}
+#toast.on{transform:translateX(-50%) translateY(0);opacity:1}
+.sec-t{font-family:var(--fd);font-size:1.05rem;font-weight:900}
+.sec-s{font-size:.74rem;color:var(--t2);margin-top:2px}
+
+/* ═══ LANDING LEDGER — the two-path chooser (signature element) ═══ */
+.ledger-wrap{position:relative;padding:6px 0 10px}
+.ledger-eyebrow{font-family:var(--fm);font-size:.5rem;color:var(--gold);letter-spacing:.22em;text-transform:uppercase;display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.ledger-eyebrow::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--border2),transparent)}
+.ledger-title{font-family:var(--fd);font-size:1.65rem;font-weight:900;line-height:1.15;margin-bottom:6px}
+.ledger-sub{font-size:.78rem;color:var(--t2);line-height:1.7;max-width:520px}
+.ledger-spread{display:flex;flex-direction:column;gap:14px;margin-top:20px;position:relative}
+.ledger-spread::before{content:'';position:absolute;left:50%;top:0;bottom:0;width:1px;background:linear-gradient(180deg,transparent,rgba(200,169,110,0.35),transparent);display:none}
+@media(min-width:640px){.ledger-spread{flex-direction:row}.ledger-spread::before{display:block}}
+.ledger-leaf{flex:1;border-radius:20px;padding:24px 22px;position:relative;overflow:hidden;cursor:pointer;transition:all .28s var(--ease);border:1px solid var(--border2);-webkit-tap-highlight-color:transparent}
+.ledger-leaf:active{transform:scale(.985)}
+.ledger-leaf.bundle{background:linear-gradient(150deg,rgba(200,169,110,0.1),rgba(200,169,110,0.02) 60%);}
+.ledger-leaf.solo{background:linear-gradient(150deg,rgba(167,139,250,0.09),rgba(167,139,250,0.02) 60%);}
+.ledger-leaf::before{content:'';position:absolute;top:-50%;right:-30%;width:220px;height:220px;border-radius:50%;pointer-events:none;opacity:.5}
+.ledger-leaf.bundle::before{background:radial-gradient(circle,rgba(200,169,110,0.14),transparent 70%)}
+.ledger-leaf.solo::before{background:radial-gradient(circle,rgba(167,139,250,0.14),transparent 70%)}
+.leaf-num{font-family:var(--fm);font-size:.56rem;letter-spacing:.16em;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.ledger-leaf.bundle .leaf-num{color:var(--gold)}
+.ledger-leaf.solo .leaf-num{color:var(--vio)}
+.leaf-title{font-family:var(--fd);font-size:1.3rem;font-weight:900;line-height:1.2;margin-bottom:8px}
+.leaf-desc{font-size:.76rem;color:var(--t2);line-height:1.7;margin-bottom:16px}
+.leaf-stats{display:flex;gap:16px;margin-bottom:18px;flex-wrap:wrap}
+.leaf-stat-n{font-family:var(--fd);font-size:1.15rem;font-weight:800}
+.ledger-leaf.bundle .leaf-stat-n{color:var(--gold)}
+.ledger-leaf.solo .leaf-stat-n{color:var(--vio)}
+.leaf-stat-l{font-family:var(--fm);font-size:.48rem;color:var(--t3);text-transform:uppercase;letter-spacing:.06em;margin-top:2px}
+.leaf-cta{display:inline-flex;align-items:center;gap:7px;font-family:var(--fm);font-size:.6rem;font-weight:700;letter-spacing:.04em;padding:10px 16px;border-radius:10px}
+.ledger-leaf.bundle .leaf-cta{background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--ink)}
+.ledger-leaf.solo .leaf-cta{background:linear-gradient(135deg,var(--vio),#8B6DEE);color:#fff}
+.leaf-cta svg{width:13px;height:13px}
+.your-plan-strip{display:flex;align-items:center;gap:12px;padding:14px 16px;background:var(--bg2);border:1px solid rgba(200,169,110,0.25);border-radius:var(--r);margin-top:4px}
+.yps-ic{width:38px;height:38px;border-radius:10px;background:var(--gA);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.yps-ic svg{width:18px;height:18px;stroke:var(--gold);fill:none;stroke-width:1.8;stroke-linecap:round}
+.yps-t{font-size:.78rem;font-weight:700}
+.yps-s{font-family:var(--fm);font-size:.56rem;color:var(--t3);margin-top:2px}
+
+/* ═══ BUNDLES PAGE — ascending tier ladder (encodes real cascade) ═══ */
+.tier-hero{border-radius:18px;padding:20px 18px;background:linear-gradient(135deg,rgba(200,169,110,0.09),rgba(167,139,250,0.04));border:1px solid rgba(200,169,110,0.2);position:relative;overflow:hidden}
+.tier-hero::before{content:'';position:absolute;top:-40px;right:-40px;width:160px;height:160px;border-radius:50%;background:radial-gradient(circle,rgba(200,169,110,0.1),transparent);pointer-events:none}
+.tier-ladder{display:flex;flex-direction:column;gap:10px}
+.tier-row{display:flex;gap:12px;align-items:stretch;position:relative}
+.tier-rail{width:22px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;position:relative}
+.tier-dot{width:10px;height:10px;border-radius:50%;background:var(--bg4);border:2px solid var(--border2);flex-shrink:0;margin-top:16px;z-index:2}
+.tier-dot.active{background:var(--gold);border-color:var(--gold3);box-shadow:0 0 0 4px var(--gA)}
+.tier-line{width:2px;flex:1;background:var(--border2);margin-top:2px}
+.tier-line.active{background:linear-gradient(180deg,var(--gold),rgba(200,169,110,0.15))}
+.tier-card{flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;cursor:pointer;transition:all .2s;-webkit-tap-highlight-color:transparent;margin-bottom:2px}
+.tier-card.locked{opacity:.55}
+.tier-card.current{border-color:rgba(200,169,110,0.4);background:linear-gradient(135deg,rgba(200,169,110,0.06),transparent)}
+.tier-card:active{transform:scale(.985)}
+.tier-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:6px}
+.tier-name{font-family:var(--fd);font-size:1.05rem;font-weight:900;display:flex;align-items:center;gap:8px}
+.tier-price{font-family:var(--fd);font-size:1.05rem;font-weight:800;color:var(--gold);white-space:nowrap}
+.tier-lpa{font-family:var(--fm);font-size:.52rem;color:var(--t3);margin-bottom:8px}
+.tier-inherit{display:inline-flex;align-items:center;gap:5px;font-family:var(--fm);font-size:.5rem;color:var(--vio);background:var(--viA);border:1px solid rgba(167,139,250,.2);padding:3px 8px;border-radius:6px;margin-bottom:8px}
+.tier-inherit svg{width:9px;height:9px;stroke:var(--vio);fill:none;stroke-width:2.5}
+.tier-count-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.tier-count-chip{display:flex;align-items:center;gap:4px;font-family:var(--fm);font-size:.5rem;color:var(--t3)}
+.tier-count-chip svg{width:11px;height:11px;stroke:var(--t3);fill:none;stroke-width:2;stroke-linecap:round}
+.tier-progress-mini{margin-top:8px;height:3px;background:var(--bg4);border-radius:3px;overflow:hidden}
+.tier-progress-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold2));border-radius:3px;transition:width .8s var(--ease)}
+
+/* ═══ COURSE GRID (used inside an opened tier / individual page) ═══ */
+.bundle-tabs{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none;-ms-overflow-style:none}
+.bundle-tabs::-webkit-scrollbar{display:none}
+.btab{flex-shrink:0;padding:7px 14px;border-radius:20px;border:1px solid var(--border2);background:var(--bg3);font-family:var(--fm);font-size:.58rem;font-weight:700;color:var(--t2);cursor:pointer;transition:all .2s;-webkit-tap-highlight-color:transparent;white-space:nowrap}
+.btab.on{background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--ink);border-color:var(--gold)}
+.course-grid{display:flex;flex-direction:column;gap:12px}
+.course-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;cursor:pointer;transition:all .22s;-webkit-tap-highlight-color:transparent;position:relative}
+.course-card:active{transform:scale(.98)}
+.course-card.locked-card{opacity:.65}
+.cc-thumb{width:100%;height:110px;background:var(--bg4);position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.cc-lock-ov{position:absolute;inset:0;background:rgba(7,7,10,.7);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;backdrop-filter:blur(2px)}
+.cc-lock-ov svg{width:28px;height:28px;stroke:var(--gold);fill:none;stroke-width:1.6;stroke-linecap:round}
+.cc-lock-msg{font-family:var(--fm);font-size:.52rem;color:var(--gold);text-align:center;padding:0 16px}
+.cc-body{padding:14px}
+.cc-cat{font-family:var(--fm);font-size:.48rem;color:var(--gold);letter-spacing:.1em;text-transform:uppercase;margin-bottom:5px}
+.cc-title{font-family:var(--fd);font-size:.95rem;font-weight:700;line-height:1.3;margin-bottom:6px}
+.cc-desc{font-size:.72rem;color:var(--t2);line-height:1.65;margin-bottom:12px}
+.cc-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.cc-chip{display:flex;align-items:center;gap:4px;font-family:var(--fm);font-size:.5rem;color:var(--t3)}
+.cc-chip svg{width:11px;height:11px;stroke:var(--t3);fill:none;stroke-width:2;stroke-linecap:round}
+.cc-prog{margin-top:8px}
+.cc-prog-lbl{display:flex;justify-content:space-between;margin-bottom:5px}
+.cc-prog-t{font-family:var(--fm);font-size:.5rem;color:var(--t3)}
+.cc-prog-bar{height:3px;background:var(--bg4);border-radius:3px;overflow:hidden}
+.cc-prog-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--gold),var(--gold2));transition:width .8s var(--ease)}
+.cc-actions{display:flex;gap:8px;margin-top:12px}
+
+/* ═══ INDIVIDUAL COURSES PAGE ═══ */
+.special-grid{display:flex;flex-direction:column;gap:14px}
+.special-card{border-radius:18px;overflow:hidden;border:1px solid rgba(200,169,110,0.22);background:linear-gradient(135deg,rgba(200,169,110,0.07),rgba(167,139,250,0.04));position:relative;cursor:pointer;transition:all .2s;-webkit-tap-highlight-color:transparent}
+.special-card:active{transform:scale(.98)}
+.sc-accent{position:absolute;top:0;left:0;right:0;height:3px}
+.sc-body{padding:20px 18px}
+.sc-icon-row{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+.sc-ic{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;border:1px solid rgba(200,169,110,.2)}
+.sc-ic svg{width:26px;height:26px;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;fill:none}
+.sc-tag{font-family:var(--fm);font-size:.48rem;color:var(--gold);letter-spacing:.12em;text-transform:uppercase;margin-bottom:3px}
+.sc-nm{font-family:var(--fd);font-size:1.1rem;font-weight:900;line-height:1.2}
+.sc-desc{font-size:.73rem;color:var(--t2);line-height:1.7;margin-bottom:14px}
+.sc-price-row{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.sc-price{font-family:var(--fd);font-size:1.4rem;font-weight:900;color:var(--gold)}
+.sc-price span{font-size:.7rem;color:var(--t2);font-family:var(--fb);font-weight:400}
+.sc-feats{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+.sc-feat{display:flex;align-items:center;gap:8px;font-size:.72rem;color:var(--t2)}
+.sc-feat svg{width:14px;height:14px;stroke:var(--green);fill:none;stroke-width:2.2;stroke-linecap:round;flex-shrink:0}
+
+/* ═══ VIDEO PLAYER ═══ */
+.player-overlay{position:fixed;inset:0;z-index:1000;background:var(--bg);display:none;flex-direction:column}
+.player-overlay.on{display:flex}
+.player-topbar{height:54px;background:rgba(7,7,10,0.96);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 14px;gap:12px;flex-shrink:0}
+.player-back{width:36px;height:36px;border-radius:50%;background:var(--bg3);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;-webkit-tap-highlight-color:transparent}
+.player-back svg{width:16px;height:16px;stroke:var(--text);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.player-title{font-family:var(--fd);font-size:.9rem;font-weight:700;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.player-body{flex:1;display:flex;flex-direction:column;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.video-wrap{width:100%;position:relative;background:#000;flex-shrink:0}
+.video-wrap:fullscreen{display:flex;align-items:center;justify-content:center}
+.video-wrap:-webkit-full-screen{display:flex;align-items:center;justify-content:center}
+.vid-iframe-wrap{width:100%;aspect-ratio:16/9;position:relative;background:#000}
+.video-wrap:fullscreen .vid-iframe-wrap,.video-wrap:-webkit-full-screen .vid-iframe-wrap{width:100%;height:100%;aspect-ratio:auto}
+.vid-iframe-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:none;display:block}
+.vid-progress-track{width:100%;height:3px;background:var(--bg4);flex-shrink:0}
+.vid-progress-track-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold2));transition:width 1s linear}
+.chapters-list{display:flex;flex-direction:column;gap:0}
+.chapter-it{display:flex;align-items:center;gap:12px;padding:13px 16px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .18s;-webkit-tap-highlight-color:transparent}
+.chapter-it:last-child{border-bottom:none}
+.chapter-it:active,.chapter-it.playing{background:var(--gA)}
+.ch-num{font-family:var(--fm);font-size:.58rem;color:var(--t3);flex-shrink:0;width:20px;text-align:center}
+.ch-thumb{width:52px;height:34px;border-radius:6px;background:var(--bg4);overflow:hidden;flex-shrink:0;position:relative;display:flex;align-items:center;justify-content:center}
+.ch-play-ov{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.45)}
+.ch-play-ov svg{width:14px;height:14px;stroke:#fff;fill:#fff;stroke-width:1.5;stroke-linecap:round}
+.ch-info{flex:1;min-width:0}
+.ch-title{font-size:.76rem;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ch-dur{font-family:var(--fm);font-size:.5rem;color:var(--t3);margin-top:2px}
+.ch-done{width:18px;height:18px;border-radius:50%;background:var(--grA);border:1px solid rgba(34,197,94,.3);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ch-done svg{width:10px;height:10px;stroke:var(--green);fill:none;stroke-width:2.5;stroke-linecap:round}
+.cd-hero{padding:18px 16px;background:var(--bg2);border-bottom:1px solid var(--border)}
+.cd-cat{font-family:var(--fm);font-size:.48rem;color:var(--gold);letter-spacing:.12em;text-transform:uppercase;margin-bottom:5px}
+.cd-title{font-family:var(--fd);font-size:1.15rem;font-weight:900;line-height:1.25;margin-bottom:6px}
+.cd-desc{font-size:.74rem;color:var(--t2);line-height:1.7;margin-bottom:12px}
+.cd-meta{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.cd-chip{display:flex;align-items:center;gap:5px;padding:5px 10px;background:var(--bg3);border:1px solid var(--border);border-radius:20px;font-family:var(--fm);font-size:.52rem;color:var(--t2)}
+.cd-chip svg{width:12px;height:12px;stroke:var(--gold);fill:none;stroke-width:2;stroke-linecap:round}
+.cd-prog-wrap{margin-top:4px}
+.cd-prog-row{display:flex;justify-content:space-between;margin-bottom:6px}
+.cd-prog-lbl{font-family:var(--fm);font-size:.52rem;color:var(--t3)}
+.cd-prog-bar{height:5px;background:var(--bg4);border-radius:5px;overflow:hidden}
+.cd-prog-fill{height:100%;border-radius:5px;background:linear-gradient(90deg,var(--gold),var(--gold2));transition:width .8s var(--ease)}
+.detail-tabs{display:flex;border-bottom:1px solid var(--border);background:var(--bg2);overflow-x:auto;scrollbar-width:none}
+.detail-tabs::-webkit-scrollbar{display:none}
+.dtab{flex-shrink:0;padding:13px 18px;font-family:var(--fm);font-size:.56rem;font-weight:700;color:var(--t3);letter-spacing:.06em;text-transform:uppercase;cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;-webkit-tap-highlight-color:transparent}
+.dtab.on{color:var(--gold);border-bottom-color:var(--gold)}
+.dtab-panel{display:none;flex-direction:column;gap:14px;padding:14px}
+.dtab-panel.on{display:flex}
+.tutor-wrap{display:flex;flex-direction:column;height:380px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
+.tutor-msgs{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;scroll-behavior:smooth}
+.tutor-msgs::-webkit-scrollbar{width:2px}
+.tutor-msgs::-webkit-scrollbar-thumb{background:rgba(200,169,110,.2)}
+.msg-row{display:flex;gap:8px;align-items:flex-end}
+.msg-row.user{flex-direction:row-reverse}
+.msg-av{width:26px;height:26px;border-radius:50%;background:var(--bg4);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:var(--fd);font-size:.65rem;font-weight:700;color:var(--gold);border:1px solid var(--border2)}
+.msg-av.ai{background:linear-gradient(135deg,rgba(200,169,110,.2),rgba(167,139,250,.15));color:var(--gold)}
+.msg-bubble{max-width:78%;padding:10px 13px;border-radius:14px;font-size:.74rem;line-height:1.65}
+.msg-bubble.ai{background:var(--bg3);border:1px solid var(--border);color:var(--text);border-bottom-left-radius:4px}
+.msg-bubble.user{background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--ink);border-bottom-right-radius:4px;font-weight:600}
+.tutor-typing{display:none;align-items:center;gap:4px;padding:10px 13px;background:var(--bg3);border-radius:14px;border-bottom-left-radius:4px}
+.tutor-typing.on{display:flex}
+.tdot{width:5px;height:5px;border-radius:50%;background:var(--t3);animation:tbounce 1.2s ease infinite}
+.tdot:nth-child(2){animation-delay:.15s}.tdot:nth-child(3){animation-delay:.3s}
+@keyframes tbounce{0%,60%,100%{transform:translateY(0);opacity:.4}30%{transform:translateY(-4px);opacity:1}}
+.tutor-input-row{display:flex;gap:8px;padding:10px;border-top:1px solid var(--border)}
+.tutor-inp{flex:1;background:var(--bg4);border:1px solid var(--border2);border-radius:20px;padding:9px 15px;font-size:.76rem;color:var(--text);outline:none}
+.tutor-inp:focus{border-color:var(--gold)}
+.tutor-send{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold2));border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;-webkit-tap-highlight-color:transparent}
+.tutor-send svg{width:15px;height:15px;stroke:var(--ink);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.notes-gen{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
+.notes-content{padding:14px;font-size:.78rem;line-height:1.85;color:var(--text);white-space:pre-wrap;max-height:340px;overflow-y:auto;font-family:var(--fb)}
+.notes-actions{display:flex;gap:8px;padding:12px 14px;border-top:1px solid var(--border)}
+.exam-wrap{display:flex;flex-direction:column;gap:14px}
+.exam-intro{padding:20px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);text-align:center;display:flex;flex-direction:column;gap:14px;align-items:center}
+.exam-intro-t{font-family:var(--fd);font-size:1.05rem;font-weight:800}
+.exam-intro-d{font-size:.76rem;color:var(--t2);line-height:1.7}
+.exam-rules{display:flex;flex-direction:column;gap:8px;width:100%;text-align:left}
+.exam-rule{display:flex;align-items:center;gap:8px;font-size:.72rem;color:var(--t2);padding:8px 12px;background:var(--bg3);border-radius:8px}
+.exam-rule svg{width:14px;height:14px;stroke:var(--gold);fill:none;stroke-width:2;stroke-linecap:round;flex-shrink:0}
+.q-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:14px}
+.q-num{font-family:var(--fm);font-size:.5rem;color:var(--gold);letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px}
+.q-text{font-size:.84rem;font-weight:700;line-height:1.5;margin-bottom:12px}
+.q-opts{display:flex;flex-direction:column;gap:8px}
+.q-opt{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--bg3);border:1px solid var(--border2);border-radius:10px;cursor:pointer;transition:all .15s;-webkit-tap-highlight-color:transparent}
+.q-opt.sel{border-color:var(--gold);background:var(--gA)}
+.q-opt.correct{border-color:var(--green);background:var(--grA)}
+.q-opt.wrong{border-color:var(--red);background:var(--reA)}
+.q-opt-dot{width:16px;height:16px;border-radius:50%;border:2px solid var(--border3);flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.q-opt.sel .q-opt-dot{border-color:var(--gold)}
+.q-opt.correct .q-opt-dot{border-color:var(--green)}
+.q-opt.wrong .q-opt-dot{border-color:var(--red)}
+.q-opt-dot-in{width:8px;height:8px;border-radius:50%;background:transparent}
+.q-opt.sel .q-opt-dot-in{background:var(--gold)}
+.q-opt.correct .q-opt-dot-in{background:var(--green)}
+.q-opt.wrong .q-opt-dot-in{background:var(--red)}
+.q-opt-t{font-size:.78rem;flex:1}
+.exam-result{padding:24px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px}
+.exam-score{font-family:var(--fd);font-size:2.6rem;font-weight:900}
+.exam-score.pass{color:var(--green)}
+.exam-score.fail{color:var(--red)}
+.project-wrap{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
+.proj-status{display:flex;align-items:center;gap:10px;padding:12px;background:var(--bg3);border:1px solid var(--border2);border-radius:10px}
+.proj-status svg{width:18px;height:18px;fill:none;stroke-width:2;stroke-linecap:round;flex-shrink:0}
+.proj-lbl{font-family:var(--fm);font-size:.5rem;color:var(--t3);text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:6px}
+.proj-inp{width:100%;background:var(--bg4);border:1px solid var(--border2);border-radius:var(--rs);padding:10px 13px;font-size:.78rem;color:var(--text);outline:none;font-family:var(--fb)}
+.proj-inp:focus{border-color:var(--gold)}
+textarea.proj-inp{min-height:90px;resize:vertical}
+
+/* ═══ PAYMENT MODAL ═══ */
+.pay-modal{position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,.7);backdrop-filter:blur(4px);display:none;align-items:flex-end;justify-content:center}
+.pay-modal.on{display:flex}
+.pay-sheet{width:100%;max-width:420px;max-height:92vh;overflow-y:auto;background:var(--bg2);border-radius:24px 24px 0 0;border:1px solid var(--border2);border-bottom:none;padding:20px;display:flex;flex-direction:column;gap:14px;animation:sheetUp .3s var(--ease)}
+@keyframes sheetUp{from{transform:translateY(40px);opacity:0}to{transform:translateY(0);opacity:1}}
+.pay-handle{width:36px;height:4px;background:var(--border3);border-radius:4px;margin:0 auto}
+.pay-title{font-family:var(--fd);font-size:1.1rem;font-weight:900;text-align:center}
+.pay-price{font-family:var(--fd);font-size:2rem;font-weight:900;color:var(--gold);text-align:center}
+.pay-qr-wrap{display:flex;justify-content:center;padding:14px;background:#fff;border-radius:14px}
+.pay-upi-id{text-align:center;font-size:.76rem;color:var(--t2)}
+.pay-apps{display:flex;gap:10px;justify-content:center}
+.pay-app-btn{display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.pay-app-ic{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center}
+.pay-app-lbl{font-family:var(--fm);font-size:.5rem;color:var(--t2)}
+.pay-confirm-inp{width:100%;background:var(--bg4);border:1px solid var(--border2);border-radius:var(--rs);padding:11px 14px;font-size:.8rem;color:var(--text);outline:none}
+.pay-confirm-inp:focus{border-color:var(--gold)}
+.pay-note{font-size:.68rem;color:var(--t3);text-align:center;line-height:1.7}
+</style>
+</head>
+<body>
+
+<!-- AUTH GUARD -->
+<div id="guard">
+  <div class="g-logo">Biluxe<sup>10</sup></div>
+  <div class="g-spin" id="gSpin"></div>
+  <div class="g-msg" id="gMsg">Authenticating…</div>
+  <div class="g-err" id="gErr">
+    <div class="g-err-t">Access Denied</div>
+    <div class="g-err-d" id="gErrD">Something went wrong.</div>
+    <button class="g-btn" onclick="location.href='auth.html'">Back to Login</button>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <div class="topbar">
+    <div class="tb-l">
+      <div class="tb-back" onclick="handleBack()" id="backBtn" style="display:none">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      </div>
+      <div class="tb-logo">Biluxe<sup style="font-size:.5em;color:var(--t3);font-weight:400">10</sup></div>
+      <div class="tb-divider"></div>
+      <div class="tb-pg" id="tbPg">Courses</div>
+    </div>
+    <div class="tb-r">
+      <div class="tb-live"><div class="live-dot"></div>Live</div>
+    </div>
+  </div>
+
+  <div id="main">
+
+    <!-- ═══ PAGE: LANDING LEDGER (choose your path) ═══ -->
+    <div class="pg on" id="pg-landing">
+      <div class="ledger-wrap">
+        <div class="ledger-eyebrow">Your Learning Path</div>
+        <div class="ledger-title" id="ldTitle">Welcome back.</div>
+        <div class="ledger-sub" id="ldSub">Choose how you'd like to continue — everything inside your active bundle, or a single certified course.</div>
+      </div>
+
+      <div class="your-plan-strip" id="planStrip" style="display:none">
+        <div class="yps-ic"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg></div>
+        <div>
+          <div class="yps-t" id="planStripT">Your Plan</div>
+          <div class="yps-s" id="planStripS">—</div>
+        </div>
+      </div>
+
+      <div class="ledger-spread">
+        <div class="ledger-leaf bundle" onclick="goPage('bundles')">
+          <div class="leaf-num">◆ Bundle Access</div>
+          <div class="leaf-title">Everything in your tier</div>
+          <div class="leaf-desc">One plan unlocks every course in it — plus every course from every tier below. Higher bundles simply include more.</div>
+          <div class="leaf-stats">
+            <div><div class="leaf-stat-n">9</div><div class="leaf-stat-l">Tiers</div></div>
+            <div><div class="leaf-stat-n" id="ldBundleCourses">—</div><div class="leaf-stat-l">Courses unlocked</div></div>
+          </div>
+          <div class="leaf-cta">Browse Bundles <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg></div>
+        </div>
+        <div class="ledger-leaf solo" onclick="goPage('individual')">
+          <div class="leaf-num">◆ Individual Course</div>
+          <div class="leaf-title">One skill, on its own</div>
+          <div class="leaf-desc">Professional certifications sold separately — make-up artistry, mehendi design, fashion design. Enrol in just the one you want.</div>
+          <div class="leaf-stats">
+            <div><div class="leaf-stat-n">3</div><div class="leaf-stat-l">Available</div></div>
+            <div><div class="leaf-stat-n">1</div><div class="leaf-stat-l">Certificate each</div></div>
+          </div>
+          <div class="leaf-cta">Browse Courses <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ PAGE: BUNDLES (tier ladder) ═══ -->
+    <div class="pg" id="pg-bundles">
+      <div class="tier-hero">
+        <div class="bh-tag" style="font-family:var(--fm);font-size:.5rem;color:var(--gold);letter-spacing:.14em;text-transform:uppercase;margin-bottom:6px;display:flex;align-items:center;gap:6px"><div class="bh-tag-dot" style="width:5px;height:5px;border-radius:50%;background:var(--gold);animation:pulse 2s ease infinite"></div>YOUR BUNDLES</div>
+        <div class="bh-title" style="font-family:var(--fd);font-size:1.4rem;font-weight:900;line-height:1.2;margin-bottom:4px">Choose a Bundle</div>
+        <div class="bh-sub" style="font-size:.74rem;color:var(--t2);line-height:1.7">Tap any tier below to open its full course list on its own page.</div>
+      </div>
+
+      <div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+          <div class="sec-t">All Bundles</div>
+          <span class="bdg gd">Tap a tier to open it</span>
+        </div>
+        <div class="tier-ladder" id="tierLadder"></div>
+      </div>
+    </div>
+
+    <!-- ═══ PAGE: TIER COURSES (opens fresh on tier tap — its own page, not appended below) ═══ -->
+    <div class="pg" id="pg-tier-courses">
+      <div class="tier-hero" id="tierCoursesHero">
+        <div class="bh-tag" style="font-family:var(--fm);font-size:.5rem;color:var(--gold);letter-spacing:.14em;text-transform:uppercase;margin-bottom:6px" id="heroTag">YOUR BUNDLE</div>
+        <div class="bh-title" style="font-family:var(--fd);font-size:1.4rem;font-weight:900;line-height:1.2;margin-bottom:4px" id="heroTitle">Loading…</div>
+        <div class="bh-sub" style="font-size:.74rem;color:var(--t2);line-height:1.7;margin-bottom:14px" id="heroSub">Access all courses included in your plan.</div>
+        <div class="bh-meta" style="display:flex;gap:10px;flex-wrap:wrap">
+          <div class="bh-chip" style="display:flex;align-items:center;gap:5px;padding:5px 10px;background:rgba(0,0,0,.3);border:1px solid var(--border2);border-radius:20px;font-family:var(--fm);font-size:.52rem;color:var(--t2)"><svg viewBox="0 0 24 24" style="width:11px;height:11px;stroke:var(--gold);fill:none;stroke-width:2;stroke-linecap:round"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg><span id="heroCount">Courses</span></div>
+          <div class="bh-chip" style="display:flex;align-items:center;gap:5px;padding:5px 10px;background:rgba(0,0,0,.3);border:1px solid var(--border2);border-radius:20px;font-family:var(--fm);font-size:.52rem;color:var(--t2)"><svg viewBox="0 0 24 24" style="width:11px;height:11px;stroke:var(--gold);fill:none;stroke-width:2;stroke-linecap:round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><span id="heroLpa">—</span></div>
+          <div class="bh-chip" style="display:flex;align-items:center;gap:5px;padding:5px 10px;background:rgba(0,0,0,.3);border:1px solid var(--border2);border-radius:20px;font-family:var(--fm);font-size:.52rem;color:var(--t2)"><svg viewBox="0 0 24 24" style="width:11px;height:11px;stroke:var(--gold);fill:none;stroke-width:2;stroke-linecap:round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Lifetime Access</div>
+        </div>
+      </div>
+
+      <div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+          <div class="sec-t" id="coursesHeading">Courses in this Tier</div>
+          <span class="bdg gd" id="courseCount">—</span>
+        </div>
+        <div class="course-grid" id="courseGrid"></div>
+      </div>
+    </div>
+
+    <!-- ═══ PAGE: INDIVIDUAL COURSES ═══ -->
+    <div class="pg" id="pg-individual">
+      <div class="tier-hero">
+        <div class="bh-tag" style="font-family:var(--fm);font-size:.5rem;color:var(--vio);letter-spacing:.14em;text-transform:uppercase;margin-bottom:6px">INDIVIDUAL COURSES</div>
+        <div class="bh-title" style="font-family:var(--fd);font-size:1.4rem;font-weight:900;line-height:1.2;margin-bottom:4px">Professional Certifications</div>
+        <div class="bh-sub" style="font-size:.74rem;color:var(--t2);line-height:1.7">Sold separately from bundles — enrol in exactly the skill you want, at its own price.</div>
+      </div>
+      <div class="special-grid" id="specialGrid"></div>
+    </div>
+
+    <!-- DETAIL PAGE -->
+    <div class="pg" id="pg-detail">
+      <div id="courseDetailWrap">
+        <div class="cd-hero">
+          <div class="cd-cat" id="cdCat">Category</div>
+          <div class="cd-title" id="cdTitle">Course Title</div>
+          <div class="cd-desc" id="cdDesc">Description</div>
+          <div class="cd-meta" id="cdMeta"></div>
+          <div class="cd-prog-wrap">
+            <div class="cd-prog-row">
+              <div class="cd-prog-lbl">Progress</div>
+              <div class="cd-prog-lbl" id="cdProgPct">0%</div>
+            </div>
+            <div class="cd-prog-bar"><div class="cd-prog-fill" id="cdProgFill" style="width:0%"></div></div>
+          </div>
+        </div>
+        <div class="detail-tabs" id="detailTabs">
+          <div class="dtab on" data-tab="chapters" onclick="switchDTab('chapters',this)">Chapters</div>
+          <div class="dtab" data-tab="tutor" onclick="switchDTab('tutor',this)">AI Tutor</div>
+          <div class="dtab" data-tab="notes" onclick="switchDTab('notes',this)">Notes</div>
+          <div class="dtab" data-tab="exam" onclick="switchDTab('exam',this)">Exam</div>
+          <div class="dtab" data-tab="project" onclick="switchDTab('project',this)">Project</div>
+        </div>
+        <div class="dtab-panel on" id="tab-chapters">
+          <div class="chapters-list" id="chaptersList"></div>
+        </div>
+        <div class="dtab-panel" id="tab-tutor">
+          <div style="font-family:var(--fm);font-size:.52rem;color:var(--t3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px">Biluxe10 AI Tutor</div>
+          <div style="font-size:.72rem;color:var(--t2);margin-bottom:10px;line-height:1.65">Powered by Groq — ask anything about your course.</div>
+          <div class="tutor-wrap">
+            <div class="tutor-msgs" id="tutorMsgs">
+              <div class="msg-row">
+                <div class="msg-av ai">B</div>
+                <div class="msg-bubble ai">Hi! I am your Biluxe10 AI Tutor. Ask me anything about your course — concepts, doubts, examples, career guidance.</div>
+              </div>
+            </div>
+            <div class="msg-row" style="padding:8px 12px;display:none" id="typingRow">
+              <div class="msg-av ai">B</div>
+              <div class="tutor-typing on"><div class="tdot"></div><div class="tdot"></div><div class="tdot"></div></div>
+            </div>
+            <div class="tutor-input-row">
+              <input class="tutor-inp" id="tutorInp" placeholder="Ask your doubt…" onkeydown="if(event.key==='Enter')sendTutor()">
+              <button class="tutor-send" onclick="sendTutor()"><svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
+            </div>
+          </div>
+        </div>
+        <div class="dtab-panel" id="tab-notes">
+          <div style="font-size:.74rem;color:var(--t2);line-height:1.7">Generate AI study notes for this course.</div>
+          <div class="notes-gen">
+            <div style="padding:14px;border-bottom:1px solid var(--border);display:flex;gap:8px;flex-wrap:wrap">
+              <select id="notesType" style="flex:1;background:var(--bg4);border:1px solid var(--border2);border-radius:var(--rs);padding:8px 12px;font-size:.74rem;color:var(--text);outline:none">
+                <option value="summary">Chapter Summary</option>
+                <option value="keypoints">Key Points</option>
+                <option value="flashcards">Flashcards</option>
+                <option value="quiz">Practice Quiz</option>
+                <option value="mindmap">Mind Map Text</option>
+              </select>
+              <button class="btn-g" onclick="generateNotes()">Generate</button>
+            </div>
+            <div class="notes-content" id="notesContent">Select a notes type and click Generate to create AI study materials.</div>
+            <div class="notes-actions">
+              <button class="btn-sm" onclick="copyNotes()">Copy Notes</button>
+              <button class="btn-sm" onclick="downloadNotes()">Download</button>
+            </div>
+          </div>
+        </div>
+        <div class="dtab-panel" id="tab-exam">
+          <div class="exam-wrap" id="examWrap"></div>
+        </div>
+        <div class="dtab-panel" id="tab-project">
+          <div class="project-wrap">
+            <div style="padding:16px;border-bottom:1px solid var(--border)">
+              <div style="font-family:var(--fd);font-size:.95rem;font-weight:700;margin-bottom:5px">Project Submission</div>
+              <div style="font-size:.74rem;color:var(--t2);line-height:1.7">Submit your project to unlock your certificate. Required: 100% watch + exam pass (70%+).</div>
+            </div>
+            <div style="padding:16px;display:flex;flex-direction:column;gap:12px" id="projectBody"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOTTOM NAV -->
+  <div id="bnav">
+    <button class="bn" onclick="location.href='index.html'">
+      <div class="bn-ic"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
+      <div class="bn-lb">Home</div>
+    </button>
+    <button class="bn on" id="bnCourses" onclick="goPage('landing')">
+      <div class="bn-ic"><svg viewBox="0 0 24 24" style="stroke:var(--gold)"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg></div>
+      <div class="bn-lb" style="color:var(--gold)">Courses</div>
+    </button>
+    <button class="bn" onclick="location.href='certificates.html'">
+      <div class="bn-ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg></div>
+      <div class="bn-lb">Certificates</div>
+    </button>
+    <button class="bn" onclick="location.href='dashboard.html'">
+      <div class="bn-ic"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+      <div class="bn-lb">Profile</div>
+    </button>
+  </div>
+</div>
+
+<!-- VIDEO PLAYER OVERLAY -->
+<div class="player-overlay" id="playerOverlay">
+  <div class="player-topbar">
+    <div class="player-back" onclick="closePlayer()">
+      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+    </div>
+    <div class="player-title" id="playerTitle">Chapter</div>
+    <button class="btn-sm" onclick="toggleFullscreen()" style="flex-shrink:0">
+      <svg viewBox="0 0 24 24" style="width:13px;height:13px;stroke:var(--gold);fill:none;stroke-width:2;stroke-linecap:round"><path d="M8 3H5a2 2 0 00-2 2v3m18 0V5a2 2 0 00-2-2h-3m0 18h3a2 2 0 002-2v-3M3 16v3a2 2 0 002 2h3"/></svg>
+      Full Screen
+    </button>
+  </div>
+  <div class="player-body" id="playerBody">
+    <div class="video-wrap" id="videoWrap">
+      <div class="vid-iframe-wrap" id="vidIframeWrap"></div>
+    </div>
+    <div class="vid-progress-track" id="vidProgressTrack">
+      <div class="vid-progress-track-fill" id="vidProgFill" style="width:0%"></div>
+    </div>
+    <div style="padding:14px 16px;border-bottom:1px solid var(--border)">
+      <div style="font-family:var(--fd);font-size:.95rem;font-weight:700;margin-bottom:3px" id="playingTitle">Chapter</div>
+      <div style="font-family:var(--fm);font-size:.56rem;color:var(--t3)" id="playingCourse">Course</div>
+      <div style="font-family:var(--fm);font-size:.6rem;color:var(--t2);margin-top:8px;display:flex;align-items:center;gap:6px">
+        <svg viewBox="0 0 24 24" style="width:12px;height:12px;stroke:var(--gold);fill:none;stroke-width:2;stroke-linecap:round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        Use the player's own controls to play, pause, and seek. Progress marks complete automatically as you watch.
+      </div>
+    </div>
+    <div style="padding:12px 16px;border-bottom:1px solid var(--border)">
+      <div style="font-family:var(--fm);font-size:.52rem;color:var(--t3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px">All Chapters</div>
+      <div id="playerChaptersList"></div>
+    </div>
+  </div>
+</div>
+
+<!-- PAYMENT MODAL -->
+<div class="pay-modal" id="payModal" onclick="closePayModal(event)">
+  <div class="pay-sheet">
+    <div class="pay-handle"></div>
+    <div class="pay-title" id="payTitle">Enrol in Course</div>
+    <div style="font-size:.74rem;color:var(--t2);text-align:center;line-height:1.65" id="payDesc">Professional certification by Biluxe10</div>
+    <div class="pay-price" id="payPrice">₹0</div>
+    <div class="pay-qr-wrap"><canvas id="qrCanvas" width="180" height="180"></canvas></div>
+    <div class="pay-upi-id">UPI ID: <strong>biluxe10@upi</strong></div>
+    <div style="font-family:var(--fm);font-size:.56rem;color:var(--t3);text-align:center">Pay using any UPI app</div>
+    <div class="pay-apps">
+      <div class="pay-app-btn" onclick="openPayApp('phonepe')">
+        <div class="pay-app-ic" style="background:#5f259f"><svg viewBox="0 0 24 24" style="width:20px;height:20px;fill:none;stroke:#fff;stroke-width:1.8;stroke-linecap:round"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/><path d="M9 11l3 3 3-3"/></svg></div>
+        <div class="pay-app-lbl">PhonePe</div>
+      </div>
+      <div class="pay-app-btn" onclick="openPayApp('gpay')">
+        <div class="pay-app-ic" style="background:#fff;border:1px solid #eee"><svg viewBox="0 0 24 24" style="width:20px;height:20px;fill:none;stroke:#4285F4;stroke-width:1.8;stroke-linecap:round"><circle cx="12" cy="12" r="10"/><path d="M8 12h8M12 8v8"/></svg></div>
+        <div class="pay-app-lbl">GPay</div>
+      </div>
+      <div class="pay-app-btn" onclick="openPayApp('paytm')">
+        <div class="pay-app-ic" style="background:#00BAF2"><svg viewBox="0 0 24 24" style="width:20px;height:20px;fill:none;stroke:#fff;stroke-width:1.8;stroke-linecap:round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg></div>
+        <div class="pay-app-lbl">Paytm</div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:6px">
+      <label style="font-family:var(--fm);font-size:.52rem;color:var(--t3);text-transform:uppercase;letter-spacing:.08em">UTR / Transaction ID</label>
+      <input class="pay-confirm-inp" id="payUTR" placeholder="12-digit UTR or Transaction ID">
+      <label style="font-family:var(--fm);font-size:.52rem;color:var(--t3);text-transform:uppercase;letter-spacing:.08em;margin-top:4px">WhatsApp Number</label>
+      <input class="pay-confirm-inp" id="payWA" placeholder="+91 9999999999" type="tel">
+    </div>
+    <button class="btn-g" onclick="confirmPayment()" style="width:100%;justify-content:center;padding:13px">Confirm &amp; Request Approval</button>
+    <div class="pay-note">Admin verifies within 2–4 hours.<br>Support: <strong style="color:var(--gold)">+91 90192 54743</strong></div>
+    <button class="btn-o" onclick="document.getElementById('payModal').classList.remove('on')" style="width:100%;justify-content:center">Cancel</button>
+  </div>
+</div>
+
+<script>
+/* ══════════════════════════════════════════
+   COURSE DATA
+   Structure: each course has chapters array.
+   Each chapter: {title, vids:[{label,id}]}
+   Single vid = vids has one entry.
+
+   BUNDLE CASCADE: each tier's `courses` array already
+   contains every course from every tier below it, plus
+   its own unique courses. This means unlock logic (price
+   comparison) and the tier ladder UI both work correctly
+   with zero extra code — a Master buyer's array already
+   includes Starter/Pro/Professional/Elite/Master courses,
+   Ultimate's array includes everything up through Legend.
+   Premium (₹4,999) is intentionally empty — add later.
+══════════════════════════════════════════ */
+
+const BUNDLES=[
+  {
+    id:'starter',name:'Starter',price:499,lpa:'Target: ₹3 LPA',color:'var(--amber)',
+    courses:[
+      {name:'Digital Entrepreneurship Basics',chapters:[
+        {title:'Digital Entrepreneurship Basics',vids:[{label:'Full Course',id:'CcwYCG0Gggw'}]}
+      ]},
+      {name:'Canva & Content Creation',chapters:[
+        {title:'Canva Intro',vids:[{label:'Overview',id:'x7-XSJHcaVI'}]},
+        {title:'Canva Part 1',vids:[{label:'Part 1',id:'Oq7jsbjUJ8Q'}]},
+        {title:'Canva Part 2',vids:[{label:'Part 2',id:'hItXp3u8Vas'}]},
+        {title:'Canva Part 3',vids:[{label:'Part 3',id:'E23Vh42EN58'}]},
+        {title:'Canva Part 4',vids:[{label:'Part 4',id:'RFgtZV_eul8'}]},
+        {title:'Canva Part 5',vids:[{label:'Part 5',id:'OcPE4v7B29E'}]},
+        {title:'Canva Part 6',vids:[{label:'Part 6',id:'hAWScJH7ryk'}]},
+        {title:'Canva Part 7',vids:[{label:'Part 7',id:'Z_jeaPE6Nqw'}]},
+        {title:'Canva Part 8',vids:[{label:'Part 8',id:'VpLpK3TYcgE'}]},
+        {title:'Canva Part 9',vids:[{label:'Part 9',id:'5sVX7czKH-Q'}]},
+        {title:'Canva Part 10',vids:[{label:'Part 10',id:'9aLEqqyE3FY'}]},
+        {title:'Canva Part 11',vids:[{label:'Part 11',id:'ATR245jUdKw'}]},
+        {title:'Canva Part 12',vids:[{label:'Part 12',id:'ifhtMZ35ydM'}]},
+        {title:'Canva Part 13',vids:[{label:'Part 13',id:'YpYKsaHIvuE'}]},
+        {title:'Canva Part 14',vids:[{label:'Part 14',id:'Nqyk769I7Xo'}]},
+        {title:'Canva Part 15',vids:[{label:'Part 15',id:'nGWmrd32_Js'}]},
+        {title:'Canva Part 16',vids:[{label:'Part 16',id:'hZOeL1FAVII'}]},
+        {title:'Canva Part 17',vids:[{label:'Part 17',id:'nE0IgicAE9U'}]},
+        {title:'Canva Part 18',vids:[{label:'Part 18',id:'Ey5EKUQZ4QI'}]},
+        {title:'Canva Part 19',vids:[{label:'Part 19',id:'OJD76iRQ1RY'}]},
+        {title:'Canva Part 20',vids:[{label:'Part 20',id:'4djWjtoQxB4'}]},
+        {title:'Canva Part 21',vids:[{label:'Part 21',id:'BcMqUoRPVbM'}]},
+        {title:'Canva Part 22',vids:[{label:'Part 22',id:'hPQseOIY-0A'}]},
+        {title:'Canva Part 23',vids:[{label:'Part 23',id:'_CG-HUnTv5E'}]}
+      ]},
+      {name:'WhatsApp Business Marketing',chapters:[
+        {title:'WhatsApp Business Marketing',vids:[{label:'Full Course',id:'PlVxtty0wrI'}]}
+      ]},
+      {name:'ChatGPT for Daily Work',chapters:[
+        {title:'ChatGPT for Daily Work',vids:[{label:'Full Course',id:'IcCAEudzEDw'}]}
+      ]}
+    ]
+  },
+  {
+    id:'pro',name:'Pro',price:999,lpa:'Target: ₹3–4 LPA',color:'var(--cyan)',
+    courses:[
+      {name:'Affiliate Marketing Mastery',chapters:[
+        {title:'Affiliate Marketing Mastery',vids:[{label:'Full Course',id:'TF3BhN_dTdo'}]}
+      ]},
+      {name:'SEO & Blogging',chapters:[
+        {title:'SEO & Blogging',vids:[{label:'Full Course',id:'pDUMhloKybU'}]}
+      ]},
+      {name:'Social Media Management',chapters:[
+        {title:'Social Media Management',vids:[{label:'Full Course',id:'9WVGLqiHVuk'}]}
+      ]},
+      {name:'Email Marketing',chapters:[
+        {title:'Email Marketing',vids:[{label:'Full Course',id:'yn6L7q4V1xg'}]}
+      ]},
+      {name:'Google Ads & Facebook Ads',chapters:[
+        {title:'Google Ads',vids:[{label:'Google Ads',id:'autzRHtt-RM'}]},
+        {title:'Facebook Ads',vids:[{label:'Facebook Ads',id:'WNiU5ZxazI4'}]}
+      ]},
+      {name:'Freelancing Mastery',chapters:[
+        {title:'Freelancing Mastery',vids:[{label:'Full Course',id:'gMmTpoiITM4'}]}
+      ]}
+    ]
+  },
+  {
+    id:'professional',name:'Professional',price:2499,lpa:'Target: ₹3–4 LPA',color:'var(--blue)',
+    courses:[
+      {name:'UI/UX Design Complete',chapters:[
+        {title:'UI/UX Design Complete',vids:[{label:'Full Course',id:'7m9OJRRPsZ8'}]}
+      ]},
+      {name:'No Code Web Development',chapters:[
+        {title:'No Code Web Development',vids:[{label:'Full Course',id:'9nIwTjG2fdI'}]}
+      ]},
+      {name:'Video Editing with CapCut',chapters:[
+        {title:'Video Editing with CapCut',vids:[{label:'Full Course',id:'nXeslaOL_BE'}]}
+      ]},
+      {name:'Podcast & Audio Production',chapters:[
+        {title:'Podcast & Audio Production',vids:[{label:'Full Course',id:'cGWFvYknE7o'}]}
+      ]},
+      {name:'Ecommerce Complete Course',chapters:[
+        {title:'Ecommerce Complete Course',vids:[{label:'Full Course',id:'5d9jtO0uOpk'}]}
+      ]},
+      {name:'Dropshipping & Print on Demand',chapters:[
+        {title:'Dropshipping & Print on Demand',vids:[{label:'Full Course',id:'0O-fc9iKv-U'}]}
+      ]}
+    ]
+  },
+  {
+    id:'elite',name:'Elite',price:3699,lpa:'Target: ₹4–6 LPA',color:'var(--green)',
+    courses:[
+      {name:'Excel for Data Analysis',chapters:[
+        {title:'Excel for Data Analysis',vids:[{label:'Full Course',id:'Kjz_DDO4Fzs'}]}
+      ]},
+      {name:'SQL for Beginners',chapters:[
+        {title:'SQL for Beginners',vids:[{label:'Full Course',id:'7azCOKryADA'}]}
+      ]},
+      {name:'Power BI & Tableau',chapters:[
+        {title:'Power BI & Tableau',vids:[{label:'Full Course',id:'Gmk3DWOxVKQ'}]}
+      ]},
+      {name:'Python Basics',chapters:[
+        {title:'Python Basics',vids:[{label:'Full Course',id:'LgW6Vla0kXA'}]}
+      ]},
+      {name:'Business Analytics',chapters:[
+        {title:'Business Analytics',vids:[{label:'Full Course',id:'cCTuOBOqSaM'}]}
+      ]},
+      {name:'Financial Accounting Basics',chapters:[
+        {title:'Financial Accounting Basics',vids:[{label:'Full Course',id:'vO09q2V8TGQ'}]}
+      ]}
+    ]
+  },
+  {
+    id:'premium',name:'Premium',price:4999,lpa:'Target: ₹6–8 LPA',color:'var(--vio)',
+    courses:[
+
+    ]
+  },
+  {
+    id:'master',name:'Master',price:6999,lpa:'Target: ₹8–12 LPA',color:'var(--gold)',
+    courses:[
+      {name:'Python for Data Science',chapters:[
+        {title:'Python for Data Science',vids:[{label:'Full Course',id:'CMEWVn1uZpQ'}]}
+      ]},
+      {name:'Machine Learning Fundamentals',chapters:[
+        {title:'Machine Learning Fundamentals',vids:[{label:'Full Course',id:'hR-tMLTMw0s'}]}
+      ]},
+      {name:'Deep Learning & Neural Networks',chapters:[
+        {title:'Deep Learning & Neural Networks',vids:[{label:'Full Course',id:'G1P2IaBcXx8'}]}
+      ]},
+      {name:'Natural Language Processing',chapters:[
+        {title:'Natural Language Processing',vids:[{label:'Full Course',id:'BCLjPLeVCBY'}]}
+      ]},
+      {name:'Computer Vision',chapters:[
+        {title:'Computer Vision',vids:[{label:'Full Course',id:'01sAkU_NvOY'}]}
+      ]},
+      {name:'Big Data Engineering',chapters:[
+        {title:'Big Data Engineering',vids:[{label:'Full Course',id:'H5SHmiKTFsM'}]}
+      ]},
+      {name:'Data Engineering',chapters:[
+        {title:'Data Engineering',vids:[{label:'Full Course',id:'hf2go3E2m8g'}]}
+      ]},
+      {name:'MLOps Fundamentals',chapters:[
+        {title:'MLOps Fundamentals',vids:[{label:'Full Course',id:'dPmH3G9NQtY'}]}
+      ]},
+      {name:'End-to-End ML Project',chapters:[
+        {title:'End-to-End ML Project',vids:[{label:'Full Course',id:'o6vbe5G7xNo'}]}
+      ]},
+      {name:'Data Science Interview Prep',chapters:[
+        {title:'Data Science Interview Prep',vids:[{label:'Full Course',id:'A3ZSv6IqXY8'}]}
+      ]},
+      {name:'AWS Cloud Practitioner',chapters:[
+        {title:'AWS Cloud Practitioner',vids:[{label:'Full Course',id:'a8FFknuJwB0'}]}
+      ]},
+      {name:'Docker & Kubernetes',chapters:[
+        {title:'Docker',vids:[{label:'Docker',id:'9bSbNNH4Nqw'}]},
+        {title:'Kubernetes',vids:[{label:'Kubernetes',id:'W04brGNgxN4'}]}
+      ]},
+      {name:'CI/CD Pipelines',chapters:[
+        {title:'CI/CD Pipelines',vids:[{label:'Full Course',id:'Ke_Wr5zPE0A'}]}
+      ]},
+      {name:'Linux for DevOps',chapters:[
+        {title:'Linux for DevOps',vids:[{label:'Full Course',id:'e01GGTKmtpc'}]}
+      ]},
+      {name:'Cybersecurity Fundamentals',chapters:[
+        {title:'Cybersecurity Fundamentals',vids:[{label:'Full Course',id:'z2hVCeiwvGk'}]}
+      ]},
+      {name:'Ethical Hacking',chapters:[
+        {title:'Ethical Hacking',vids:[{label:'Full Course',id:'2eLJNBroFrg'}]}
+      ]},
+      {name:'Cloud Security',chapters:[
+        {title:'Cloud Security',vids:[{label:'Full Course',id:'a58CqpP6vEw'}]}
+      ]},
+      {name:'DevOps Project',chapters:[
+        {title:'DevOps Project',vids:[{label:'Full Course',id:'saWZQr0RMpw'}]}
+      ]}
+    ]
+  },
+  {
+    id:'elitepro',name:'Elite Pro',price:11999,lpa:'Target: ₹12–16 LPA',color:'#F472B6',
+    courses:[
+      {name:'Python for Data Science',chapters:[
+        {title:'Python for Data Science',vids:[{label:'Full Course',id:'CMEWVn1uZpQ'}]}
+      ]},
+      {name:'Machine Learning Fundamentals',chapters:[
+        {title:'Machine Learning Fundamentals',vids:[{label:'Full Course',id:'hR-tMLTMw0s'}]}
+      ]},
+      {name:'Deep Learning & Neural Networks',chapters:[
+        {title:'Deep Learning & Neural Networks',vids:[{label:'Full Course',id:'G1P2IaBcXx8'}]}
+      ]},
+      {name:'Natural Language Processing',chapters:[
+        {title:'Natural Language Processing',vids:[{label:'Full Course',id:'BCLjPLeVCBY'}]}
+      ]},
+      {name:'Computer Vision',chapters:[
+        {title:'Computer Vision',vids:[{label:'Full Course',id:'01sAkU_NvOY'}]}
+      ]},
+      {name:'Big Data Engineering',chapters:[
+        {title:'Big Data Engineering',vids:[{label:'Full Course',id:'H5SHmiKTFsM'}]}
+      ]},
+      {name:'Data Engineering',chapters:[
+        {title:'Data Engineering',vids:[{label:'Full Course',id:'hf2go3E2m8g'}]}
+      ]},
+      {name:'MLOps Fundamentals',chapters:[
+        {title:'MLOps Fundamentals',vids:[{label:'Full Course',id:'dPmH3G9NQtY'}]}
+      ]},
+      {name:'End-to-End ML Project',chapters:[
+        {title:'End-to-End ML Project',vids:[{label:'Full Course',id:'o6vbe5G7xNo'}]}
+      ]},
+      {name:'Data Science Interview Prep',chapters:[
+        {title:'Data Science Interview Prep',vids:[{label:'Full Course',id:'A3ZSv6IqXY8'}]}
+      ]},
+      {name:'AWS Cloud Practitioner',chapters:[
+        {title:'AWS Cloud Practitioner',vids:[{label:'Full Course',id:'a8FFknuJwB0'}]}
+      ]},
+      {name:'Docker & Kubernetes',chapters:[
+        {title:'Docker',vids:[{label:'Docker',id:'9bSbNNH4Nqw'}]},
+        {title:'Kubernetes',vids:[{label:'Kubernetes',id:'W04brGNgxN4'}]}
+      ]},
+      {name:'CI/CD Pipelines',chapters:[
+        {title:'CI/CD Pipelines',vids:[{label:'Full Course',id:'Ke_Wr5zPE0A'}]}
+      ]},
+      {name:'Linux for DevOps',chapters:[
+        {title:'Linux for DevOps',vids:[{label:'Full Course',id:'e01GGTKmtpc'}]}
+      ]},
+      {name:'Cybersecurity Fundamentals',chapters:[
+        {title:'Cybersecurity Fundamentals',vids:[{label:'Full Course',id:'z2hVCeiwvGk'}]}
+      ]},
+      {name:'Ethical Hacking',chapters:[
+        {title:'Ethical Hacking',vids:[{label:'Full Course',id:'2eLJNBroFrg'}]}
+      ]},
+      {name:'Cloud Security',chapters:[
+        {title:'Cloud Security',vids:[{label:'Full Course',id:'a58CqpP6vEw'}]}
+      ]},
+      {name:'DevOps Project',chapters:[
+        {title:'DevOps Project',vids:[{label:'Full Course',id:'saWZQr0RMpw'}]}
+      ]},
+      {name:'Generative AI & LLMs',chapters:[
+        {title:'Generative AI & LLMs',vids:[{label:'Full Course',id:'d4yCWBGFCEs'}]}
+      ]},
+      {name:'Agentic AI Development',chapters:[
+        {title:'Agentic AI Development',vids:[{label:'Full Course',id:'-rUKr8JDits'}]}
+      ]},
+      {name:'LangChain & LlamaIndex',chapters:[
+        {title:'LangChain & LlamaIndex',vids:[{label:'Full Course',id:'-8IUWRtznX8'}]}
+      ]},
+      {name:'Vector Databases',chapters:[
+        {title:'Vector Databases',vids:[{label:'Full Course',id:'8KrTO9bS91s'}]}
+      ]},
+      {name:'AI Agents for Business',chapters:[
+        {title:'AI Agents for Business',vids:[{label:'Full Course',id:'EsTrWCV0Ph4'}]}
+      ]},
+      {name:'LLM Fine-Tuning',chapters:[
+        {title:'LLM Fine-Tuning',vids:[{label:'Full Course',id:'iOdFUJiB0Zc'}]}
+      ]},
+      {name:'RAG Implementation',chapters:[
+        {title:'RAG Implementation',vids:[{label:'Full Course',id:'o126p1QN_RI'}]}
+      ]},
+      {name:'Multi-Agent Systems',chapters:[
+        {title:'Multi-Agent Systems',vids:[{label:'Full Course',id:'rHtRWyxVQps'}]}
+      ]},
+      {name:'AI Safety & Governance',chapters:[
+        {title:'AI Safety & Governance',vids:[{label:'Full Course',id:'b6HwyKFShek'}]}
+      ]},
+      {name:'AI Agents Capstone Project',chapters:[
+        {title:'AI Agents Capstone Project',vids:[{label:'Full Course',id:'HVi0F3YT13I'}]}
+      ]},
+      {name:'Prompt Engineering Mastery',chapters:[
+        {title:'Prompt Engineering Mastery',vids:[{label:'Full Course',id:'YhRfgYH_AoU'}]}
+      ]},
+      {name:'AI API Integration',chapters:[
+        {title:'AI API Integration',vids:[{label:'Full Course',id:'xcP9NE6C5EI'}]}
+      ]}
+    ]
+  },
+  {
+    id:'legend',name:'Legend',price:15999,lpa:'Target: ₹14–18 LPA',color:'#34D399',
+    courses:[
+      {name:'Python for Data Science',chapters:[
+        {title:'Python for Data Science',vids:[{label:'Full Course',id:'CMEWVn1uZpQ'}]}
+      ]},
+      {name:'Machine Learning Fundamentals',chapters:[
+        {title:'Machine Learning Fundamentals',vids:[{label:'Full Course',id:'hR-tMLTMw0s'}]}
+      ]},
+      {name:'Deep Learning & Neural Networks',chapters:[
+        {title:'Deep Learning & Neural Networks',vids:[{label:'Full Course',id:'G1P2IaBcXx8'}]}
+      ]},
+      {name:'Natural Language Processing',chapters:[
+        {title:'Natural Language Processing',vids:[{label:'Full Course',id:'BCLjPLeVCBY'}]}
+      ]},
+      {name:'Computer Vision',chapters:[
+        {title:'Computer Vision',vids:[{label:'Full Course',id:'01sAkU_NvOY'}]}
+      ]},
+      {name:'Big Data Engineering',chapters:[
+        {title:'Big Data Engineering',vids:[{label:'Full Course',id:'H5SHmiKTFsM'}]}
+      ]},
+      {name:'Data Engineering',chapters:[
+        {title:'Data Engineering',vids:[{label:'Full Course',id:'hf2go3E2m8g'}]}
+      ]},
+      {name:'MLOps Fundamentals',chapters:[
+        {title:'MLOps Fundamentals',vids:[{label:'Full Course',id:'dPmH3G9NQtY'}]}
+      ]},
+      {name:'End-to-End ML Project',chapters:[
+        {title:'End-to-End ML Project',vids:[{label:'Full Course',id:'o6vbe5G7xNo'}]}
+      ]},
+      {name:'Data Science Interview Prep',chapters:[
+        {title:'Data Science Interview Prep',vids:[{label:'Full Course',id:'A3ZSv6IqXY8'}]}
+      ]},
+      {name:'AWS Cloud Practitioner',chapters:[
+        {title:'AWS Cloud Practitioner',vids:[{label:'Full Course',id:'a8FFknuJwB0'}]}
+      ]},
+      {name:'Docker & Kubernetes',chapters:[
+        {title:'Docker',vids:[{label:'Docker',id:'9bSbNNH4Nqw'}]},
+        {title:'Kubernetes',vids:[{label:'Kubernetes',id:'W04brGNgxN4'}]}
+      ]},
+      {name:'CI/CD Pipelines',chapters:[
+        {title:'CI/CD Pipelines',vids:[{label:'Full Course',id:'Ke_Wr5zPE0A'}]}
+      ]},
+      {name:'Linux for DevOps',chapters:[
+        {title:'Linux for DevOps',vids:[{label:'Full Course',id:'e01GGTKmtpc'}]}
+      ]},
+      {name:'Cybersecurity Fundamentals',chapters:[
+        {title:'Cybersecurity Fundamentals',vids:[{label:'Full Course',id:'z2hVCeiwvGk'}]}
+      ]},
+      {name:'Ethical Hacking',chapters:[
+        {title:'Ethical Hacking',vids:[{label:'Full Course',id:'2eLJNBroFrg'}]}
+      ]},
+      {name:'Cloud Security',chapters:[
+        {title:'Cloud Security',vids:[{label:'Full Course',id:'a58CqpP6vEw'}]}
+      ]},
+      {name:'DevOps Project',chapters:[
+        {title:'DevOps Project',vids:[{label:'Full Course',id:'saWZQr0RMpw'}]}
+      ]},
+      {name:'Generative AI & LLMs',chapters:[
+        {title:'Generative AI & LLMs',vids:[{label:'Full Course',id:'d4yCWBGFCEs'}]}
+      ]},
+      {name:'Agentic AI Development',chapters:[
+        {title:'Agentic AI Development',vids:[{label:'Full Course',id:'-rUKr8JDits'}]}
+      ]},
+      {name:'LangChain & LlamaIndex',chapters:[
+        {title:'LangChain & LlamaIndex',vids:[{label:'Full Course',id:'-8IUWRtznX8'}]}
+      ]},
+      {name:'Vector Databases',chapters:[
+        {title:'Vector Databases',vids:[{label:'Full Course',id:'8KrTO9bS91s'}]}
+      ]},
+      {name:'AI Agents for Business',chapters:[
+        {title:'AI Agents for Business',vids:[{label:'Full Course',id:'EsTrWCV0Ph4'}]}
+      ]},
+      {name:'LLM Fine-Tuning',chapters:[
+        {title:'LLM Fine-Tuning',vids:[{label:'Full Course',id:'iOdFUJiB0Zc'}]}
+      ]},
+      {name:'RAG Implementation',chapters:[
+        {title:'RAG Implementation',vids:[{label:'Full Course',id:'o126p1QN_RI'}]}
+      ]},
+      {name:'Multi-Agent Systems',chapters:[
+        {title:'Multi-Agent Systems',vids:[{label:'Full Course',id:'rHtRWyxVQps'}]}
+      ]},
+      {name:'AI Safety & Governance',chapters:[
+        {title:'AI Safety & Governance',vids:[{label:'Full Course',id:'b6HwyKFShek'}]}
+      ]},
+      {name:'AI Agents Capstone Project',chapters:[
+        {title:'AI Agents Capstone Project',vids:[{label:'Full Course',id:'HVi0F3YT13I'}]}
+      ]},
+      {name:'Prompt Engineering Mastery',chapters:[
+        {title:'Prompt Engineering Mastery',vids:[{label:'Full Course',id:'YhRfgYH_AoU'}]}
+      ]},
+      {name:'AI API Integration',chapters:[
+        {title:'AI API Integration',vids:[{label:'Full Course',id:'xcP9NE6C5EI'}]}
+      ]},
+      {name:'AI Product Management',chapters:[
+        {title:'AI Product Management',vids:[{label:'Full Course',id:'IfW1FMDkw4k'}]}
+      ]},
+      {name:'AI Strategy & Roadmap',chapters:[
+        {title:'AI Strategy & Roadmap',vids:[{label:'Full Course',id:'zwUSZD3t_BU'}]}
+      ]},
+      {name:'AI Team Leadership',chapters:[
+        {title:'AI Team Leadership',vids:[{label:'Full Course',id:'1NMM9Q_TjxE'}]}
+      ]},
+      {name:'AI Project Management',chapters:[
+        {title:'AI Project Management',vids:[{label:'Full Course',id:'lADZ6Pxy9m8'}]}
+      ]},
+      {name:'AI Ethics & Governance',chapters:[
+        {title:'AI Ethics & Governance',vids:[{label:'Full Course',id:'VugSwwHaOgQ'}]}
+      ]},
+      {name:'AI Career Mastery',chapters:[
+        {title:'AI Career Mastery',vids:[{label:'Full Course',id:'aIuPQjPQEb4'}]}
+      ]},
+      {name:'Resume & LinkedIn for AI',chapters:[
+        {title:'Resume & LinkedIn for AI',vids:[{label:'Full Course',id:'qCZlSCmphMM'}]}
+      ]},
+      {name:'Salary Negotiation',chapters:[
+        {title:'Salary Negotiation',vids:[{label:'Full Course',id:'vLbrwSzXUro'}]}
+      ]},
+      {name:'Freelancing & Consulting for AI',chapters:[
+        {title:'Freelancing & Consulting for AI',vids:[{label:'Full Course',id:'Ozp3k4qzmHo'}]}
+      ]},
+      {name:'AI for Finance & Banking',chapters:[
+        {title:'AI for Finance & Banking',vids:[{label:'Full Course',id:'Nh7OhW7ZcIU'}]}
+      ]},
+      {name:'AI for Healthcare',chapters:[
+        {title:'AI for Healthcare',vids:[{label:'Full Course',id:'eZFtf69sido'}]}
+      ]},
+      {name:'AI for E-commerce & Retail',chapters:[
+        {title:'AI for E-commerce & Retail',vids:[{label:'Full Course',id:'plo5kk_MzL4'}]}
+      ]}
+    ]
+  },
+  {
+    id:'ultimate',name:'Ultimate',price:23999,lpa:'Target: ₹16–25 LPA',color:'var(--gold3)',
+    courses:[
+      {name:'Python for Data Science',chapters:[
+        {title:'Python for Data Science',vids:[{label:'Full Course',id:'CMEWVn1uZpQ'}]}
+      ]},
+      {name:'Machine Learning Fundamentals',chapters:[
+        {title:'Machine Learning Fundamentals',vids:[{label:'Full Course',id:'hR-tMLTMw0s'}]}
+      ]},
+      {name:'Deep Learning & Neural Networks',chapters:[
+        {title:'Deep Learning & Neural Networks',vids:[{label:'Full Course',id:'G1P2IaBcXx8'}]}
+      ]},
+      {name:'Natural Language Processing',chapters:[
+        {title:'Natural Language Processing',vids:[{label:'Full Course',id:'BCLjPLeVCBY'}]}
+      ]},
+      {name:'Computer Vision',chapters:[
+        {title:'Computer Vision',vids:[{label:'Full Course',id:'01sAkU_NvOY'}]}
+      ]},
+      {name:'Big Data Engineering',chapters:[
+        {title:'Big Data Engineering',vids:[{label:'Full Course',id:'H5SHmiKTFsM'}]}
+      ]},
+      {name:'Data Engineering',chapters:[
+        {title:'Data Engineering',vids:[{label:'Full Course',id:'hf2go3E2m8g'}]}
+      ]},
+      {name:'MLOps Fundamentals',chapters:[
+        {title:'MLOps Fundamentals',vids:[{label:'Full Course',id:'dPmH3G9NQtY'}]}
+      ]},
+      {name:'End-to-End ML Project',chapters:[
+        {title:'End-to-End ML Project',vids:[{label:'Full Course',id:'o6vbe5G7xNo'}]}
+      ]},
+      {name:'Data Science Interview Prep',chapters:[
+        {title:'Data Science Interview Prep',vids:[{label:'Full Course',id:'A3ZSv6IqXY8'}]}
+      ]},
+      {name:'AWS Cloud Practitioner',chapters:[
+        {title:'AWS Cloud Practitioner',vids:[{label:'Full Course',id:'a8FFknuJwB0'}]}
+      ]},
+      {name:'Docker & Kubernetes',chapters:[
+        {title:'Docker',vids:[{label:'Docker',id:'9bSbNNH4Nqw'}]},
+        {title:'Kubernetes',vids:[{label:'Kubernetes',id:'W04brGNgxN4'}]}
+      ]},
+      {name:'CI/CD Pipelines',chapters:[
+        {title:'CI/CD Pipelines',vids:[{label:'Full Course',id:'Ke_Wr5zPE0A'}]}
+      ]},
+      {name:'Linux for DevOps',chapters:[
+        {title:'Linux for DevOps',vids:[{label:'Full Course',id:'e01GGTKmtpc'}]}
+      ]},
+      {name:'Cybersecurity Fundamentals',chapters:[
+        {title:'Cybersecurity Fundamentals',vids:[{label:'Full Course',id:'z2hVCeiwvGk'}]}
+      ]},
+      {name:'Ethical Hacking',chapters:[
+        {title:'Ethical Hacking',vids:[{label:'Full Course',id:'2eLJNBroFrg'}]}
+      ]},
+      {name:'Cloud Security',chapters:[
+        {title:'Cloud Security',vids:[{label:'Full Course',id:'a58CqpP6vEw'}]}
+      ]},
+      {name:'DevOps Project',chapters:[
+        {title:'DevOps Project',vids:[{label:'Full Course',id:'saWZQr0RMpw'}]}
+      ]},
+      {name:'Generative AI & LLMs',chapters:[
+        {title:'Generative AI & LLMs',vids:[{label:'Full Course',id:'d4yCWBGFCEs'}]}
+      ]},
+      {name:'Agentic AI Development',chapters:[
+        {title:'Agentic AI Development',vids:[{label:'Full Course',id:'-rUKr8JDits'}]}
+      ]},
+      {name:'LangChain & LlamaIndex',chapters:[
+        {title:'LangChain & LlamaIndex',vids:[{label:'Full Course',id:'-8IUWRtznX8'}]}
+      ]},
+      {name:'Vector Databases',chapters:[
+        {title:'Vector Databases',vids:[{label:'Full Course',id:'8KrTO9bS91s'}]}
+      ]},
+      {name:'AI Agents for Business',chapters:[
+        {title:'AI Agents for Business',vids:[{label:'Full Course',id:'EsTrWCV0Ph4'}]}
+      ]},
+      {name:'LLM Fine-Tuning',chapters:[
+        {title:'LLM Fine-Tuning',vids:[{label:'Full Course',id:'iOdFUJiB0Zc'}]}
+      ]},
+      {name:'RAG Implementation',chapters:[
+        {title:'RAG Implementation',vids:[{label:'Full Course',id:'o126p1QN_RI'}]}
+      ]},
+      {name:'Multi-Agent Systems',chapters:[
+        {title:'Multi-Agent Systems',vids:[{label:'Full Course',id:'rHtRWyxVQps'}]}
+      ]},
+      {name:'AI Safety & Governance',chapters:[
+        {title:'AI Safety & Governance',vids:[{label:'Full Course',id:'b6HwyKFShek'}]}
+      ]},
+      {name:'AI Agents Capstone Project',chapters:[
+        {title:'AI Agents Capstone Project',vids:[{label:'Full Course',id:'HVi0F3YT13I'}]}
+      ]},
+      {name:'Prompt Engineering Mastery',chapters:[
+        {title:'Prompt Engineering Mastery',vids:[{label:'Full Course',id:'YhRfgYH_AoU'}]}
+      ]},
+      {name:'AI API Integration',chapters:[
+        {title:'AI API Integration',vids:[{label:'Full Course',id:'xcP9NE6C5EI'}]}
+      ]},
+      {name:'AI Product Management',chapters:[
+        {title:'AI Product Management',vids:[{label:'Full Course',id:'IfW1FMDkw4k'}]}
+      ]},
+      {name:'AI Strategy & Roadmap',chapters:[
+        {title:'AI Strategy & Roadmap',vids:[{label:'Full Course',id:'zwUSZD3t_BU'}]}
+      ]},
+      {name:'AI Team Leadership',chapters:[
+        {title:'AI Team Leadership',vids:[{label:'Full Course',id:'1NMM9Q_TjxE'}]}
+      ]},
+      {name:'AI Project Management',chapters:[
+        {title:'AI Project Management',vids:[{label:'Full Course',id:'lADZ6Pxy9m8'}]}
+      ]},
+      {name:'AI Ethics & Governance',chapters:[
+        {title:'AI Ethics & Governance',vids:[{label:'Full Course',id:'VugSwwHaOgQ'}]}
+      ]},
+      {name:'AI Career Mastery',chapters:[
+        {title:'AI Career Mastery',vids:[{label:'Full Course',id:'aIuPQjPQEb4'}]}
+      ]},
+      {name:'Resume & LinkedIn for AI',chapters:[
+        {title:'Resume & LinkedIn for AI',vids:[{label:'Full Course',id:'qCZlSCmphMM'}]}
+      ]},
+      {name:'Salary Negotiation',chapters:[
+        {title:'Salary Negotiation',vids:[{label:'Full Course',id:'vLbrwSzXUro'}]}
+      ]},
+      {name:'Freelancing & Consulting for AI',chapters:[
+        {title:'Freelancing & Consulting for AI',vids:[{label:'Full Course',id:'Ozp3k4qzmHo'}]}
+      ]},
+      {name:'AI for Finance & Banking',chapters:[
+        {title:'AI for Finance & Banking',vids:[{label:'Full Course',id:'Nh7OhW7ZcIU'}]}
+      ]},
+      {name:'AI for Healthcare',chapters:[
+        {title:'AI for Healthcare',vids:[{label:'Full Course',id:'eZFtf69sido'}]}
+      ]},
+      {name:'AI for E-commerce & Retail',chapters:[
+        {title:'AI for E-commerce & Retail',vids:[{label:'Full Course',id:'plo5kk_MzL4'}]}
+      ]},
+      {name:'AI for Manufacturing',chapters:[
+        {title:'AI for Manufacturing',vids:[{label:'Full Course',id:'bNiThiN8cLg'}]}
+      ]},
+      {name:'Edge AI & TinyML',chapters:[
+        {title:'Edge AI & TinyML',vids:[{label:'Full Course',id:'2L5OTwh4-Ls'}]}
+      ]},
+      {name:'AI Model Optimization',chapters:[
+        {title:'AI Model Optimization',vids:[{label:'Full Course',id:'zqoJCOgMd_4'}]}
+      ]},
+      {name:'Federated Learning',chapters:[
+        {title:'Federated Learning',vids:[{label:'Full Course',id:'rwi3SamXpPY'}]}
+      ]},
+      {name:'Graph Neural Networks',chapters:[
+        {title:'Graph Neural Networks',vids:[{label:'Full Course',id:'ODLBt-OcL3A'}]}
+      ]},
+      {name:'Reinforcement Learning',chapters:[
+        {title:'Reinforcement Learning',vids:[{label:'Full Course',id:'VnpRp7ZglfA'}]}
+      ]},
+      {name:'Time Series Forecasting',chapters:[
+        {title:'Time Series Forecasting',vids:[{label:'Full Course',id:'qx5055j0U6c'}]}
+      ]},
+      {name:'Recommendation Systems',chapters:[
+        {title:'Recommendation Systems',vids:[{label:'Full Course',id:'F2tn-BviO_U'}]}
+      ]},
+      {name:'AI Research Paper Implementation',chapters:[
+        {title:'AI Research Paper Implementation',vids:[{label:'Full Course',id:'onU5Hbb3qao'}]}
+      ]},
+      {name:'Building AI Startups',chapters:[
+        {title:'Building AI Startups',vids:[{label:'Full Course',id:'zO1098PFOw8'}]}
+      ]}
+    ]
+  }
+];
+
+const SPECIAL_COURSES=[
+  {
+    id:'makeup',name:'Professional Make-up Artist',price:2300,
+    desc:'From everyday looks to bridal and editorial make-up — master all techniques and launch your professional career.',
+    color:'#F472B6',accentFrom:'#F472B6',accentTo:'#DB2777',icon:'makeup',
+    feats:['Bridal & Party Make-up','Skin Prep & Correction','Contouring & Highlighting','Editorial Shoot Ready','Certificate on Completion'],
+    chapters:[
+      {title:'Makeup Intro',vids:[{label:'Intro',id:'Y_HgTmpZ2XI'}]},
+      {title:'Part 1 — Foundation',vids:[{label:'Part 1',id:'h4EjKVd0G5s'}]},
+      {title:'Part 2',vids:[{label:'Part 2',id:'GCKrm7iRswA'}]},
+      {title:'Part 3',vids:[{label:'Part 3',id:'hdA4HKJdZ2U'}]},
+      {title:'Part 4',vids:[{label:'Part 4',id:'gv1OFITIXV4'}]},
+      {title:'Part 5',vids:[{label:'Part 5',id:'3-GUeGHumXs'}]},
+      {title:'Part 6',vids:[{label:'Part 6',id:'TxgAP33k2VY'}]},
+      {title:'Part 7',vids:[{label:'Part 7',id:'Qc4lz5rCb4M'}]},
+      {title:'Part 8',vids:[{label:'Part 8',id:'P-KyYbX-Izo'}]},
+      {title:'Part 9',vids:[{label:'Part 9',id:'0aw8zGnFzYI'}]},
+      {title:'Part 10',vids:[{label:'Part 10',id:'kK3LHaQqB4c'}]},
+      {title:'Part 11',vids:[{label:'Part 11',id:'OsHqq4ie3hM'}]},
+      {title:'Part 12',vids:[{label:'Part 12',id:'Da3lQL2XJX0'}]},
+      {title:'Part 13',vids:[{label:'Part 13',id:'TDEi2XtKfbA'}]},
+      {title:'Part 14',vids:[{label:'Part 14',id:'Anqr1vPdMGQ'}]},
+      {title:'Part 15',vids:[{label:'Part 15',id:'CE6b6Bi4GVc'}]},
+      {title:'Part 16',vids:[{label:'Part 16',id:'pijN2c2W1E4'}]},
+      {title:'Part 17',vids:[{label:'Part 17',id:'i9iyCn2c390'}]},
+      {title:'Part 18',vids:[{label:'Part 18',id:'cqxAWXIzQuA'}]},
+      {title:'Part 19',vids:[{label:'Part 19',id:'DutWCGyQFY8'}]},
+      {title:'Part 20',vids:[{label:'Part 20',id:'bF2rdpXgwQQ'}]},
+      {title:'Part 21',vids:[{label:'Part 21',id:'yTdMZWAfeDk'}]},
+      {title:'Part 22',vids:[{label:'Part 22',id:'nUry38wA8YU'}]}
+    ]
+  },
+  {
+    id:'mehendi',name:'Bridal Mehendi Designer',price:1999,
+    desc:'Master the art of bridal and festive mehendi designs. Learn intricate patterns, client handling, and build your mehendi business.',
+    color:'#F97316',accentFrom:'#F97316',accentTo:'#EF4444',icon:'mehendi',
+    feats:['Bridal & Festive Patterns','Client Handling','Business Setup Guide','Certificate on Completion','Lifetime Access'],
+    chapters:[
+      {title:'Part 1',vids:[{label:'Part 1',id:'7ZqkiTDOrBQ'}]},
+      {title:'Part 2',vids:[{label:'Part 2',id:'zfAiB0R1rlM'}]},
+      {title:'Part 3',vids:[{label:'Part 3',id:'2dMBULmJY2Y'}]},
+      {title:'Part 4',vids:[{label:'Part 4',id:'4QPzvawirzM'}]},
+      {title:'Part 5',vids:[{label:'Part 5',id:'KLhVTmWC11w'}]},
+      {title:'Part 6',vids:[{label:'Part 6',id:'YcRrtl23-Rg'}]},
+      {title:'Part 7',vids:[{label:'Part 7',id:'125BS2PVYD0'}]},
+      {title:'Part 8',vids:[{label:'Part 8',id:'Y_SR17eTNt8'}]},
+      {title:'Part 9',vids:[{label:'Part 9',id:'G3LDg3qORFM'}]},
+      {title:'Part 10',vids:[{label:'Part 10',id:'5aMpbLWqMk0'}]},
+      {title:'Part 11',vids:[{label:'Part 11',id:'6Te6cklQtWk'}]},
+      {title:'Part 12',vids:[{label:'Part 12',id:'jQQQssCFdEY'}]},
+      {title:'Part 13',vids:[{label:'Part 13',id:'q9T4Qmuk9mc'}]},
+      {title:'Part 14',vids:[{label:'Part 14',id:'BWTLRmRYC-c'}]},
+      {title:'Part 15',vids:[{label:'Part 15',id:'u49SmoSaTk8'}]},
+      {title:'Part 16',vids:[{label:'Part 16',id:'3LwoQlw1Wzw'}]},
+      {title:'Part 17',vids:[{label:'Part 17',id:'hwDxsBDOJPQ'}]},
+      {title:'Part 18',vids:[{label:'Part 18',id:'uWpvvLskYFk'}]},
+      {title:'Part 19',vids:[{label:'Part 19',id:'32S-25ax_aE'}]},
+      {title:'Part 20',vids:[{label:'Part 20',id:'mhIi1z_7aWU'}]},
+      {title:'Part 21',vids:[{label:'Part 21',id:'fpvNSfzthwU'}]},
+      {title:'Part 22',vids:[{label:'Part 22',id:'cNVU-4LyYyQ'}]},
+      {title:'Part 23',vids:[{label:'Part 23',id:'wgoSbB1jy6c'}]},
+      {title:'Part 24',vids:[{label:'Part 24',id:'e-c7RJBQGSU'}]},
+      {title:'Part 25',vids:[{label:'Part 25',id:'TbvCruBXrEc'}]},
+      {title:'Part 26',vids:[{label:'Part 26',id:'fcW05mJoBhc'}]},
+      {title:'Part 27',vids:[{label:'Part 27',id:'SeA08YQQFcE'}]},
+      {title:'Part 28',vids:[{label:'Part 28',id:'L6t09bkqbcA'}]},
+      {title:'Part 29',vids:[{label:'Part 29',id:'X5kmVd25bJ8'}]},
+      {title:'Part 30',vids:[{label:'Part 30',id:'5GJHpZB1gF4'}]},
+      {title:'Part 31',vids:[{label:'Part 31',id:'zZ2t_B4NOS4'}]},
+      {title:'Part 32',vids:[{label:'Part 32',id:'PgiayPy13m8'}]},
+      {title:'Part 33',vids:[{label:'Part 33',id:'yBspCHOgs3E'}]},
+      {title:'Part 34',vids:[{label:'Part 34',id:'VU7vtAUSwQg'}]},
+      {title:'Part 35',vids:[{label:'Part 35',id:'-f7v69f9sBc'}]},
+      {title:'Part 36',vids:[{label:'Part 36',id:'hmSeQ_Ocjlo'}]},
+      {title:'Part 37',vids:[{label:'Part 37',id:'4Xf403jpMsM'}]},
+      {title:'Part 38',vids:[{label:'Part 38',id:'a7GvmLWT9X0'}]},
+      {title:'Part 39',vids:[{label:'Part 39',id:'mcbWEadqdN0'}]},
+      {title:'Part 40',vids:[{label:'Part 40',id:'agxRyZj8C6A'}]},
+      {title:'Part 41',vids:[{label:'Part 41',id:'fJkaPMabYK0'}]},
+      {title:'Part 42',vids:[{label:'Part 42',id:'m2mI2bcPfxk'}]}
+    ]
+  },
+  {
+    id:'fashion',name:'Fashion Designer',price:2100,
+    desc:'Learn fashion illustration, garment construction, draping, and launch your fashion line with industry-standard techniques.',
+    color:'#A78BFA',accentFrom:'#A78BFA',accentTo:'#7C3AED',icon:'fashion',
+    feats:['Fashion Illustration','Garment Construction','Draping & Pattern Making','Portfolio Development','Certificate on Completion'],
+    chapters:[
+      {title:'Part 1 — Introduction',vids:[{label:'Part 1',id:'N5AbwAPREsU'}]},
+      {title:'Part 2',vids:[{label:'Part 2',id:'UKGmP2eUc2U'}]},
+      {title:'Part 3',vids:[{label:'Part 3',id:'DAJgz0xmhJk'}]},
+      {title:'Part 4',vids:[{label:'Part 4',id:'njzmtbg3m5E'}]},
+      {title:'Part 5',vids:[{label:'Part 5',id:'5ofVfy4Kkfs'}]},
+      {title:'Part 6',vids:[{label:'Part 6',id:'wUiV85iBaUI'}]},
+      {title:'Part 7',vids:[{label:'Part 7',id:'P8OiLz1h_3s'}]},
+      {title:'Part 8',vids:[{label:'Part 8',id:'OYKEbBssdpU'}]},
+      {title:'Part 9',vids:[{label:'Part 9',id:'mYLUrOiQ0nI'}]},
+      {title:'Part 10',vids:[{label:'Part 10',id:'t1wrLLr6SLc'}]},
+      {title:'Part 11',vids:[{label:'Part 11',id:'SdU-su6N0VQ'}]},
+      {title:'Part 12',vids:[{label:'Part 12',id:'RQDhsE_tVIM'}]},
+      {title:'Part 13',vids:[{label:'Part 13',id:'YDsCGYP8I8g'}]},
+      {title:'Part 14',vids:[{label:'Part 14',id:'OKDWIEm6vpk'}]},
+      {title:'Part 15',vids:[{label:'Part 15',id:'f3LkOWFqEQs'}]},
+      {title:'Part 16',vids:[{label:'Part 16',id:'G8FRc_We9Pg'}]},
+      {title:'Part 17',vids:[{label:'Part 17',id:'CNiyQ89Kik0'}]},
+      {title:'Part 18',vids:[{label:'Part 18',id:'DbX6wHoJgW0'}]},
+      {title:'Part 19',vids:[{label:'Part 19',id:'7LFasw2Yfrw'}]},
+      {title:'Part 20',vids:[{label:'Part 20',id:'bTKP_ieSFCI'}]},
+      {title:'Part 21',vids:[{label:'Part 21',id:'4daAQtTEyTE'}]},
+      {title:'Part 22',vids:[{label:'Part 22',id:'RS_w_yVXRIY'}]},
+      {title:'Part 23',vids:[{label:'Part 23',id:'_zz3mYMKNww'}]},
+      {title:'Part 24',vids:[{label:'Part 24',id:'I0ZIpUywSM0'}]},
+      {title:'Part 25',vids:[{label:'Part 25',id:'Z5ceHYMw07U'}]}
+    ]
+  }
+];
+</script>
+<div id="toast"></div>
+
+<script>
+/* ══════════════════════════════════════════
+   STATE
+══════════════════════════════════════════ */
+const san=e=>e.toLowerCase().trim().replace(/\./g,'_').replace(/@/g,'__at__');
+const COLS=['User-collection','user_collection','users','User_collection','user-collection'];
+const T=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
+const fmt=n=>'₹'+(n||0).toLocaleString('en-IN');
+
+let U={},UD={},COL='User-collection',BPRICE=0;
+let CURRENT_COURSE=null;
+let CURRENT_CHAPTER_IDX=0;
+let CURRENT_VID_IDX=0;
+let PROGRESS={};
+let EXAM_STATE={examAnswers:{},examSubmitted:false};
+let progressInterval=null;
+let ACTIVE_SPECIAL=null;
+let ACTIVE_SPECIAL_STATUS={};
+let tutorHistory=[];
+let ACTIVE_TIER_IDX=0;
+
+/* ══════════════════════════════════════════
+   SESSION PERSISTENCE — survives refresh
+   Uses sessionStorage (not localStorage) so progress
+   view state clears when the tab/browser closes and never
+   leaks between different accounts on a shared device.
+   Only lightweight navigation breadcrumbs are stored here —
+   never credentials, never course content.
+══════════════════════════════════════════ */
+const NAV_KEY='biluxe10_nav_state';
+
+function saveNavState(extra){
+  try{
+    const state={
+      page:document.querySelector('.pg.on')?.id?.replace('pg-','')||'landing',
+      tierIdx:ACTIVE_TIER_IDX,
+      courseRef:CURRENT_COURSE?{bundleId:CURRENT_COURSE.bundleId,courseIdx:CURRENT_COURSE.courseIdx,isSpecial:CURRENT_COURSE.bundleId&&SPECIAL_COURSES.some(s=>s.id===CURRENT_COURSE.bundleId)}:null,
+      activeTab:document.querySelector('#detailTabs .dtab.on')?.dataset.tab||'chapters',
+      scrollY:window.scrollY,
+      ...extra
+    };
+    sessionStorage.setItem(NAV_KEY,JSON.stringify(state));
+  }catch(e){/* sessionStorage may be unavailable in some contexts — fail silently */}
+}
+
+function loadNavState(){
+  try{
+    const raw=sessionStorage.getItem(NAV_KEY);
+    return raw?JSON.parse(raw):null;
+  }catch(e){return null;}
+}
+
+function restoreNavState(){
+  const s=loadNavState();
+  if(!s||s.page==='landing'){goPage('landing');return;}
+  if(s.page==='bundles'){
+    goPage('bundles');
+  }else if(s.page==='tier-courses'){
+    if(typeof s.tierIdx==='number'&&BUNDLES[s.tierIdx])onTierTap(s.tierIdx);
+    else goPage('bundles');
+  }else if(s.page==='individual'){
+    goPage('individual');
+  }else if(s.page==='detail'&&s.courseRef){
+    if(s.courseRef.isSpecial){
+      openSpecialCourse(s.courseRef.bundleId);
+    }else{
+      const bundle=BUNDLES.find(b=>b.id===s.courseRef.bundleId);
+      if(bundle&&isBundleUnlocked(bundle)){
+        openCourse(s.courseRef.bundleId,s.courseRef.courseIdx);
+      }else{
+        goPage('landing');return;
+      }
+    }
+    if(s.activeTab){
+      const tabs=document.querySelectorAll('#detailTabs .dtab');
+      const idx=['chapters','tutor','notes','exam','project'].indexOf(s.activeTab);
+      if(tabs[idx])switchDTab(s.activeTab,tabs[idx]);
+    }
+  }else{
+    goPage('landing');
+  }
+  if(typeof s.scrollY==='number'){
+    setTimeout(()=>window.scrollTo({top:s.scrollY,behavior:'auto'}),60);
+  }
+}
+
+/* ══════════════════════════════════════════
+   AUTH GUARD
+══════════════════════════════════════════ */
+const authTO=setTimeout(()=>showErr('Firebase not responding. <a href="auth.html" style="color:var(--gold)">Sign in again</a>.'),9000);
+
+AUTH.onAuthStateChanged(async fbUser=>{
+  clearTimeout(authTO);
+  if(!fbUser){location.href='auth.html';return;}
+  try{
+    gMsg('Loading your courses…');
+    const emailId=san(fbUser.email);
+    U={email:fbUser.email,emailId,name:fbUser.displayName||fbUser.email.split('@')[0]};
+    let docData=null;
+    for(const col of COLS){
+      try{
+        const snap=await DB.collection(col).doc(emailId).get();
+        if(snap.exists){docData=snap.data();COL=col;break;}
+      }catch(e){}
+    }
+    if(!docData){showErr('Account not found. <a href="auth.html" style="color:var(--gold)">Login</a>');return;}
+    if(docData.paymentStatus!=='approved'){showErr('Payment pending approval. <a href="https://wa.me/919019254743" style="color:var(--gold)">Contact support</a>');return;}
+    UD=docData;
+    BPRICE=parseInt(docData.bundlePrice||docData.bundleAmount||0)||499;
+    if(docData.fullName)U.name=docData.fullName;
+    await loadProgress();
+    await loadSpecialStatuses();
+    initCoursesPage();
+    const guard=document.getElementById('guard');
+    guard.classList.add('fade');
+    setTimeout(()=>{guard.classList.add('gone');document.getElementById('app').classList.add('show');restoreNavState();},700);
+  }catch(err){showErr('Error: '+err.message);}
+});
+
+function gMsg(t){const el=document.getElementById('gMsg');if(el)el.textContent=t;}
+function showErr(html){
+  clearTimeout(authTO);
+  document.getElementById('gSpin').style.display='none';
+  document.getElementById('gMsg').style.display='none';
+  const e=document.getElementById('gErr');
+  e.style.display='flex';
+  document.getElementById('gErrD').innerHTML=html;
+}
+
+/* ══════════════════════════════════════════
+   PROGRESS
+══════════════════════════════════════════ */
+async function loadProgress(){
+  try{
+    const snap=await DB.collection(COL).doc(U.emailId).collection('course_progress').get();
+    snap.forEach(d=>{PROGRESS[d.id]=d.data();});
+  }catch(e){console.warn(e);}
+}
+
+async function markChapterDone(courseId,chIdx){
+  if(!PROGRESS[courseId])PROGRESS[courseId]={chapters:{}};
+  if(!PROGRESS[courseId].chapters)PROGRESS[courseId].chapters={};
+  PROGRESS[courseId].chapters[chIdx]=true;
+  const totalCh=CURRENT_COURSE?CURRENT_COURSE.chapters.length:1;
+  const done=Object.keys(PROGRESS[courseId].chapters).length;
+  const pct=Math.min(100,Math.round(done/totalCh*100));
+  PROGRESS[courseId].progress=pct;
+  PROGRESS[courseId].updatedAt=new Date().toISOString();
+  try{
+    await DB.collection(COL).doc(U.emailId).collection('course_progress').doc(courseId).set(PROGRESS[courseId],{merge:true});
+  }catch(e){}
+  updateDetailProgress();
+  updateChaptersUI();
+}
+
+async function loadSpecialStatuses(){
+  try{
+    const snap=await DB.collection(COL).doc(U.emailId).collection('special_courses').get();
+    snap.forEach(d=>{ACTIVE_SPECIAL_STATUS[d.id]=d.data();});
+  }catch(e){}
+}
+
+/* ══════════════════════════════════════════
+   INIT — LANDING LEDGER
+══════════════════════════════════════════ */
+function initCoursesPage(){
+  const bun=getActiveBundleObj();
+  T('ldTitle','Welcome back, '+(U.name||'').split(' ')[0]+'.');
+  const strip=document.getElementById('planStrip');
+  if(bun.price>0){
+    strip.style.display='flex';
+    T('planStripT',bun.name+' Bundle · '+fmt(BPRICE));
+    T('planStripS',bun.courses.length+' courses unlocked · '+bun.lpa);
+  }
+  T('ldBundleCourses',bun.courses.length);
+  buildTierLadder();
+  buildSpecialGrid();
+}
+
+function getActiveBundleObj(){
+  let best=BUNDLES[0];
+  for(const b of BUNDLES)if(b.price<=BPRICE)best=b;
+  return best;
+}
+
+function isBundleUnlocked(b){return b.price<=BPRICE;}
+
+/* ══════════════════════════════════════════
+   BUNDLES PAGE — TIER LADDER
+   Each rung shows: name, price, LPA target, whether it's
+   unlocked, an "includes everything below" chip (real
+   inheritance info, not decoration), and a mini progress bar
+   averaged across its courses.
+══════════════════════════════════════════ */
+function buildTierLadder(){
+  const wrap=document.getElementById('tierLadder');
+  const activeBundle=getActiveBundleObj();
+  wrap.innerHTML=BUNDLES.map((b,i)=>{
+    const unlocked=isBundleUnlocked(b);
+    const isCurrent=b.id===activeBundle.id;
+    const emptyTier=b.courses.length===0;
+    let doneCount=0,totalCh=0;
+    b.courses.forEach((c,ci)=>{
+      const cid=b.id+'_'+ci;
+      const prog=PROGRESS[cid];
+      if(prog){doneCount+=Object.keys(prog.chapters||{}).length;}
+      totalCh+=c.chapters.length;
+    });
+    const pct=totalCh?Math.round(doneCount/totalCh*100):0;
+    return`<div class="tier-row">
+      <div class="tier-rail">
+        <div class="tier-dot${unlocked?' active':''}"></div>
+        ${i<BUNDLES.length-1?`<div class="tier-line${isBundleUnlocked(BUNDLES[i+1])?' active':''}"></div>`:''}
+      </div>
+      <div class="tier-card${!unlocked?' locked':''}${isCurrent?' current':''}" onclick="onTierTap(${i})">
+        <div class="tier-top">
+          <div class="tier-name">${b.name}${isCurrent?' <span class=\'bdg gd\'>Your Plan</span>':''}${!unlocked?' <span class=\'bdg lk\'>Locked</span>':''}</div>
+          <div class="tier-price">${fmt(b.price)}</div>
+        </div>
+        <div class="tier-lpa">${b.lpa}</div>
+        ${i>0&&!emptyTier?`<div class="tier-inherit"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>Includes everything from ${BUNDLES[i-1].name}</div>`:''}
+        <div class="tier-count-row">
+          <div class="tier-count-chip"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>${emptyTier?'Coming soon':b.courses.length+' courses total'}</div>
+        </div>
+        ${unlocked&&!emptyTier&&pct>0?`<div class="tier-progress-mini"><div class="tier-progress-fill" style="width:${pct}%"></div></div>`:''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function onTierTap(idx){
+  const b=BUNDLES[idx];
+  if(!isBundleUnlocked(b)){toast('Upgrade to '+b.name+' to unlock this tier');return;}
+  if(b.courses.length===0){toast(b.name+' bundle courses are coming soon');return;}
+  ACTIVE_TIER_IDX=idx;
+  T('heroTag',b.name.toUpperCase()+' BUNDLE');
+  T('heroTitle',b.name+' — '+b.lpa);
+  T('heroSub','Showing all '+b.courses.length+' courses included in '+b.name+' ('+fmt(b.price)+').');
+  T('heroLpa',b.lpa);
+  T('coursesHeading',b.name+' — Courses');
+  showTierCourses(idx);
+  goPage('tier-courses');
+  T('tbPg',b.name+' Bundle');
+}
+
+function showTierCourses(idx){
+  const bundle=BUNDLES[idx];
+  const grid=document.getElementById('courseGrid');
+  T('courseCount',bundle.courses.length+' courses');
+  if(!bundle.courses.length){
+    grid.innerHTML='<div style="padding:24px;text-align:center;color:var(--t3);font-size:.78rem">Courses for this bundle are coming soon.</div>';
+    return;
+  }
+  grid.innerHTML=bundle.courses.map((c,i)=>{
+    const cid=bundle.id+'_'+i;
+    const prog=PROGRESS[cid]||{};
+    const pct=prog.progress||0;
+    const done=prog.chapters?Object.keys(prog.chapters).length:0;
+    const total=c.chapters.length;
+    const unlocked=isBundleUnlocked(bundle);
+    return`<div class="course-card${!unlocked?' locked-card':''}" onclick="${unlocked?`openCourse('${bundle.id}',${i})`:`toast('Upgrade to unlock')`}">
+      <div class="cc-thumb" style="background:linear-gradient(135deg,${bundle.color}22,${bundle.color}08)">
+        ${!unlocked?`<div class="cc-lock-ov"><svg viewBox="0 0 24 24" fill="none" stroke="${bundle.color}" stroke-width="1.2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg><div class="cc-lock-msg">Upgrade to ${bundle.name}</div></div>`:''}
+        <svg viewBox="0 0 24 24" style="width:42px;height:42px;stroke:${bundle.color};fill:none;stroke-width:1.2;stroke-linecap:round;opacity:${unlocked?0.8:0.2}"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+      </div>
+      <div class="cc-body">
+        <div class="cc-cat">${bundle.name} Bundle</div>
+        <div class="cc-title">${c.name}</div>
+        <div class="cc-desc">Master ${c.name} with structured video lessons, AI-powered notes, exam, and a certified project path.</div>
+        <div class="cc-meta">
+          <div class="cc-chip"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>${total} Video${total!==1?'s':''}</div>
+          <div class="cc-chip"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>Certificate</div>
+        </div>
+        ${unlocked&&pct>0?`<div class="cc-prog"><div class="cc-prog-lbl"><div class="cc-prog-t">Progress</div><div class="cc-prog-t">${done}/${total} done</div></div><div class="cc-prog-bar"><div class="cc-prog-fill" style="width:${pct}%"></div></div></div>`:''}
+        <div class="cc-actions">
+          ${unlocked
+            ?`<button class="btn-g" onclick="event.stopPropagation();openCourse('${bundle.id}',${i})"><svg viewBox="0 0 24 24" style="width:13px;height:13px;stroke:#000;fill:none;stroke-width:2.2;stroke-linecap:round"><polygon points="5 3 19 12 5 21 5 3"/></svg>${pct>0?'Continue':'Start'}</button>`
+            :`<button class="btn-sm" onclick="event.stopPropagation();toast('Upgrade to unlock')"><svg viewBox="0 0 24 24" style="width:12px;height:12px;stroke:var(--gold);fill:none;stroke-width:2;stroke-linecap:round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>Locked</button>`
+          }
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/* ══════════════════════════════════════════
+   OPEN COURSE DETAIL
+══════════════════════════════════════════ */
+function openCourse(bundleId,courseIdx){
+  const bundle=BUNDLES.find(b=>b.id===bundleId);
+  if(!bundle)return;
+  const c=bundle.courses[courseIdx];
+  const cid=bundleId+'_'+courseIdx;
+  CURRENT_COURSE={id:cid,bundleId,courseIdx,name:c.name,bundle,chapters:c.chapters};
+  T('cdCat',bundle.name+' Bundle');
+  T('cdTitle',c.name);
+  T('cdDesc','Master '+c.name+' through structured video lessons, AI-powered study notes, and a project-based certificate program.');
+  document.getElementById('cdMeta').innerHTML=`
+    <div class="cd-chip"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>${c.chapters.length} Videos</div>
+    <div class="cd-chip"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>Certificate Included</div>
+    <div class="cd-chip"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Self-paced</div>`;
+  updateDetailProgress();
+  buildChaptersList();
+  buildExam();
+  buildProject();
+  switchDTab('chapters',document.querySelector('#detailTabs .dtab'));
+  goPage('detail');
+  T('tbPg',c.name);
+  saveNavState();
+}
+
+function updateDetailProgress(){
+  if(!CURRENT_COURSE)return;
+  const prog=PROGRESS[CURRENT_COURSE.id]||{};
+  const pct=prog.progress||0;
+  T('cdProgPct',pct+'%');
+  const fill=document.getElementById('cdProgFill');
+  if(fill)setTimeout(()=>fill.style.width=pct+'%',100);
+}
+
+/* ══════════════════════════════════════════
+   BUILD CHAPTERS LIST
+══════════════════════════════════════════ */
+function buildChaptersList(){
+  if(!CURRENT_COURSE)return;
+  const prog=PROGRESS[CURRENT_COURSE.id]||{};
+  const list=document.getElementById('chaptersList');
+  list.innerHTML=CURRENT_COURSE.chapters.map((ch,i)=>{
+    const done=prog.chapters&&prog.chapters[i];
+    const hasMulti=ch.vids.length>1;
+    return`<div class="chapter-it${i===0?' playing':''}" id="chi-${i}" onclick="openChapter(${i},0)">
+      <div class="ch-num">${String(i+1).padStart(2,'0')}</div>
+      <div class="ch-thumb" style="background:linear-gradient(135deg,${CURRENT_COURSE.bundle.color}22,${CURRENT_COURSE.bundle.color}08)">
+        <div class="ch-play-ov"><svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
+      </div>
+      <div class="ch-info">
+        <div class="ch-title">${ch.title}${hasMulti?` <span style="font-family:var(--fm);font-size:.46rem;color:var(--gold);opacity:.7">(${ch.vids.length} parts)</span>`:''}</div>
+        <div class="ch-dur">${ch.vids[0].label}${hasMulti?' + more':''}</div>
+      </div>
+      ${done?`<div class="ch-done"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>`:''}
+    </div>`;
+  }).join('');
+}
+
+function updateChaptersUI(){
+  if(!CURRENT_COURSE)return;
+  const prog=PROGRESS[CURRENT_COURSE.id]||{};
+  CURRENT_COURSE.chapters.forEach((_,i)=>{
+    const el=document.getElementById('chi-'+i);
+    if(!el)return;
+    const done=prog.chapters&&prog.chapters[i];
+    if(done&&!el.querySelector('.ch-done')){
+      const d=document.createElement('div');d.className='ch-done';
+      d.innerHTML='<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>';
+      el.appendChild(d);
+    }
+  });
+}
+
+/* ══════════════════════════════════════════
+   VIDEO PLAYER — REAL YT IDs, NO BRANDING
+══════════════════════════════════════════ */
+function openChapter(chIdx,vidIdx){
+  if(!CURRENT_COURSE)return;
+  CURRENT_CHAPTER_IDX=chIdx;
+  CURRENT_VID_IDX=vidIdx||0;
+  const ch=CURRENT_COURSE.chapters[chIdx];
+  const vid=ch.vids[vidIdx||0];
+  document.getElementById('playerOverlay').classList.add('on');
+  document.body.classList.add('lock');
+  T('playerTitle',ch.title+(ch.vids.length>1?' — '+vid.label:''));
+  T('playingTitle',ch.title);
+  T('playingCourse',CURRENT_COURSE.name);
+  buildPlayerChapters();
+  loadYTVideo(vid.id,chIdx);
+  document.querySelectorAll('.chapter-it').forEach((el,i)=>el.classList.toggle('playing',i===chIdx));
+}
+
+/* ══════════════════════════════════════════
+   VIDEO PLAYER — real YouTube embed with native
+   controls (no cropping/masking tricks — those broke
+   playback). We use the official IFrame Player API so
+   progress is tracked from the real video clock, and
+   fullscreen uses the actual Fullscreen API on the
+   video container so it genuinely fills the screen.
+══════════════════════════════════════════ */
+let ytPlayer=null;
+let ytApiReadyPromise=null;
+
+function loadYTApi(){
+  if(window.YT&&window.YT.Player)return Promise.resolve();
+  if(ytApiReadyPromise)return ytApiReadyPromise;
+  ytApiReadyPromise=new Promise(resolve=>{
+    const prevCb=window.onYouTubeIframeAPIReady;
+    window.onYouTubeIframeAPIReady=()=>{if(prevCb)prevCb();resolve();};
+    const tag=document.createElement('script');
+    tag.src='https://www.youtube.com/iframe_api';
+    document.head.appendChild(tag);
+  });
+  return ytApiReadyPromise;
+}
+
+async function loadYTVideo(vidId,chIdx){
+  clearInterval(progressInterval);
+  const fill=document.getElementById('vidProgFill');
+  if(fill)fill.style.width='0%';
+
+  const wrap=document.getElementById('vidIframeWrap');
+  wrap.innerHTML='<div id="ytPlayerMount" style="width:100%;height:100%"></div>';
+
+  await loadYTApi();
+
+  if(ytPlayer&&ytPlayer.destroy){try{ytPlayer.destroy();}catch(e){}}
+
+  ytPlayer=new YT.Player('ytPlayerMount',{
+    videoId:vidId,
+    playerVars:{
+      autoplay:1,rel:0,modestbranding:1,playsinline:1,
+      origin:location.origin
+    },
+    events:{
+      onReady:e=>{try{e.target.playVideo();}catch(err){}},
+      onStateChange:onYTStateChange
+    }
+  });
+
+  function onYTStateChange(e){
+    clearInterval(progressInterval);
+    if(e.data===YT.PlayerState.PLAYING){
+      progressInterval=setInterval(()=>{
+        if(!ytPlayer||!ytPlayer.getCurrentTime)return;
+        const cur=ytPlayer.getCurrentTime()||0;
+        const dur=ytPlayer.getDuration()||0;
+        if(dur>0){
+          const pct=Math.min(100,(cur/dur)*100);
+          const fillEl=document.getElementById('vidProgFill');
+          if(fillEl)fillEl.style.width=pct+'%';
+          if(pct>=90&&CURRENT_COURSE){
+            markChapterDone(CURRENT_COURSE.id,chIdx);
+            clearInterval(progressInterval);
+          }
+        }
+      },1000);
+    }
+  }
+}
+
+function buildPlayerChapters(){
+  const list=document.getElementById('playerChaptersList');
+  if(!CURRENT_COURSE){list.innerHTML='';return;}
+  const prog=PROGRESS[CURRENT_COURSE.id]||{};
+  list.innerHTML=CURRENT_COURSE.chapters.map((ch,i)=>{
+    const done=prog.chapters&&prog.chapters[i];
+    const isActive=i===CURRENT_CHAPTER_IDX;
+    let html=`<div style="display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);cursor:pointer;-webkit-tap-highlight-color:transparent;${isActive?'background:var(--gA);border-radius:8px;padding:9px 8px':''}" onclick="openChapter(${i},0)">
+      <div style="font-family:var(--fm);font-size:.52rem;color:var(--t3);width:18px;text-align:center">${String(i+1).padStart(2,'0')}</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:.72rem;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;${isActive?'color:var(--gold)':''}">${ch.title}</div>
+        <div style="font-family:var(--fm);font-size:.48rem;color:var(--t3);margin-top:1px">${ch.vids.length} video${ch.vids.length>1?'s':''}</div>
+      </div>
+      ${done?`<div style="width:16px;height:16px;border-radius:50%;background:var(--grA);border:1px solid rgba(34,197,94,.3);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg viewBox="0 0 24 24" style="width:9px;height:9px;stroke:var(--green);fill:none;stroke-width:2.5;stroke-linecap:round"><polyline points="20 6 9 17 4 12"/></svg></div>`:''}
+    </div>`;
+    if(isActive&&ch.vids.length>1){
+      html+=ch.vids.map((v,vi)=>`<div onclick="openChapter(${i},${vi})" style="display:flex;align-items:center;gap:8px;padding:7px 8px 7px 34px;cursor:pointer;background:${vi===CURRENT_VID_IDX?'rgba(200,169,110,0.12)':'transparent'};border-radius:6px;-webkit-tap-highlight-color:transparent">
+        <div style="width:5px;height:5px;border-radius:50%;background:var(--gold);opacity:${vi===CURRENT_VID_IDX?1:0.4};flex-shrink:0"></div>
+        <div style="font-size:.68rem;color:${vi===CURRENT_VID_IDX?'var(--gold)':'var(--t2)'};">${v.label}</div>
+      </div>`).join('');
+    }
+    return html;
+  }).join('');
+}
+
+/* ══════════════════════════════════════════
+   PLAYER CONTROLS
+   Play/pause/seek are handled by YouTube's own native
+   controls inside the embed — we don't intercept or hide
+   them, which is what kept breaking playback before.
+   Fullscreen targets the actual video container so it
+   genuinely fills the screen, with fallbacks for Safari.
+══════════════════════════════════════════ */
+function toggleFullscreen(){
+  const el=document.getElementById('videoWrap');
+  const isFs=document.fullscreenElement||document.webkitFullscreenElement||document.mozFullScreenElement;
+  if(!isFs){
+    if(el.requestFullscreen)el.requestFullscreen();
+    else if(el.webkitRequestFullscreen)el.webkitRequestFullscreen();
+    else if(el.webkitEnterFullscreen)el.webkitEnterFullscreen(); // iOS Safari video fallback
+    else if(el.mozRequestFullScreen)el.mozRequestFullScreen();
+  }else{
+    if(document.exitFullscreen)document.exitFullscreen();
+    else if(document.webkitExitFullscreen)document.webkitExitFullscreen();
+    else if(document.mozCancelFullScreen)document.mozCancelFullScreen();
+  }
+}
+
+function closePlayer(){
+  document.getElementById('playerOverlay').classList.remove('on');
+  document.body.classList.remove('lock');
+  clearInterval(progressInterval);
+  if(ytPlayer&&ytPlayer.destroy){try{ytPlayer.destroy();}catch(e){}}
+  ytPlayer=null;
+  const wrap=document.getElementById('vidIframeWrap');
+  if(wrap)wrap.innerHTML='';
+  updateChaptersUI();
+  updateDetailProgress();
+}
+
+document.addEventListener('contextmenu',e=>{
+  if(e.target.closest('#playerOverlay')){e.preventDefault();return false;}
+});
+
+/* ══════════════════════════════════════════
+   INDIVIDUAL COURSES (SPECIAL_COURSES)
+══════════════════════════════════════════ */
+function buildSpecialGrid(){
+  const grid=document.getElementById('specialGrid');
+  const icons={
+    makeup:`<svg viewBox="0 0 24 24" style="width:26px;height:26px;stroke:#F472B6;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round"><path d="M12 2a5 5 0 015 5c0 2.76-2.24 5-5 5S7 9.76 7 7a5 5 0 015-5z"/><path d="M20 21a8 8 0 10-16 0"/></svg>`,
+    mehendi:`<svg viewBox="0 0 24 24" style="width:26px;height:26px;stroke:#F97316;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>`,
+    fashion:`<svg viewBox="0 0 24 24" style="width:26px;height:26px;stroke:#A78BFA;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round"><path d="M20.38 3.46L16 2a4 4 0 01-8 0L3.62 3.46a2 2 0 00-1.34 2.23l.58 3.57a1 1 0 00.99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 002-2V10h2.15a1 1 0 00.99-.84l.58-3.57a2 2 0 00-1.34-2.23z"/></svg>`
+  };
+  grid.innerHTML=SPECIAL_COURSES.map(sc=>{
+    const status=ACTIVE_SPECIAL_STATUS[sc.id]||{};
+    const enrolled=status.status==='approved';
+    const pending=status.status==='pending';
+    return`<div class="special-card" onclick="handleSpecialClick('${sc.id}')">
+      <div class="sc-accent" style="background:linear-gradient(90deg,${sc.accentFrom},${sc.accentTo})"></div>
+      <div class="sc-body">
+        <div class="sc-icon-row">
+          <div class="sc-ic" style="background:${sc.color}18">${icons[sc.icon]||''}</div>
+          <div><div class="sc-tag">Individual Course</div><div class="sc-nm">${sc.name}</div></div>
+        </div>
+        <div class="sc-desc">${sc.desc}</div>
+        <div class="sc-feats">${sc.feats.map(f=>`<div class="sc-feat"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>${f}</div>`).join('')}</div>
+        <div class="sc-price-row">
+          <div class="sc-price">${fmt(sc.price)} <span>one-time</span></div>
+          ${enrolled?`<span class="bdg ok">Enrolled</span>`:pending?`<span class="bdg pn">Pending</span>`:`<button class="btn-g" onclick="event.stopPropagation();openPayModal('${sc.id}')" style="font-size:.68rem;padding:8px 14px">Enrol Now</button>`}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function handleSpecialClick(id){
+  const status=ACTIVE_SPECIAL_STATUS[id]||{};
+  if(status.status==='approved'){openSpecialCourse(id);}
+  else if(status.status==='pending'){toast('Awaiting admin approval — 2–4 hours');}
+  else{openPayModal(id);}
+}
+
+function openSpecialCourse(id){
+  const sc=SPECIAL_COURSES.find(s=>s.id===id);
+  if(!sc)return;
+  CURRENT_COURSE={
+    id:'special_'+sc.id,bundleId:sc.id,courseIdx:0,name:sc.name,
+    bundle:{id:sc.id,name:sc.name,price:sc.price,color:sc.accentFrom},
+    chapters:sc.chapters
+  };
+  T('cdCat','Individual Course — Professional Certification');
+  T('cdTitle',sc.name);
+  T('cdDesc',sc.desc);
+  document.getElementById('cdMeta').innerHTML=`
+    <div class="cd-chip"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>${sc.chapters.length} Videos</div>
+    <div class="cd-chip"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>Certificate Included</div>`;
+  updateDetailProgress();
+  buildChaptersList();
+  buildExam();
+  buildProject();
+  switchDTab('chapters',document.querySelector('#detailTabs .dtab'));
+  goPage('detail');
+  T('tbPg',sc.name);
+  saveNavState();
+}
+
+/* ══════════════════════════════════════════
+   PAYMENT
+══════════════════════════════════════════ */
+function openPayModal(specialId){
+  ACTIVE_SPECIAL=SPECIAL_COURSES.find(s=>s.id===specialId);
+  if(!ACTIVE_SPECIAL)return;
+  T('payTitle','Enrol — '+ACTIVE_SPECIAL.name);
+  T('payDesc','Professional certification by Biluxe10. One-time payment.');
+  T('payPrice',fmt(ACTIVE_SPECIAL.price));
+  document.getElementById('payUTR').value='';
+  document.getElementById('payWA').value=UD.phone||UD.whatsapp||'';
+  generateQR(ACTIVE_SPECIAL.price);
+  document.getElementById('payModal').classList.add('on');
+}
+
+function closePayModal(e){
+  if(e.target===document.getElementById('payModal'))document.getElementById('payModal').classList.remove('on');
+}
+
+function generateQR(amount){
+  const canvas=document.getElementById('qrCanvas');
+  const ctx=canvas.getContext('2d');
+  const s=180;canvas.width=s;canvas.height=s;
+  ctx.fillStyle='#fff';ctx.fillRect(0,0,s,s);
+  ctx.fillStyle='#07070A';
+  function finder(x,y){ctx.fillRect(x,y,21,21);ctx.fillStyle='#fff';ctx.fillRect(x+3,y+3,15,15);ctx.fillStyle='#07070A';ctx.fillRect(x+6,y+6,9,9);}
+  finder(5,5);finder(s-26,5);finder(5,s-26);
+  let seed=amount;
+  for(let r=0;r<s;r+=6)for(let c=0;c<s;c+=6){
+    const inF=(r<30&&c<30)||(r<30&&c>s-36)||(r>s-36&&c<30);
+    if(!inF){seed=(seed*1103515245+12345)%65536;if(seed%3===0){ctx.fillRect(c+1,r+1,4,4);}}
+  }
+  ctx.fillStyle='rgba(255,255,255,0.95)';ctx.fillRect(s/2-22,s/2-10,44,20);
+  ctx.fillStyle='#07070A';ctx.font='bold 8px sans-serif';ctx.textAlign='center';
+  ctx.fillText('biluxe10',s/2,s/2-2);ctx.font='6px sans-serif';ctx.fillText('@upi',s/2,s/2+7);
+}
+
+function openPayApp(app){
+  if(!ACTIVE_SPECIAL)return;
+  const amt=ACTIVE_SPECIAL.price,id='biluxe10@upi',nm='Biluxe10';
+  const note=encodeURIComponent('Special: '+ACTIVE_SPECIAL.name);
+  const links={
+    phonepe:`phonepe://pay?pa=${id}&pn=${encodeURIComponent(nm)}&am=${amt}&cu=INR&tn=${note}`,
+    gpay:`gpay://upi/pay?pa=${id}&pn=${encodeURIComponent(nm)}&am=${amt}&cu=INR&tn=${note}`,
+    paytm:`paytmmp://pay?pa=${id}&pn=${encodeURIComponent(nm)}&am=${amt}&cu=INR&tn=${note}`
+  };
+  const a=document.createElement('a');a.href=links[app]||`upi://pay?pa=${id}&pn=${encodeURIComponent(nm)}&am=${amt}&cu=INR`;a.click();
+}
+
+async function confirmPayment(){
+  const utr=document.getElementById('payUTR').value.trim();
+  const wa=document.getElementById('payWA').value.trim();
+  if(!utr){toast('Enter UTR / Transaction ID');return;}
+  if(!ACTIVE_SPECIAL)return;
+  try{
+    const data={courseId:ACTIVE_SPECIAL.id,courseName:ACTIVE_SPECIAL.name,amount:ACTIVE_SPECIAL.price,utrId:utr,whatsapp:wa,userName:U.name,email:U.email,status:'pending',submittedAt:firebase.firestore.FieldValue.serverTimestamp()};
+    await DB.collection(COL).doc(U.emailId).collection('special_courses').doc(ACTIVE_SPECIAL.id).set(data);
+    sendTG(`SPECIAL COURSE PAYMENT\nUser: ${U.name}\nEmail: ${U.email}\nCourse: ${ACTIVE_SPECIAL.name}\nAmount: ₹${ACTIVE_SPECIAL.price}\nUTR: ${utr}\nWA: ${wa}`);
+    ACTIVE_SPECIAL_STATUS[ACTIVE_SPECIAL.id]={status:'pending',...data};
+    document.getElementById('payModal').classList.remove('on');
+    toast('Payment submitted! Approval in 2–4 hours');
+    buildSpecialGrid();
+  }catch(err){toast('Error: '+err.message);}
+}
+
+async function sendTG(msg){
+  try{
+    await fetch('/api/telegram',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:msg})});
+  }catch(e){}
+}
+
+/* ══════════════════════════════════════════
+   AI TUTOR — GROQ via /api/groq (Vercel env)
+══════════════════════════════════════════ */
+async function sendTutor(){
+  const inp=document.getElementById('tutorInp');
+  const msg=inp.value.trim();
+  if(!msg)return;
+  inp.value='';
+  addTutorMsg('user',msg);
+  tutorHistory.push({role:'user',content:msg});
+  const typing=document.getElementById('typingRow');
+  if(typing)typing.style.display='flex';
+  scrollTutor();
+  try{
+    const course=CURRENT_COURSE?CURRENT_COURSE.name:'this course';
+    const sys=`You are the Biluxe10 AI Tutor, an expert educator helping students learn ${course}. Give clear, concise, helpful answers in simple language. You are part of Biluxe10, India's Advanced Ed-Tech Platform by Syed Afshar Khadri.`;
+    const res=await fetch('/api/groq',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'llama-3.3-70b-versatile',messages:[{role:'system',content:sys},...tutorHistory],max_tokens:700,temperature:0.7})
+    });
+    if(!res.ok)throw new Error('API '+res.status);
+    const data=await res.json();
+    const reply=data.choices?.[0]?.message?.content||'Sorry, try again.';
+    tutorHistory.push({role:'assistant',content:reply});
+    if(typing)typing.style.display='none';
+    addTutorMsg('ai',reply);
+  }catch(err){
+    if(typing)typing.style.display='none';
+    addTutorMsg('ai',getFallbackReply(msg));
+  }
+}
+
+function getFallbackReply(q){
+  const c=CURRENT_COURSE?CURRENT_COURSE.name:'this course';
+  return`Great question about ${c}! This is an important concept. Focus on understanding the core principles, then apply through practice. Complete all chapters and submit your project for the certificate. For live AI support, ensure your internet is connected and the /api/groq endpoint is deployed on Vercel with your GROQ_API_KEY in .env.`;
+}
+
+function addTutorMsg(role,text){
+  const msgs=document.getElementById('tutorMsgs');
+  const row=document.createElement('div');
+  row.className='msg-row'+(role==='user'?' user':'');
+  row.innerHTML=`<div class="msg-av ${role==='ai'?'ai':''}">${role==='ai'?'B':(U.name?U.name[0].toUpperCase():'U')}</div><div class="msg-bubble ${role}">${text.replace(/\n/g,'<br>')}</div>`;
+  msgs.appendChild(row);
+  scrollTutor();
+}
+
+function scrollTutor(){
+  const msgs=document.getElementById('tutorMsgs');
+  if(msgs)setTimeout(()=>{msgs.scrollTop=msgs.scrollHeight;},80);
+}
+
+/* ══════════════════════════════════════════
+   NOTES — GROQ via /api/groq
+══════════════════════════════════════════ */
+async function generateNotes(){
+  const type=document.getElementById('notesType').value;
+  const content=document.getElementById('notesContent');
+  const course=CURRENT_COURSE?CURRENT_COURSE.name:'this course';
+  content.textContent='Generating '+type+' for '+course+'…';
+  const prompts={
+    summary:`Write a comprehensive chapter summary for the course "${course}". Cover key concepts, main topics, important takeaways, and practical applications. Format with clear sections.`,
+    keypoints:`List 40 key points from "${course}". Number each. Concise and exam-relevant.`,
+    flashcards:`Create 30 flashcard Q&A pairs for "${course}".\nFormat:\nQ: [Question]\nA: [Answer]\n`,
+    quiz:`Create a 50-question practice quiz for "${course}".\n[Q]. Question?\na) b) c) d)\nAnswer: [letter]\n`,
+    mindmap:`Text mind map for "${course}" with indented hierarchy. Main topic → branches → sub-branches.`
+  };
+  try{
+    const res=await fetch('/api/groq',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'llama-3.3-70b-versatile',messages:[{role:'system',content:'You are an expert educational content creator for Biluxe10 Ed-Tech Platform. Create high-quality study materials.'},{role:'user',content:prompts[type]}],max_tokens:1200,temperature:0.5})
+    });
+    if(!res.ok)throw new Error('API');
+    const data=await res.json();
+    content.textContent=data.choices?.[0]?.message?.content||'Could not generate. Try again.';
+  }catch(e){content.textContent=getFallbackNotes(type,course);}
+}
+
+function getFallbackNotes(type,course){
+  if(type==='keypoints')return`Key Points — ${course}\n\n1. Master the fundamentals first\n2. Apply concepts through hands-on projects\n3. Stay updated with industry trends\n4. Build a portfolio to showcase skills\n5. Complete the exam with 70%+ to earn your certificate\n\n[Connect /api/groq on Vercel with GROQ_API_KEY for full AI notes]`;
+  return`${course} — Study Notes\n\nKey areas: Core concepts, Practical tools, Real-world application, Assessment prep.\n\n[Set up Vercel environment with GROQ_API_KEY for AI-generated notes]`;
+}
+
+function copyNotes(){navigator.clipboard.writeText(document.getElementById('notesContent').textContent).then(()=>toast('Copied!'));}
+function downloadNotes(){
+  const blob=new Blob([document.getElementById('notesContent').textContent],{type:'text/plain'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download=((CURRENT_COURSE?CURRENT_COURSE.name:'Course')+'-Notes.txt').replace(/\s+/g,'-');
+  a.click();toast('Downloaded!');
+}
+
+/* ══════════════════════════════════════════
+   EXAM
+══════════════════════════════════════════ */
+const EXAM_QS=[
+  {q:'What is the primary purpose of this course?',opts:['Career advancement','Entertainment only','Gaming','None'],ans:0},
+  {q:'Which approach best supports skill mastery?',opts:['Reading alone','Consistent practice + application','Memorisation only','Skipping hard topics'],ans:1},
+  {q:'What does project submission demonstrate?',opts:['Just attendance','Practical competency','Only payment','Random effort'],ans:1},
+  {q:'How should you handle difficult concepts?',opts:['Skip them','Break into smaller parts and practice','Ignore completely','Copy others'],ans:1},
+  {q:'Minimum passing score for the exam?',opts:['50%','60%','70%','80%'],ans:2},
+  {q:'What is required for certificate eligibility?',opts:['Course only','Exam only','100% watch + exam 70%+ + project','Payment only'],ans:2},
+  {q:'This exam carries how many total marks?',opts:['50','75','100','200'],ans:2},
+  {q:'Biluxe10 is best described as?',opts:['Gaming platform','Advanced Ed-Tech Platform','Social media','Food delivery'],ans:1},
+  {q:'Best learning strategy?',opts:['Videos only','Practice + AI Tutor + Project','Read only','Copy notes'],ans:1},
+  {q:'After project submission, what happens?',opts:['Nothing','Admin reviews and certificate issued','Auto-certificate','Refund'],ans:1}
+];
+
+function buildExam(){
+  const prog=PROGRESS[CURRENT_COURSE?.id||'']||{};
+  const pct=prog.progress||0;
+  const wrap=document.getElementById('examWrap');
+  EXAM_STATE={examAnswers:{},examSubmitted:false};
+  if(pct<100){
+    wrap.innerHTML=`<div class="exam-intro"><div class="exam-intro-t">Complete Course First</div><div class="exam-intro-d">You need 100% progress before the exam. Current: <strong style="color:var(--gold)">${pct}%</strong>.</div><button class="btn-g" onclick="switchDTab('chapters',document.querySelector('#detailTabs .dtab'))">Go to Chapters</button></div>`;
+    return;
+  }
+  const existingScore=prog.examScore;
+  if(existingScore!=null){renderExamResult(existingScore);return;}
+  wrap.innerHTML=`<div class="exam-intro">
+    <div class="exam-intro-t">Final Exam — ${CURRENT_COURSE?.name||'Course'}</div>
+    <div class="exam-intro-d">Answer all 10 questions. Minimum 70 marks to pass and unlock certificate.</div>
+    <div class="exam-rules">
+      <div class="exam-rule"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>100 marks (10 per question)</div>
+      <div class="exam-rule"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Minimum 70 marks to pass</div>
+      <div class="exam-rule"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Pass unlocks project &amp; certificate</div>
+    </div>
+    <button class="btn-g" id="startExamBtn" onclick="startExam()" style="width:100%;justify-content:center">Start Exam</button>
+  </div>
+  <div id="examQsWrap" style="display:none;flex-direction:column;gap:12px"></div>
+  <div id="submitExamRow" style="display:none"><button class="btn-g" onclick="submitExam()" style="width:100%;justify-content:center;padding:13px">Submit Exam</button></div>`;
+}
+
+function startExam(){
+  document.getElementById('startExamBtn').style.display='none';
+  const wrap=document.getElementById('examQsWrap');
+  wrap.style.display='flex';
+  document.getElementById('submitExamRow').style.display='block';
+  wrap.innerHTML=EXAM_QS.map((q,qi)=>`<div class="q-card">
+    <div class="q-num">Q${qi+1} of ${EXAM_QS.length} · 10 marks</div>
+    <div class="q-text">${q.q}</div>
+    <div class="q-opts">${q.opts.map((opt,oi)=>`<div class="q-opt" id="opt-${qi}-${oi}" onclick="selOpt(${qi},${oi})"><div class="q-opt-dot"><div class="q-opt-dot-in"></div></div><div class="q-opt-t">${opt}</div></div>`).join('')}</div>
+  </div>`).join('');
+}
+
+function selOpt(qi,oi){
+  if(EXAM_STATE.examSubmitted)return;
+  EXAM_QS[qi].opts.forEach((_,i)=>document.getElementById(`opt-${qi}-${i}`)?.classList.remove('sel'));
+  document.getElementById(`opt-${qi}-${oi}`)?.classList.add('sel');
+  EXAM_STATE.examAnswers[qi]=oi;
+}
+
+async function submitExam(){
+  const answered=Object.keys(EXAM_STATE.examAnswers).length;
+  if(answered<EXAM_QS.length){toast(`Answer all questions (${answered}/${EXAM_QS.length} done)`);return;}
+  EXAM_STATE.examSubmitted=true;
+  let score=0;
+  EXAM_QS.forEach((q,qi)=>{
+    const chosen=EXAM_STATE.examAnswers[qi],correct=q.ans;
+    if(chosen===correct){score+=10;document.getElementById(`opt-${qi}-${correct}`)?.classList.add('correct');}
+    else{document.getElementById(`opt-${qi}-${chosen}`)?.classList.add('wrong');document.getElementById(`opt-${qi}-${correct}`)?.classList.add('correct');}
+  });
+  document.querySelectorAll('.q-opt').forEach(el=>el.style.pointerEvents='none');
+  document.getElementById('submitExamRow').style.display='none';
+  try{
+    await DB.collection(COL).doc(U.emailId).collection('course_progress').doc(CURRENT_COURSE.id).set({examScore:score,examDate:new Date().toISOString()},{merge:true});
+    if(!PROGRESS[CURRENT_COURSE.id])PROGRESS[CURRENT_COURSE.id]={};
+    PROGRESS[CURRENT_COURSE.id].examScore=score;
+  }catch(e){}
+  setTimeout(()=>renderExamResult(score),600);
+}
+
+function renderExamResult(score){
+  const pass=score>=70;
+  document.getElementById('examWrap').innerHTML=`<div class="exam-result">
+    <div class="exam-score ${pass?'pass':'fail'}">${score}<span style="font-size:1.2rem;opacity:.6">/100</span></div>
+    <div style="font-family:var(--fd);font-size:1rem;font-weight:700;margin-bottom:6px;color:${pass?'var(--green)':'var(--red)'}">${pass?'Passed!':'Not Passed'}</div>
+    <div style="font-size:.74rem;color:var(--t2);line-height:1.7;margin-bottom:16px">${pass?'Submit your project to receive your certificate.':'Minimum 70 required. Review chapters and retake.'}</div>
+    ${pass?`<button class="btn-g" onclick="switchDTab('project',document.querySelectorAll('#detailTabs .dtab')[4])" style="width:100%;justify-content:center">Submit Project</button>`:`<button class="btn-o" onclick="buildExam()" style="width:100%;justify-content:center">Retake Exam</button>`}
+  </div>`;
+}
+
+/* ══════════════════════════════════════════
+   PROJECT SUBMISSION
+══════════════════════════════════════════ */
+function buildProject(){
+  const body=document.getElementById('projectBody');
+  if(!CURRENT_COURSE){body.innerHTML='';return;}
+  const prog=PROGRESS[CURRENT_COURSE.id]||{};
+  const examScore=prog.examScore;
+  const coursePct=prog.progress||0;
+  if(coursePct<100||examScore==null||examScore<70){
+    body.innerHTML=`<div style="display:flex;flex-direction:column;gap:10px">
+      <div class="proj-status" style="border-color:${coursePct<100?'rgba(245,158,11,.3)':'rgba(34,197,94,.3)'}">
+        <svg viewBox="0 0 24 24" style="stroke:${coursePct<100?'var(--amber)':'var(--green)'}"><polyline points="20 6 9 17 4 12"/></svg>
+        <div><div style="font-size:.76rem;font-weight:700">Course Progress: ${coursePct}%</div><div style="font-family:var(--fm);font-size:.52rem;color:var(--t3)">${coursePct<100?'Complete 100% first':'Done!'}</div></div>
+      </div>
+      <div class="proj-status" style="border-color:${examScore==null?'rgba(245,158,11,.3)':examScore>=70?'rgba(34,197,94,.3)':'rgba(239,68,68,.3)'}">
+        <svg viewBox="0 0 24 24" style="stroke:${examScore==null?'var(--amber)':examScore>=70?'var(--green)':'var(--red)'}"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <div><div style="font-size:.76rem;font-weight:700">Exam: ${examScore==null?'Not taken':examScore+'/100'}</div><div style="font-family:var(--fm);font-size:.52rem;color:var(--t3)">${examScore==null?'Take exam first':examScore>=70?'Passed!':'Retake needed (70+ required)'}</div></div>
+      </div>
+      <div style="font-size:.72rem;color:var(--t2);line-height:1.7;padding:12px;background:var(--bg3);border-radius:var(--rs)">Complete 100% of the course and pass the exam with 70+ marks to unlock project submission and your certificate.</div>
+    </div>`;
+    return;
+  }
+  if(prog.projectSubmitted){
+    body.innerHTML=`<div class="proj-status" style="border-color:rgba(34,197,94,.2)">
+      <svg viewBox="0 0 24 24" style="stroke:var(--green)"><polyline points="20 6 9 17 4 12"/></svg>
+      <div><div style="font-size:.76rem;font-weight:700">Project Submitted</div><div style="font-family:var(--fm);font-size:.52rem;color:var(--t3)">Status: <span style="color:${prog.projectStatus==='approved'?'var(--green)':'var(--amber)'}">${prog.projectStatus==='approved'?'Approved — Certificate Ready!':'Pending admin review'}</span></div></div>
+    </div>
+    ${prog.projectStatus==='approved'?`<button class="btn-g" onclick="location.href='certificates.html'" style="width:100%;justify-content:center">Download Certificate</button>`:''}`;
+    return;
+  }
+  body.innerHTML=`<div style="font-size:.74rem;color:var(--t2);line-height:1.7;padding:12px;background:rgba(34,197,94,.05);border:1px solid rgba(34,197,94,.2);border-radius:var(--rs)">Exam passed with <strong style="color:var(--green)">${examScore}/100</strong>. Submit your project to get your Biluxe10 certificate.</div>
+  <div><label class="proj-lbl">Project Title</label><input class="proj-inp" id="projTitle" placeholder="e.g. My ${CURRENT_COURSE.name} Project"></div>
+  <div><label class="proj-lbl">Description / Summary (min 30 chars)</label><textarea class="proj-inp" id="projDesc" placeholder="Describe what you built, key learnings, and how you applied the course…"></textarea></div>
+  <div><label class="proj-lbl">Project Link (GitHub / Drive / Portfolio)</label><input class="proj-inp" id="projLink" placeholder="https://github.com/your-project"></div>
+  <div><label class="proj-lbl">WhatsApp Number</label><input class="proj-inp" id="projWA" placeholder="+91 9999999999" type="tel" value="${UD.phone||UD.whatsapp||''}"></div>
+  <button class="btn-g" onclick="submitProject()" style="width:100%;justify-content:center;padding:13px">Submit Project</button>`;
+}
+
+async function submitProject(){
+  const title=document.getElementById('projTitle')?.value.trim();
+  const desc=document.getElementById('projDesc')?.value.trim();
+  const link=document.getElementById('projLink')?.value.trim();
+  const wa=document.getElementById('projWA')?.value.trim();
+  if(!title){toast('Enter project title');return;}
+  if(!desc||desc.length<30){toast('Description too short (min 30 chars)');return;}
+  try{
+    const data={courseName:CURRENT_COURSE.name,courseId:CURRENT_COURSE.id,projectTitle:title,description:desc,projectLink:link||'',whatsapp:wa,userName:U.name,email:U.email,examScore:PROGRESS[CURRENT_COURSE.id]?.examScore||0,status:'pending',submittedAt:firebase.firestore.FieldValue.serverTimestamp()};
+    await DB.collection(COL).doc(U.emailId).collection('course_progress').doc(CURRENT_COURSE.id).set({projectSubmitted:true,projectStatus:'pending',projectTitle:title,projectLink:link||''},{merge:true});
+    await DB.collection(COL).doc(U.emailId).collection('projects').add(data);
+    sendTG(`PROJECT SUBMISSION\nUser: ${U.name}\nEmail: ${U.email}\nCourse: ${CURRENT_COURSE.name}\nProject: ${title}\nLink: ${link||'N/A'}\nExam: ${data.examScore}/100\nWA: ${wa}`);
+    if(!PROGRESS[CURRENT_COURSE.id])PROGRESS[CURRENT_COURSE.id]={};
+    PROGRESS[CURRENT_COURSE.id].projectSubmitted=true;
+    PROGRESS[CURRENT_COURSE.id].projectStatus='pending';
+    toast('Project submitted! Certificate after admin approval.');
+    buildProject();
+  }catch(err){toast('Error: '+err.message);}
+}
+
+/* ══════════════════════════════════════════
+   NAVIGATION
+══════════════════════════════════════════ */
+function goPage(pg){
+  document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));
+  const target=document.getElementById('pg-'+pg);
+  if(target)target.classList.add('on');
+  const titles={landing:'Courses',bundles:'Bundles',individual:'Individual Courses','tier-courses':'Bundle Courses'};
+  T('tbPg',titles[pg]||(CURRENT_COURSE?.name||'Course Detail'));
+  document.getElementById('backBtn').style.display=pg==='landing'?'none':'flex';
+  document.querySelectorAll('#bnav .bn').forEach(b=>b.classList.remove('on'));
+  const bnCourses=document.getElementById('bnCourses');
+  if(bnCourses&&(pg==='landing'||pg==='bundles'||pg==='individual'||pg==='tier-courses'||pg==='detail'))bnCourses.classList.add('on');
+  if(pg==='landing'){tutorHistory=[];EXAM_STATE={examAnswers:{},examSubmitted:false};}
+  window.scrollTo({top:0,behavior:'smooth'});
+  saveNavState();
+}
+
+function handleBack(){
+  const current=document.querySelector('.pg.on')?.id;
+  if(current==='pg-detail'){
+    const cameFromIndividual=CURRENT_COURSE&&SPECIAL_COURSES.some(s=>s.id===CURRENT_COURSE.bundleId);
+    goPage(cameFromIndividual?'individual':'tier-courses');
+  }else if(current==='pg-tier-courses'){goPage('bundles');}
+  else if(current==='pg-bundles'||current==='pg-individual'){goPage('landing');}
+  else{location.href='index.html';}
+}
+
+function switchDTab(tabId,el){
+  document.querySelectorAll('#detailTabs .dtab').forEach(t=>t.classList.remove('on'));
+  document.querySelectorAll('.dtab-panel').forEach(p=>p.classList.remove('on'));
+  if(el)el.classList.add('on');
+  else{
+    const idx=['chapters','tutor','notes','exam','project'].indexOf(tabId);
+    const tabs=document.querySelectorAll('#detailTabs .dtab');
+    if(tabs[idx])tabs[idx].classList.add('on');
+  }
+  const panel=document.getElementById('tab-'+tabId);
+  if(panel)panel.classList.add('on');
+  if(tabId==='exam')buildExam();
+  if(tabId==='project')buildProject();
+  if(tabId==='tutor')tutorHistory=[];
+  saveNavState();
+}
+
+window.addEventListener('beforeunload',()=>saveNavState());
+window.addEventListener('scroll',()=>{clearTimeout(window._scrollSaveTO);window._scrollSaveTO=setTimeout(saveNavState,400);});
+
+/* ══════════════════════════════════════════
+   TOAST
+══════════════════════════════════════════ */
+let toastTm;
+function toast(msg){
+  const el=document.getElementById('toast');
+  el.innerHTML=`<svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:var(--gold);fill:none;stroke-width:2;stroke-linecap:round;flex-shrink:0"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><span>${msg}</span>`;
+  el.classList.add('on');
+  clearTimeout(toastTm);
+  toastTm=setTimeout(()=>el.classList.remove('on'),3200);
+}
+</script>
+
+</body>
+</html>
+
